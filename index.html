@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Create a new SUSI Skill</title>
-
     <link rel="stylesheet" href="css/bootstrap-theme.css">
     <link rel="stylesheet" href="css/bootstrap.css">
     <link rel="stylesheet" href="css/skill_wiki.css" type="text/css">
     <script src="js/bootstrap.js"></script>
 <body>
-<nav class="navbar navbar-default">
+<nav class="navbar navbar-default" >
     <div class="navbar-header">
         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#toolbar">
             <span class="sr-only">Toggle toolbar</span>
@@ -17,12 +16,18 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="#"><span aria-hidden="true"> <img src="images/logo.png" style="width: 40%;height: auto;"> </span></a>
+        <a class="navbar-brand" href="#"><span aria-hidden="true"> <img src="images/logo.png" style="width: 50%;height: auto;"> </span></a>
     </div>
 
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="toolbar">
-        <ul class="nav navbar-nav"></ul>
-    </div>
+        <ul class="nav navbar-nav">
+            <li id="btnRun"><a href=""><img src="images/run_icon.png" style="width: 20px;height: 20px; padding:4px;" >  Run</a></li>
+            <li id="btnTidyUp"><a href=""><img src="images/save_icon.png"  style="width: 20px;height: 20px; padding:4px;"> Save</a></li>
+            <li id="btnTogether"><a href=""><img src="images/indent_icon.png"  style="width: 20px;height: 20px; padding:4px;"> Indent</a></li>
+        </ul>
+    </div><!-- /.navbar-collapse -->
 </nav>
 <div id="sidebar" style="background:#272A2F"></div>
 </body>

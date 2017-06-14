@@ -6,6 +6,12 @@ body {
     background-color: #2C2F34;
 }
 
+.a{
+    color: #ddd;
+    text-decoration: none;
+    font-style: italic;
+}
+
 .btn .caret {
     margin: 6px 0px 0px 3px;
     float: right;
@@ -44,12 +50,16 @@ body {
     border: none;
     height: 44px;
     margin-bottom: 0px;
+    box-shadow: 1px 3px 2px #000;
+    z-index: 10;
 }
 
 .navbar-default .navbar-brand {
     width: 217px;
     margin-right: 0px;
     color: #fff;
+    margin-top: -6px;
+
 }
 
 .navbar-default .navbar-brand:hover {
@@ -57,7 +67,6 @@ body {
 }
 
 .navbar-default ul li {
-    background: #579357;
     margin-right: 1px;
 }
 
@@ -167,8 +176,8 @@ input, textarea {
 }
 
 /*#main-container {*/
-    /*display: inline-block;*/
-    /*width: 70%;*/
-    /*height: 100%;*/
-    /*float: right;*/
+/*display: inline-block;*/
+/*width: 70%;*/
+/*height: 100%;*/
+/*float: right;*/
 /*}*/
