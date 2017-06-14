@@ -1,0 +1,11 @@
+Into the commit message, please add a short info about the changes you make in this PR.
+
+Into the description add: Fixes issue #[Add issue number here. If you do not solve the issue entirely, please change the message e.g. "First steps for issues #IssueNumber]
+
+Also add: 
+
+Changes: [Add here what changes were made in this issue and if possible provide links.]
+
+Link to deployment for testing:
+
+Screenshots for the change: 
