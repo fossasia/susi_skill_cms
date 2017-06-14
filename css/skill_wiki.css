@@ -17,6 +17,15 @@ body {
     overflow: hidden;
 }
 
+ul{
+  padding:0px;
+  margin: 0px;
+}
+
+.skill-span{
+  padding-left: 25px;
+}
+
 .scrollable-menu {
     height: auto;
     max-height: 200px;
@@ -27,6 +36,7 @@ body {
     padding: 0;
     margin: 0;
     font-size: 11px;
+    min-height: 100%
     width: 30%;
     max-width: 250px;
     position: absolute;
@@ -56,7 +66,7 @@ body {
     color: #cecece;
 }
 
-.navbar-default ul li {
+.navbar-default li {
     background: #579357;
     margin-right: 1px;
 }
@@ -162,13 +172,63 @@ input, textarea {
     margin: 0px;
 }
 
-.langright {
-    margin-left: 10px;
-}
-
+  .langright {
+      margin-left: 10px;
+  }
 /*#main-container {*/
     /*display: inline-block;*/
     /*width: 70%;*/
     /*height: 100%;*/
     /*float: right;*/
 /*}*/
+#accordian {
+  background: #272A2F;
+  margin:0px;
+  padding: 0px;
+  min-height: 100vh;
+  float: left;
+  color: white;
+}
+/*heading styles*/
+#accordian h3 {
+  margin: 0px;
+  font-size: 14px;
+  line-height: 72px;
+  cursor: pointer;
+  background:  #323539; 
+}
+/*heading hover effect*/
+#accordian h3:hover {
+  text-shadow: 0 0 1px rgba(255, 255, 255, 0.7);
+}
+/*iconfont styles*/
+#accordian h3 span {
+  font-size: 16px;
+  margin-right: 10px;
+}
+/*list items*/
+#accordian li {
+  list-style-type: none;
+}
+/*links*/
+#accordian ul ul li a {
+  color: white;
+  text-decoration: none;
+  padding-left: 25px;
+  font-size: 11px;
+  line-height: 27px;
+  
+  /*transition for smooth hover animation*/
+  transition: all 0.15s;
+}
+/*hover effect on links*/
+#accordian ul ul li a:hover {
+  background: #2C2F34;
+}
+/*Lets hide the non active LIs by default*/
+#accordian ul ul {
+  display: none;
+} 
+#accordian li.active ul {
+  display: block;
+}
