@@ -162,13 +162,60 @@ input, textarea {
     margin: 0px;
 }
 
-.langright {
-    margin-left: 10px;
-}
-
+  .langright {
+      margin-left: 10px;
+  }
 /*#main-container {*/
     /*display: inline-block;*/
     /*width: 70%;*/
     /*height: 100%;*/
     /*float: right;*/
 /*}*/
+#accordian {
+  background: #272A2F;
+  width: 30%;
+  height: 100%;
+  float: left;
+  color: white;
+}
+/*heading styles*/
+#accordian h3 {
+  font-size: 14px;
+  line-height: 72px;
+  cursor: pointer;
+  background:  #323539; 
+}
+/*heading hover effect*/
+#accordian h3:hover {
+  text-shadow: 0 0 1px rgba(255, 255, 255, 0.7);
+}
+/*iconfont styles*/
+#accordian h3 span {
+  font-size: 16px;
+  margin-right: 10px;
+}
+/*list items*/
+#accordian li {
+  list-style-type: none;
+}
+/*links*/
+#accordian ul ul li a {
+  color: white;
+  text-decoration: none;
+  font-size: 11px;
+  line-height: 27px;
+  
+  /*transition for smooth hover animation*/
+  transition: all 0.15s;
+}
+/*hover effect on links*/
+#accordian ul ul li a:hover {
+  background: #2C2F34;
+}
+/*Lets hide the non active LIs by default*/
+#accordian ul ul {
+  display: none;
+} 
+#accordian li.active ul {
+  display: block;
+}
