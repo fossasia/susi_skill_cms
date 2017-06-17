@@ -1,0 +1,93 @@
+.template-sale {
+  display: -ms-flexbox;
+  display: flex;
+  padding: 5px;
+  box-sizing: border-box;
+  background-color: #2C2F34;
+  -ms-flex: 1;
+  flex: 1;
+}
+
+.template-sale .data {
+  overflow: auto;
+  -ms-flex: 1;
+  flex: 1;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -ms-flex-pack: start;
+  justify-content: flex-start;
+  -ms-flex-align: start;
+  align-items: flex-start;
+}
+
+.template-sale .data .total {
+  box-sizing: border-box;
+  border-radius: 5px;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.template-sale .data .total > div {
+  box-sizing: border-box;
+  padding: 10px;
+  width: 25%;
+  min-width: 150px;
+}
+
+.template-sale .data .total > div > div {
+  height: 160px;
+  border-radius: 5px;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -ms-flex-pack: center;
+  justify-content: center;
+}
+
+.template-sale .data .total > div > div > div.number {
+  font-size: 28px;
+}
+
+.template-sale .data .total > div > div > div {
+  margin: 0 10%;
+}
+
+.template-sale .data .total > div > div > div.title {
+  font-size: 14px;
+}
+
+.template-sale .data .total > div:nth-child(1) > div {
+  background: #32cc7f url(../assets/Images/money.png) no-repeat 10% 50%;
+  color: #fff;
+  text-align: right;
+}
+
+.template-sale .data .total > div:nth-child(2) > div {
+  background: #e4eaec url(../assets/Images/text.png) no-repeat 90% 50%;
+  color: #32cc7f;
+  text-align: left;
+}
+
+.template-sale .data .total > div:nth-child(3) > div {
+  background: #2C2F34 url(../assets/Images/message.png) no-repeat 10% 50%;
+  color: #6c6fbf;
+  text-align: right;
+}
+
+.template-sale .data .total > div:nth-child(4) > div {
+  background: #2C2F34 url(../assets/Images/foot.png) no-repeat 90% 50%;
+  color: #fff;
+  text-align: left;
+}
+
+
+:global .ant-notification{
+  width:auto;
+  max-width:800px;
+}
