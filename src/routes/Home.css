@@ -62,30 +62,6 @@
   font-size: 14px;
 }
 
-.template-sale .data .total > div:nth-child(1) > div {
-  background: #32cc7f url(../assets/Images/money.png) no-repeat 10% 50%;
-  color: #fff;
-  text-align: right;
-}
-
-.template-sale .data .total > div:nth-child(2) > div {
-  background: #e4eaec url(../assets/Images/text.png) no-repeat 90% 50%;
-  color: #32cc7f;
-  text-align: left;
-}
-
-.template-sale .data .total > div:nth-child(3) > div {
-  background: #2C2F34 url(../assets/Images/message.png) no-repeat 10% 50%;
-  color: #6c6fbf;
-  text-align: right;
-}
-
-.template-sale .data .total > div:nth-child(4) > div {
-  background: #2C2F34 url(../assets/Images/foot.png) no-repeat 90% 50%;
-  color: #fff;
-  text-align: left;
-}
-
 
 :global .ant-notification{
   width:auto;
