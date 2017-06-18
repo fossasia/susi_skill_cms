@@ -60,14 +60,19 @@
     }
   }
 
+
+
   .header {
     :global .ant-menu-horizontal {
       border: none;
-      background-color: #272A2F;
+      margin-left: 50px;
+
+      background-color: #607D8B;
       & > .ant-menu-submenu {
-        float: right;
-        font-size: 18px;
-        color: white;
+        float: left;
+        font-size: 14px;
+
+        color: black;
       }
     }
     box-shadow: @shadow-2;
@@ -78,10 +83,9 @@
       line-height: 47px;
       text-align: center;
       font-size: 18px;
-      color: white;
       cursor: pointer;
       position: absolute;
-
+      color: #272A2F;
       &:hover {
         color: @primary-color;
         background-color: fade(@primary-color, 15%);
@@ -142,6 +146,10 @@
     box-shadow: @shadow-2;
     width: 100%;
   }
+}
+
+.submenu-header{
+  color: #2196F3;
 }
 
 .sider {

@@ -14,7 +14,7 @@ function Header ({ user, siderFold, isNavbar, menuPopoverVisible, location, swit
 
   const menusProps = {
     siderFold: true,
-    darkTheme: true,
+    darkTheme: false,
     isNavbar,
     handleClickNavMenu: switchMenuPopover,
     location
@@ -34,7 +34,13 @@ function Header ({ user, siderFold, isNavbar, menuPopoverVisible, location, swit
             <Icon type={siderFold ? 'menu-unfold' : 'menu-fold'}/>
           </div>
       }
-      
+
+      <Menu className='header-menu' mode='horizontal' onClick={handleClickMenu}>
+
+
+
+
+      </Menu>
 
     </div>
   )
