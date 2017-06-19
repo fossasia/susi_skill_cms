@@ -5,14 +5,22 @@ import Menus from './Menus';
 
 function Asider ({ siderFold, location, handleClickNavMenu, menuOpenKeys }) {
 
-  const menusProps = {
-  }
-  return (
-    <div>
+    const menusProps = {
+        siderFold,
+        location,
+        handleClickNavMenu,
+        menuOpenKeys,
+    }
+    return (
+        <div>
+          <div className={styles.logo}>
+            <img className={styles.logoImage} src={config.logoSrc}/>
+              {siderFold ? '' : <span>{config.logoText}</span>}
+          </div>
+          <Menus {...menusProps}/>
+        </div>
 
-    </div>
-
-  )
+    )
 }
 
 export default Asider;
