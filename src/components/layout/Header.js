@@ -38,6 +38,28 @@ function Header ({ user, siderFold, isNavbar, menuPopoverVisible, location, swit
       <Menu className='header-menu' mode='horizontal' onClick={handleClickMenu}>
 
 
+        <SubMenu className="submenu-header" title={
+          <span >
+          <FontAwesome name=" fa-play"/>
+              {"     Run"}
+            </span>
+        }
+        />
+        <SubMenu title={
+          <span>
+          <FontAwesome name=" fa-download Save"/>
+              {"     Save"}
+            </span>
+        }
+        />
+
+        <SubMenu title={
+          <span>
+          <FontAwesome name=" fa-align-left Indent"/>
+              {"     Indent"}
+            </span>
+        }
+        />
 
 
       </Menu>
