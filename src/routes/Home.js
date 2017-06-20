@@ -1,17 +1,17 @@
 import React from 'react';
 import { connect } from 'dva';
-import styles from './Home.css';
-
+import {Editor} from "../components/layout/editor.js";
 function Home () {
-  return (
-    <div>
-
-    </div>
-  );
+    return (
+        <div>
+            {/*<MyEditor/>*/}
+          <Editor/>
+        </div>
+    );
 }
 
 function mapStateToProps () {
-  return {};
+    return {};
 }
 
 export default connect(mapStateToProps)(Home);
