@@ -1,4 +1,7 @@
 # susi_skill_wiki
+
+[![Build Status](https://travis-ci.org/fossasia/susi_skill_wiki.svg?branch=master)](https://travis-ci.org/fossasia/susi_skill_wiki)
+
 A web application framework to edit susi skills
 
 ## Technology Stack
