@@ -101,6 +101,7 @@ export class Editor extends React.Component {
                 {creationControls}
 
               <CodeMirror value={this.state.code} options={options} onChange={this.updateCode.bind(this)} />
+
             </div>
         );
     }
