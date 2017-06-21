@@ -1,7 +1,6 @@
 import CodeMirror from 'react-codemirror';
 import React from 'react';
 import { connect } from 'dva';
-  import {withRouter} from 'react-router-dom';
 import 'codemirror/mode/clike/clike';
 import 'codemirror/mode/css/css';
 import 'codemirror/mode/go/go';
@@ -20,71 +19,98 @@ import * as FileSaver from 'file-saver';
 const SubMenu = Menu.SubMenu
 
 export class Editor extends React.Component {
-  constructor(props){
-    super(props);
-    this.state = {
-      code: '//code'
+    constructor(props){
+        super(props);
+        this.state = {
+            code: '//code'
+        }
     }
-  }
     updateCode(newCode) {
-      this.setState({
-          code: newCode,
-      });
-   }
-
-  componentDidMount() {
-    if (this.props.snippet) {
-      this.props.getSnippet(this.props.snippet);
+        this.setState({
+            code: newCode,
+        });
     }
-  }
 
-  render() {
-    const options = {
-      autofocus: true,
-      lineNumbers: true,
-      lineWrapping: true,
-      viewportMargin: Infinity,
-      mode: this.props.language,
-      readOnly: this.props.snippet ? 'nocursor' : false,
-    };
+    componentDidMount() {
+        if (this.props.snippet) {
+            this.props.getSnippet(this.props.snippet);
+        }
+    }
 
-      function makeFile(code) {
-          // do some calculations
-          console.log(code)
-          let blob = new Blob([code], {type: "text/plain;charset=utf-8"});
-          FileSaver.saveAs(blob, "DemoFile.txt");
+    render() {
+        const options = {
+            autofocus: true,
+            lineNumbers: true,
+            lineWrapping: true,
+            viewportMargin: Infinity,
+            mode: this.props.language,
+            readOnly: this.props.snippet ? 'nocursor' : false,
+        };
 
-      }
+        function makeFile(code) {
+            // do some calculations
+            console.log(code)
+            let blob = new Blob([code], {type: "text/plain;charset=utf-8"});
+            FileSaver.saveAs(blob, "DemoFile.txt");
 
-    const creationControls = this.props.snippet ?
-        undefined :
-        (<div id="options">
-          {/*<Button*/}
-              {/*className="pt-intent-primary"*/}
-              {/*text="Download"*/}
+        }
 
-              {/*/>*/}
+        const creationControls = this.props.snippet ?
+            undefined :
+            (<div id="options">
+                {/*<Button*/}
+                {/*className="pt-intent-primary"*/}
+                {/*text="Download"*/}
 
-        </div>);
-      var divStyle = {
-          marginTop: 50,
+                {/*/>*/}
 
-      };
-    return (
-      <div id="editor" style={divStyle}>
+            </div>);
+        var divStyle = {
+            marginTop: 50,
 
-          {creationControls}
+        };
+        return (
+            <div id="editor" style={divStyle}>
+              <Menu className='header-menu'  mode='horizontal'>
 
-        <CodeMirror value={this.state.code} options={options} onChange={this.updateCode.bind(this)} />
-      </div>
-    );
-  }
+                <SubMenu  className="submenu-header"  title={
+                  <span >
+          <FontAwesome    name=" fa-play"/>
+                      {"     Run"}
+            </span>
+                }
+                />
+
+                <SubMenu title={
+                  <span onClick={() => makeFile(this.state.code)}>
+          <FontAwesome name=" fa-download Save"/>
+                      {"     Save"}
+            </span>
+                }
+                />
+
+                <SubMenu title={
+                  <span>
+          <FontAwesome name=" fa-align-left Indent"/>
+                      {"     Indent"}
+            </span>
+                }
+                />
+
+              </Menu>
+                {creationControls}
+
+              <CodeMirror value={this.state.code} options={options} onChange={this.updateCode.bind(this)} />
+
+            </div>
+        );
+    }
 
 }
 
 const mapStateToProps = store => ({
-  text: store.editor.text,
-  language: store.editor.language,
+    text: store.editor.text,
+    language: store.editor.language,
 });
 
 
