@@ -1,0 +1,28 @@
+{
+  "name": "is-integer",
+  "version": "1.0.7",
+  "description": "ES2015 (ES6) Number.isInteger polyfill",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:parshap/js-is-integer"
+  },
+  "keywords": [
+    "es2015",
+    "es6",
+    "Number",
+    "isInteger",
+    "polyfill"
+  ],
+  "author": "Parsha Pourkhomami",
+  "license": "WTFPL OR ISC",
+  "devDependencies": {
+    "tape": "^3.5.0"
+  },
+  "dependencies": {
+    "is-finite": "^1.0.0"
+  }
+}

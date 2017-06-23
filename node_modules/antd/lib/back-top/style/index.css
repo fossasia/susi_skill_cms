@@ -1,0 +1,26 @@
+.ant-back-top {
+  z-index: 10;
+  position: fixed;
+  right: 100px;
+  bottom: 50px;
+  height: 40px;
+  width: 40px;
+  cursor: pointer;
+}
+.ant-back-top-content {
+  height: 40px;
+  width: 40px;
+  border-radius: 20px;
+  background-color: rgba(64, 64, 64, 0.4);
+  color: #fff;
+  text-align: center;
+  transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.ant-back-top-content:hover {
+  background-color: rgba(64, 64, 64, 0.6);
+  transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.ant-back-top-icon {
+  font-size: 20px;
+  margin-top: 10px;
+}

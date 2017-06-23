@@ -1,0 +1,25 @@
+.ant-breadcrumb {
+  color: rgba(0, 0, 0, 0.65);
+  font-size: 12px;
+}
+.ant-breadcrumb a {
+  color: rgba(0, 0, 0, 0.65);
+  transition: color .3s;
+}
+.ant-breadcrumb a:hover {
+  color: #49a9ee;
+}
+.ant-breadcrumb > span:last-child {
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.65);
+}
+.ant-breadcrumb > span:last-child .ant-breadcrumb-separator {
+  display: none;
+}
+.ant-breadcrumb-separator {
+  margin: 0 8px;
+  color: rgba(0, 0, 0, 0.3);
+}
+.ant-breadcrumb-link > .anticon + span {
+  margin-left: 4px;
+}

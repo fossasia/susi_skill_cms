@@ -1,0 +1,41 @@
+{
+  "name": "settle-promise",
+  "version": "1.0.0",
+  "description": "Like `Promise.all`, but when all `Promise`s are settled.",
+  "main": "lib/index.js",
+  "scripts": {
+    "prepublishOnly": "npm run build && npm test",
+    "build": "babel src/ -d lib/",
+    "format": "prettier --single-quote --trailing-comma es5 --write 'src/**/*.js'",
+    "test": "echo \"Error: no test specified\" && exit 0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/timer/settle-promise.git"
+  },
+  "keywords": [
+    "promise",
+    "settle",
+    "settled",
+    "all",
+    "resolve",
+    "resolved",
+    "reject",
+    "rejected"
+  ],
+  "author": "Joe Haddad <timer150@gmail.com>",
+  "license": "MIT",
+  "files": [
+    "lib/"
+  ],
+  "bugs": {
+    "url": "https://github.com/timer/settle-promise/issues"
+  },
+  "homepage": "https://github.com/timer/settle-promise#readme",
+  "devDependencies": {
+    "babel-cli": "^6.23.0",
+    "babel-plugin-transform-flow-strip-types": "^6.22.0",
+    "babel-preset-env": "^1.2.1",
+    "prettier": "^0.22.0"
+  }
+}

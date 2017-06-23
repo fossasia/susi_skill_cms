@@ -1,0 +1,7 @@
+machine:
+  node:
+    version: 5.0.0
+
+test:
+  override:
+    - make test

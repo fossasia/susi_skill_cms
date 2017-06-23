@@ -1,0 +1,19 @@
+{
+  "name": "babel-plugin-jscript",
+  "version": "1.0.4",
+  "description": "Babel plugin to fix buggy JScript named function expressions",
+  "repository": "babel-plugins/babel-plugin-jscript",
+  "license": "MIT",
+  "main": "lib/index.js",
+  "devDependencies": {
+    "babel": "^5.6.0"
+  },
+  "scripts": {
+    "build": "babel-plugin build",
+    "push": "babel-plugin publish",
+    "test": "babel-plugin test"
+  },
+  "keywords": [
+    "babel-plugin"
+  ]
+}

@@ -1,0 +1,74 @@
+.ant-card {
+  background: #fff;
+  border-radius: 4px;
+  font-size: 12px;
+  position: relative;
+  overflow: hidden;
+  transition: all .3s;
+}
+.ant-card:hover {
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
+  border-color: transparent;
+}
+.ant-card-bordered {
+  border: 1px solid #e9e9e9;
+}
+.ant-card-head {
+  height: 48px;
+  line-height: 48px;
+  background: #fff;
+  border-bottom: 1px solid #e9e9e9;
+  padding: 0 24px;
+}
+.ant-card-head-title {
+  font-size: 14px;
+  display: inline-block;
+  text-overflow: ellipsis;
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  color: rgba(0, 0, 0, 0.85);
+  font-weight: 500;
+}
+.ant-card-extra {
+  position: absolute;
+  right: 24px;
+  top: 14px;
+}
+.ant-card-body {
+  padding: 24px;
+}
+.ant-card-loading .ant-card-body {
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+.ant-card-loading-block {
+  display: inline-block;
+  margin: 5px 1% 0;
+  height: 14px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, rgba(207, 216, 220, 0.2), rgba(207, 216, 220, 0.4), rgba(207, 216, 220, 0.2));
+  -webkit-animation: card-loading 1.4s ease infinite;
+          animation: card-loading 1.4s ease infinite;
+  background-size: 600% 600%;
+}
+@-webkit-keyframes card-loading {
+  0%,
+  100% {
+    background-position: 0 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+@keyframes card-loading {
+  0%,
+  100% {
+    background-position: 0 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}

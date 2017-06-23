@@ -1,0 +1,7 @@
+.rc-table.bordered table {
+  border-collapse: collapse;
+}
+.rc-table.bordered th,
+.rc-table.bordered td {
+  border: 1px solid #e9e9e9;
+}

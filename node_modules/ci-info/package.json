@@ -1,0 +1,35 @@
+{
+  "name": "ci-info",
+  "version": "1.0.0",
+  "description": "Get details about the current Continuous Integration environment",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {
+    "clear-require": "^1.0.1",
+    "standard": "^8.4.0"
+  },
+  "scripts": {
+    "test": "standard && node test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/watson/ci-info.git"
+  },
+  "keywords": [
+    "ci",
+    "continuous",
+    "integration",
+    "test",
+    "detect"
+  ],
+  "author": "Thomas Watson Steen <w@tson.dk> (https://twitter.com/wa7son)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/watson/ci-info/issues"
+  },
+  "homepage": "https://github.com/watson/ci-info",
+  "coordinates": [
+    55.68768499999999,
+    12.5955698
+  ]
+}

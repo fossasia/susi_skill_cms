@@ -1,0 +1,17 @@
+{
+  "name": "tryor",
+  "version": "0.1.2",
+  "description": "return fn() or default value (in case of exception)",
+  "main": "tryor.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/olov/tryor.git"
+  },
+  "keywords": [
+    "try",
+    "catch",
+    "default"
+  ],
+  "author": "Olov Lassus <olov.lassus@gmail.com>",
+  "license": "MIT"
+}

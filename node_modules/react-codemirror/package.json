@@ -1,0 +1,66 @@
+{
+  "name": "react-codemirror",
+  "version": "1.0.0",
+  "description": "Codemirror",
+  "main": "lib/Codemirror.js",
+  "author": "Jed Watson",
+  "license": "MIT",
+  "homepage": "https://github.com/JedWatson/react-codemirror",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JedWatson/react-codemirror.git"
+  },
+  "bugs": {
+    "url": "https://github.com/JedWatson/react-codemirror/issues"
+  },
+  "dependencies": {
+    "classnames": "^2.2.5",
+    "codemirror": "^5.18.2",
+    "create-react-class": "^15.5.1",
+    "lodash.debounce": "^4.0.8",
+    "lodash.isequal": "^4.5.0",
+    "prop-types": "^15.5.4"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "happiness": "^7.1.2",
+    "react": "^15.5.3",
+    "react-component-gulp-tasks": "^0.7.7",
+    "react-dom": "^15.5.3"
+  },
+  "peerDependencies": {
+    "react": ">=15.5 <16",
+    "react-dom": ">=15.5 <16"
+  },
+  "browserify-shim": {
+    "react": "global:React"
+  },
+  "scripts": {
+    "build": "gulp clean && NODE_ENV=production gulp build",
+    "bump": "gulp bump",
+    "bump:minor": "gulp bump:minor",
+    "bump:major": "gulp bump:major",
+    "examples": "gulp dev:server",
+    "publish:site": "gulp publish:examples",
+    "release": "gulp release",
+    "start": "gulp dev",
+    "test": "echo \"no tests yet\" && exit 0",
+    "lint": "happiness",
+    "watch": "gulp watch:lib"
+  },
+  "happiness": {
+    "ignore": [
+      "**/.publish/**",
+      "**/dist/**",
+      "**/lib/**"
+    ]
+  },
+  "readmeFilename": "README.md",
+  "keywords": [
+    "react",
+    "react-component",
+    "codemirror",
+    "editor",
+    "code"
+  ]
+}

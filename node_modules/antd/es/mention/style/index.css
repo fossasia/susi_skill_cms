@@ -1,0 +1,164 @@
+.ant-mention-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  vertical-align: middle;
+}
+.ant-mention-wrapper .ant-mention-editor {
+  position: relative;
+  display: inline-block;
+  padding: 4px 7px;
+  width: 100%;
+  height: 28px;
+  cursor: text;
+  font-size: 12px;
+  line-height: 1.5;
+  color: rgba(0, 0, 0, 0.65);
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  transition: all .3s;
+  padding: 0;
+  display: block;
+}
+.ant-mention-wrapper .ant-mention-editor::-moz-placeholder {
+  color: #ccc;
+  opacity: 1;
+}
+.ant-mention-wrapper .ant-mention-editor:-ms-input-placeholder {
+  color: #ccc;
+}
+.ant-mention-wrapper .ant-mention-editor::-webkit-input-placeholder {
+  color: #ccc;
+}
+.ant-mention-wrapper .ant-mention-editor:hover {
+  border-color: #49a9ee;
+}
+.ant-mention-wrapper .ant-mention-editor:focus {
+  border-color: #49a9ee;
+  outline: 0;
+  box-shadow: 0 0 0 2px rgba(16, 142, 233, 0.2);
+}
+.ant-mention-wrapper .ant-mention-editor[disabled] {
+  background-color: #f7f7f7;
+  opacity: 1;
+  cursor: not-allowed;
+  color: rgba(0, 0, 0, 0.25);
+}
+.ant-mention-wrapper .ant-mention-editor[disabled]:hover {
+  border-color: #e2e2e2;
+}
+textarea.ant-mention-wrapper .ant-mention-editor {
+  max-width: 100%;
+  height: auto;
+  vertical-align: bottom;
+}
+.ant-mention-wrapper .ant-mention-editor-lg {
+  padding: 6px 7px;
+  height: 32px;
+}
+.ant-mention-wrapper .ant-mention-editor-sm {
+  padding: 1px 7px;
+  height: 22px;
+}
+.ant-mention-wrapper .ant-mention-editor-wrapper {
+  overflow-y: auto;
+  height: auto;
+}
+.ant-mention-wrapper.ant-mention-active:not(.disabled) .ant-mention-editor {
+  border-color: #49a9ee;
+  outline: 0;
+  box-shadow: 0 0 0 2px rgba(16, 142, 233, 0.2);
+}
+.ant-mention-wrapper.disabled .ant-mention-editor {
+  background-color: #f7f7f7;
+  opacity: 1;
+  cursor: not-allowed;
+  color: rgba(0, 0, 0, 0.25);
+}
+.ant-mention-wrapper.disabled .ant-mention-editor:hover {
+  border-color: #e2e2e2;
+}
+.ant-mention-wrapper .public-DraftEditorPlaceholder-root {
+  position: absolute;
+}
+.ant-mention-wrapper .public-DraftEditorPlaceholder-root .public-DraftEditorPlaceholder-inner {
+  color: #ccc;
+  opacity: 1;
+  outline: none;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  height: auto;
+  padding: 4px 7px;
+}
+.ant-mention-wrapper .DraftEditor-editorContainer .public-DraftEditor-content {
+  height: auto;
+  padding: 4px 7px;
+}
+.ant-mention-dropdown {
+  margin-top: 1.5em;
+  max-height: 250px;
+  min-width: 120px;
+  background-color: #fff;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  box-sizing: border-box;
+  z-index: 1050;
+  left: -9999px;
+  top: -9999px;
+  position: absolute;
+  outline: none;
+  overflow-x: hidden;
+  overflow-y: auto;
+  font-size: 12px;
+}
+.ant-mention-dropdown-notfound.ant-mention-dropdown-item {
+  color: rgba(0, 0, 0, 0.25);
+}
+.ant-mention-dropdown-notfound.ant-mention-dropdown-item .anticon-loading {
+  color: #108ee9;
+  text-align: center;
+  display: block;
+}
+.ant-mention-dropdown-item {
+  position: relative;
+  display: block;
+  padding: 7px 8px;
+  font-weight: normal;
+  color: rgba(0, 0, 0, 0.65);
+  white-space: nowrap;
+  cursor: pointer;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  transition: background 0.3s;
+}
+.ant-mention-dropdown-item:hover {
+  background-color: #ecf6fd;
+}
+.ant-mention-dropdown-item.focus,
+.ant-mention-dropdown-item-active {
+  background-color: #ecf6fd;
+}
+.ant-mention-dropdown-item-disabled {
+  color: rgba(0, 0, 0, 0.25);
+  cursor: not-allowed;
+}
+.ant-mention-dropdown-item-disabled:hover {
+  color: rgba(0, 0, 0, 0.25);
+  background-color: #fff;
+  cursor: not-allowed;
+}
+.ant-mention-dropdown-item-selected,
+.ant-mention-dropdown-item-selected:hover {
+  background-color: #f7f7f7;
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.65);
+}
+.ant-mention-dropdown-item-divider {
+  height: 1px;
+  margin: 1px 0;
+  overflow: hidden;
+  background-color: #e9e9e9;
+  line-height: 0;
+}

@@ -1,0 +1,36 @@
+{
+  "name": "path-exists",
+  "version": "1.0.0",
+  "description": "Check if a path exists",
+  "license": "MIT",
+  "repository": "sindresorhus/path-exists",
+  "author": {
+    "name": "Sindre Sorhus",
+    "email": "sindresorhus@gmail.com",
+    "url": "sindresorhus.com"
+  },
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "scripts": {
+    "test": "node test.js"
+  },
+  "files": [
+    "index.js"
+  ],
+  "keywords": [
+    "path",
+    "exists",
+    "exist",
+    "file",
+    "filepath",
+    "fs",
+    "filesystem",
+    "file-system",
+    "access",
+    "stat"
+  ],
+  "devDependencies": {
+    "ava": "0.0.4"
+  }
+}

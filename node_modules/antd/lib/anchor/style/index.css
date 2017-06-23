@@ -1,0 +1,68 @@
+.ant-anchor {
+  position: relative;
+}
+.ant-anchor-wrapper {
+  background-color: #fff;
+}
+.ant-anchor-ink {
+  position: absolute;
+  height: 100%;
+  left: 0;
+  top: 0;
+}
+.ant-anchor-ink:before {
+  content: ' ';
+  position: relative;
+  width: 2px;
+  height: 100%;
+  display: block;
+  background-color: #e9e9e9;
+  margin: 0 auto;
+}
+.ant-anchor-ink-ball {
+  display: none;
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  border-radius: 9px;
+  border: 3px solid #108ee9;
+  background-color: #fff;
+  left: 50%;
+  transition: top 0.3s ease-in-out;
+  -webkit-transform: translateX(-50%);
+      -ms-transform: translateX(-50%);
+          transform: translateX(-50%);
+}
+.ant-anchor-ink-ball.visible {
+  display: inline-block;
+}
+.ant-anchor.fixed .ant-anchor-ink .ant-anchor-ink-ball {
+  display: none;
+}
+.ant-anchor-link {
+  padding: 8px 0 8px 18px;
+  line-height: 1;
+}
+.ant-anchor-link .ant-anchor-link {
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+.ant-anchor-link-title {
+  display: block;
+  position: relative;
+  transition: all .3s;
+  color: rgba(0, 0, 0, 0.65);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 8px;
+}
+.ant-anchor-link-title:only-child {
+  margin-bottom: 0;
+}
+.ant-anchor-link-active > .ant-anchor-link-title {
+  color: #108ee9;
+}
+.ant-anchor-link > .ant-anchor-link {
+  font-size: 12px;
+}

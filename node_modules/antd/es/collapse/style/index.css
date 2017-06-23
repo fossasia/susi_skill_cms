@@ -1,0 +1,128 @@
+.ant-collapse {
+  background-color: #f7f7f7;
+  border-radius: 4px;
+  border: 1px solid #d9d9d9;
+  border-bottom: 0;
+}
+.ant-collapse > .ant-collapse-item {
+  border-bottom: 1px solid #d9d9d9;
+}
+.ant-collapse > .ant-collapse-item > .ant-collapse-header {
+  height: 38px;
+  line-height: 38px;
+  padding-left: 32px;
+  color: rgba(0, 0, 0, 0.85);
+  cursor: pointer;
+  position: relative;
+  transition: all .3s;
+}
+.ant-collapse > .ant-collapse-item > .ant-collapse-header:active {
+  background-color: #eee !important;
+}
+.ant-collapse > .ant-collapse-item > .ant-collapse-header .arrow {
+  font-size: 12px;
+  font-size: 9px \9;
+  -webkit-transform: scale(0.75) rotate(0);
+      -ms-transform: scale(0.75) rotate(0);
+          transform: scale(0.75) rotate(0);
+  /* IE6-IE8 */
+  -ms-filter: "progid:DXImageTransform.Microsoft.Matrix(sizingMethod='auto expand', M11=1, M12=0, M21=0, M22=1)";
+  zoom: 1;
+  font-style: normal;
+  vertical-align: baseline;
+  text-align: center;
+  text-transform: none;
+  line-height: 1;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  position: absolute;
+  color: rgba(0, 0, 0, 0.43);
+  display: inline-block;
+  font-weight: bold;
+  line-height: 40px;
+  vertical-align: middle;
+  transition: -webkit-transform 0.24s;
+  transition: transform 0.24s;
+  transition: transform 0.24s, -webkit-transform 0.24s;
+  top: 0;
+  left: 16px;
+  /* stylelint-disable declaration-block-no-duplicate-properties */
+  top: 16px \9;
+  left: 0 \9;
+  /* stylelint-enable declaration-block-no-duplicate-properties */
+}
+:root .ant-collapse > .ant-collapse-item > .ant-collapse-header .arrow {
+  -webkit-filter: none;
+          filter: none;
+}
+:root .ant-collapse > .ant-collapse-item > .ant-collapse-header .arrow {
+  font-size: 12px;
+}
+.ant-collapse > .ant-collapse-item > .ant-collapse-header .arrow:before {
+  display: block;
+  font-family: "anticon" !important;
+}
+.ant-collapse > .ant-collapse-item > .ant-collapse-header .arrow:before {
+  content: "\E61F";
+}
+.ant-collapse-anim-active {
+  transition: height 0.2s cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+.ant-collapse-content {
+  overflow: hidden;
+  color: rgba(0, 0, 0, 0.65);
+  padding: 0 16px;
+  background-color: #fff;
+}
+.ant-collapse-content > .ant-collapse-content-box {
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+.ant-collapse-content-inactive {
+  display: none;
+}
+.ant-collapse-item:last-child > .ant-collapse-content {
+  border-radius: 0 0 4px 4px;
+}
+.ant-collapse > .ant-collapse-item > .ant-collapse-header[aria-expanded="true"] .arrow {
+  display: inline-block;
+  font-size: 12px;
+  font-size: 9px \9;
+  -webkit-transform: scale(0.75) rotate(90deg);
+      -ms-transform: scale(0.75) rotate(90deg);
+          transform: scale(0.75) rotate(90deg);
+  /* IE6-IE8 */
+  -ms-filter: "progid:DXImageTransform.Microsoft.Matrix(sizingMethod='auto expand', M11=0.00000000000000006123, M12=-1, M21=1, M22=0.00000000000000006123)";
+  zoom: 1;
+}
+:root .ant-collapse > .ant-collapse-item > .ant-collapse-header[aria-expanded="true"] .arrow {
+  -webkit-filter: none;
+          filter: none;
+}
+:root .ant-collapse > .ant-collapse-item > .ant-collapse-header[aria-expanded="true"] .arrow {
+  font-size: 12px;
+}
+.ant-collapse-borderless {
+  background-color: #fff;
+  border: 0;
+}
+.ant-collapse-borderless > .ant-collapse-item-active {
+  border: 0;
+}
+.ant-collapse-borderless > .ant-collapse-item > .ant-collapse-content {
+  background-color: transparent;
+  border-top: 1px solid #d9d9d9;
+}
+.ant-collapse-borderless > .ant-collapse-item > .ant-collapse-header {
+  transition: all .3s;
+}
+.ant-collapse-borderless > .ant-collapse-item > .ant-collapse-header:hover {
+  background-color: #f7f7f7;
+}
+.ant-collapse .ant-collapse-item-disabled > .ant-collapse-header,
+.ant-collapse .ant-collapse-item-disabled > .ant-collapse-header > .arrow {
+  cursor: not-allowed;
+  color: rgba(0, 0, 0, 0.25);
+  background-color: #f7f7f7;
+}

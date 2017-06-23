@@ -1,0 +1,32 @@
+{
+  "name": "omit.js",
+  "version": "0.1.0",
+  "description": "Utility function to create a shallow copy of an object which had dropped some fields.",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm run lint && mocha",
+    "lint": "eslint ./index.js ./test",
+    "eslint-fix": "eslint --fix ./index.js ./test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/benjycui/omit.js.git"
+  },
+  "keywords": [
+    "object",
+    "omit"
+  ],
+  "author": "Benjy Cui",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/benjycui/omit.js/issues"
+  },
+  "homepage": "https://github.com/benjycui/omit.js#readme",
+  "dependencies": {
+    "object-assign": "^4.1.0"
+  },
+  "devDependencies": {
+    "eslint": "^3.5.0",
+    "eslint-config-egg": "^3.1.0"
+  }
+}

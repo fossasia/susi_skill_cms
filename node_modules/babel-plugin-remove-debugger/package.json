@@ -1,0 +1,19 @@
+{
+  "name": "babel-plugin-remove-debugger",
+  "version": "1.0.1",
+  "description": "Remove debugger statements",
+  "repository": "babel-plugins/babel-plugin-remove-debugger",
+  "license": "MIT",
+  "main": "lib/index.js",
+  "devDependencies": {
+    "babel": "^5.6.0"
+  },
+  "scripts": {
+    "build": "babel-plugin build",
+    "push": "babel-plugin publish",
+    "test": "babel-plugin test"
+  },
+  "keywords": [
+    "babel-plugin"
+  ]
+}

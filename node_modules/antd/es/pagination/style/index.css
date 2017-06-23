@@ -1,0 +1,359 @@
+.ant-pagination {
+  font-size: 12px;
+}
+.ant-pagination:after {
+  content: " ";
+  display: block;
+  height: 0;
+  clear: both;
+  overflow: hidden;
+  visibility: hidden;
+}
+.ant-pagination-total-text {
+  display: inline-block;
+  vertical-align: middle;
+  height: 28px;
+  line-height: 28px;
+  margin-right: 8px;
+}
+.ant-pagination-item {
+  cursor: pointer;
+  border-radius: 4px;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  min-width: 28px;
+  height: 28px;
+  line-height: 28px;
+  text-align: center;
+  list-style: none;
+  display: inline-block;
+  vertical-align: middle;
+  border: 1px solid #d9d9d9;
+  background-color: #fff;
+  margin-right: 8px;
+  font-family: Arial;
+  outline: 0;
+}
+.ant-pagination-item a {
+  text-decoration: none;
+  color: rgba(0, 0, 0, 0.65);
+  transition: none;
+  margin: 0 6px;
+}
+.ant-pagination-item:focus,
+.ant-pagination-item:hover {
+  transition: all .3s;
+  border-color: #108ee9;
+}
+.ant-pagination-item:focus a,
+.ant-pagination-item:hover a {
+  color: #108ee9;
+}
+.ant-pagination-item-active {
+  background-color: #108ee9;
+  border-color: #108ee9;
+}
+.ant-pagination-item-active:focus,
+.ant-pagination-item-active:hover {
+  background-color: #49a9ee;
+  border-color: #49a9ee;
+}
+.ant-pagination-item-active a,
+.ant-pagination-item-active:focus a,
+.ant-pagination-item-active:hover a {
+  color: #fff;
+}
+.ant-pagination-jump-prev,
+.ant-pagination-jump-next {
+  outline: 0;
+}
+.ant-pagination-jump-prev:after,
+.ant-pagination-jump-next:after {
+  content: "•••";
+  display: block;
+  letter-spacing: 2px;
+  color: rgba(0, 0, 0, 0.25);
+  text-align: center;
+}
+.ant-pagination-jump-prev:focus:after,
+.ant-pagination-jump-next:focus:after,
+.ant-pagination-jump-prev:hover:after,
+.ant-pagination-jump-next:hover:after {
+  color: #108ee9;
+  display: inline-block;
+  font-size: 12px;
+  font-size: 8px \9;
+  -webkit-transform: scale(0.66666667) rotate(0deg);
+      -ms-transform: scale(0.66666667) rotate(0deg);
+          transform: scale(0.66666667) rotate(0deg);
+  /* IE6-IE8 */
+  -ms-filter: "progid:DXImageTransform.Microsoft.Matrix(sizingMethod='auto expand', M11=1, M12=0, M21=0, M22=1)";
+  zoom: 1;
+  letter-spacing: -1px;
+  font-family: "anticon";
+}
+:root .ant-pagination-jump-prev:focus:after,
+:root .ant-pagination-jump-next:focus:after,
+:root .ant-pagination-jump-prev:hover:after,
+:root .ant-pagination-jump-next:hover:after {
+  -webkit-filter: none;
+          filter: none;
+}
+:root .ant-pagination-jump-prev:focus:after,
+:root .ant-pagination-jump-next:focus:after,
+:root .ant-pagination-jump-prev:hover:after,
+:root .ant-pagination-jump-next:hover:after {
+  font-size: 12px;
+}
+.ant-pagination-jump-prev:focus:after,
+.ant-pagination-jump-prev:hover:after {
+  content: "\e620\e620";
+}
+.ant-pagination-jump-next:focus:after,
+.ant-pagination-jump-next:hover:after {
+  content: "\e61f\e61f";
+}
+.ant-pagination-prev,
+.ant-pagination-jump-prev,
+.ant-pagination-jump-next {
+  margin-right: 8px;
+}
+.ant-pagination-prev,
+.ant-pagination-next,
+.ant-pagination-jump-prev,
+.ant-pagination-jump-next {
+  font-family: Arial;
+  cursor: pointer;
+  color: rgba(0, 0, 0, 0.65);
+  border-radius: 4px;
+  list-style: none;
+  min-width: 28px;
+  height: 28px;
+  line-height: 28px;
+  text-align: center;
+  transition: all .3s;
+  display: inline-block;
+  vertical-align: middle;
+}
+.ant-pagination-prev,
+.ant-pagination-next {
+  border: 1px solid #d9d9d9;
+  background-color: #fff;
+  outline: 0;
+}
+.ant-pagination-prev a,
+.ant-pagination-next a {
+  color: rgba(0, 0, 0, 0.65);
+  outline: none;
+}
+.ant-pagination-prev a:after,
+.ant-pagination-next a:after {
+  display: inline-block;
+  font-size: 12px;
+  font-size: 8px \9;
+  -webkit-transform: scale(0.66666667) rotate(0deg);
+      -ms-transform: scale(0.66666667) rotate(0deg);
+          transform: scale(0.66666667) rotate(0deg);
+  /* IE6-IE8 */
+  -ms-filter: "progid:DXImageTransform.Microsoft.Matrix(sizingMethod='auto expand', M11=1, M12=0, M21=0, M22=1)";
+  zoom: 1;
+  display: block;
+  height: 26px;
+  line-height: 26px;
+  font-family: "anticon";
+  text-align: center;
+}
+:root .ant-pagination-prev a:after,
+:root .ant-pagination-next a:after {
+  -webkit-filter: none;
+          filter: none;
+}
+:root .ant-pagination-prev a:after,
+:root .ant-pagination-next a:after {
+  font-size: 12px;
+}
+.ant-pagination-prev:focus,
+.ant-pagination-next:focus,
+.ant-pagination-prev:hover,
+.ant-pagination-next:hover {
+  border-color: #108ee9;
+}
+.ant-pagination-prev:focus a,
+.ant-pagination-next:focus a,
+.ant-pagination-prev:hover a,
+.ant-pagination-next:hover a {
+  color: #108ee9;
+}
+.ant-pagination-prev a:after {
+  content: "\e620";
+  display: block;
+}
+.ant-pagination-next a:after {
+  content: "\e61f";
+  display: block;
+}
+.ant-pagination-disabled {
+  cursor: not-allowed;
+}
+.ant-pagination-disabled:hover {
+  border-color: #d9d9d9;
+}
+.ant-pagination-disabled:hover a {
+  color: rgba(0, 0, 0, 0.25);
+  cursor: not-allowed;
+}
+.ant-pagination-disabled a {
+  color: rgba(0, 0, 0, 0.25);
+}
+.ant-pagination-slash {
+  margin: 0 10px 0 5px;
+}
+.ant-pagination-options {
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 16px;
+}
+.ant-pagination-options-size-changer {
+  display: inline-block;
+  margin-right: 8px;
+}
+.ant-pagination-options-quick-jumper {
+  display: inline-block;
+  height: 28px;
+  line-height: 28px;
+}
+.ant-pagination-options-quick-jumper input {
+  position: relative;
+  display: inline-block;
+  padding: 4px 7px;
+  width: 100%;
+  height: 28px;
+  cursor: text;
+  font-size: 12px;
+  line-height: 1.5;
+  color: rgba(0, 0, 0, 0.65);
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  transition: all .3s;
+  margin: 0 8px;
+  width: 50px;
+}
+.ant-pagination-options-quick-jumper input::-moz-placeholder {
+  color: #ccc;
+  opacity: 1;
+}
+.ant-pagination-options-quick-jumper input:-ms-input-placeholder {
+  color: #ccc;
+}
+.ant-pagination-options-quick-jumper input::-webkit-input-placeholder {
+  color: #ccc;
+}
+.ant-pagination-options-quick-jumper input:hover {
+  border-color: #49a9ee;
+}
+.ant-pagination-options-quick-jumper input:focus {
+  border-color: #49a9ee;
+  outline: 0;
+  box-shadow: 0 0 0 2px rgba(16, 142, 233, 0.2);
+}
+.ant-pagination-options-quick-jumper input[disabled] {
+  background-color: #f7f7f7;
+  opacity: 1;
+  cursor: not-allowed;
+  color: rgba(0, 0, 0, 0.25);
+}
+.ant-pagination-options-quick-jumper input[disabled]:hover {
+  border-color: #e2e2e2;
+}
+textarea.ant-pagination-options-quick-jumper input {
+  max-width: 100%;
+  height: auto;
+  vertical-align: bottom;
+}
+.ant-pagination-options-quick-jumper input-lg {
+  padding: 6px 7px;
+  height: 32px;
+}
+.ant-pagination-options-quick-jumper input-sm {
+  padding: 1px 7px;
+  height: 22px;
+}
+.ant-pagination-simple .ant-pagination-prev,
+.ant-pagination-simple .ant-pagination-next {
+  border: 0;
+  height: 24px;
+  line-height: 24px;
+  margin: 0;
+  font-size: 18px;
+}
+.ant-pagination-simple .ant-pagination-simple-pager {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+.ant-pagination-simple .ant-pagination-simple-pager input {
+  margin: 0 8px;
+  box-sizing: border-box;
+  background-color: #fff;
+  border-radius: 4px;
+  border: 1px solid #d9d9d9;
+  outline: none;
+  padding: 5px 8px;
+  height: 24px;
+  text-align: center;
+  transition: border-color 0.3s;
+}
+.ant-pagination-simple .ant-pagination-simple-pager input:hover {
+  border-color: #108ee9;
+}
+.ant-pagination.mini .ant-pagination-total-text {
+  height: 20px;
+  line-height: 20px;
+}
+.ant-pagination.mini .ant-pagination-item {
+  border: 0;
+  margin: 0;
+  min-width: 20px;
+  height: 20px;
+  line-height: 20px;
+}
+.ant-pagination.mini .ant-pagination-prev,
+.ant-pagination.mini .ant-pagination-next {
+  margin: 0;
+  min-width: 20px;
+  height: 20px;
+  line-height: 20px;
+  border: 0;
+}
+.ant-pagination.mini .ant-pagination-prev a:after,
+.ant-pagination.mini .ant-pagination-next a:after {
+  height: 20px;
+  line-height: 20px;
+}
+.ant-pagination.mini .ant-pagination-jump-prev,
+.ant-pagination.mini .ant-pagination-jump-next {
+  height: 20px;
+  line-height: 20px;
+}
+.ant-pagination.mini .ant-pagination-options {
+  margin-left: 8px;
+}
+.ant-pagination.mini .ant-pagination-options-quick-jumper {
+  height: 20px;
+  line-height: 20px;
+}
+.ant-pagination.mini .ant-pagination-options-quick-jumper input {
+  padding: 1px 7px;
+  height: 22px;
+  width: 44px;
+}
+@media only screen and (max-width: 1024px) {
+  .ant-pagination-item-after-jump-prev,
+  .ant-pagination-item-before-jump-next {
+    display: none;
+  }
+}

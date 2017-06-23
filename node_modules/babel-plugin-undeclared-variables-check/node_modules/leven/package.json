@@ -1,0 +1,57 @@
+{
+  "name": "leven",
+  "version": "1.0.2",
+  "description": "Measure the difference between two strings using the fastest JS implementation of the Levenshtein distance algorithm",
+  "license": "MIT",
+  "repository": "sindresorhus/leven",
+  "bin": "cli.js",
+  "author": {
+    "name": "Sindre Sorhus",
+    "email": "sindresorhus@gmail.com",
+    "url": "sindresorhus.com"
+  },
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "scripts": {
+    "test": "node test.js",
+    "bench": "matcha bench.js"
+  },
+  "files": [
+    "index.js",
+    "cli.js"
+  ],
+  "keywords": [
+    "cli",
+    "bin",
+    "leven",
+    "levenshtein",
+    "distance",
+    "algorithm",
+    "algo",
+    "string",
+    "difference",
+    "diff",
+    "fast",
+    "fuzzy",
+    "similar",
+    "similarity",
+    "compare",
+    "comparison",
+    "edit",
+    "text",
+    "match",
+    "matching"
+  ],
+  "devDependencies": {
+    "ava": "0.0.4",
+    "fast-levenshtein": "^1.0.3",
+    "ld": "^0.1.0",
+    "levdist": "^1.0.0",
+    "levenshtein": "^1.0.4",
+    "levenshtein-component": "0.0.1",
+    "levenshtein-edit-distance": "^0.1.0",
+    "matcha": "^0.6.0",
+    "natural": "^0.2.1"
+  }
+}
