@@ -1,19 +1,43 @@
-import dva from 'dva';
-import './index.css';
-import createLoading  from 'dva-loading';
-import './utils/func';
+import React from 'react';
+import ReactDOM from 'react-dom';
+// import registerServiceWorker from './registerServiceWorker';
+import Sidebar from './components/Sidebar/Sidebar';
+import Header from './components/Header/Header';
+import Chatbox from "./components/Chatbox/Chatbox";
+import Home from "./components/Home/Home";
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import { BrowserRouter as Router, Route} from "react-router-dom";
 
-// 1. Initialize
-const app = dva();
 
-// 2. Plugins
-app.use(createLoading());
+class App extends React.Component {
 
-// 3. Model
-app.model(require("./models/app"));
+    render() {
+        return (
+            <Router>
+        <MuiThemeProvider>
 
-// 4. Router
-app.router(require('./router'));
+            <div style={styles.app}>
+                <Sidebar />
+                <Route path="/home" component={Home} />
+                <Header />
+                {/*<Home />*/}
+            </div>
+        </MuiThemeProvider>
+            </Router>
+        );
+    }
+}
 
-// 5. Start
-app.start('#root');
+const styles = {
+    app: {
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: '#eee',
+        flexDirection: "column"
+    }
+};
+
+ReactDOM.render(<App />, document.getElementById('root'));
