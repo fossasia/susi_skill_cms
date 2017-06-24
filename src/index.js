@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 // import registerServiceWorker from './registerServiceWorker';
 import Sidebar from './components/Sidebar/Sidebar';
 import Header from './components/Header/Header';
-import Chatbox from "./components/Chatbox/Chatbox";
 import Home from "./components/Home/Home";
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import { BrowserRouter as Router, Route} from "react-router-dom";

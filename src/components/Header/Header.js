@@ -7,7 +7,7 @@ export default class Header extends React.Component {
         const menu = (
             <Menu>
                 <Menu.Item key="0">
-                    <a href="#">Logout</a>
+                    <a>Logout</a>
                 </Menu.Item>
             </Menu>
         );

@@ -1,6 +1,5 @@
 import React from 'react';
 import { Icon } from 'antd';
-import {Card} from "material-ui";
 
 export default class Chatbox extends React.Component {
     state = {
