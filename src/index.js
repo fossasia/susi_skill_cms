@@ -18,6 +18,7 @@ class App extends React.Component {
             <div style={styles.app}>
                 <Sidebar />
                 <Route path="/home" component={Home} />
+                <Route path="/" component={Home} />
                 <Header />
                 {/*<Home />*/}
             </div>
