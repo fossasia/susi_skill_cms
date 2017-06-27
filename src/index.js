@@ -21,7 +21,6 @@ class App extends React.Component {
             <div style={styles.app}>
                 <Sidebar />
                 <Switch>
-                    <Route exact path="/" component={Home}/>
                     <Route path="/chat" component={Chatbox}/>
                     <Route path="/home" component={Home} />
                     <Route component={NotFound} />
