@@ -24,6 +24,7 @@ class App extends React.Component {
                     <Route path="/chat" component={Chatbox}/>
                     <Route path="/home" component={Home} />
                     <Route component={NotFound} />
+                    <Route path="/" component={Home} />
                 </Switch>
                 <Header />
             </div>
