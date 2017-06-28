@@ -7,7 +7,10 @@ import Home from "./components/Home/Home";
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import { BrowserRouter as Router, Route} from "react-router-dom";
 
+import injectTapEventPlugin from 'react-tap-event-plugin';
 
+
+injectTapEventPlugin();
 class App extends React.Component {
 
     render() {
