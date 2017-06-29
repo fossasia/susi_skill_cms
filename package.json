@@ -4,6 +4,8 @@
   "private": false,
   "dependencies": {
     "antd": "^2.11.1",
+    "dva": "^1.2.1",
+    "dva-loading": "^0.2.0",
     "babelify": "^6.1.2",
     "express": "^4.13.0",
     "material-ui": "^0.18.3",
