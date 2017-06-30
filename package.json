@@ -2,7 +2,7 @@
   "name": "susi",
   "version": "0.1.0",
   "private": false,
-  "homepage": "https://fossasia.github.io/susi_skill_wiki/",
+  "homepage": "http://skills.susi.ai/",
   "dependencies": {
     "antd": "^2.11.1",
     "babel-core": "^6.25.0",
