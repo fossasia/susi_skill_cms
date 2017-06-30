@@ -21,10 +21,10 @@ class App extends React.Component {
             <div style={styles.app}>
                 <Sidebar />
                 <Switch>
+                    <Route path="/" component={Home} />
                     <Route path="/chat" component={Chatbox}/>
                     <Route path="/home" component={Home} />
                     <Route component={NotFound} />
-                    <Route path="/" component={Home} />
                 </Switch>
                 <Header />
             </div>
