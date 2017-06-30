@@ -2,7 +2,6 @@ import React from 'react';
 import { Icon } from 'antd';
 import CodeMirror from 'react-codemirror';
 import Chatbox from "../Chatbox/Chatbox";
-import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
 import request from "../../Utils/request";
 import SelectField from 'material-ui/SelectField';
