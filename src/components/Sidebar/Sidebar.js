@@ -66,7 +66,7 @@ const styles = {
         top: 0,
         left: 0,
         background: '#37474F',
-        zIndex: 98
+        zIndex: 10
     },
     logo: {
         width: '150px',

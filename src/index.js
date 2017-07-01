@@ -9,6 +9,7 @@ import { BrowserRouter as Router, Route} from "react-router-dom";
 import NotFound from "./components/NotFound/NotFound";
 import Chatbox from "./components/Chatbox/Chatbox";
 import Switch from "react-router-dom/es/Switch";
+import Login from "./components/Auth/Login/Login";
 
 
 class App extends React.Component {
@@ -20,13 +21,14 @@ class App extends React.Component {
 
             <div style={styles.app}>
                 <Sidebar />
+                <Header />
                 <Switch>
+                    <Route path="/login" component={Login} />
                     <Route path="/chat" component={Chatbox}/>
                     <Route path="/home" component={Home} />
                     <Route component={NotFound} />
-                    <Route path="/" component={Home} />
                 </Switch>
-                <Header />
+
             </div>
         </MuiThemeProvider>
             </Router>
