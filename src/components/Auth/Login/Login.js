@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Paper from 'material-ui/Paper';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -119,12 +119,4 @@ export default class Login extends React.Component {
 
 }
 
-const styles = {
-    bg: {
-        height: '90px',
-        lineHeight:'90px',
-        textAlign: 'center',
-        fontSize:'200px',
-        marginLeft:'80px'
-    }
-}
+
