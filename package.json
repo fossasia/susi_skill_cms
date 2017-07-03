@@ -21,7 +21,11 @@
     "react-router-dom": "^4.1.1",
     "react-tap-event-plugin": "^2.0.1",
     "watchify": "^3.9.0",
-    "yarn": "^0.24.5"
+    "yarn": "^0.24.5",
+    "jquery": "latest",
+    "prop-types": "latest",
+    "universal-cookie": "latest",
+    "material-ui-password-field": "latest"
   },
   "devDependencies": {
     "react-scripts": "1.0.7"

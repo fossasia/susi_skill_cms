@@ -36,7 +36,7 @@ const styles = {
         top: 0,
         left: 0,
         background: "#607D8B",
-        zIndex: 97,
+        zIndex: 9,
         padding: "0 30px",
         color: "#fff",
         fontSize: "16px",

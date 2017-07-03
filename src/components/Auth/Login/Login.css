@@ -1,0 +1,17 @@
+.forgotpwdlink{
+    text-decoration: none;
+    color: #999999;
+    margin-bottom: 20px;
+}
+.loginForm{
+    margin: 0 auto;
+    background: #ffffff;
+}
+.sty{
+    width: 256px;
+}
+@media screen and (max-width: 768px) {
+    .loginForm h1{
+        font-size: 16px;
+    }
+}
