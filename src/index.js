@@ -10,7 +10,10 @@ import NotFound from "./components/NotFound/NotFound";
 import Chatbox from "./components/Chatbox/Chatbox";
 import Switch from "react-router-dom/es/Switch";
 
+import injectTapEventPlugin from 'react-tap-event-plugin';
 
+
+injectTapEventPlugin();
 class App extends React.Component {
 
     render() {
