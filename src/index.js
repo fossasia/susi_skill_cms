@@ -26,6 +26,7 @@ class App extends React.Component {
                     <Route path="/login" component={Login} />
                     <Route path="/chat" component={Chatbox}/>
                     <Route path="/home" component={Home} />
+                    <Route path="/" component={Home} />
                     <Route component={NotFound} />
                 </Switch>
 

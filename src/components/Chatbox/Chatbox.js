@@ -3,7 +3,7 @@ import { Icon } from 'antd';
 
 export default class Chatbox extends React.Component {
     state = {
-        minimised: false,
+        minimised: true,
     }
 
     toggleChatbox = () => {
