@@ -36,11 +36,13 @@ export default class Sidebar extends React.Component {
                         <Link to="/home"><span><Icon type="delete" /></span></Link>
                     </Menu.Item>
 
-                    <Menu.Item key="something else">
-                        <Icon type="Something Else" />
-                        Something Else
-                        <Link to="/chat"><span><Icon type="delete" /></span></Link>
+
+                    <Menu.Item key="BrowseRevision">
+                        <Icon type="fork" />
+                        Browse Skills Revision
+                        <Link to="/browseHistory"></Link>
                     </Menu.Item>
+
 
 
                     <SubMenu key="sub4" title={<span><Icon type="setting" /><span>Settings</span></span>}>
@@ -61,10 +63,6 @@ const styles = {
         alignItems : "center",
         flexDirection: "column",
         width: '240px',
-        height: "100%",
-        position: "fixed",
-        top: 0,
-        left: 0,
         background: '#37474F',
         zIndex: 10
     },

@@ -10,7 +10,10 @@ import NotFound from "./components/NotFound/NotFound";
 import Chatbox from "./components/Chatbox/Chatbox";
 import Switch from "react-router-dom/es/Switch";
 import Login from "./components/Auth/Login/Login";
-
+import BrowseHistory from "./components/BrowseHistory/BrowseHistory";
+import injectTapEventPlugin from 'react-tap-event-plugin';
+import Body from "./components/Body/Body";
+injectTapEventPlugin();
 
 class App extends React.Component {
 
@@ -22,13 +25,16 @@ class App extends React.Component {
             <div style={styles.app}>
                 <Sidebar />
                 <Header />
-                <Switch>
-                    <Route path="/login" component={Login} />
-                    <Route path="/chat" component={Chatbox}/>
-                    <Route path="/home" component={Home} />
-                    <Route path="/" component={Home} />
-                    <Route component={NotFound} />
-                </Switch>
+                <Body>
+                    <Switch>
+                        <Route path="/login" component={Login} />
+                        <Route path="/chat" component={Chatbox}/>
+                        <Route path="/home" component={Home} />
+                        <Route path="/browseHistory" component={BrowseHistory} />
+                        <Route path="/" component={Home} />
+                        <Route component={NotFound} />
+                    </Switch>
+                </Body>
 
             </div>
         </MuiThemeProvider>
@@ -42,10 +48,10 @@ const styles = {
         width: '100%',
         height: '100%',
         display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
+        alignItems: 'stretch',
+        justifyContent: 'stretch',
         background: '#eee',
-        flexDirection: "column"
+        flexDirection: "row"
     }
 };
 
