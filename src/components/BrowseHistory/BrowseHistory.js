@@ -1,52 +1,62 @@
 import React from "react";
 import MenuItem from "material-ui/MenuItem";
-import request from "../../Utils/request";
 import SelectField from "material-ui/SelectField";
 import {TextField} from "material-ui";
 import FloatingActionButton from "material-ui/FloatingActionButton";
 import ContentAdd from "material-ui/svg-icons/navigation/arrow-forward";
 import Paper from "material-ui/Paper";
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from "material-ui/Table";
+import * as $ from "jquery";
 const models = [];
 const groups = [];
-const experts = [];
+const languages = [];
 
 
-request('http://cors-anywhere.herokuapp.com/api.susi.ai/cms/getModel.json').then((data) => {
-    console.log(data.data);
-    data = data.data;
-    for (let i = 0; i < data.length; i++) {
-        models.push(<MenuItem value={i} key={data[i]} primaryText={`${data[i]}`}/>);
+$.ajax({
+    url: "http://api.susi.ai/cms/getModel.json",
+    jsonpCallback: 'paa',
+    dataType: 'jsonp',
+    jsonp: 'callback',
+    crossDomain: true,
+    success: function(d) {
+        console.log(d);
+        for(let i=0;i<d.length;i++){
+            models.push(<MenuItem value={i} key={d[i]} primaryText={`${d[i]}`}/>);
+        }
     }
-
-    console.log(models);
-});
-
-request('http://cors-anywhere.herokuapp.com/api.susi.ai/cms/getGroups.json').then((data) => {
-    console.log(data.data);
-    data = data.data;
-    for (let i = 0; i < data.length; i++) {
-        groups.push(<MenuItem value={i} key={data[i]} primaryText={`${data[i]}`}/>);
-    }
-
-    console.log(groups);
-});
-
-request('http://cors-anywhere.herokuapp.com/api.susi.ai/cms/getAllLanguages.json?group=entertainment').then((data) => {
-    console.log(data.data);
-    data = data.data;
-    for (let i = 0; i < data.length; i++) {
-        experts.push(<MenuItem value={i} key={data[i]} primaryText={`${data[i]}`}/>);
-    }
-
-    console.log(groups);
 });
 
 
-// const styles = {
-//
-// };
+$.ajax({
+    url: "http://api.susi.ai/cms/getGroups.json",
+    jsonpCallback: 'pbb',
+    dataType: 'jsonp',
+    jsonp: 'callback',
+    crossDomain: true,
+    success: function(data) {
+        console.log(data);
+        for(let i=0;i<data.length;i++){
+            groups.push(<MenuItem value={i} key={data[i]} primaryText={`${data[i]}`}/>);
+        }
+    }
+});
 
+
+
+$.ajax({
+    url: "http://api.susi.ai/cms/getAllLanguages.json",
+    jsonpCallback: 'pcc',
+    dataType: 'jsonp',
+    jsonp: 'callback',
+    crossDomain: true,
+    success: function(data) {
+        console.log(data);
+        for(let i=0;i<data.length;i++){
+            languages.push(<MenuItem value={i} key={data[i]} primaryText={`${data[i]}`}/>);
+        }
+        console.log("languages ", languages)
+    }
+});
 const tableData = [
     {
         author: 'Chetan Kaushik',
@@ -63,6 +73,11 @@ const tableData = [
 
 
 export default class BrowseHistory extends React.Component {
+
+    componentDidMount(){
+
+    }
+
 
     constructor(props) {
         super(props);
@@ -134,7 +149,7 @@ export default class BrowseHistory extends React.Component {
                             value={this.state.value}
                             onChange={this.handleChange}
                         >
-                            {experts}
+                            {languages}
                         </SelectField>
                         <TextField
                             hintText="Hint Text"
