@@ -1,87 +1,47 @@
 import React from "react";
 import MenuItem from "material-ui/MenuItem";
 import SelectField from "material-ui/SelectField";
-import {TextField} from "material-ui";
-import FloatingActionButton from "material-ui/FloatingActionButton";
+import {FloatingActionButton, Paper, TextField} from "material-ui";
 import ContentAdd from "material-ui/svg-icons/navigation/arrow-forward";
-import Paper from "material-ui/Paper";
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from "material-ui/Table";
 import * as $ from "jquery";
 const models = [];
 const groups = [];
 const languages = [];
-
-
-$.ajax({
-    url: "http://api.susi.ai/cms/getModel.json",
-    jsonpCallback: 'paa',
-    dataType: 'jsonp',
-    jsonp: 'callback',
-    crossDomain: true,
-    success: function(d) {
-        console.log(d);
-        for(let i=0;i<d.length;i++){
-            models.push(<MenuItem value={i} key={d[i]} primaryText={`${d[i]}`}/>);
-        }
-    }
-});
-
-
-$.ajax({
-    url: "http://api.susi.ai/cms/getGroups.json",
-    jsonpCallback: 'pbb',
-    dataType: 'jsonp',
-    jsonp: 'callback',
-    crossDomain: true,
-    success: function(data) {
-        console.log(data);
-        for(let i=0;i<data.length;i++){
-            groups.push(<MenuItem value={i} key={data[i]} primaryText={`${data[i]}`}/>);
-        }
-    }
-});
+const tableData = [];
 
 
 
-$.ajax({
-    url: "http://api.susi.ai/cms/getAllLanguages.json",
-    jsonpCallback: 'pcc',
-    dataType: 'jsonp',
-    jsonp: 'callback',
-    crossDomain: true,
-    success: function(data) {
-        console.log(data);
-        for(let i=0;i<data.length;i++){
-            languages.push(<MenuItem value={i} key={data[i]} primaryText={`${data[i]}`}/>);
-        }
-        console.log("languages ", languages)
-    }
-});
-const tableData = [
-    {
-        author: 'Chetan Kaushik',
-        commitID: '2b8dc576ec5f19c',
-        commit_message: 'Changed Bitcoin to Etherium'
-    },
-    {
-        author: 'Saurabh Jain',
-        commitID: '12165982fdb',
-        commit_message: 'Changed Etherium back to Bitcoin'
-    }
-
-];
+// const tableData = [];
 
 
 export default class BrowseHistory extends React.Component {
 
-    componentDidMount(){
-
-    }
-
-
     constructor(props) {
         super(props);
-        this.state = {value: 1};
+
+        this.state = {
+            modelValue: 0, groupValue:1, languageValue:3, expertValue:"ceo",
+        };
+
+    }
+    loadmodels()
+    {
+        if(models.length===0) {
+            $.ajax({
+                url: "http://api.susi.ai/cms/getModel.json",
+                jsonpCallback: 'pa',
+                dataType: 'jsonp',
+                jsonp: 'callback',
+                crossDomain: true,
+                success: function (d) {
+                    console.log(d);
+                    for (let i = 0; i < d.length; i++) {
+                        models.push(<MenuItem value={i} key={d[i]} primaryText={`${d[i]}`}/>);
+                    }
+                }
+            });
+        }
     }
 
     updateCode = (newCode) => {
@@ -89,6 +49,54 @@ export default class BrowseHistory extends React.Component {
             code: newCode,
         });
     }
+
+    handleModelChange = (event, index, value) => {
+        this.setState({modelValue: value});
+        if(groups.length===0) {
+            $.ajax({
+                url: "http://api.susi.ai/cms/getGroups.json",
+                jsonpCallback: 'pb',
+                dataType: 'jsonp',
+                jsonp: 'callback',
+                crossDomain: true,
+                success: function (data) {
+                    console.log(data);
+                    for (let i = 0; i < data.length; i++) {
+                        groups.push(<MenuItem value={i} key={data[i]} primaryText={`${data[i]}`}/>);
+                    }
+                }
+            });
+        }
+    }
+    handleExpertChange = (event) => {
+        console.log(event.target.value);
+        this.setState({
+            expertValue: event.target.value,
+        });
+
+    };
+    handleGroupChange = (event, index, value) => {
+        this.setState({groupValue: value});
+        if(languages.length===0) {
+            $.ajax({
+                url: "http://api.susi.ai/cms/getAllLanguages.json",
+                jsonpCallback: 'pc',
+                dataType: 'jsonp',
+                jsonp: 'callback',
+                crossDomain: true,
+                success: function (data) {
+                    console.log(data);
+                    for (let i = 0; i < data.length; i++) {
+                        languages.push(<MenuItem value={i} key={data[i]} primaryText={`${data[i]}`}/>);
+                    }
+                    console.log("languages ", languages)
+                }
+            });
+        }
+    }
+
+    handleLanguageChange = (event, index, value) => this.setState({languageValue: value});
+
     state = {
         fixedHeader: false,
         fixedFooter: false,
@@ -113,6 +121,27 @@ export default class BrowseHistory extends React.Component {
         this.setState({height: event.target.value});
     };
 
+    buttonClick = () => {
+
+        // let url = "http://api.susi.ai/cms/getSkillHistory.json?model="+models[this.state.modelValue].key+"&group="+groups[this.state.groupValue].key+"&language="+languages[this.state.languageValue].key+"&skill="+this.state.expertValue;
+        // console.log(url);
+
+        $.ajax({
+            url: "http://api.susi.ai/cms/getSkillHistory.json?model=general&group=knowledge&language=en&skill=ceo",
+            jsonpCallback: 'pccd',
+            dataType: 'jsonp',
+            jsonp: 'callback',
+            crossDomain: true,
+            success: function(data) {
+                console.log(data);
+                for(let i=0;i<data.length;i++){
+                    tableData.push(data[i]);
+                }
+            }
+        });
+
+    }
+
 
     // handleChange = (event, index, value) => this.setState({value});
     render() {
@@ -129,25 +158,26 @@ export default class BrowseHistory extends React.Component {
                     <div style={styles.center}>
                         <SelectField
                             floatingLabelText="Model"
-                            style={{width: '130px'}}
-                            value={this.state.value}
-                            onChange={this.handleChange}
+                            style={{width:'130px'}}
+                            value={this.state.modelValue}
+                            onChange={this.handleModelChange}
+                            onMouseEnter={this.loadmodels}
                         >
                             {models}
                         </SelectField>
                         <SelectField
                             floatingLabelText="Group"
-                            style={{width: '160px'}}
-                            value={this.state.value}
-                            onChange={this.handleChange}
+                            style={{width:'160px'}}
+                            value={this.state.groupValue}
+                            onChange={this.handleGroupChange}
                         >
                             {groups}
                         </SelectField>
                         <SelectField
                             floatingLabelText="Expert"
-                            style={{width: '50px'}}
-                            value={this.state.value}
-                            onChange={this.handleChange}
+                            style={{width:'50px'}}
+                            value={this.state.languageValue}
+                            onChange={this.handleLanguageChange}
                         >
                             {languages}
                         </SelectField>
@@ -155,8 +185,9 @@ export default class BrowseHistory extends React.Component {
                             hintText="Hint Text"
                             floatingLabelText="Fixed Floating Label Text"
                             floatingLabelFixed={true}
+                            onChange={this.handleExpertChange}
                         />
-                        <FloatingActionButton style={{marginLeft: 25}} onClick={this.showModal}>
+                        <FloatingActionButton style={{marginLeft: 25}} onClick={this.buttonClick}>
                             <ContentAdd />
                         </FloatingActionButton>
                     </div>
