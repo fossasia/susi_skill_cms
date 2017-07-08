@@ -12,51 +12,6 @@ const groups = [];
 const languages = [];
 
 
-$.ajax({
-    url: "http://api.susi.ai/cms/getModel.json",
-    jsonpCallback: 'pa',
-    dataType: 'jsonp',
-    jsonp: 'callback',
-    crossDomain: true,
-    success: function(d) {
-        console.log(d);
-        for(let i=0;i<d.length;i++){
-            models.push(<MenuItem value={i} key={d[i]} primaryText={`${d[i]}`}/>);
-        }
-    }
-});
-
-
-$.ajax({
-    url: "http://api.susi.ai/cms/getGroups.json",
-    jsonpCallback: 'pb',
-    dataType: 'jsonp',
-    jsonp: 'callback',
-    crossDomain: true,
-    success: function(data) {
-        console.log(data);
-        for(let i=0;i<data.length;i++){
-            groups.push(<MenuItem value={i} key={data[i]} primaryText={`${data[i]}`}/>);
-        }
-    }
-});
-
-
-
-$.ajax({
-    url: "http://api.susi.ai/cms/getAllLanguages.json",
-    jsonpCallback: 'pc',
-    dataType: 'jsonp',
-    jsonp: 'callback',
-    crossDomain: true,
-    success: function(data) {
-        console.log(data);
-        for(let i=0;i<data.length;i++){
-            languages.push(<MenuItem value={i} key={data[i]} primaryText={`${data[i]}`}/>);
-        }
-        console.log("languages ", languages)
-    }
-});
 
 
 export default class Container extends React.Component {
@@ -67,6 +22,24 @@ export default class Container extends React.Component {
             modelValue: 0, groupValue:1, languageValue:3, expertValue:"ceo",
         };
     }
+    loadmodels()
+    {
+        if(models.length===0) {
+            $.ajax({
+                url: "http://api.susi.ai/cms/getModel.json",
+                jsonpCallback: 'pa',
+                dataType: 'jsonp',
+                jsonp: 'callback',
+                crossDomain: true,
+                success: function (d) {
+                    console.log(d);
+                    for (let i = 0; i < d.length; i++) {
+                        models.push(<MenuItem value={i} key={d[i]} primaryText={`${d[i]}`}/>);
+                    }
+                }
+            });
+        }
+    }
 
     updateCode = (newCode) => {
         this.setState({
@@ -76,15 +49,47 @@ export default class Container extends React.Component {
 
     handleModelChange = (event, index, value) => {
         this.setState({modelValue: value});
+        if(groups.length===0) {
+            $.ajax({
+                url: "http://api.susi.ai/cms/getGroups.json",
+                jsonpCallback: 'pb',
+                dataType: 'jsonp',
+                jsonp: 'callback',
+                crossDomain: true,
+                success: function (data) {
+                    console.log(data);
+                    for (let i = 0; i < data.length; i++) {
+                        groups.push(<MenuItem value={i} key={data[i]} primaryText={`${data[i]}`}/>);
+                    }
+                }
+            });
+        }
     }
     handleExpertChange = (event) => {
         console.log(event.target.value);
         this.setState({
             expertValue: event.target.value,
         });
+
     };
     handleGroupChange = (event, index, value) => {
         this.setState({groupValue: value});
+        if(languages.length===0) {
+            $.ajax({
+                url: "http://api.susi.ai/cms/getAllLanguages.json",
+                jsonpCallback: 'pc',
+                dataType: 'jsonp',
+                jsonp: 'callback',
+                crossDomain: true,
+                success: function (data) {
+                    console.log(data);
+                    for (let i = 0; i < data.length; i++) {
+                        languages.push(<MenuItem value={i} key={data[i]} primaryText={`${data[i]}`}/>);
+                    }
+                    console.log("languages ", languages)
+                }
+            });
+        }
     }
 
     handleLanguageChange = (event, index, value) => this.setState({languageValue: value});
@@ -108,6 +113,7 @@ export default class Container extends React.Component {
                     floatingLabelText="Model"
                     style={{width:'130px'}}
                     value={this.state.modelValue}
+                    onMouseEnter={this.loadmodels}
                     onChange={this.handleModelChange}
                 >
                     {models}
