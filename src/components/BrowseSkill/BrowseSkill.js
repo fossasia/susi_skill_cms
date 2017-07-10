@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { Tree, Input } from 'antd';
 
 const TreeNode = Tree.TreeNode;
