@@ -8,7 +8,6 @@ import * as $ from "jquery";
 const models = [];
 const groups = [];
 const languages = [];
-const tableData = [];
 
 
 
@@ -21,8 +20,8 @@ export default class BrowseHistory extends React.Component {
         super(props);
 
         this.state = {
-            modelValue: 0, groupValue:1, languageValue:3, expertValue:"ceo",
-        };
+            modelValue: null, groupValue:null, languageValue:null, expertValue:null, tableData:[],
+    };
 
     }
     loadmodels()
@@ -123,20 +122,23 @@ export default class BrowseHistory extends React.Component {
 
     buttonClick = () => {
 
-        // let url = "http://api.susi.ai/cms/getSkillHistory.json?model="+models[this.state.modelValue].key+"&group="+groups[this.state.groupValue].key+"&language="+languages[this.state.languageValue].key+"&skill="+this.state.expertValue;
-        // console.log(url);
-
+        let url = "http://api.susi.ai/cms/getSkillHistory.json?model="+models[this.state.modelValue].key+"&group="+groups[this.state.groupValue].key+"&language="+languages[this.state.languageValue].key+"&skill="+this.state.expertValue;
+        console.log(url);
+        let self = this;
         $.ajax({
-            url: "http://api.susi.ai/cms/getSkillHistory.json?model=general&group=knowledge&language=en&skill=ceo",
+            url: url,
             jsonpCallback: 'pccd',
             dataType: 'jsonp',
             jsonp: 'callback',
             crossDomain: true,
             success: function(data) {
-                console.log(data);
+                data = data.commits;
+                let array = [];
                 for(let i=0;i<data.length;i++){
-                    tableData.push(data[i]);
+                    array.push(data[i]);
                 }
+                self.setState({tableData:array})
+                console.log(self.state.tableData)
             }
         });
 
@@ -220,7 +222,7 @@ export default class BrowseHistory extends React.Component {
                         showRowHover={this.state.showRowHover}
                         stripedRows={this.state.stripedRows}
                     >
-                        {tableData.map((row, index) => (
+                        {this.state.tableData.map((row, index) => (
                             <TableRow key={index}>
                                 <TableRowColumn>{row.commitID}</TableRowColumn>
                                 <TableRowColumn>{row.commit_message}</TableRowColumn>
