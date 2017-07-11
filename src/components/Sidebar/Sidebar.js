@@ -43,6 +43,13 @@ export default class Sidebar extends React.Component {
                         <Link to="/browseHistory"></Link>
                     </Menu.Item>
 
+                    <Menu.Item key="BrowseExamples">
+                        <Icon type="file" />
+                        Browse Examples
+                        <Link to="/browseExamples"></Link>
+                    </Menu.Item>
+
+
 
 
                     <SubMenu key="sub4" title={<span><Icon type="setting" /><span>Settings</span></span>}>
