@@ -11,6 +11,7 @@ import Chatbox from "./components/Chatbox/Chatbox";
 import Switch from "react-router-dom/es/Switch";
 import Login from "./components/Auth/Login/Login";
 import BrowseHistory from "./components/BrowseHistory/BrowseHistory";
+import BrowseSkill from "./components/BrowseSkill/BrowseSkill";
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import Body from "./components/Body/Body";
 import BrowseExamples from "./components/BrowseExamples/BrowseExamples";
@@ -33,6 +34,7 @@ class App extends React.Component {
                         <Route path="/home" component={Home} />
                         <Route path="/browseHistory" component={BrowseHistory} />
                         <Route path="/browseExamples" component={BrowseExamples} />
+                        <Route path="/browseSkill" component={BrowseSkill}/>
                         <Route path="/" component={Home} />
                         <Route component={NotFound} />
                     </Switch>
