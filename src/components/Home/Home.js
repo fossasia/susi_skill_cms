@@ -107,7 +107,7 @@ export default class Container extends React.Component {
         };
         return (
 
-            <div>
+            <div style={styles.home}>
                 <div style={styles.dropdownDiv}>
                 <SelectField
                     floatingLabelText="Model"
@@ -145,14 +145,14 @@ export default class Container extends React.Component {
                             <input  style={styles.exampleImageInput} onClick={this.buttonClick}/>
                         </RaisedButton>
                 </div>
-                <div style={styles.home}>
+                <div style={styles.codeEditor}>
 
                     <div style={styles.toolbar}>
-
                         <span style={styles.button}><Icon type="caret-right" style={styles.icon} />Run</span>
                         <span style={styles.button}><Icon type="cloud-download" style={styles.icon}/>Save</span>
                         <span style={styles.button}><Icon type="menu-unfold" style={styles.icon} />Indent</span>
                     </div>
+
                     < CodeMirror value={this.state.code} onChange={this.updateCode} options={options} />
                     <Chatbox />
 
@@ -165,21 +165,13 @@ export default class Container extends React.Component {
 
 const styles = {
     home: {
-        width: '1040px',
-        marginTop: "100px",
-        padding: "30px",
-        position: "absolute",
-        right: 0,
-        top: 0,
+        width: '100%'
+    },
+    codeEditor:{
+        width: "100%",
+        marginTop: "20px"
     },
     dropdownDiv:{
-        width: '1040px',
-        marginTop: "50px",
-        position: "absolute",
-        right: 0,
-        paddingLeft: "30px",
-
-        top: 0,
         display: "flex",
         alignItems: "center"
     },
@@ -191,7 +183,7 @@ const styles = {
         display: "flex",
         alignItems: "stretch",
         padding: "0 25px",
-        fontSize: "14px"
+        fontSize: "14px",
     },
     button: {
         display: "flex",

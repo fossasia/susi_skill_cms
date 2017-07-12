@@ -17,6 +17,7 @@ const styles = {
         justifyContent: "center",
         alignItems: "flex-start",
         padding: "80px 30px 30px",
-        width: "100%"
+        width: "100%",
+        overflowY: "scroll"
     }
 };
