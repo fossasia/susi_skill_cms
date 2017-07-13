@@ -42,6 +42,12 @@ export default class Sidebar extends React.Component {
                         Browse Skills Revision
                         <Link to="/browseHistory"></Link>
                     </Menu.Item>
+
+                    <Menu.Item key="BrowseExamples">
+                        <Icon type="file" />
+                        Browse Examples
+                        <Link to="/browseExamples"></Link>
+                    </Menu.Item>
                     <Menu.Item key="BrowseSkill">
                         <Icon type="book" />
                         Browse Skills

@@ -14,6 +14,7 @@ import BrowseHistory from "./components/BrowseHistory/BrowseHistory";
 import BrowseSkill from "./components/BrowseSkill/BrowseSkill";
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import Body from "./components/Body/Body";
+import BrowseExamples from "./components/BrowseExamples/BrowseExamples";
 injectTapEventPlugin();
 
 class App extends React.Component {
@@ -32,6 +33,7 @@ class App extends React.Component {
                         <Route path="/chat" component={Chatbox}/>
                         <Route path="/home" component={Home} />
                         <Route path="/browseHistory" component={BrowseHistory} />
+                        <Route path="/browseExamples" component={BrowseExamples} />
                         <Route path="/browseSkill" component={BrowseSkill}/>
                         <Route path="/" component={Home} />
                         <Route component={NotFound} />

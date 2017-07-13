@@ -1,11 +1,13 @@
 import React from 'react';
 import { Icon } from 'antd';
-import CodeMirror from 'react-codemirror';
 import Chatbox from "../Chatbox/Chatbox";
 import MenuItem from 'material-ui/MenuItem';
 import SelectField from 'material-ui/SelectField';
 import {TextField} from "material-ui";
 import RaisedButton from 'material-ui/RaisedButton';
+import AceEditor from 'react-ace';
+import 'brace/mode/markdown';
+import 'brace/theme/github';
 import * as $ from "jquery";
 const models = [];
 const groups = [];
@@ -19,7 +21,7 @@ export default class Container extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            modelValue: 0, groupValue:1, languageValue:3, expertValue:"ceo",
+            modelValue: null, groupValue:null, languageValue:null, expertValue:null,code:"// code",
         };
     }
     loadmodels()
@@ -45,6 +47,7 @@ export default class Container extends React.Component {
         this.setState({
             code: newCode,
         });
+        console.log(this.state.code);
     }
 
     handleModelChange = (event, index, value) => {
@@ -96,15 +99,25 @@ export default class Container extends React.Component {
 
     buttonClick = () => {
 
-        let url = "http://api.susi.ai/cms/getSkill.txt?model="+models[this.state.modelValue].key+"&group="+groups[this.state.groupValue].key+"&language="+languages[this.state.languageValue].key+"&skill="+this.state.expertValue;
+        let url = "http://api.susi.ai/cms/getSkill.json?model="+models[this.state.modelValue].key+"&group="+groups[this.state.groupValue].key+"&language="+languages[this.state.languageValue].key+"&skill="+this.state.expertValue;
         console.log(url);
+        let self = this;
+        $.ajax({
+            url: url,
+            jsonpCallback: 'pc',
+            dataType: 'jsonp',
+            jsonp: 'callback',
+            crossDomain: true,
+            success: function (data) {
+                self.updateCode(data.text)
+            }
+        });
 
     }
 
+
+
     render() {
-        const options = {
-            lineNumbers: true
-        };
         return (
 
             <div style={styles.home}>
@@ -127,8 +140,8 @@ export default class Container extends React.Component {
                     {groups}
                 </SelectField>
                 <SelectField
-                    floatingLabelText="Expert"
-                    style={{width:'50px'}}
+                    floatingLabelText="Language"
+                    style={{width:'90px'}}
                     value={this.state.languageValue}
                     onChange={this.handleLanguageChange}
                 >
@@ -152,8 +165,16 @@ export default class Container extends React.Component {
                         <span style={styles.button}><Icon type="cloud-download" style={styles.icon}/>Save</span>
                         <span style={styles.button}><Icon type="menu-unfold" style={styles.icon} />Indent</span>
                     </div>
+                    <AceEditor
+                        mode="markdown"
+                        theme="github"
+                        width="100%"
+                        height= "400px"
+                        value={this.state.code}
+                        name="skill_code_editor"
+                        editorProps={{$blockScrolling: true}}
+                    />
 
-                    < CodeMirror value={this.state.code} onChange={this.updateCode} options={options} />
                     <Chatbox />
 
                 </div>
