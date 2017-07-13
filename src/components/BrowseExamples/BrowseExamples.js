@@ -3,6 +3,7 @@ import MenuItem from "material-ui/MenuItem";
 import SelectField from "material-ui/SelectField";
 import { FloatingActionButton, Paper} from "material-ui";
 import ContentAdd from "material-ui/svg-icons/navigation/arrow-forward";
+import {Card, CardHeader, CardText} from 'material-ui/Card';
 import * as $ from "jquery";
 const models = [];
 const groups = [];
@@ -15,10 +16,11 @@ export default class BrowseExamples extends React.Component {
         super(props);
 
         this.state = {
-            modelValue: null, groupValue:null, languageValue:null, expertValue:null, skills:[],
+            modelValue: null, groupValue:null, languageValue:null, expertValue:null, skills:[], examples:[],test : []
         };
 
     }
+
     loadmodels()
     {
         if(models.length===0) {
@@ -41,39 +43,35 @@ export default class BrowseExamples extends React.Component {
     handleModelChange = (event, index, value) => {
         this.setState({modelValue: value});
         if(groups.length===0) {
-            $.ajax({
-                url: "http://api.susi.ai/cms/getGroups.json",
-                jsonpCallback: 'pb',
-                dataType: 'jsonp',
-                jsonp: 'callback',
-                crossDomain: true,
-                success: function (data) {
-                    console.log(data);
-                    for (let i = 0; i < data.length; i++) {
-                        groups.push(<MenuItem value={i} key={data[i]} primaryText={`${data[i]}`}/>);
-                    }
-                }
-            });
+            let data = [
+                "shopping",
+                "knowledge",
+                "assistants",
+                "smalltalk",
+                "problemsolving",
+                "entertainment"
+            ];
+            for (let i = 0; i < data.length; i++) {
+                groups.push(<MenuItem value={i} key={data[i]} primaryText={`${data[i]}`}/>);
+            }
         }
     }
 
     handleGroupChange = (event, index, value) => {
         this.setState({groupValue: value});
         if(languages.length===0) {
-            $.ajax({
-                url: "http://api.susi.ai/cms/getAllLanguages.json",
-                jsonpCallback: 'pc',
-                dataType: 'jsonp',
-                jsonp: 'callback',
-                crossDomain: true,
-                success: function (data) {
-                    console.log(data);
-                    for (let i = 0; i < data.length; i++) {
-                        languages.push(<MenuItem value={i} key={data[i]} primaryText={`${data[i]}`}/>);
-                    }
-                    console.log("languages ", languages)
-                }
-            });
+            let data = [
+                "fr",
+                "hi",
+                "xx",
+                "de",
+                "en",
+                "it",
+                "es"
+            ];
+            for (let i = 0; i < data.length; i++) {
+                languages.push(<MenuItem value={i} key={data[i]} primaryText={`${data[i]}`}/>);
+            }
         }
     }
 
@@ -86,9 +84,6 @@ export default class BrowseExamples extends React.Component {
         });
     };
 
-    handleChange = (event) => {
-        this.setState({height: event.target.value});
-    };
 
     buttonClick = () => {
 
@@ -102,14 +97,37 @@ export default class BrowseExamples extends React.Component {
             jsonp: 'callback',
             crossDomain: true,
             success: function(data) {
-                data = data.examples;
-                for( let i=0;i<Object.keys(data).length;i++){
-                    self.state.skills[i]=Object.keys(data)[i];
-                }
-                console.log(self.state.skills);
+                // data = data.examples;
+                let keys = Object.keys(data.examples);
+                let test = keys.map((el, i) => {
+                    return (<li style={styles.liStyle} key={i}>
+                        <Card>
+                            <CardHeader
+                                title={el.match(/\/([a-zA-Z0-9]*\.[a-z]{1,5})$/)[1]}
+                                subtitle={el}
+                                actAsExpander={true}
+                                showExpandableButton={true}
+                            />
+
+                            <CardText expandable={true}>
+                                {data.examples[el].map((el, i ) => {
+                                    return (<p key={i}>{el}</p>)
+                                })}
+                            </CardText>
+                        </Card>
+                    </li>)
+                });
+
+                self.setState({
+                    test: test
+                })
+
+                console.log(self.state.test);
 
             }
+
         });
+
 
     }
 
@@ -119,7 +137,6 @@ export default class BrowseExamples extends React.Component {
             width: "100%",
             padding: "10px"
         };
-
 
         return (
             <div style={styles.container}>
@@ -157,6 +174,16 @@ export default class BrowseExamples extends React.Component {
                     </div>
 
                 </Paper>
+
+                <div style={{marginTop:"20px",   marginBottom: "40px",
+                    textAlign: "justify",
+                    fontSize: "0.1px", width: "100%"}}>
+
+                    <ul id="Grid">
+                        {this.state.test}
+                    </ul>
+
+                </div>
             </div>
         );
     }
@@ -168,6 +195,9 @@ const styles = {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
+    },
+    liStyle: {
+        width: "100%",
     },
     container: {
         display: "flex",
@@ -184,6 +214,5 @@ const styles = {
     propToggleHeader: {
         margin: '20px auto 10px',
     },
-
 
 }
