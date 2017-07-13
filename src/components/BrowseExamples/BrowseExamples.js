@@ -40,38 +40,42 @@ export default class BrowseExamples extends React.Component {
         }
     }
 
-    handleModelChange = (event, index, value) => {
+     handleModelChange = (event, index, value) => {
         this.setState({modelValue: value});
         if(groups.length===0) {
-            let data = [
-                "shopping",
-                "knowledge",
-                "assistants",
-                "smalltalk",
-                "problemsolving",
-                "entertainment"
-            ];
-            for (let i = 0; i < data.length; i++) {
-                groups.push(<MenuItem value={i} key={data[i]} primaryText={`${data[i]}`}/>);
-            }
+            $.ajax({
+                url: "http://api.susi.ai/cms/getGroups.json",
+                jsonpCallback: 'pb',
+                dataType: 'jsonp',
+                jsonp: 'callback',
+                crossDomain: true,
+                success: function (data) {
+                    console.log(data);
+                    for (let i = 0; i < data.length; i++) {
+                        groups.push(<MenuItem value={i} key={data[i]} primaryText={`${data[i]}`}/>);
+                    }
+                }
+            });
         }
     }
 
     handleGroupChange = (event, index, value) => {
         this.setState({groupValue: value});
         if(languages.length===0) {
-            let data = [
-                "fr",
-                "hi",
-                "xx",
-                "de",
-                "en",
-                "it",
-                "es"
-            ];
-            for (let i = 0; i < data.length; i++) {
-                languages.push(<MenuItem value={i} key={data[i]} primaryText={`${data[i]}`}/>);
-            }
+            $.ajax({
+                url: "http://api.susi.ai/cms/getAllLanguages.json",
+                jsonpCallback: 'pc',
+                dataType: 'jsonp',
+                jsonp: 'callback',
+                crossDomain: true,
+                success: function (data) {
+                    console.log(data);
+                    for (let i = 0; i < data.length; i++) {
+                        languages.push(<MenuItem value={i} key={data[i]} primaryText={`${data[i]}`}/>);
+                    }
+                    console.log("languages ", languages)
+                }
+            });
         }
     }
 
