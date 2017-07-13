@@ -8,11 +8,26 @@ import RaisedButton from 'material-ui/RaisedButton';
 import AceEditor from 'react-ace';
 import 'brace/mode/markdown';
 import 'brace/theme/github';
+import 'brace/theme/monokai';
+import 'brace/theme/tomorrow';
+import 'brace/theme/kuroir';
+import 'brace/theme/twilight';
+import 'brace/theme/xcode';
+import 'brace/theme/textmate';
+import 'brace/theme/solarized_dark';
+import 'brace/theme/solarized_light';
+import 'brace/theme/terminal';
+
+
+
 import * as $ from "jquery";
+
 const models = [];
 const groups = [];
 const languages = [];
+const fontsizes =[];
 
+const codeEditorThemes =[];
 
 
 
@@ -21,8 +36,20 @@ export default class Container extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            modelValue: null, groupValue:null, languageValue:null, expertValue:null,code:"// code",
+            modelValue: null, groupValue:null, languageValue:null, expertValue:null,code:"// code", fontSizeCode:14, editorTheme:"github"
         };
+        let fonts = [
+            14,16,18,20,24,28,32,40
+        ];
+        let themes =[
+            "monokai","github","tomorrow","kuroir","twilight","xcode","textmate","solarized_dark","solarized_light","terminal"
+        ];
+        for (let i = 0; i < fonts.length; i++) {
+            fontsizes.push(<MenuItem value={fonts[i]} key={fonts[i]} primaryText={`${fonts[i]}`}/>);
+        }
+        for (let i = 0; i < themes.length; i++) {
+            codeEditorThemes.push(<MenuItem value={themes[i]} key={themes[i]} primaryText={`${themes[i]}`}/>);
+        }
     }
     loadmodels()
     {
@@ -97,6 +124,11 @@ export default class Container extends React.Component {
 
     handleLanguageChange = (event, index, value) => this.setState({languageValue: value});
 
+    handleFontChange = (event, index, value) => this.setState({fontSizeCode: value});
+    handleThemeChange = (event, index, value) => {this.setState({editorTheme: value});
+    console.log(this.state.editorTheme)}
+
+
     buttonClick = () => {
 
         let url = "http://api.susi.ai/cms/getSkill.json?model="+models[this.state.modelValue].key+"&group="+groups[this.state.groupValue].key+"&language="+languages[this.state.languageValue].key+"&skill="+this.state.expertValue;
@@ -164,11 +196,26 @@ export default class Container extends React.Component {
                         <span style={styles.button}><Icon type="caret-right" style={styles.icon} />Run</span>
                         <span style={styles.button}><Icon type="cloud-download" style={styles.icon}/>Save</span>
                         <span style={styles.button}><Icon type="menu-unfold" style={styles.icon} />Indent</span>
+                        <span style={styles.button}>Size <SelectField
+                        style={{width:'60px'}}
+                        onChange={this.handleFontChange}
+                    >
+                            {fontsizes}
+                        </SelectField></span>
+
+                        <span style={styles.button}>Theme <SelectField
+                            style={{width:'150px'}}
+                            onChange={this.handleThemeChange}
+                        >
+                            {codeEditorThemes}
+                        </SelectField></span>
+
                     </div>
                     <AceEditor
                         mode="markdown"
-                        theme="github"
+                        theme={this.state.editorTheme}
                         width="100%"
+                        fontSize={this.state.fontSizeCode}
                         height= "400px"
                         value={this.state.code}
                         name="skill_code_editor"
