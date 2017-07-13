@@ -55,7 +55,8 @@ const styles = {
         alignItems: 'stretch',
         justifyContent: 'stretch',
         background: '#eee',
-        flexDirection: "row"
+        flexDirection: "row",
+        overflow: "hidden"
     }
 };
 
