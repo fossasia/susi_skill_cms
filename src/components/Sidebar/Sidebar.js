@@ -25,7 +25,6 @@ export default class Sidebar extends React.Component {
                     theme={this.state.theme}
                     onClick={this.handleClick}
                     style={{ width: 240 , backgroundColor:'#607D8B'}}
-
                     defaultOpenKeys={['sub1']}
                     selectedKeys={[this.state.current]}
                     mode="inline"
@@ -53,7 +52,11 @@ export default class Sidebar extends React.Component {
                         Browse Skills
                         <Link to="/browseSKill"></Link>
                     </Menu.Item>
-
+                    <Menu.Item key="VisualEditor">
+                        <Icon type="api" />
+                        Visual Skill Editor
+                        <Link to="/visualEditor"></Link>
+                    </Menu.Item>
 
                     <SubMenu key="sub4" title={<span><Icon type="setting" /><span>Settings</span></span>}>
                         <Menu.Item key="9">Option 1</Menu.Item>
