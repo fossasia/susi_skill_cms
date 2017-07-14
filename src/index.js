@@ -31,7 +31,7 @@ class App extends React.Component {
                     <Switch>
                         <Route path="/login" component={Login} />
                         <Route path="/chat" component={Chatbox}/>
-                        <Route path="/home" component={Home} />
+                        <Route path="/skillEditor" component={Home} />
                         <Route path="/browseHistory" component={BrowseHistory} />
                         <Route path="/browseExamples" component={BrowseExamples} />
                         <Route path="/browseSkill" component={BrowseSkill}/>

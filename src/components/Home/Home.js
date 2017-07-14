@@ -26,10 +26,7 @@ const models = [];
 const groups = [];
 const languages = [];
 const fontsizes =[];
-
 const codeEditorThemes =[];
-
-
 
 export default class Container extends React.Component {
 
@@ -146,8 +143,6 @@ export default class Container extends React.Component {
         });
 
     }
-
-
 
     render() {
         return (
