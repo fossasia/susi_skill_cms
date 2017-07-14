@@ -37,7 +37,7 @@ class App extends React.Component {
                         <Route path="/browseExamples" component={BrowseExamples} />
                         <Route path="/browseSkill" component={BrowseSkill}/>
                         <Route path="/visualEditor" component={VisualEditor}/>
-                        <Route path="/" component={Home} />
+                        <Route path="/" component={BrowseSkill} />
                         <Route component={NotFound} />
                     </Switch>
                 </Body>
