@@ -137,9 +137,18 @@ export default class BrowseHistory extends React.Component {
                 for(let i=0;i<data.length;i++){
                     array.push(data[i]);
                 }
+                if(data.length===0){
+                	alert("Error: This skill does not exists. Please try with some other skill");
+                }
                 self.setState({tableData:array})
                 console.log(self.state.tableData)
+            },
+            error: function(e) {
+                console.log(e);
+                alert("Error in processing the request. Please try with some other skill");
             }
+           
+
         });
 
     }
