@@ -29,10 +29,10 @@ export default class Sidebar extends React.Component {
                     selectedKeys={[this.state.current]}
                     mode="inline"
                 >
-                    <Menu.Item key="home">
-                        <Icon type="home" />
-                        Home
-                        <Link to="/home"><span><Icon type="delete" /></span></Link>
+                    <Menu.Item key="SkillEditor">
+                        <Icon type="code" />
+                        Skill Editor
+                        <Link to="/skillEditor"></Link>
                     </Menu.Item>
 
 
