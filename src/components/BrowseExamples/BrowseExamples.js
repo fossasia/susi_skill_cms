@@ -4,6 +4,7 @@ import SelectField from "material-ui/SelectField";
 import { FloatingActionButton, Paper} from "material-ui";
 import ContentAdd from "material-ui/svg-icons/navigation/arrow-forward";
 import {Card, CardHeader, CardText} from 'material-ui/Card';
+import {Icon, notification} from 'antd';
 import * as $ from "jquery";
 const models = [];
 const groups = [];
@@ -103,6 +104,13 @@ export default class BrowseExamples extends React.Component {
             success: function(data) {
                 // data = data.examples;
                 let keys = Object.keys(data.examples);
+                if(keys.length===0){
+                    notification.open({
+                        message: 'Error Processing your Request',
+                        description: 'Error in processing the request. Please try with some other skill',
+                        icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
+                    });
+                }
                 let test = keys.map((el, i) => {
                     return (<li style={styles.liStyle} key={i}>
                         <Card>
@@ -128,6 +136,14 @@ export default class BrowseExamples extends React.Component {
 
                 console.log(self.state.test);
 
+            },
+            error: function(e) {
+                console.log(e);
+                notification.open({
+                    message: 'Error Processing your Request',
+                    description: 'Error in processing the request. Please try with some other skill',
+                    icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
+                });
             }
 
         });
