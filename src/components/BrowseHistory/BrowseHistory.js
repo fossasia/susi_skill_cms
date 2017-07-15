@@ -3,16 +3,12 @@ import MenuItem from "material-ui/MenuItem";
 import SelectField from "material-ui/SelectField";
 import {FloatingActionButton, Paper, TextField} from "material-ui";
 import ContentAdd from "material-ui/svg-icons/navigation/arrow-forward";
+import {Icon, notification} from 'antd';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from "material-ui/Table";
 import * as $ from "jquery";
 const models = [];
 const groups = [];
 const languages = [];
-
-
-
-// const tableData = [];
-
 
 export default class BrowseHistory extends React.Component {
 
@@ -138,21 +134,26 @@ export default class BrowseHistory extends React.Component {
                     array.push(data[i]);
                 }
                 if(data.length===0){
-                	alert("Error: This skill does not exists. Please try with some other skill");
+                    notification.open({
+                        message: 'Error Processing your Request',
+                        description: 'Error in processing the request. Please try with some other skill',
+                        icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
+                    });
                 }
                 self.setState({tableData:array})
                 console.log(self.state.tableData)
             },
             error: function(e) {
                 console.log(e);
-                alert("Error in processing the request. Please try with some other skill");
+                notification.open({
+                    message: 'Error Processing your Request',
+                    description: 'Error in processing the request. Please try with some other skill',
+                    icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
+                });
             }
-           
-
         });
 
     }
-
 
     // handleChange = (event, index, value) => this.setState({value});
     render() {
