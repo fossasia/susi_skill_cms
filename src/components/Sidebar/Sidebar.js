@@ -2,7 +2,7 @@ import React from 'react';
 import { Menu, Icon } from 'antd';
 import {Link} from 'react-router-dom';
 
-const SubMenu = Menu.SubMenu;
+
 
 export default class Sidebar extends React.Component {
     state = {

@@ -1,70 +1,66 @@
 import React from 'react';
-import Paper from 'material-ui/Paper';
-import {Card, CardHeader, CardTitle, CardText} from 'material-ui/Card';
+import * as $ from "jquery";
+import {Card, CardTitle} from 'material-ui/Card';
+import {GridList} from "material-ui";
 
 
-const style = {
-    row: {
-        margin: 20,
-        width: 200,
-        height: 150,
-        textAlign: 'center',
-        display: 'inline-block',
-    },
-    scro: {
-        overflow:'auto',
+
+export default class BrowseHistory extends React.Component {
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+          test : []
+        };
+        this.LoadSkills();
     }
+    LoadSkills() {
 
-};
+            let url = "http://api.susi.ai/cms/getSkillList.json?model=general&group=knowledge&language=en";
+            console.log(url);
+            let self = this;
+            $.ajax({
+                url: url,
+                jsonpCallback: 'pxcd',
+                dataType: 'jsonp',
+                jsonp: 'callback',
+                crossDomain: true,
+                success: function (data) {
+                    data = data.skills;
+                    let keys = Object.keys(data);
+                    let test = keys.map((el, i) => {
+                        return (
+                            <Card style={style.row} key={el}>
+                                <CardTitle
+                                    title={data[el]}
+                                />
+                            </Card>
+                        )
+                    });
 
- export default class BrowseExamples extends React.Component {
+                    self.setState({
+                        test: test
+                    })
+
+                    console.log(self.state.test);
+
+                }
+
+            });
+
+    };
+
     render() {
+
         return (
-            <div>
+            <div style={style.root}>
                 <h1>Knowldege</h1>
-                <div className="row" style={style.scro} >
-                    <Card style={style.row}>
-                        <CardTitle title="Card title" subtitle="Card subtitle" />
-                    </Card>
-                    <Card style={style.row}>
-                        <CardTitle title="Card title" subtitle="Card subtitle" />
-                    </Card>
-                    <Card style={style.row}>
-                        <CardTitle title="Card title" subtitle="Card subtitle" />
-                    </Card>
-                    <Card style={style.row}>
-                        <CardTitle title="Card title" subtitle="Card subtitle" />
-                    </Card>
-                </div>
-                <h1>Entertainment</h1>
-                <div className="row" style={style.scro}>
-                    <Card style={style.row}>
-                        <CardTitle title="Card title" subtitle="Card subtitle" />
-                    </Card>
-                    <Card style={style.row}>
-                        <CardTitle title="Card title" subtitle="Card subtitle" />
-                    </Card>
-                    <Card style={style.row}>
-                        <CardTitle title="Card title" subtitle="Card subtitle" />
-                    </Card>
-                    <Card style={style.row}>
-                        <CardTitle title="Card title" subtitle="Card subtitle" />
-                    </Card>
-                </div>
-                <h1>Assistant</h1>
-                <div className="row" style={style.scro}>
-                    <Card style={style.row}>
-                        <CardTitle title="Card title" subtitle="Card subtitle" />
-                    </Card>
-                    <Card style={style.row}>
-                        <CardTitle title="Card title" subtitle="Card subtitle" />
-                    </Card>
-                    <Card style={style.row}>
-                        <CardTitle title="Card title" subtitle="Card subtitle" />
-                    </Card>
-                    <Card style={style.row}>
-                        <CardTitle title="Card title" subtitle="Card subtitle" />
-                    </Card>
+                <div className="row" style={style.scro}  >
+                    <GridList style={style.gridList} cols={2.2}>
+                        {this.state.test}
+
+                    </GridList>
                 </div>
             </div>
 
@@ -72,3 +68,35 @@ const style = {
         );
     }
 }
+
+const style = {
+    root: {
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        flexDirection: "column",
+        width: "100%"
+    },
+    row: {
+        margin: 20,
+        width: 250,
+        overflow:'hidden',
+        height: 150,
+        textAlign: 'center',
+        display: 'inline-block',
+    },
+    scro: {
+        display: 'flex',
+        flexWrap: 'nowrap',
+        width: "100%"
+    },
+    gridList: {
+        display: 'flex',
+        flexWrap: 'nowrap',
+        overflowX: 'auto',
+        overflowY: 'hidden',
+        flexDirection: "row",
+
+    },
+
+};
