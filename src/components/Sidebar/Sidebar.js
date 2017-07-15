@@ -2,7 +2,7 @@ import React from 'react';
 import { Menu, Icon } from 'antd';
 import {Link} from 'react-router-dom';
 
-const SubMenu = Menu.SubMenu;
+
 
 export default class Sidebar extends React.Component {
     state = {
@@ -29,12 +29,17 @@ export default class Sidebar extends React.Component {
                     selectedKeys={[this.state.current]}
                     mode="inline"
                 >
+                    <Menu.Item key="BrowseSkill">
+                        <Icon type="book" />
+                        Browse Skills
+                        <Link to="/browseSKill"></Link>
+                    </Menu.Item>
+
                     <Menu.Item key="SkillEditor">
                         <Icon type="code" />
                         Skill Editor
                         <Link to="/skillEditor"></Link>
                     </Menu.Item>
-
 
                     <Menu.Item key="BrowseRevision">
                         <Icon type="fork" />
@@ -47,23 +52,13 @@ export default class Sidebar extends React.Component {
                         Browse Examples
                         <Link to="/browseExamples"></Link>
                     </Menu.Item>
-                    <Menu.Item key="BrowseSkill">
-                        <Icon type="book" />
-                        Browse Skills
-                        <Link to="/browseSKill"></Link>
-                    </Menu.Item>
+
                     <Menu.Item key="VisualEditor">
                         <Icon type="api" />
                         Visual Skill Editor
                         <Link to="/visualEditor"></Link>
                     </Menu.Item>
 
-                    <SubMenu key="sub4" title={<span><Icon type="setting" /><span>Settings</span></span>}>
-                        <Menu.Item key="9">Option 1</Menu.Item>
-                        <Menu.Item key="10">Option 2</Menu.Item>
-                        <Menu.Item key="11">Option 3</Menu.Item>
-                        <Menu.Item key="12">Option 4</Menu.Item>
-                    </SubMenu>
                 </Menu>
             </div>
         );
