@@ -3,9 +3,10 @@ import { Icon } from 'antd';
 import Chatbox from "../Chatbox/Chatbox";
 import MenuItem from 'material-ui/MenuItem';
 import SelectField from 'material-ui/SelectField';
-import {TextField} from "material-ui";
+import {Dialog, TextField} from "material-ui";
 import RaisedButton from 'material-ui/RaisedButton';
 import AceEditor from 'react-ace';
+import Cookies from 'universal-cookie';
 import 'brace/mode/markdown';
 import 'brace/theme/github';
 import 'brace/theme/monokai';
@@ -17,18 +18,31 @@ import 'brace/theme/textmate';
 import 'brace/theme/solarized_dark';
 import 'brace/theme/solarized_light';
 import 'brace/theme/terminal';
-
-
-
 import * as $ from "jquery";
+import Login from "../Auth/Login/Login";
 
 const models = [];
 const groups = [];
 const languages = [];
 const fontsizes =[];
 const codeEditorThemes =[];
+const cookies = new Cookies();
 
 export default class Container extends React.Component {
+
+    componentDidMount() {
+        console.log(cookies.get('loggedIn'))
+        if(!cookies.get('loggedIn')) {
+                this.handleOpen();
+        }
+        else this.setState({open: false});
+
+    }
+
+    handleOpen = () => {
+        this.setState({open: true});
+    };
+
 
     constructor(props) {
         super(props);
@@ -148,6 +162,15 @@ export default class Container extends React.Component {
         return (
 
             <div style={styles.home}>
+                <Dialog
+                    modal={false}
+                    open={this.state.open}
+                    onRequestClose={this.handleClose}
+                    autoScrollBodyContent={true}
+
+                >
+                 <Login {...this.props} />
+                </Dialog>
                 <div style={styles.dropdownDiv}>
                 <SelectField
                     floatingLabelText="Model"

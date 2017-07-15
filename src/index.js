@@ -9,7 +9,6 @@ import { BrowserRouter as Router, Route} from "react-router-dom";
 import NotFound from "./components/NotFound/NotFound";
 import Chatbox from "./components/Chatbox/Chatbox";
 import Switch from "react-router-dom/es/Switch";
-import Login from "./components/Auth/Login/Login";
 import BrowseHistory from "./components/BrowseHistory/BrowseHistory";
 import BrowseSkill from "./components/BrowseSkill/BrowseSkill";
 import injectTapEventPlugin from 'react-tap-event-plugin';
@@ -30,7 +29,6 @@ class App extends React.Component {
                 <Header />
                 <Body>
                     <Switch>
-                        <Route path="/login" component={Login} />
                         <Route path="/chat" component={Chatbox}/>
                         <Route path="/skillEditor" component={Home} />
                         <Route path="/browseHistory" component={BrowseHistory} />
@@ -41,7 +39,6 @@ class App extends React.Component {
                         <Route component={NotFound} />
                     </Switch>
                 </Body>
-
             </div>
         </MuiThemeProvider>
             </Router>
