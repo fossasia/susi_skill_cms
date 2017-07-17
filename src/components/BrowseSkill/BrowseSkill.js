@@ -5,11 +5,9 @@ import { FloatingActionButton, Paper} from "material-ui";
 import ContentAdd from "material-ui/svg-icons/navigation/arrow-forward";
 import {Card, CardTitle} from 'material-ui/Card';
 import * as $ from "jquery";
-import {GridList} from "material-ui";
 const models = [];
 const groups = [];
 const languages = [];
-
 
 export default class BrowseSkill extends React.Component {
 
@@ -22,7 +20,7 @@ export default class BrowseSkill extends React.Component {
 
     }
 
-    loadmodels()
+    loadModels()
     {
         if(models.length===0) {
             $.ajax({
@@ -82,16 +80,13 @@ export default class BrowseSkill extends React.Component {
 
     handleLanguageChange = (event, index, value) => this.setState({languageValue: value});
 
-
     handleToggle = (event, toggled) => {
         this.setState({
             [event.target.name]: toggled,
         });
     };
 
-
     buttonClick = () => {
-
         let url = "http://api.susi.ai/cms/getSkillList.json?model="+models[this.state.modelValue].key+"&group="+groups[this.state.groupValue].key+"&language="+languages[this.state.languageValue].key;
         console.log(url);
         let self = this;
@@ -118,18 +113,12 @@ export default class BrowseSkill extends React.Component {
                 self.setState({
                     skills : skills
                 })
-
-                console.log(self.state.skills);
-
             }
-
         });
-
     };
 
 
     render() {
-
         const style = {
             width: "100%",
             padding: "10px"
@@ -144,7 +133,7 @@ export default class BrowseSkill extends React.Component {
                             style={{width:'130px'}}
                             value={this.state.modelValue}
                             onChange={this.handleModelChange}
-                            onMouseEnter={this.loadmodels}
+                            onMouseEnter={this.loadModels}
                         >
                             {models}
                         </SelectField>
@@ -161,7 +150,6 @@ export default class BrowseSkill extends React.Component {
                             style={{width:'100px',marginRight:"10px"}}
                             value={this.state.languageValue}
                             onChange={this.handleLanguageChange}
-
                         >
                             {languages}
                         </SelectField>
@@ -175,13 +163,12 @@ export default class BrowseSkill extends React.Component {
                 <div style={{marginTop:"20px",   marginBottom: "40px",
                     textAlign: "justify",
                     fontSize: "0.1px", width: "100%"}}>
-                    <div className="row" style={styles.scro}  >
-                        <GridList style={styles.gridList} cols={4.4}>
+                    <div className="row" style={styles.scroll}  >
+                        <div style={styles.gridList}>
                             {this.state.skills}
 
-                        </GridList>
+                        </div>
                     </div>
-
                 </div>
             </div>
         );
@@ -206,7 +193,7 @@ const styles = {
         width: "100%"
     },
     propContainer: {
-        width: 200,
+        width: 100,
         overflow: 'hidden',
         margin: '20px auto 0',
     },
@@ -214,27 +201,25 @@ const styles = {
         margin: '20px auto 10px',
     },
     row: {
-        margin: 20,
         width: 210,
         height: 120,
+        margin:"10px",
         overflow:'auto',
         justifyContent: "center",
         fontSize: '10px',
         textAlign: 'center',
         display: 'inline-block',
     },
-    scro: {
+    scroll: {
         display: 'flex',
         flexWrap: 'nowrap',
         width: "100%"
     },
     gridList: {
-        display: 'flex',
         flexWrap: 'wrap',
         flexDirection: "row",
-
+        margin:"10px",
+        textAlign:"center"
     },
 
 }
-
-
