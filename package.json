@@ -24,10 +24,10 @@
     "react-router": "^4.1.1",
     "react-router-dom": "^4.1.1",
     "react-tap-event-plugin": "^2.0.1",
+    "react-url-query": "^1.2.0",
     "universal-cookie": "^2.0.8",
     "watchify": "^3.9.0",
-    "yarn": "^0.24.5",
-    "react-url-query": "latest"
+    "yarn": "^0.24.5"
   },
   "devDependencies": {
     "react-scripts": "1.0.7"
