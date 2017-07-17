@@ -19,7 +19,7 @@ export default class Sidebar extends React.Component {
     render() {
         return (
             <div style={styles.sidebar}>
-                <img style={styles.logo} src="http://chat.susi.ai/static/media/susi-white.67ab81e8.svg" alt=""/>
+                <img style={styles.logo} src={require('../images/SUSIAI-white.png')}  alt=""/>
 
                 <Menu
                     theme={this.state.theme}
