@@ -5,6 +5,7 @@ import { FloatingActionButton, Paper} from "material-ui";
 import ContentAdd from "material-ui/svg-icons/navigation/arrow-forward";
 import {Card, CardTitle} from 'material-ui/Card';
 import * as $ from "jquery";
+import Link from "react-router-dom/es/Link";
 const models = [];
 const groups = [];
 const languages = [];
@@ -15,7 +16,7 @@ export default class BrowseSkill extends React.Component {
         super(props);
 
         this.state = {
-            modelValue: null, groupValue:null, languageValue:null, expertValue:null, skills: []
+            modelValue: null, skillURL:null, groupValue:null, languageValue:null, expertValue:null, skills: []
         };
 
     }
@@ -89,6 +90,7 @@ export default class BrowseSkill extends React.Component {
     buttonClick = () => {
         let url = "http://api.susi.ai/cms/getSkillList.json?model="+models[this.state.modelValue].key+"&group="+groups[this.state.groupValue].key+"&language="+languages[this.state.languageValue].key;
         console.log(url);
+
         let self = this;
         $.ajax({
             url: url,
@@ -101,18 +103,27 @@ export default class BrowseSkill extends React.Component {
                 let keys = Object.keys(data);
                 let skills = keys.map((el, i) => {
                     return (
-                        <Card style={styles.row} key={el}>
-                            <CardTitle
-                                title={data[el]}
-                                titleStyle={{'fontSize':'18px'}}
-                            />
-                        </Card>
+                        <Link key={el}
+                              to={{
+                                  pathname: '/skillPage',
+                                  state: { url: url, element: el }
+                              }}>
+                            <Card style={styles.row} key={el}>
+                                <CardTitle
+                                    title={data[el]}
+                                    titleStyle={{'fontSize':'18px'}}
+                                />
+                            </Card>
+                        </Link>
                     )
                 });
 
                 self.setState({
-                    skills : skills
+                    skills : skills,
+                    skillURL: url
                 })
+                console.log(self.state)
+
             }
         });
     };
