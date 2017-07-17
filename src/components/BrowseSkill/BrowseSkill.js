@@ -117,6 +117,7 @@ export default class BrowseSkill extends React.Component {
         });
     };
 
+
     render() {
         const style = {
             width: "100%",
