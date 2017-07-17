@@ -1,5 +1,6 @@
 import React from 'react';
 import { Dropdown, Avatar, Icon, Menu } from 'antd';
+import { Link } from 'react-router-dom';
 
 export default class Header extends React.Component {
 
@@ -8,6 +9,7 @@ export default class Header extends React.Component {
             <Menu>
                 <Menu.Item key="0">
                     <a>Logout</a>
+                    <Link to="/logout"></Link>
                 </Menu.Item>
             </Menu>
         );
