@@ -16,11 +16,14 @@ export default class BrowseSkill extends React.Component {
         super(props);
 
         this.state = {
-            modelValue: null, skillURL:null, groupValue:null, languageValue:null, expertValue:null, skills: []
+            modelValue: "general", skillURL:null, groupValue:"knowledge", languageValue:"en", expertValue:null, skills: []
         };
 
     }
 
+    componentDidMount(){
+        this.buttonClick()
+    }
     loadModels()
     {
         if(models.length===0) {
@@ -88,8 +91,14 @@ export default class BrowseSkill extends React.Component {
     };
 
     buttonClick = () => {
-        let url = "http://api.susi.ai/cms/getSkillList.json?model="+models[this.state.modelValue].key+"&group="+groups[this.state.groupValue].key+"&language="+languages[this.state.languageValue].key;
-        console.log(url);
+        let url;
+        if(models.length) {
+           url  = "http://api.susi.ai/cms/getSkillList.json?model=" + models[this.state.modelValue].key + "&group=" + groups[this.state.groupValue].key + "&language=" + languages[this.state.languageValue].key;
+        }
+        else{
+            url = "http://api.susi.ai/cms/getSkillList.json"
+        }
+            console.log(url);
 
         let self = this;
         $.ajax({
