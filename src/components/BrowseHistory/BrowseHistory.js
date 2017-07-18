@@ -11,7 +11,9 @@ const groups = [];
 const languages = [];
 
 export default class BrowseHistory extends React.Component {
-
+    componentDidMount(){
+        this.buttonClick()
+    }
     constructor(props) {
         super(props);
 
@@ -117,9 +119,17 @@ export default class BrowseHistory extends React.Component {
     };
 
     buttonClick = () => {
-
-        let url = "http://api.susi.ai/cms/getSkillHistory.json?model="+models[this.state.modelValue].key+"&group="+groups[this.state.groupValue].key+"&language="+languages[this.state.languageValue].key+"&skill="+this.state.expertValue;
+        let url;
         console.log(url);
+        if(models.length) {
+            url = "http://api.susi.ai/cms/getSkillHistory.json?model="+models[this.state.modelValue].key+"&group="+groups[this.state.groupValue].key+"&language="+languages[this.state.languageValue].key+"&skill="+this.state.expertValue;
+        }
+        else{
+            this.setState({
+                msg: "Select a Model, Group and language from the Dropdown"
+            }
+        )}
+
         let self = this;
         $.ajax({
             url: url,
@@ -140,7 +150,7 @@ export default class BrowseHistory extends React.Component {
                         icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
                     });
                 }
-                self.setState({tableData:array})
+                self.setState({tableData:array,msg:""})
                 console.log(self.state.tableData)
             },
             error: function(e) {
@@ -242,6 +252,7 @@ export default class BrowseHistory extends React.Component {
                     </TableBody>
 
                 </Table>
+                <p>{this.state.msg}</p>
             </div>
         );
     }
