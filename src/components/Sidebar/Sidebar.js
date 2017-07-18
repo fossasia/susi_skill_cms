@@ -19,8 +19,10 @@ export default class Sidebar extends React.Component {
     render() {
         return (
             <div style={styles.sidebar}>
-                <img style={styles.logo} src={require('../images/SUSIAI-white.png')}  alt=""/>
-
+                <Link to="/">
+                    <img style={styles.logo} src={require('../images/SUSIAI-white.png')}  alt=""/>
+                </Link>
+    
                 <Menu
                     theme={this.state.theme}
                     onClick={this.handleClick}
