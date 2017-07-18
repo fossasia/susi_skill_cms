@@ -1,27 +1,55 @@
 import React from 'react';
-import { Dropdown, Avatar, Icon, Menu } from 'antd';
 import { Link } from 'react-router-dom';
+import Button from "antd/es/button/button";
+import Cookies from 'universal-cookie';
+import {Dialog} from "material-ui";
+import Login from "../Auth/Login/Login";
+const cookies = new Cookies();
 
 export default class Header extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            showLogout: false,
+            open:false
+        }
+    }
+
+    componentDidMount() {
+        console.log(cookies.get('loggedIn'))
+        if(!cookies.get('loggedIn')) {
+            this.setState({showLogout: false});
+        }
+        else
+            this.setState({open: false,showLogout:true});
+    }
+    handleOpen = () => {
+        this.setState({open: true});
+        console.log("asd");
+    };
 
     render() {
-        const menu = (
-            <Menu>
-                <Menu.Item key="0">
-                    <a>Logout</a>
-                    <Link to="/logout"></Link>
-                </Menu.Item>
-            </Menu>
-        );
+
         return (
+
             <div style={styles.header}>
-                <Dropdown overlay={menu} trigger={['click']}>
-                    <div className="ant-dropdown-link" style={{display: "flex", alignItems: "center", cursor: "pointer"}}>
-                        <Avatar shape="square" size="small" icon="user"/>
-                        <span style={{padding: "0 10px"}}>User</span>
-                        <Icon type="caret-down" style={{fontSize: "14px"}}/>
+                { !this.state.showLogout ?
+                    <div>
+                        <Button style={styles.buttonMargin}>Register</Button>
+                        <Button onClick={this.handleOpen} style={styles.buttonMargin}>Login</Button>
                     </div>
-                </Dropdown>
+                    :   <Link to="/logout">
+                            <Button onClick={this.clearListCookies} style={styles.buttonMargin}>Logout</Button>
+                        </Link>
+                }
+                <Dialog
+                    modal={false}
+                    open={this.state.open}
+                    onRequestClose={this.handleClose}
+                    autoScrollBodyContent={true}
+                >
+                    <Login {...this.props} />
+                </Dialog>
             </div>
         );
     }
@@ -42,5 +70,8 @@ const styles = {
         padding: "0 30px",
         color: "#fff",
         fontSize: "16px",
+    },
+    buttonMargin:{
+        margin:"10px"
     }
 };
