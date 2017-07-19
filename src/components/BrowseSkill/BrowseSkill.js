@@ -14,18 +14,18 @@ export default class BrowseSkill extends React.Component {
 
     constructor(props) {
         super(props);
-
         this.state = {
-            modelValue: "general", skillURL:null, groupValue:"knowledge", languageValue:"en", expertValue:null, skills: []
+            modelValue: "general", skillURL:null, groupValue:"knowledge", languageValue:"en", expertValue:null, skills: [], first_open:true
         };
-
     }
 
     componentDidMount(){
         this.buttonClick()
+
     }
     loadModels()
     {
+
         if(models.length===0) {
             $.ajax({
                 url: "http://api.susi.ai/cms/getModel.json",
@@ -38,6 +38,7 @@ export default class BrowseSkill extends React.Component {
                     for (let i = 0; i < d.length; i++) {
                         models.push(<MenuItem value={i} key={d[i]} primaryText={`${d[i]}`}/>);
                     }
+
                 }
             });
         }
@@ -92,13 +93,16 @@ export default class BrowseSkill extends React.Component {
 
     buttonClick = () => {
         let url;
-        if(models.length) {
+        if(models.length>0&&languages.length>0&&groups.length>0) {
+            console.log(models)
            url  = "http://api.susi.ai/cms/getSkillList.json?model=" + models[this.state.modelValue].key + "&group=" + groups[this.state.groupValue].key + "&language=" + languages[this.state.languageValue].key;
         }
         else{
             url = "http://api.susi.ai/cms/getSkillList.json"
         }
-            console.log(url);
+        console.log(models)
+
+        console.log(url);
 
         let self = this;
         $.ajax({
@@ -115,7 +119,7 @@ export default class BrowseSkill extends React.Component {
                         <Link key={el}
                               to={{
                                   pathname: '/skillPage',
-                                  state: { url: url, element: el }
+                                  state: { url: url, element: el, name: data[el]}
                               }}>
                             <Card style={styles.row} key={el}>
                                 <CardTitle
@@ -241,5 +245,4 @@ const styles = {
         margin:"10px",
         textAlign:"center"
     },
-
 }
