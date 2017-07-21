@@ -9,7 +9,6 @@ import $ from 'jquery';
 import PropTypes  from 'prop-types';
 import { addUrlProps, UrlQueryParamTypes } from 'react-url-query';
 import Cookies from 'universal-cookie';
-import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
 const cookies = new Cookies();
 
 const urlPropsQueryConfig = {
@@ -34,18 +33,15 @@ class Login extends Component {
         this.state = {
             email: '',
             password: '',
-            serverUrl: '',
             isFilled: false,
             success: false,
             validForm: false,
             emailError: true,
             passwordError: true,
-            serverFieldError: false,
             checked: false
         };
         this.emailErrorMessage = '';
         this.passwordErrorMessage = '';
-        this.customServerMessage = '';
     }
 
     componentDidMount() {
@@ -65,15 +61,6 @@ class Login extends Component {
         var password = this.state.password.trim();
 
         let BASE_URL ="http://api.susi.ai";
-
-        let serverUrl = this.state.serverUrl;
-        if(serverUrl.slice(-1) === '/'){
-            serverUrl = serverUrl.slice(0,-1);
-        }
-        if(serverUrl !== ''){
-            BASE_URL = serverUrl;
-        }
-        console.log(BASE_URL);
 
         if (!email || !password) { return this.state.isFilled; }
 
@@ -119,7 +106,6 @@ class Login extends Component {
     handleChange = (event) => {
         let email;
         let password;
-        let serverUrl;
         let state = this.state;
 
         if (event.target.name === 'email') {
@@ -134,22 +120,6 @@ class Login extends Component {
             let validPassword = password.length >= 6;
             state.password = password;
             state.passwordError = !(password && validPassword);
-        }
-        else if (event.target.value === 'customServer') {
-            state.checked = true;
-            state.serverFieldError = true;
-        }
-        else if (event.target.value === 'standardServer') {
-            state.checked = false;
-            state.serverFieldError = false;
-        }
-        else if (event.target.name === 'serverUrl'){
-            serverUrl = event.target.value;
-            let validServerUrl =
-                /(http|ftp|https):\/\/[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:~+#-]*[\w@?^=%&amp;~+#-])?/i
-                    .test(serverUrl);
-            state.serverUrl = serverUrl;
-            state.serverFieldError = !(serverUrl && validServerUrl);
         }
 
         if (this.state.emailError) {
@@ -166,14 +136,7 @@ class Login extends Component {
         else{
             this.passwordErrorMessage='';
         }
-        if (this.state.serverFieldError) {
-            this.customServerMessage
-                = 'Enter a valid URL';
-        }
-        else{
-            this.customServerMessage = '';
-        }
-        if (!state.emailError && !state.passwordError && !state.serverFieldError)
+        if (!state.emailError && !state.passwordError)
         {
             state.validForm = true;
         }
@@ -206,11 +169,7 @@ class Login extends Component {
 
     render() {
         // const { token } = this.props;
-        const serverURL = <TextField name="serverUrl"
-                                     onChange={this.handleChange}
-                                     errorText={this.customServerMessage}
-                                     floatingLabelText="Custom URL" />;
-        const hidden = this.state.checked ? serverURL : '';
+        const hidden = '';
 
         const styles = {
             'width': '100%',
@@ -220,15 +179,6 @@ class Login extends Component {
         const fieldStyle={
             'width':'256px'
         }
-
-        const radioButtonStyles = {
-            block: {
-                maxWidth: 250,
-            },
-            radioButton: {
-                marginBottom: 16,
-            },
-        };
         return (
             <div>
 
@@ -256,30 +206,6 @@ class Login extends Component {
                                     onChange={this.handleChange}
                                     errorText={this.passwordErrorMessage}
                                     floatingLabelText='Password' />
-                            </div>
-                            <div>
-                                <div>
-                                    <RadioButtonGroup style={{display: 'flex',
-                                        marginTop: '10px',
-                                        maxWidth:'200px',
-                                        flexWrap: 'wrap',
-                                        margin: 'auto'}}
-                                                      name="server" onChange={this.handleChange}
-                                                      defaultSelected="standardServer">
-                                        <RadioButton
-                                            value="customServer"
-                                            label="Custom Server"
-                                            labelPosition="left"
-                                            style={radioButtonStyles.radioButton}
-                                        />
-                                        <RadioButton
-                                            value="standardServer"
-                                            label="Standard Server"
-                                            labelPosition="left"
-                                            style={radioButtonStyles.radioButton}
-                                        />
-                                    </RadioButtonGroup>
-                                </div>
                             </div>
                             <div>
                                 {hidden}
