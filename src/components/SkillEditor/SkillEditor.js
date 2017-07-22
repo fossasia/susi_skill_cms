@@ -74,7 +74,6 @@ export default class Container extends React.Component {
         this.setState({
             code: newCode,
         });
-        console.log(this.state.code);
     }
 
     handleModelChange = (event, index, value) => {
