@@ -46,7 +46,7 @@ export default class BrowseSkill extends React.Component {
                               }}>
                             <Card style={styles.row} key={el}>
                                 <CardTitle
-                                    title={data[el]}
+                                    title={data[el].replace(/\.[^/.]+$/, "")}
                                     titleStyle={{'fontSize':'18px'}}
                                 />
                             </Card>
@@ -164,7 +164,7 @@ export default class BrowseSkill extends React.Component {
                               }}>
                             <Card style={styles.row} key={el}>
                                 <CardTitle
-                                    title={data[el]}
+                                    title={data[el].replace(/\.[^/.]+$/, "")}
                                     titleStyle={{'fontSize':'18px'}}
                                 />
                             </Card>
