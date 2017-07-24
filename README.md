@@ -4,6 +4,12 @@
 
 A web application framework to edit susi skills
 
+## Communication
+
+Please join our mailing list to discuss questions regarding the project: https://groups.google.com/group/susiai/
+
+Our chat channel is on gitter here: https://gitter.im/fossasia/susi_server
+
 ## Technology Stack
 
 ### Components
