@@ -1,6 +1,7 @@
 import React from 'react';
 import { Menu, Icon } from 'antd';
 import {Link} from 'react-router-dom';
+import colors from "../../Utils/colors";
 
 
 
@@ -26,7 +27,7 @@ export default class Sidebar extends React.Component {
                 <Menu
                     theme={this.state.theme}
                     onClick={this.handleClick}
-                    style={{ width: 240 , backgroundColor:'#607D8B'}}
+                    style={{ width: 240 , backgroundColor:colors.sidebarElements}}
                     defaultOpenKeys={['sub1']}
                     selectedKeys={[this.state.current]}
                     mode="inline"
@@ -73,7 +74,7 @@ const styles = {
         alignItems : "center",
         flexDirection: "column",
         width: '240px',
-        background: '#37474F',
+        background: colors.sidebar,
         zIndex: 10
     },
     logo: {

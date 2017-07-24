@@ -7,6 +7,7 @@ import ArrowForward from "material-ui/svg-icons/navigation/arrow-forward";
 
 import {Card, CardHeader, CardText} from 'material-ui/Card';
 import * as $ from "jquery";
+import colors from "../../Utils/colors";
 const models = [];
 const groups = [];
 const languages = [];
@@ -232,7 +233,7 @@ export default class VisualEditor extends React.Component {
                         >
                             {languages}
                         </SelectField>
-                        <FloatingActionButton style={{marginLeft: 25}} onClick={this.buttonClick}>
+                        <FloatingActionButton backgroundColor={colors.fabButton} style={{marginLeft: 25}} onClick={this.buttonClick}>
                             <ArrowForward />
                         </FloatingActionButton>
                     </div>
@@ -244,7 +245,7 @@ export default class VisualEditor extends React.Component {
                     fontSize: "0.1px", width: "100%"}}>
                     <ul style={{position: "relative"}}>
                         {this.state.questions}
-                        <FloatingActionButton onTouchTap={this.addMoreCards} secondary={true} style={{position: "absolute", bottom: "-30px", right: "50px",}}>
+                        <FloatingActionButton  onTouchTap={this.addMoreCards} secondary={true} style={{position: "absolute", bottom: "-30px", right: "50px",}}>
                             <ContentAdd />
                         </FloatingActionButton>
                     </ul>

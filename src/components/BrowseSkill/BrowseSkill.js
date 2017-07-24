@@ -6,6 +6,7 @@ import ContentAdd from "material-ui/svg-icons/navigation/arrow-forward";
 import {Card, CardTitle} from 'material-ui/Card';
 import * as $ from "jquery";
 import Link from "react-router-dom/es/Link";
+import colors from "../../Utils/colors";
 const models = [];
 const groups = [];
 const languages = [];
@@ -217,7 +218,7 @@ export default class BrowseSkill extends React.Component {
                         >
                             {languages}
                         </SelectField>
-                        <FloatingActionButton style={{marginLeft: 25}} onClick={this.buttonClick}>
+                        <FloatingActionButton backgroundColor={colors.fabButton} style={{marginLeft: 25}} onClick={this.buttonClick}>
                             <ContentAdd />
                         </FloatingActionButton>
                     </div>
