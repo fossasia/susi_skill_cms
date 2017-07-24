@@ -6,6 +6,7 @@ import ContentAdd from "material-ui/svg-icons/navigation/arrow-forward";
 import {Icon, notification} from 'antd';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from "material-ui/Table";
 import * as $ from "jquery";
+import colors from "../../Utils/colors";
 const models = [];
 const groups = [];
 const languages = [];
@@ -209,7 +210,7 @@ export default class BrowseHistory extends React.Component {
                             floatingLabelFixed={true}
                             onChange={this.handleExpertChange}
                         />
-                        <FloatingActionButton style={{marginLeft: 25}} onClick={this.buttonClick}>
+                        <FloatingActionButton  backgroundColor={colors.fabButton} style={{marginLeft: 25}} onClick={this.buttonClick}>
                             <ContentAdd />
                         </FloatingActionButton>
                     </div>
