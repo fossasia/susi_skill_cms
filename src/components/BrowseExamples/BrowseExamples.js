@@ -10,7 +10,6 @@ const models = [];
 const groups = [];
 const languages = [];
 
-
 export default class BrowseExamples extends React.Component {
 
     constructor(props) {
@@ -41,7 +40,7 @@ export default class BrowseExamples extends React.Component {
                         <Card>
                             <CardHeader
 
-                                title={el.match(/\/([\w]*\.[\w]{1,5})$/)[1]}
+                                title={el.match(/\/([\w]*)\.[\w]{1,5}$/)[1]}
                                 subtitle={el}
                                 actAsExpander={true}
                                 showExpandableButton={true}
@@ -75,7 +74,6 @@ export default class BrowseExamples extends React.Component {
 
 
     }
-
 
     loadmodels()
     {
@@ -137,16 +135,13 @@ export default class BrowseExamples extends React.Component {
 
     handleLanguageChange = (event, index, value) => this.setState({languageValue: value});
 
-
     handleToggle = (event, toggled) => {
         this.setState({
             [event.target.name]: toggled,
         });
     };
 
-
     buttonClick = () => {
-
         let url = "http://api.susi.ai/cms/getExampleSkill.json?model="+models[this.state.modelValue].key+"&group="+groups[this.state.groupValue].key+"&language="+languages[this.state.languageValue].key;
         console.log(url);
         let self = this;
@@ -170,7 +165,7 @@ export default class BrowseExamples extends React.Component {
                     return (<li style={styles.liStyle} key={i}>
                         <Card>
                             <CardHeader
-                                title={el.match(/\/([a-zA-Z0-9]*\.[a-z]{1,5})$/)[1]}
+                                title={el.match(/\/([\w]*)\.[\w]{1,5}$/)[1]}
                                 subtitle={el}
                                 actAsExpander={true}
                                 showExpandableButton={true}
@@ -202,8 +197,6 @@ export default class BrowseExamples extends React.Component {
             }
 
         });
-
-
     }
 
     render() {
