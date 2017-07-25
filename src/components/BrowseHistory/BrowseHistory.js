@@ -122,48 +122,49 @@ export default class BrowseHistory extends React.Component {
     buttonClick = () => {
         let url;
         console.log(url);
-        if(models.length) {
-            url = "http://api.susi.ai/cms/getSkillHistory.json?model="+models[this.state.modelValue].key+"&group="+groups[this.state.groupValue].key+"&language="+languages[this.state.languageValue].key+"&skill="+this.state.expertValue;
+        if (!(this.state.modelValue == null || this.state.groupValue == null || this.state.languageValue == null) ) {
+            url = "http://api.susi.ai/cms/getSkillHistory.json?model=" + models[this.state.modelValue].key + "&group=" + groups[this.state.groupValue].key + "&language=" + languages[this.state.languageValue].key + "&skill=" + this.state.expertValue;
         }
-        else{
+        else {
             this.setState({
-                msg: "Select a Model, Group and language from the Dropdown"
-            }
-        )}
-
-        let self = this;
-        $.ajax({
-            url: url,
-            jsonpCallback: 'pccd',
-            dataType: 'jsonp',
-            jsonp: 'callback',
-            crossDomain: true,
-            success: function(data) {
-                data = data.commits;
-                let array = [];
-                for(let i=0;i<data.length;i++){
-                    array.push(data[i]);
+                    msg: "Select a Model, Group and language from the Dropdown"
                 }
-                if(data.length===0){
-                    notification.open({
-                        message: 'Error Processing your Request',
-                        description: 'Error in processing the request. Please try with some other skill',
-                        icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
-                    });
+            )
+        }
+            let self = this;
+            $.ajax({
+                url: url,
+                jsonpCallback: 'pccd',
+                dataType: 'jsonp',
+                jsonp: 'callback',
+                crossDomain: true,
+                success: function (data) {
+                    data = data.commits;
+                    let array = [];
+                    for (let i = 0; i < data.length; i++) {
+                        array.push(data[i]);
+                    }
+                    if (data.length === 0 ) {
+                        notification.open({
+                            message: 'Error Processing your Request',
+                            description: 'Error in processing the request. Please try with some other skill',
+                            icon: <Icon type="close-circle" style={{color: '#f44336'}}/>,
+                        });
+                    }
+                    self.setState({tableData: array, msg: ""})
+                    console.log(self.state.tableData)
+                },
+                error: function (e) {
+                    console.log(e);
+                    if (models.length) {
+                        notification.open({
+                            message: 'Error Processing your Request',
+                            description: 'Error in processing the request. Please try with some other skill',
+                            icon: <Icon type="close-circle" style={{color: '#f44336'}}/>,
+                        });
+                    }
                 }
-                self.setState({tableData:array,msg:""})
-                console.log(self.state.tableData)
-            },
-            error: function(e) {
-                console.log(e);
-                notification.open({
-                    message: 'Error Processing your Request',
-                    description: 'Error in processing the request. Please try with some other skill',
-                    icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
-                });
-            }
-        });
-
+            });
     }
 
     // handleChange = (event, index, value) => this.setState({value});
