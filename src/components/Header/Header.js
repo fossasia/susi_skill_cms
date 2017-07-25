@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import Button from "antd/es/button/button";
 import Cookies from 'universal-cookie';
 import {Dialog} from "material-ui";
@@ -49,9 +48,9 @@ export default class Header extends React.Component {
                         <Button style={styles.buttonMargin}>Register</Button>
                         <Button onClick={this.handleOpen} style={styles.buttonMargin}>Login</Button>
                     </div>
-                    :  <Link to="/logout" >
+                    :
                             <Button onClick={this.logout} style={styles.buttonMargin}>Logout</Button>
-                        </Link>
+
                 }
                 <Dialog
                     modal={false}
