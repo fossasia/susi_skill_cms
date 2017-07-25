@@ -16,7 +16,7 @@ import Body from "./components/Body/Body";
 import Logout from './components/Auth/Logout';
 import BrowseExamples from "./components/BrowseExamples/BrowseExamples";
 import VisualEditor from "./components/VisualEditor/VisualEditor";
-import SkillListing from "./SkillPage/SkillListing";
+import SkillListing from "./components/SkillPage/SkillListing";
 injectTapEventPlugin();
 
 class App extends React.Component {
