@@ -4,6 +4,7 @@ import Button from "antd/es/button/button";
 import Cookies from 'universal-cookie';
 import {Dialog} from "material-ui";
 import Login from "../Auth/Login/Login";
+import colors from "../../Utils/colors";
 const cookies = new Cookies();
 
 export default class Header extends React.Component {
@@ -65,7 +66,7 @@ const styles = {
         position: "fixed",
         top: 0,
         left: 0,
-        background: "#607D8B",
+        background: colors.header,
         zIndex: 9,
         padding: "0 30px",
         color: "#fff",

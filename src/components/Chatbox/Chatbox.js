@@ -1,5 +1,6 @@
 import React from 'react';
 import { Icon } from 'antd';
+import colors from "../../Utils/colors";
 
 export default class Chatbox extends React.Component {
     state = {
@@ -36,7 +37,7 @@ const styles = {
         position: "fixed",
         bottom: 0,
         right: "30px",
-        background: '#455A64',
+        background: colors.chatbox,
         border: '1px solid #ddd',
         borderBottom: 0,
         zIndex: 999

@@ -6,19 +6,73 @@ import ContentAdd from "material-ui/svg-icons/navigation/arrow-forward";
 import {Card, CardHeader, CardText} from 'material-ui/Card';
 import {Icon, notification} from 'antd';
 import * as $ from "jquery";
+import colors from "../../Utils/colors";
 const models = [];
 const groups = [];
 const languages = [];
-
 
 export default class BrowseExamples extends React.Component {
 
     constructor(props) {
         super(props);
-
         this.state = {
             modelValue: null, groupValue:null, languageValue:null, expertValue:null, skills:[], examples:[],test : []
         };
+    }
+    componentDidMount(){
+        this.loadInitialExamples();
+    }
+
+    loadInitialExamples = () => {
+        let url = "http://api.susi.ai/cms/getExampleSkill.json";
+        console.log(url);
+        let self = this;
+        $.ajax({
+            url: url,
+            jsonpCallback: 'pxcd',
+            dataType: 'jsonp',
+            jsonp: 'callback',
+            crossDomain: true,
+            success: function(data) {
+                // data = data.examples;
+                let keys = Object.keys(data.examples);
+                let test = keys.map((el, i) => {
+                    return (<li style={styles.liStyle} key={i}>
+                        <Card>
+                            <CardHeader
+
+                                title={el.match(/\/([\w]*)\.[\w]{1,5}$/)[1]}
+                                subtitle={el}
+                                actAsExpander={true}
+                                showExpandableButton={true}
+                            />
+                            <CardText expandable={true}>
+                                {data.examples[el].map((el, i ) => {
+                                    return (<p key={i}>{el}</p>)
+                                })}
+                            </CardText>
+                        </Card>
+                    </li>)
+                });
+
+                self.setState({
+                    test: test
+                })
+
+                console.log(self.state.test);
+
+            },
+            error: function(e) {
+                console.log(e);
+                notification.open({
+                    message: 'Error Processing your Request',
+                    description: 'Error in processing the request. Please try with some other skill',
+                    icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
+                });
+            }
+
+        });
+
 
     }
 
@@ -82,16 +136,13 @@ export default class BrowseExamples extends React.Component {
 
     handleLanguageChange = (event, index, value) => this.setState({languageValue: value});
 
-
     handleToggle = (event, toggled) => {
         this.setState({
             [event.target.name]: toggled,
         });
     };
 
-
     buttonClick = () => {
-
         let url = "http://api.susi.ai/cms/getExampleSkill.json?model="+models[this.state.modelValue].key+"&group="+groups[this.state.groupValue].key+"&language="+languages[this.state.languageValue].key;
         console.log(url);
         let self = this;
@@ -115,7 +166,7 @@ export default class BrowseExamples extends React.Component {
                     return (<li style={styles.liStyle} key={i}>
                         <Card>
                             <CardHeader
-                                title={el.match(/\/([a-zA-Z0-9]*\.[a-z]{1,5})$/)[1]}
+                                title={el.match(/\/([\w]*)\.[\w]{1,5}$/)[1]}
                                 subtitle={el}
                                 actAsExpander={true}
                                 showExpandableButton={true}
@@ -147,8 +198,6 @@ export default class BrowseExamples extends React.Component {
             }
 
         });
-
-
     }
 
     render() {
@@ -188,7 +237,7 @@ export default class BrowseExamples extends React.Component {
                         >
                             {languages}
                         </SelectField>
-                        <FloatingActionButton style={{marginLeft: 25}} onClick={this.buttonClick}>
+                        <FloatingActionButton  backgroundColor={colors.fabButton} style={{marginLeft: 25}} onClick={this.buttonClick}>
                             <ContentAdd />
                         </FloatingActionButton>
                     </div>

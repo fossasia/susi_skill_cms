@@ -6,6 +6,7 @@ import ContentAdd from "material-ui/svg-icons/navigation/arrow-forward";
 import {Card, CardTitle} from 'material-ui/Card';
 import * as $ from "jquery";
 import Link from "react-router-dom/es/Link";
+import colors from "../../Utils/colors";
 const models = [];
 const groups = [];
 const languages = [];
@@ -20,12 +21,53 @@ export default class BrowseSkill extends React.Component {
     }
 
     componentDidMount(){
-        this.buttonClick()
+        this.loadInitialCards() 
 
     }
+
+    loadInitialCards = () => {
+        let url;
+        url = "http://api.susi.ai/cms/getSkillList.json";
+        let self = this;
+        $.ajax({
+            url: url,
+            jsonpCallback: 'pxcd',
+            dataType: 'jsonp',
+            jsonp: 'callback',
+            crossDomain: true,
+            success: function (data) {
+                data = data.skills;
+                let keys = Object.keys(data);
+                let skills = keys.map((el, i) => {
+                    return (
+                        <Link key={el}
+                              to={{
+                                  pathname: '/skillPage',
+                                  state: { url: url, element: el, name: data[el]}
+                              }}>
+                            <Card style={styles.row} key={el}>
+                                <CardTitle
+                                    title={data[el].replace(/\.[^/.]+$/, "")}
+                                    titleStyle={{'fontSize':'18px'}}
+                                />
+                            </Card>
+                        </Link>
+                    )
+                });
+
+                self.setState({
+                    skills : skills,
+                    skillURL: url
+                })
+                console.log(self.state)
+
+            }
+        });
+    };
+
+
     loadModels()
     {
-
         if(models.length===0) {
             $.ajax({
                 url: "http://api.susi.ai/cms/getModel.json",
@@ -123,7 +165,7 @@ export default class BrowseSkill extends React.Component {
                               }}>
                             <Card style={styles.row} key={el}>
                                 <CardTitle
-                                    title={data[el]}
+                                    title={data[el].replace(/\.[^/.]+$/, "")}
                                     titleStyle={{'fontSize':'18px'}}
                                 />
                             </Card>
@@ -140,7 +182,6 @@ export default class BrowseSkill extends React.Component {
             }
         });
     };
-
 
     render() {
         const style = {
@@ -177,7 +218,7 @@ export default class BrowseSkill extends React.Component {
                         >
                             {languages}
                         </SelectField>
-                        <FloatingActionButton style={{marginLeft: 25}} onClick={this.buttonClick}>
+                        <FloatingActionButton backgroundColor={colors.fabButton} style={{marginLeft: 25}} onClick={this.buttonClick}>
                             <ContentAdd />
                         </FloatingActionButton>
                     </div>

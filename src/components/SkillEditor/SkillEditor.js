@@ -33,8 +33,6 @@ export default class Container extends React.Component {
         console.log(cookies.get('loggedIn'))
     }
 
-
-
     constructor(props) {
         super(props);
         this.state = {
@@ -76,7 +74,6 @@ export default class Container extends React.Component {
         this.setState({
             code: newCode,
         });
-        console.log(this.state.code);
     }
 
     handleModelChange = (event, index, value) => {
@@ -125,11 +122,9 @@ export default class Container extends React.Component {
     }
 
     handleLanguageChange = (event, index, value) => this.setState({languageValue: value});
-
     handleFontChange = (event, index, value) => this.setState({fontSizeCode: value});
     handleThemeChange = (event, index, value) => {this.setState({editorTheme: value});
     console.log(this.state.editorTheme)}
-
 
     buttonClick = () => {
 
