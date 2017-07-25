@@ -13,10 +13,9 @@ import BrowseHistory from "./components/BrowseHistory/BrowseHistory";
 import BrowseSkill from "./components/BrowseSkill/BrowseSkill";
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import Body from "./components/Body/Body";
-import Logout from './components/Auth/Logout';
 import BrowseExamples from "./components/BrowseExamples/BrowseExamples";
 import VisualEditor from "./components/VisualEditor/VisualEditor";
-import SkillListing from "./SkillPage/SkillListing";
+import SkillListing from "./components/SkillPage/SkillListing";
 injectTapEventPlugin();
 
 class App extends React.Component {
@@ -39,7 +38,6 @@ class App extends React.Component {
                         <Route path="/visualEditor" component={VisualEditor}/>
                         <Route path="/skillPage" component={SkillListing}/>
                         <Route path="/" component={BrowseSkill} />
-                        <Route exact path="/logout" component={Logout} />
                         <Route component={NotFound} />
                     </Switch>
                 </Body>

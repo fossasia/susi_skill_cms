@@ -1,10 +1,12 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import Button from "antd/es/button/button";
 import Cookies from 'universal-cookie';
 import {Dialog} from "material-ui";
 import Login from "../Auth/Login/Login";
 import colors from "../../Utils/colors";
+var deleteCookie = function(name) {
+    document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+};
 const cookies = new Cookies();
 
 export default class Header extends React.Component {
@@ -29,6 +31,13 @@ export default class Header extends React.Component {
         console.log("asd");
     };
 
+    logout = () => {
+        deleteCookie('loggedIn');
+        deleteCookie('serverUrl');
+        deleteCookie('email');
+        window.location.reload();
+    };
+
     render() {
 
         return (
@@ -39,9 +48,9 @@ export default class Header extends React.Component {
                         <Button style={styles.buttonMargin}>Register</Button>
                         <Button onClick={this.handleOpen} style={styles.buttonMargin}>Login</Button>
                     </div>
-                    :   <Link to="/logout">
-                            <Button onClick={this.clearListCookies} style={styles.buttonMargin}>Logout</Button>
-                        </Link>
+                    :
+                            <Button onClick={this.logout} style={styles.buttonMargin}>Logout</Button>
+
                 }
                 <Dialog
                     modal={false}
