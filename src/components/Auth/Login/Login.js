@@ -230,12 +230,10 @@ class Login extends Component {
                              </div>
                             <div>
                                 <h4>If you do not have an account, Please SignUp</h4>
-                                <Link to={'/signup'} >
                                     <RaisedButton
                                         label='SignUp'
                                         backgroundColor="#19314B"
                                         labelColor="#fff" />
-                                </Link>
                             </div>
                         </form>
                     </Paper>
