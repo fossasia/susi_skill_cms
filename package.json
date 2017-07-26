@@ -27,7 +27,10 @@
     "react-url-query": "^1.2.0",
     "universal-cookie": "^2.0.8",
     "watchify": "^3.9.0",
-    "yarn": "^0.24.5"
+    "yarn": "^0.24.5",
+    "add-px": "^1.0.0",
+    "contrast": "^1.0.1",
+    "initials": "^2.1.5"
   },
   "devDependencies": {
     "react-scripts": "1.0.7"
