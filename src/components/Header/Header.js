@@ -3,6 +3,7 @@ import Button from "antd/es/button/button";
 import Cookies from 'universal-cookie';
 import {Dialog} from "material-ui";
 import Login from "../Auth/Login/Login";
+import SignUp from "../Auth/SignUp/SignUp";
 import colors from "../../Utils/colors";
 var deleteCookie = function(name) {
     document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
@@ -49,7 +50,7 @@ export default class Header extends React.Component {
                         <Button onClick={this.handleOpen} style={styles.buttonMargin}>Login</Button>
                     </div>
                     :
-                            <Button onClick={this.logout} style={styles.buttonMargin}>Logout</Button>
+                    <Button onClick={this.logout} style={styles.buttonMargin}>Logout</Button>
 
                 }
                 <Dialog
@@ -58,7 +59,7 @@ export default class Header extends React.Component {
                     onRequestClose={this.handleClose}
                     autoScrollBodyContent={true}
                 >
-                    <Login {...this.props} />
+                    <SignUp {...this.props} />
                 </Dialog>
             </div>
         );
