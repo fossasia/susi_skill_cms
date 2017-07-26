@@ -30,12 +30,12 @@ export default class Header extends React.Component {
             this.setState({open: false, openSignUp:false, showLogout:true});
     }
     handleOpen = () => {
-        this.setState({open: true});
-        console.log("asd");
+        this.setState({open: true, openSignUp: false });
+      
     };
     handleOpenSignUp = () => {
         this.setState({openSignUp: true, open: false});
-        console.log("asd");
+      
     };
 
     handleClose = () => {
