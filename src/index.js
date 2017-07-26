@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 // import registerServiceWorker from './registerServiceWorker';
 import Sidebar from './components/Sidebar/Sidebar';
 import Header from './components/Header/Header';
+import SignUp from './components/Auth/SignUp/SignUp';
 import Home from "./components/SkillEditor/SkillEditor";
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import { BrowserRouter as Router, Route} from "react-router-dom";
@@ -36,6 +37,7 @@ class App extends React.Component {
                         <Route path="/browseExamples" component={BrowseExamples} />
                         <Route path="/browseSkill" component={BrowseSkill}/>
                         <Route path="/visualEditor" component={VisualEditor}/>
+                        <Route exact path="/signup" component={SignUp} />
                         <Route path="/skillPage" component={SkillListing}/>
                         <Route path="/" component={BrowseSkill} />
                         <Route component={NotFound} />
