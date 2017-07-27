@@ -3,8 +3,8 @@ import { Icon } from 'antd';
 import Chatbox from "../Chatbox/Chatbox";
 import MenuItem from 'material-ui/MenuItem';
 import SelectField from 'material-ui/SelectField';
-import {TextField} from "material-ui";
-import RaisedButton from 'material-ui/RaisedButton';
+import {FloatingActionButton, Paper, TextField} from "material-ui";
+import ContentAdd from "material-ui/svg-icons/navigation/arrow-forward";
 import AceEditor from 'react-ace';
 import Cookies from 'universal-cookie';
 import 'brace/mode/markdown';
@@ -19,6 +19,7 @@ import 'brace/theme/solarized_dark';
 import 'brace/theme/solarized_light';
 import 'brace/theme/terminal';
 import * as $ from "jquery";
+import colors from "../../Utils/colors";
 
 const models = [];
 const groups = [];
@@ -124,7 +125,7 @@ export default class Container extends React.Component {
     handleLanguageChange = (event, index, value) => this.setState({languageValue: value});
     handleFontChange = (event, index, value) => this.setState({fontSizeCode: value});
     handleThemeChange = (event, index, value) => {this.setState({editorTheme: value});
-    console.log(this.state.editorTheme)}
+        console.log(this.state.editorTheme)}
 
     buttonClick = () => {
 
@@ -145,46 +146,52 @@ export default class Container extends React.Component {
     }
 
     render() {
+        const style = {
+            width: "100%",
+            padding: "10px"
+        };
         return (
-
             <div style={styles.home}>
-                <div style={styles.dropdownDiv}>
-                <SelectField
-                    floatingLabelText="Model"
-                    style={{width:'130px'}}
-                    value={this.state.modelValue}
-                    onMouseEnter={this.loadmodels}
-                    onChange={this.handleModelChange}
-                >
-                    {models}
-                </SelectField>
-                <SelectField
-                    floatingLabelText="Group"
-                    style={{width:'160px'}}
-                    value={this.state.groupValue}
-                    onChange={this.handleGroupChange}
-                >
-                    {groups}
-                </SelectField>
-                <SelectField
-                    floatingLabelText="Language"
-                    style={{width:'90px'}}
-                    value={this.state.languageValue}
-                    onChange={this.handleLanguageChange}
-                >
-                    {languages}
-                </SelectField>
-                <TextField
-                    hintText="Hint Text"
-                    floatingLabelText="Fixed Floating Label Text"
-                    floatingLabelFixed={true}
-                    onChange={this.handleExpertChange}
-                />
+                <Paper style={style} zDepth={1}>
+                    <div style={styles.center}>
+                        <div style={styles.dropdownDiv}>
+                            <SelectField
+                                floatingLabelText="Model"
+                                style={{width:'130px'}}
+                                value={this.state.modelValue}
+                                onMouseEnter={this.loadmodels}
+                                onChange={this.handleModelChange}
+                            >
+                                {models}
+                            </SelectField>
+                            <SelectField
+                                floatingLabelText="Group"
+                                style={{width:'160px'}}
+                                value={this.state.groupValue}
+                                onChange={this.handleGroupChange}
+                            >
+                                {groups}
+                            </SelectField>
+                            <SelectField
+                                floatingLabelText="Language"
+                                style={{width:'90px'}}
+                                value={this.state.languageValue}
+                                onChange={this.handleLanguageChange}
+                            >
+                                {languages}
+                            </SelectField>
+                            <TextField
+                                floatingLabelText="Enter Skill name"
+                                floatingLabelFixed={true}
+                                onChange={this.handleExpertChange}
+                            />
+                            <FloatingActionButton backgroundColor={colors.fabButton} style={{marginLeft: 25}} onClick={this.buttonClick}>
+                                <ContentAdd />
+                            </FloatingActionButton>
+                        </div>
+                    </div>
+                </Paper>
 
-                        <RaisedButton labelPosition="before" label="Create" style={{height:52}} backgroundColor="#607D8B" labelColor="#ffffff" >
-                            <input  style={styles.exampleImageInput} onClick={this.buttonClick}/>
-                        </RaisedButton>
-                </div>
                 <div style={styles.codeEditor}>
 
                     <div style={styles.toolbar}>
@@ -192,9 +199,9 @@ export default class Container extends React.Component {
                         <span style={styles.button}><Icon type="cloud-download" style={styles.icon}/>Save</span>
                         <span style={styles.button}><Icon type="menu-unfold" style={styles.icon} />Indent</span>
                         <span style={styles.button}>Size <SelectField
-                        style={{width:'60px'}}
-                        onChange={this.handleFontChange}
-                    >
+                            style={{width:'60px'}}
+                            onChange={this.handleFontChange}
+                        >
                             {fontsizes}
                         </SelectField></span>
 
@@ -229,6 +236,11 @@ export default class Container extends React.Component {
 const styles = {
     home: {
         width: '100%'
+    },
+    center: {
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
     },
     codeEditor:{
         width: "100%",

@@ -142,7 +142,7 @@ export default class BrowseSkill extends React.Component {
         else{
             url = "http://api.susi.ai/cms/getSkillList.json"
         }
-        console.log(models)
+        console.log(models);
 
         console.log(url);
 
@@ -178,7 +178,6 @@ export default class BrowseSkill extends React.Component {
                     skillURL: url
                 })
                 console.log(self.state)
-
             }
         });
     };
