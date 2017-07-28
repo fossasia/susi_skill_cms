@@ -32,7 +32,6 @@ export default class CircleImage extends React.Component {
             colors=defaultColors,
             size,
             style,
-            onClick,
             className
         } = this.props;
 
