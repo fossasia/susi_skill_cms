@@ -79,7 +79,9 @@ export default class Header extends React.Component {
                     onRequestClose={this.handleClose}
                     autoScrollBodyContent={true}
                 >
-                    <Login {...this.props} />
+                    <Login
+                        handleSignUp={this.handleOpenSignUp.bind(this)}
+                        {...this.props} />
                     <Close style={closingStyle}
                            onTouchTap={this.handleClose} />
                 </Dialog>
@@ -89,7 +91,9 @@ export default class Header extends React.Component {
                     onRequestClose={this.handleClose}
                     autoScrollBodyContent={true}
                 >
-                    <SignUp {...this.props} />
+                    <SignUp
+                        loginAction={this.handleOpen.bind(this)}
+                        {...this.props} />
                     <Close style={closingStyle}
                            onTouchTap={this.handleClose} />
                 </Dialog>
