@@ -231,6 +231,7 @@ class Login extends Component {
                             <div>
                                 <h4>If you do not have an account, Please SignUp</h4>
                                     <RaisedButton
+                                        onClick={this.props.handleSignUp}
                                         label='SignUp'
                                         backgroundColor="#19314B"
                                         labelColor="#fff" />

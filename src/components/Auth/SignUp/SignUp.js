@@ -352,6 +352,7 @@ class SignUp extends Component {
                             margin: '5px 0'
                         }}>If you have an Account Please Login</h4>
                             <RaisedButton
+                                onClick={this.props.loginAction}
                                
                                 label='Login'
                                 backgroundColor="#19314B"
