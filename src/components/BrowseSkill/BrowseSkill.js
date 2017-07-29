@@ -7,6 +7,7 @@ import {Card, CardTitle} from 'material-ui/Card';
 import * as $ from "jquery";
 import Link from "react-router-dom/es/Link";
 import colors from "../../Utils/colors";
+import CircleImage from "../CircleImage/CircleImage";
 const models = [];
 const groups = [];
 const languages = [];
@@ -46,10 +47,16 @@ export default class BrowseSkill extends React.Component {
                                   state: { url: url, element: el, name: data[el]}
                               }}>
                             <Card style={styles.row} key={el}>
+                                <div style={styles.right}>
+                                <CircleImage name={data[el].replace(/\.[^/.]+$/, "").toUpperCase()} size="48"/>
                                 <CardTitle
                                     title={data[el].replace(/\.[^/.]+$/, "")}
                                     titleStyle={{'fontSize':'18px'}}
                                 />
+                                </div>
+                                <div>
+                                    {/*Empty div for description*/}
+                                </div>
                             </Card>
                         </Link>
                     )
@@ -284,5 +291,11 @@ const styles = {
         flexDirection: "row",
         margin:"10px",
         textAlign:"center"
+    },
+    right: {
+        display: 'flex',
+        alignItems:"center",
+        flexDirection: 'row',
+        padding: "10px",
     },
 }
