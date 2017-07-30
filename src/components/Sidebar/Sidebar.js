@@ -23,7 +23,7 @@ export default class Sidebar extends React.Component {
                 <Link to="/">
                     <img style={styles.logo} src={require('../images/SUSIAI-white.png')}  alt=""/>
                 </Link>
-    
+
                 <Menu
                     theme={this.state.theme}
                     onClick={this.handleClick}
@@ -32,34 +32,10 @@ export default class Sidebar extends React.Component {
                     selectedKeys={[this.state.current]}
                     mode="inline"
                 >
-                    <Menu.Item key="BrowseSkill">
-                        <Icon type="book" />
-                        Browse Skills
-                        <Link to="/browseSKill"></Link>
-                    </Menu.Item>
-
                     <Menu.Item key="SkillEditor">
                         <Icon type="code" />
                         Skill Editor
                         <Link to="/skillEditor"></Link>
-                    </Menu.Item>
-
-                    <Menu.Item key="BrowseRevision">
-                        <Icon type="fork" />
-                        Browse Skills Revision
-                        <Link to="/browseHistory"></Link>
-                    </Menu.Item>
-
-                    <Menu.Item key="BrowseExamples">
-                        <Icon type="file" />
-                        Browse Examples
-                        <Link to="/browseExamples"></Link>
-                    </Menu.Item>
-
-                    <Menu.Item key="VisualEditor">
-                        <Icon type="api" />
-                        Visual Skill Editor
-                        <Link to="/visualEditor"></Link>
                     </Menu.Item>
 
                 </Menu>

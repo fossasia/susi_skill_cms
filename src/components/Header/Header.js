@@ -1,46 +1,155 @@
 import React from 'react';
-import Button from "antd/es/button/button";
 import Cookies from 'universal-cookie';
 import Dialog from 'material-ui/Dialog';
 import Login from "../Auth/Login/Login";
 import SignUp from "../Auth/SignUp/SignUp";
 import colors from "../../Utils/colors";
 import Close from 'material-ui/svg-icons/navigation/close';
+import AppBar from 'material-ui/AppBar';
+import IconButton from 'material-ui/IconButton';
+import IconMenu from 'material-ui/IconMenu';
+import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
+import Popover from 'material-ui/Popover';
+import Exit from 'material-ui/svg-icons/action/exit-to-app';
+import SignUpIcon from 'material-ui/svg-icons/action/account-circle';
+import MenuItem from 'material-ui/MenuItem';
+import Settings from 'material-ui/svg-icons/action/settings';
+import { Link } from 'react-router-dom';
+
 var deleteCookie = function(name) {
     document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 };
 const cookies = new Cookies();
 
+let TopRightMenu = (props) => (
+	<IconMenu
+		{...props}
+		iconButtonElement={
+			<IconButton
+				iconStyle={{ fill: 'white' }}><MoreVertIcon /></IconButton>
+		}
+		targetOrigin={{ horizontal: 'right', vertical: 'top' }}
+		anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
+	>
+	</IconMenu>
+)
+
 export default class Header extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            showLogout: false,
-            open:false,
-            openSignUp:false
+          showLogin: false,
+          showSignUp: false,
+          showOptions: false,
+          anchorEl: null,
         }
     }
 
     componentDidMount() {
-        console.log(cookies.get('loggedIn'))
-        if(!cookies.get('loggedIn')) {
-            this.setState({showLogout: false});
-        }
-        else
-            this.setState({open: false, openSignUp:false, showLogout:true});
-    }
-    handleOpen = () => {
-        this.setState({open: true, openSignUp: false });
-      
-    };
-    handleOpenSignUp = () => {
-        this.setState({openSignUp: true, open: false});
-      
-    };
+      // dummy setState to update the top right menu
+      this.setState({
+	      populateTopRightMenu: true,
+	    });
+  		// Check Logged in
+      console.log(cookies.get('loggedIn'));
+  		if (cookies.get('loggedIn')) {
+  			TopRightMenu = (props) => (
+  			<div>
+  				<IconButton
+  					{...props}
+  					iconStyle={{ fill: 'white' }}
+  					onTouchTap={this.showOptions}>
+  					<MoreVertIcon />
+  				</IconButton>
+  				<Popover
+  					{...props}
+  					style={{marginLeft:'-15px'}}
+  					open={this.state.showOptions}
+  					anchorEl={this.state.anchorEl}
+  					anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+  					targetOrigin={{ horizontal: 'right', vertical: 'top' }}
+  					onRequestClose={this.closeOptions}
+  				>
+            <MenuItem primaryText="Settings"
+              containerElement={<Link to="/settings" />}
+              rightIcon={<Settings/>}/>
+  					<MenuItem primaryText="Logout"
+              onTouchTap={this.logout}
+  						rightIcon={<Exit />}/>
+  				</Popover>
+  			</div>
+  		)
+  		return <TopRightMenu />
+  		}
 
-    handleClose = () => {
-        this.setState({ open: false, openSignUp: false });
-    };
+  		// If Not Logged In
+  		TopRightMenu = (props) => (
+  			<div>
+  				<IconButton
+  					{...props}
+  					iconStyle={{ fill: 'white' }}
+  					onTouchTap={this.showOptions}>
+  					<MoreVertIcon />
+  				</IconButton>
+  				<Popover
+  					{...props}
+  					style={{marginLeft:'-15px'}}
+  					open={this.state.showOptions}
+  					anchorEl={this.state.anchorEl}
+  					anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+  					targetOrigin={{ horizontal: 'right', vertical: 'top' }}
+  					onRequestClose={this.closeOptions}
+  				>
+            <MenuItem primaryText="Settings"
+  						containerElement={<Link to="/settings" />}
+  						rightIcon={<Settings/>}/>
+  					<MenuItem primaryText="Login"
+  						onTouchTap={this.handleLogin} />
+  					<MenuItem primaryText="Sign Up"
+  						onTouchTap={this.handleSignUp}
+  						rightIcon={<SignUpIcon/>} />
+  				</Popover>
+  			</div>
+  		)
+  		return <TopRightMenu />
+  	}
+
+    showOptions = (event) => {
+  		this.setState({
+        showOptions: true,
+  			anchorEl: event.currentTarget,
+      });
+  	}
+
+  	closeOptions = () => {
+  		this.setState({
+        showOptions: false,
+      });
+  	}
+
+    handleLogin = () => {
+      this.setState({
+        showLogin: true,
+        showSignUp: false,
+  			showOptions: false,
+      });
+    }
+
+    handleSignUp = () => {
+      this.setState({
+        showSignUp: true,
+        showLogin: false,
+  			showOptions: false,
+      });
+    }
+
+    handleClose = ()  => {
+  		this.setState({
+  			showOptions: false,
+  			showLogin: false,
+  			showSignUp: false,
+  		})
+  	}
 
     logout = () => {
         deleteCookie('loggedIn');
@@ -60,36 +169,46 @@ export default class Header extends React.Component {
             top: '10px',
             cursor:'pointer'
         }
+
+        const bodyStyle = {
+          'padding': 0,
+          textAlign: 'center'
+        }
+
         return (
 
-            <div style={styles.header}>
-                { !this.state.showLogout ?
-                    <div>
-                        <Button onClick={this.handleOpenSignUp} style={styles.buttonMargin}>Register</Button>
-                        <Button onClick={this.handleOpen} style={styles.buttonMargin}>Login</Button>
-                    </div>
-                    :
-                    <Button onClick={this.logout} style={styles.buttonMargin}>Logout</Button>
-
-                }
+            <div >
+                <AppBar
+                  style={styles.header}
+                  iconElementLeft={null}
+                  iconStyleRight={{marginTop: '-2px'}}
+                  iconElementRight={<TopRightMenu />}
+              />
 
                 <Dialog
                     modal={false}
-                    open={this.state.open}
+                    open={this.state.showLogin}
                     onRequestClose={this.handleClose}
                     autoScrollBodyContent={true}
+                    bodyStyle={bodyStyle}
+                    contentStyle={{ width: '35%', minWidth: '300px' }}
                 >
-                    <Login {...this.props} />
+                    <Login {...this.props}
+                      onSignUpLogin={this.handleSignUp}/>
                     <Close style={closingStyle}
                            onTouchTap={this.handleClose} />
                 </Dialog>
                 <Dialog
                     modal={false}
-                    open={this.state.openSignUp}
+                    open={this.state.showSignUp}
                     onRequestClose={this.handleClose}
                     autoScrollBodyContent={true}
+                    bodyStyle={bodyStyle}
+                    contentStyle={{ width: '35%', minWidth: '300px' }}
                 >
-                    <SignUp {...this.props} />
+                    <SignUp {...this.props}
+                      onRequestClose={this.handleClose}
+                      onLoginSignUp={this.handleLogin}/>
                     <Close style={closingStyle}
                            onTouchTap={this.handleClose} />
                 </Dialog>
@@ -114,7 +233,4 @@ const styles = {
         color: "#fff",
         fontSize: "16px",
     },
-    buttonMargin:{
-        margin:"10px"
-    }
 };

@@ -7,7 +7,7 @@ import Home from "./components/SkillEditor/SkillEditor";
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import { BrowserRouter as Router, Route} from "react-router-dom";
 import NotFound from "./components/NotFound/NotFound";
-import Chatbox from "./components/Chatbox/Chatbox";
+import Settings from "./components/Settings/Settings";
 import Switch from "react-router-dom/es/Switch";
 import BrowseHistory from "./components/BrowseHistory/BrowseHistory";
 import BrowseSkill from "./components/BrowseSkill/BrowseSkill";
@@ -30,13 +30,13 @@ class App extends React.Component {
                 <Header />
                 <Body>
                     <Switch>
-                        <Route path="/chat" component={Chatbox}/>
                         <Route path="/skillEditor" component={Home} />
                         <Route path="/browseHistory" component={BrowseHistory} />
                         <Route path="/browseExamples" component={BrowseExamples} />
                         <Route path="/browseSkill" component={BrowseSkill}/>
                         <Route path="/visualEditor" component={VisualEditor}/>
                         <Route path="/skillPage" component={SkillListing}/>
+                        <Route path="/settings" component={Settings}/>
                         <Route path="/" component={BrowseSkill} />
                         <Route component={NotFound} />
                     </Switch>

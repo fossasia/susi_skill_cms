@@ -167,6 +167,21 @@ class Login extends Component {
         this.setState({ open: true });
     };
 
+    handleSignUp = () => {
+        this.setState(
+            {
+              email: '',
+              password: '',
+              isFilled: false,
+              success: false,
+              validForm: false,
+              emailError: true,
+              passwordError: true,
+              checked: false,
+        });
+        this.props.onSignUpLogin();
+    };
+
     render() {
         // const { token } = this.props;
         const hidden = '';
@@ -232,6 +247,7 @@ class Login extends Component {
                                 <h4>If you do not have an account, Please SignUp</h4>
                                     <RaisedButton
                                         label='SignUp'
+                                        onTouchTap={this.handleSignUp}
                                         backgroundColor="#19314B"
                                         labelColor="#fff" />
                             </div>
