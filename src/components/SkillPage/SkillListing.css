@@ -1,0 +1,18 @@
+.avatar-meta {
+    display: flex;
+}
+
+.avatar {
+    padding-right: 40px;
+}
+.examples > div{
+    margin-top:10px ;
+}
+
+.margin-b-md {
+    margin-bottom: 24px;
+}
+
+.margin-t-md {
+    margin-top: 24px;
+}
