@@ -17,6 +17,7 @@ import Settings from 'material-ui/svg-icons/action/settings';
 import {Link} from 'react-router-dom';
 import {Icon} from 'antd';
 import susiLogo from '../images/susi-white.svg';
+import * as $ from "jquery";
 
 var deleteCookie = function (name) {
     document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
@@ -84,7 +85,7 @@ export default class Header extends React.Component {
                                   onTouchTap={this.logout}
                                   rightIcon={<Exit/>}/>
                         <MenuItem primaryText="ListUsers"
-                                  onTouchTap={this.handleClose}
+                                  onTouchTap={this.handleListUsers}
                                   containerElement={<Link to="/listUers"/>}/>
                     </Popover>
                 </div>
@@ -164,6 +165,22 @@ export default class Header extends React.Component {
             showLogin: false,
             showSignUp: false,
         })
+    }
+
+    handleListUsers = () => {
+        let url;
+        url = "http://api.susi.ai/aaa/aaa/account-permissions.json";
+        let self = this;
+        $.ajax({
+            url: url,
+            dataType: 'jsonp',
+            jsonpCallback: 'p',
+            jsonp: 'callback',
+            crossDomain: true,
+            success: function (data) {
+                console.log(data);
+            }
+        });
     }
 
     logout = () => {
