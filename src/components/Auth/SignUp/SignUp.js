@@ -7,10 +7,8 @@ import './SignUp.css';
 import PasswordField from 'material-ui-password-field';
 import Dialog from 'material-ui/Dialog';
 import PropTypes from 'prop-types';
-import Login from '../../Auth/Login/Login';
 import { addUrlProps, UrlQueryParamTypes } from 'react-url-query';
 import zxcvbn from 'zxcvbn';
-import Close from 'material-ui/svg-icons/navigation/close';
 
 const urlPropsQueryConfig = {
     token: { type: UrlQueryParamTypes.string },
@@ -264,6 +262,7 @@ class SignUp extends Component {
             checked:false,
             serverFieldError: false
         });
+        this.props.onLoginSignUp();
     };
 
     render() {
@@ -275,16 +274,6 @@ class SignUp extends Component {
         }
         const fieldStyle={
             'width':'256px'
-        }
-        const closingStyle ={
-          position: 'absolute',
-          zIndex: 1200,
-          fill: '#444',
-          width: '26px',
-          height: '26px',
-          right: '10px',
-          top: '10px',
-          cursor:'pointer'
         }
         const underlineFocusStyle= {
             color: '#4285f4'
@@ -352,8 +341,8 @@ class SignUp extends Component {
                             margin: '5px 0'
                         }}>If you have an Account Please Login</h4>
                             <RaisedButton
-                               
                                 label='Login'
+                                onTouchTap={this.handleOpen}
                                 backgroundColor="#19314B"
                                 labelColor="#fff" />
                         </div>
@@ -368,16 +357,6 @@ class SignUp extends Component {
                         {this.state.msg}
                     </Dialog></div>
                 )}
-                <Dialog
-                  className='dialogStyle'
-                  modal={false}
-                  open={this.state.open}
-                  autoScrollBodyContent={true}
-                  contentStyle={{width: '35%',minWidth: '300px'}}>
-                  <Login {...this.props} />
-                  <Close style={closingStyle}
-                    onTouchTap={this.handleClose} />
-                </Dialog>
             </div>
         );
     };

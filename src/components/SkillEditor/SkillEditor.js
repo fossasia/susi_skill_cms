@@ -1,6 +1,5 @@
 import React from 'react';
 import { Icon } from 'antd';
-import Chatbox from "../Chatbox/Chatbox";
 import MenuItem from 'material-ui/MenuItem';
 import SelectField from 'material-ui/SelectField';
 import {FloatingActionButton, Paper, TextField} from "material-ui";
@@ -223,9 +222,6 @@ export default class Container extends React.Component {
                         name="skill_code_editor"
                         editorProps={{$blockScrolling: true}}
                     />
-
-                    <Chatbox />
-
                 </div>
             </div>
 
