@@ -16,7 +16,7 @@ import MenuItem from 'material-ui/MenuItem';
 import Settings from 'material-ui/svg-icons/action/settings';
 import { Link } from 'react-router-dom';
 import { Icon } from 'antd';
-import susiLogo from '../images/SUSIAI-white.png';
+import susiLogo from '../images/susi-white.svg';
 
 var deleteCookie = function(name) {
     document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
