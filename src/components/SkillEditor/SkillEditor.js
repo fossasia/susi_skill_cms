@@ -1,10 +1,8 @@
 import React from 'react';
 import { Icon } from 'antd';
-import Chatbox from "../Chatbox/Chatbox";
 import MenuItem from 'material-ui/MenuItem';
 import SelectField from 'material-ui/SelectField';
-import {FloatingActionButton, Paper, TextField} from "material-ui";
-import ContentAdd from "material-ui/svg-icons/navigation/arrow-forward";
+import { Paper, RaisedButton, TextField} from "material-ui";
 import AceEditor from 'react-ace';
 import Cookies from 'universal-cookie';
 import 'brace/mode/markdown';
@@ -14,12 +12,13 @@ import 'brace/theme/tomorrow';
 import 'brace/theme/kuroir';
 import 'brace/theme/twilight';
 import 'brace/theme/xcode';
+import 'brace/mode/java';
 import 'brace/theme/textmate';
 import 'brace/theme/solarized_dark';
 import 'brace/theme/solarized_light';
 import 'brace/theme/terminal';
 import * as $ from "jquery";
-import colors from "../../Utils/colors";
+import {notification} from 'antd';
 
 const models = [];
 const groups = [];
@@ -27,17 +26,21 @@ const languages = [];
 const fontsizes =[];
 const codeEditorThemes =[];
 const cookies = new Cookies();
-
+let self;
 export default class Container extends React.Component {
 
     componentDidMount() {
-        console.log(cookies.get('loggedIn'))
+        self = this;
+        self.loadmodels()
+    }
+    onChange(newValue) {
+        self.updateCode(newValue)
     }
 
     constructor(props) {
         super(props);
         this.state = {
-            modelValue: null, groupValue:null, languageValue:null, expertValue:null,code:"// code", fontSizeCode:14, editorTheme:"github"
+            modelValue: null, groupValue:null, languageValue:null, expertValue:null,code:"::name <Skill_name>\n::author <author_name>\n::author_url <author_url>\n::description <description> \n::dynamic_content <Yes/No>\n::developer_privacy_policy <link>\n::image <image_url>\n::term_of_use <link>\n\n#Intent\nUser query1|query2|quer3....\n!example:<The question that should be shown in public skill displays>\n!expect:<The answer expected for the above example>\nAnswer for the user query\n", fontSizeCode:14, editorTheme:"github"
         };
         let fonts = [
             14,16,18,20,24,28,32,40
@@ -95,6 +98,7 @@ export default class Container extends React.Component {
             });
         }
     }
+
     handleExpertChange = (event) => {
         console.log(event.target.value);
         this.setState({
@@ -102,6 +106,7 @@ export default class Container extends React.Component {
         });
 
     };
+
     handleGroupChange = (event, index, value) => {
         this.setState({groupValue: value});
         if(languages.length===0) {
@@ -125,24 +130,69 @@ export default class Container extends React.Component {
     handleLanguageChange = (event, index, value) => this.setState({languageValue: value});
     handleFontChange = (event, index, value) => this.setState({fontSizeCode: value});
     handleThemeChange = (event, index, value) => {this.setState({editorTheme: value});
-        console.log(this.state.editorTheme)}
+    console.log(this.state.editorTheme)}
 
-    buttonClick = () => {
+    saveClick = () => {
 
-        let url = "http://api.susi.ai/cms/getSkill.json?model="+models[this.state.modelValue].key+"&group="+groups[this.state.groupValue].key+"&language="+languages[this.state.languageValue].key+"&skill="+this.state.expertValue;
-        console.log(url);
-        let self = this;
-        $.ajax({
-            url: url,
-            jsonpCallback: 'pc',
-            dataType: 'jsonp',
-            jsonp: 'callback',
-            crossDomain: true,
-            success: function (data) {
-                self.updateCode(data.text)
-            }
-        });
+        if(!cookies.get('loggedIn')) {
+            notification.open({
+                message: 'Not logged In',
+                description: 'Please login and then try to create/edit a skill',
+                icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
+            });
+            return 0;
+        }
+        if(models.length===0||groups.length===0||languages.length===0||this.state.expertValue===null){
+            notification.open({
+                message: 'Error Processing your Request',
+                description: 'Please select a model, group, language and a skill',
+                icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
+            });
+            return 0;
+        }
 
+        //using local IP for now as this will directly push the changes to the SUSI Server.
+        //Need a review system before pushing to Susi Server.
+        let url= "http://localhost:4000/cms/modifySkill.json?model="+models[this.state.modelValue].key+"&group="+groups[this.state.groupValue].key+"&language="+languages[this.state.languageValue].key+"&skill="+this.state.expertValue+"&content="+encodeURIComponent(this.state.code)+"&changelog=added/modified "+this.state.expertValue;
+        console.log(url)
+
+            $.ajax({
+                url:url,
+                jsonpCallback: 'pc',
+                dataType: 'jsonp',
+                jsonp: 'callback',
+                crossDomain: true,
+                success: function (data) {
+                    console.log(data);
+                    if(data.accepted===true){
+                        notification.open({
+                            message: 'Accepted',
+                            description: 'Your Skill has been uploaded to the server',
+                            icon: <Icon type="check-circle" style={{ color: '#00C853' }} />,
+                        });
+                    }
+                    else{
+                        notification.open({
+                            message: 'Error Processing your Request',
+                            description: 'Please select a model, group, language and a skill',
+                            icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
+                        });
+                    }
+                },
+                error: function(e) {
+                    console.log(e);
+                    notification.open({
+                        message: 'Error Processing your Request',
+                        description: 'Error in processing the request. Please try with some other skill',
+                        icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
+                    });
+                }
+            });
+
+    }
+
+    resetClick = () => {
+        window.location.reload()
     }
 
     render() {
@@ -157,16 +207,15 @@ export default class Container extends React.Component {
                         <div style={styles.dropdownDiv}>
                             <SelectField
                                 floatingLabelText="Model"
-                                style={{width:'130px'}}
+                                style={{width:'130px',marginLeft:10,marginRight:10}}
                                 value={this.state.modelValue}
-                                onMouseEnter={this.loadmodels}
                                 onChange={this.handleModelChange}
                             >
                                 {models}
                             </SelectField>
                             <SelectField
                                 floatingLabelText="Group"
-                                style={{width:'160px'}}
+                                style={{width:'160px',marginLeft:10,marginRight:10}}
                                 value={this.state.groupValue}
                                 onChange={this.handleGroupChange}
                             >
@@ -174,7 +223,7 @@ export default class Container extends React.Component {
                             </SelectField>
                             <SelectField
                                 floatingLabelText="Language"
-                                style={{width:'90px'}}
+                                style={{width:'90px',marginLeft:10,marginRight:10}}
                                 value={this.state.languageValue}
                                 onChange={this.handleLanguageChange}
                             >
@@ -183,11 +232,13 @@ export default class Container extends React.Component {
                             <TextField
                                 floatingLabelText="Enter Skill name"
                                 floatingLabelFixed={true}
+                                hintText="My SUSI Skill"
+                                style={{marginLeft:10,marginRight:10}}
                                 onChange={this.handleExpertChange}
                             />
-                            <FloatingActionButton backgroundColor={colors.fabButton} style={{marginLeft: 25}} onClick={this.buttonClick}>
-                                <ContentAdd />
-                            </FloatingActionButton>
+                            {/*<FloatingActionButton backgroundColor={colors.fabButton} style={{marginLeft: 25}} onClick={this.buttonClick}>*/}
+                                {/*<ContentAdd />*/}
+                            {/*</FloatingActionButton>*/}
                         </div>
                     </div>
                 </Paper>
@@ -195,9 +246,7 @@ export default class Container extends React.Component {
                 <div style={styles.codeEditor}>
 
                     <div style={styles.toolbar}>
-                        <span style={styles.button}><Icon type="caret-right" style={styles.icon} />Run</span>
-                        <span style={styles.button}><Icon type="cloud-download" style={styles.icon}/>Save</span>
-                        <span style={styles.button}><Icon type="menu-unfold" style={styles.icon} />Indent</span>
+                        <span style={styles.button}><Icon type="cloud-download" style={styles.icon}/>Download as text</span>
                         <span style={styles.button}>Size <SelectField
                             style={{width:'60px'}}
                             onChange={this.handleFontChange}
@@ -214,18 +263,22 @@ export default class Container extends React.Component {
 
                     </div>
                     <AceEditor
-                        mode="markdown"
+                        mode="java"
                         theme={this.state.editorTheme}
                         width="100%"
                         fontSize={this.state.fontSizeCode}
                         height= "400px"
                         value={this.state.code}
                         name="skill_code_editor"
+                        onChange={this.onChange}
                         editorProps={{$blockScrolling: true}}
                     />
 
-                    <Chatbox />
-
+                    {/*<Chatbox />*/}
+                </div>
+                <div style={{display:"flex", flexDirection:"row", marginTop:"20px"}}>
+                    <RaisedButton label="Reset" onTouchTap={this.resetClick} primary={true} style={{width:"50%", marginLeft:30, marginRight:30}} />
+                    <RaisedButton label="Save" onTouchTap={this.saveClick}  secondary={true} style={{width:"50%", marginLeft:30, marginRight:30}} />
                 </div>
             </div>
 
@@ -249,6 +302,7 @@ const styles = {
     dropdownDiv:{
         display: "flex",
         alignItems: "center"
+
     },
     toolbar: {
         width: "100%",
