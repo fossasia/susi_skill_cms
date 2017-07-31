@@ -15,6 +15,8 @@ import SignUpIcon from 'material-ui/svg-icons/action/account-circle';
 import MenuItem from 'material-ui/MenuItem';
 import Settings from 'material-ui/svg-icons/action/settings';
 import { Link } from 'react-router-dom';
+import { Icon } from 'antd';
+import susiLogo from '../images/SUSIAI-white.png';
 
 var deleteCookie = function(name) {
     document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
@@ -71,8 +73,13 @@ export default class Header extends React.Component {
   					onRequestClose={this.closeOptions}
   				>
             <MenuItem primaryText="Settings"
+              onTouchTap={this.handleClose}
               containerElement={<Link to="/settings" />}
               rightIcon={<Settings/>}/>
+            <MenuItem primaryText="Skill Editor"
+              onTouchTap={this.handleClose}
+              containerElement={<Link to="/skillEditor" />}
+              rightIcon={<Icon type="code" />} />
   					<MenuItem primaryText="Logout"
               onTouchTap={this.logout}
   						rightIcon={<Exit />}/>
@@ -101,8 +108,13 @@ export default class Header extends React.Component {
   					onRequestClose={this.closeOptions}
   				>
             <MenuItem primaryText="Settings"
+              onTouchTap={this.handleClose}
   						containerElement={<Link to="/settings" />}
   						rightIcon={<Settings/>}/>
+            <MenuItem primaryText="Skill Editor"
+              onTouchTap={this.handleClose}
+              containerElement={<Link to="/skillEditor" />}
+              rightIcon={<Icon type="code" />} />
   					<MenuItem primaryText="Login"
   						onTouchTap={this.handleLogin} />
   					<MenuItem primaryText="Sign Up"
@@ -180,7 +192,9 @@ export default class Header extends React.Component {
             <div >
                 <AppBar
                   style={styles.header}
-                  iconElementLeft={null}
+                  iconElementLeft={<div><Link to="/">
+                      <img style={styles.logo} src={susiLogo}  alt=""/>
+                  </Link></div>}
                   iconStyleRight={{marginTop: '-2px'}}
                   iconElementRight={<TopRightMenu />}
               />
@@ -233,4 +247,8 @@ const styles = {
         color: "#fff",
         fontSize: "16px",
     },
+    logo: {
+        width: '150px',
+        padding: '20px'
+    }
 };
