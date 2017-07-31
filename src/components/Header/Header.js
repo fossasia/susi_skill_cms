@@ -14,154 +14,157 @@ import Exit from 'material-ui/svg-icons/action/exit-to-app';
 import SignUpIcon from 'material-ui/svg-icons/action/account-circle';
 import MenuItem from 'material-ui/MenuItem';
 import Settings from 'material-ui/svg-icons/action/settings';
-import { Link } from 'react-router-dom';
-import { Icon } from 'antd';
+import {Link} from 'react-router-dom';
+import {Icon} from 'antd';
 import susiLogo from '../images/susi-white.svg';
 
-var deleteCookie = function(name) {
+var deleteCookie = function (name) {
     document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 };
 const cookies = new Cookies();
 
 let TopRightMenu = (props) => (
-	<IconMenu
-		{...props}
-		iconButtonElement={
-			<IconButton
-				iconStyle={{ fill: 'white' }}><MoreVertIcon /></IconButton>
-		}
-		targetOrigin={{ horizontal: 'right', vertical: 'top' }}
-		anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
-	>
-	</IconMenu>
+    <IconMenu
+        {...props}
+        iconButtonElement={
+            <IconButton
+                iconStyle={{fill: 'white'}}><MoreVertIcon/></IconButton>
+        }
+        targetOrigin={{horizontal: 'right', vertical: 'top'}}
+        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+    >
+    </IconMenu>
 )
 
 export default class Header extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-          showLogin: false,
-          showSignUp: false,
-          showOptions: false,
-          anchorEl: null,
+            showLogin: false,
+            showSignUp: false,
+            showOptions: false,
+            anchorEl: null,
         }
     }
 
     componentDidMount() {
-      // dummy setState to update the top right menu
-      this.setState({
-	      populateTopRightMenu: true,
-	    });
-  		// Check Logged in
-      console.log(cookies.get('loggedIn'));
-  		if (cookies.get('loggedIn')) {
-  			TopRightMenu = (props) => (
-  			<div>
-  				<IconButton
-  					{...props}
-  					iconStyle={{ fill: 'white' }}
-  					onTouchTap={this.showOptions}>
-  					<MoreVertIcon />
-  				</IconButton>
-  				<Popover
-  					{...props}
-  					style={{marginLeft:'-15px'}}
-  					open={this.state.showOptions}
-  					anchorEl={this.state.anchorEl}
-  					anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-  					targetOrigin={{ horizontal: 'right', vertical: 'top' }}
-  					onRequestClose={this.closeOptions}
-  				>
-            <MenuItem primaryText="Settings"
-              onTouchTap={this.handleClose}
-              containerElement={<Link to="/settings" />}
-              rightIcon={<Settings/>}/>
-            <MenuItem primaryText="Skill Editor"
-              onTouchTap={this.handleClose}
-              containerElement={<Link to="/skillEditor" />}
-              rightIcon={<Icon type="code" />} />
-  					<MenuItem primaryText="Logout"
-              onTouchTap={this.logout}
-  						rightIcon={<Exit />}/>
-  				</Popover>
-  			</div>
-  		)
-  		return <TopRightMenu />
-  		}
+        // dummy setState to update the top right menu
+        this.setState({
+            populateTopRightMenu: true,
+        });
+        // Check Logged in
+        console.log(cookies.get('loggedIn'));
+        if (cookies.get('loggedIn')) {
+            TopRightMenu = (props) => (
+                <div>
+                    <IconButton
+                        {...props}
+                        iconStyle={{fill: 'white'}}
+                        onTouchTap={this.showOptions}>
+                        <MoreVertIcon/>
+                    </IconButton>
+                    <Popover
+                        {...props}
+                        style={{marginLeft: '-15px'}}
+                        open={this.state.showOptions}
+                        anchorEl={this.state.anchorEl}
+                        anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
+                        targetOrigin={{horizontal: 'right', vertical: 'top'}}
+                        onRequestClose={this.closeOptions}
+                    >
+                        <MenuItem primaryText="Settings"
+                                  onTouchTap={this.handleClose}
+                                  containerElement={<Link to="/settings"/>}
+                                  rightIcon={<Settings/>}/>
+                        <MenuItem primaryText="Skill Editor"
+                                  onTouchTap={this.handleClose}
+                                  containerElement={<Link to="/skillEditor"/>}
+                                  rightIcon={<Icon type="code"/>}/>
+                        <MenuItem primaryText="Logout"
+                                  onTouchTap={this.logout}
+                                  rightIcon={<Exit/>}/>
+                        <MenuItem primaryText="ListUsers"
+                                  onTouchTap={this.handleClose}
+                                  containerElement={<Link to="/listUers"/>}/>
+                    </Popover>
+                </div>
+            )
+            return <TopRightMenu/>
+        }
 
-  		// If Not Logged In
-  		TopRightMenu = (props) => (
-  			<div>
-  				<IconButton
-  					{...props}
-  					iconStyle={{ fill: 'white' }}
-  					onTouchTap={this.showOptions}>
-  					<MoreVertIcon />
-  				</IconButton>
-  				<Popover
-  					{...props}
-  					style={{marginLeft:'-15px'}}
-  					open={this.state.showOptions}
-  					anchorEl={this.state.anchorEl}
-  					anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-  					targetOrigin={{ horizontal: 'right', vertical: 'top' }}
-  					onRequestClose={this.closeOptions}
-  				>
-            <MenuItem primaryText="Settings"
-              onTouchTap={this.handleClose}
-  						containerElement={<Link to="/settings" />}
-  						rightIcon={<Settings/>}/>
-            <MenuItem primaryText="Skill Editor"
-              onTouchTap={this.handleClose}
-              containerElement={<Link to="/skillEditor" />}
-              rightIcon={<Icon type="code" />} />
-  					<MenuItem primaryText="Login"
-  						onTouchTap={this.handleLogin} />
-  					<MenuItem primaryText="Sign Up"
-  						onTouchTap={this.handleSignUp}
-  						rightIcon={<SignUpIcon/>} />
-  				</Popover>
-  			</div>
-  		)
-  		return <TopRightMenu />
-  	}
+        // If Not Logged In
+        TopRightMenu = (props) => (
+            <div>
+                <IconButton
+                    {...props}
+                    iconStyle={{fill: 'white'}}
+                    onTouchTap={this.showOptions}>
+                    <MoreVertIcon/>
+                </IconButton>
+                <Popover
+                    {...props}
+                    style={{marginLeft: '-15px'}}
+                    open={this.state.showOptions}
+                    anchorEl={this.state.anchorEl}
+                    anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
+                    targetOrigin={{horizontal: 'right', vertical: 'top'}}
+                    onRequestClose={this.closeOptions}
+                >
+                    <MenuItem primaryText="Settings"
+                              onTouchTap={this.handleClose}
+                              containerElement={<Link to="/settings"/>}
+                              rightIcon={<Settings/>}/>
+                    <MenuItem primaryText="Skill Editor"
+                              onTouchTap={this.handleClose}
+                              containerElement={<Link to="/skillEditor"/>}
+                              rightIcon={<Icon type="code"/>}/>
+                    <MenuItem primaryText="Login"
+                              onTouchTap={this.handleLogin}/>
+                    <MenuItem primaryText="Sign Up"
+                              onTouchTap={this.handleSignUp}
+                              rightIcon={<SignUpIcon/>}/>
+                </Popover>
+            </div>
+        )
+        return <TopRightMenu/>
+    }
 
     showOptions = (event) => {
-  		this.setState({
-        showOptions: true,
-  			anchorEl: event.currentTarget,
-      });
-  	}
+        this.setState({
+            showOptions: true,
+            anchorEl: event.currentTarget,
+        });
+    }
 
-  	closeOptions = () => {
-  		this.setState({
-        showOptions: false,
-      });
-  	}
+    closeOptions = () => {
+        this.setState({
+            showOptions: false,
+        });
+    }
 
     handleLogin = () => {
-      this.setState({
-        showLogin: true,
-        showSignUp: false,
-  			showOptions: false,
-      });
+        this.setState({
+            showLogin: true,
+            showSignUp: false,
+            showOptions: false,
+        });
     }
 
     handleSignUp = () => {
-      this.setState({
-        showSignUp: true,
-        showLogin: false,
-  			showOptions: false,
-      });
+        this.setState({
+            showSignUp: true,
+            showLogin: false,
+            showOptions: false,
+        });
     }
 
-    handleClose = ()  => {
-  		this.setState({
-  			showOptions: false,
-  			showLogin: false,
-  			showSignUp: false,
-  		})
-  	}
+    handleClose = () => {
+        this.setState({
+            showOptions: false,
+            showLogin: false,
+            showSignUp: false,
+        })
+    }
 
     logout = () => {
         deleteCookie('loggedIn');
@@ -171,7 +174,7 @@ export default class Header extends React.Component {
     };
 
     render() {
-        const closingStyle ={
+        const closingStyle = {
             position: 'absolute',
             zIndex: 1200,
             fill: '#444',
@@ -179,25 +182,25 @@ export default class Header extends React.Component {
             height: '26px',
             right: '10px',
             top: '10px',
-            cursor:'pointer'
+            cursor: 'pointer'
         }
 
         const bodyStyle = {
-          'padding': 0,
-          textAlign: 'center'
+            'padding': 0,
+            textAlign: 'center'
         }
 
         return (
 
-            <div >
+            <div>
                 <AppBar
-                  style={styles.header}
-                  iconElementLeft={<div><Link to="/">
-                      <img style={styles.logo} src={susiLogo}  alt=""/>
-                  </Link></div>}
-                  iconStyleRight={{marginTop: '-2px'}}
-                  iconElementRight={<TopRightMenu />}
-              />
+                    style={styles.header}
+                    iconElementLeft={<div><Link to="/">
+                        <img style={styles.logo} src={susiLogo} alt=""/>
+                    </Link></div>}
+                    iconStyleRight={{marginTop: '-2px'}}
+                    iconElementRight={<TopRightMenu/>}
+                />
 
                 <Dialog
                     modal={false}
@@ -205,12 +208,12 @@ export default class Header extends React.Component {
                     onRequestClose={this.handleClose}
                     autoScrollBodyContent={true}
                     bodyStyle={bodyStyle}
-                    contentStyle={{ width: '35%', minWidth: '300px' }}
+                    contentStyle={{width: '35%', minWidth: '300px'}}
                 >
                     <Login {...this.props}
-                      onSignUpLogin={this.handleSignUp}/>
+                           onSignUpLogin={this.handleSignUp}/>
                     <Close style={closingStyle}
-                           onTouchTap={this.handleClose} />
+                           onTouchTap={this.handleClose}/>
                 </Dialog>
                 <Dialog
                     modal={false}
@@ -218,13 +221,13 @@ export default class Header extends React.Component {
                     onRequestClose={this.handleClose}
                     autoScrollBodyContent={true}
                     bodyStyle={bodyStyle}
-                    contentStyle={{ width: '35%', minWidth: '300px' }}
+                    contentStyle={{width: '35%', minWidth: '300px'}}
                 >
                     <SignUp {...this.props}
-                      onRequestClose={this.handleClose}
-                      onLoginSignUp={this.handleLogin}/>
+                            onRequestClose={this.handleClose}
+                            onLoginSignUp={this.handleLogin}/>
                     <Close style={closingStyle}
-                           onTouchTap={this.handleClose} />
+                           onTouchTap={this.handleClose}/>
                 </Dialog>
             </div>
         );

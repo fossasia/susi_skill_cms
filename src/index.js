@@ -7,6 +7,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import { BrowserRouter as Router, Route} from "react-router-dom";
 import NotFound from "./components/NotFound/NotFound";
 import Settings from "./components/Settings/Settings";
+import ListUsers from "./components/Admin/ListUsers/ListUser";
 import Switch from "react-router-dom/es/Switch";
 import BrowseHistory from "./components/BrowseHistory/BrowseHistory";
 import BrowseSkill from "./components/BrowseSkill/BrowseSkill";
@@ -31,6 +32,7 @@ class App extends React.Component {
                         <Route path="/skillEditor" component={Home} />
                         <Route path="/browseHistory" component={BrowseHistory} />
                         <Route path="/browseExamples" component={BrowseExamples} />
+                        <Route path="/listUsers" component={ListUsers}/>
                         <Route path="/browseSkill" component={BrowseSkill}/>
                         <Route path="/visualEditor" component={VisualEditor}/>
                         <Route path="/skillPage" component={SkillListing}/>
