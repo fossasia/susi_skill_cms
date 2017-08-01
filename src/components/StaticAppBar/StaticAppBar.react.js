@@ -17,7 +17,6 @@ import SKillIcon from 'material-ui/svg-icons/action/dashboard';
 import MenuItem from 'material-ui/MenuItem';
 import Settings from 'material-ui/svg-icons/action/settings';
 import { Link } from 'react-router-dom';
-import { Icon } from 'antd';
 import susiWhite from '../images/SUSIAI-white.png';
 import $ from 'jquery';
 import './StaticAppBar.css';
@@ -44,10 +43,6 @@ let TopRightMenuItems = (props) => (
         onTouchTap={this.handleClose}
         containerElement={<Link to="/settings" />}
         rightIcon={<Settings/>}/>
-      <MenuItem primaryText="Skill Editor"
-        onTouchTap={this.handleClose}
-        containerElement={<Link to="/skillEditor" />}
-        rightIcon={<Icon type="code" />} />
     </div>
 )
 
