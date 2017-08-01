@@ -11,12 +11,14 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import Popover from 'material-ui/Popover';
 import Exit from 'material-ui/svg-icons/action/exit-to-app';
 import LoginIcon from 'material-ui/svg-icons/action/account-circle';
+import Info from 'material-ui/svg-icons/action/info';
+import Chat from 'material-ui/svg-icons/communication/chat';
+import SKillIcon from 'material-ui/svg-icons/action/dashboard';
 import MenuItem from 'material-ui/MenuItem';
 import Settings from 'material-ui/svg-icons/action/settings';
 import { Link } from 'react-router-dom';
 import { Icon } from 'antd';
 import susiWhite from '../images/SUSIAI-white.png';
-import Chat from 'material-ui/svg-icons/communication/chat';
 import $ from 'jquery';
 import './StaticAppBar.css';
 
@@ -24,16 +26,28 @@ const cookies = new Cookies();
 
 let TopRightMenuItems = (props) => (
     <div>
-      <MenuItem primaryText="About" />
-      <a href='http://chat.susi.ai/'><MenuItem primaryText="Chat"
-        rightIcon={<Chat />} />
-      </a>
-      <MenuItem primaryText="Skills"
-        containerElement={<Link to="/" />}
-        rightIcon={<Icon type="code" />} />
+      <MenuItem primaryText="About"
+        onTouchTap={this.handleClose}
+        containerElement={<Link to="/overview" />}
+        rightIcon={<Info/>}/>
+      <MenuItem
+        href="http://chat.susi.ai/"
+        rightIcon={<Chat/>}>
+        Chat
+      </MenuItem>
+      <MenuItem
+        href="http://skills.susi.ai/"
+        rightIcon={<SKillIcon/>}>
+        Skills
+      </MenuItem>
       <MenuItem primaryText="Settings"
+        onTouchTap={this.handleClose}
         containerElement={<Link to="/settings" />}
         rightIcon={<Settings/>}/>
+      <MenuItem primaryText="Skill Editor"
+        onTouchTap={this.handleClose}
+        containerElement={<Link to="/skillEditor" />}
+        rightIcon={<Icon type="code" />} />
     </div>
 )
 
