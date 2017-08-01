@@ -365,6 +365,7 @@ class SignUp extends Component {
 SignUp.propTypes = {
     history: PropTypes.object,
     onRequestClose: PropTypes.func,
+    onLoginSignUp: PropTypes.func,
 }
 
 export default addUrlProps({ urlPropsQueryConfig })(SignUp);
