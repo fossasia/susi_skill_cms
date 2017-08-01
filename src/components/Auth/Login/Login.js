@@ -181,6 +181,21 @@ class Login extends Component {
         this.props.onSignUpLogin();
     };
 
+    handleForgotPassword = () => {
+      this.setState(
+          {
+            email: '',
+            password: '',
+            isFilled: false,
+            success: false,
+            validForm: false,
+            emailError: true,
+            passwordError: true,
+            checked: false,
+      });
+      this.props.onForgotPwdLogin();
+    }
+
     render() {
         // const { token } = this.props;
 
@@ -204,10 +219,10 @@ class Login extends Component {
                         <form onSubmit={this.handleSubmit}>
                             <div>
                                 <TextField name="email"
-                                           value={this.state.email}
-                                           onChange={this.handleChange}
-                                           errorText={this.emailErrorMessage}
-                                           floatingLabelText="Email" />
+                                    value={this.state.email}
+                                    onChange={this.handleChange}
+                                    errorText={this.emailErrorMessage}
+                                    floatingLabelText="Email" />
                             </div>
                             <div>
                                 <PasswordField
@@ -257,7 +272,9 @@ class Login extends Component {
 }
 
 Login.propTypes = {
-    history: PropTypes.object
+    history: PropTypes.object,
+    onForgotPwdLogin: PropTypes.func,
+    onSignUpLogin: PropTypes.func,
 };
 
 export default addUrlProps({ urlPropsQueryConfig })(Login);
