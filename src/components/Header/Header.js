@@ -83,6 +83,7 @@ export default class Header extends React.Component {
                                   containerElement={<Link to="/skillEditor"/>}
                                   rightIcon={<Icon type="code"/>}/>
                         <MenuItem primaryText="List Users"
+                                  onTouchTap={this.handleClose}
                                   containerElement={<Link to="/listUser"/>} />
                         <MenuItem primaryText="Logout"
                                   onTouchTap={this.logout}
