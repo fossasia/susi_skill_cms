@@ -5,6 +5,7 @@ import Login from "../Auth/Login/Login";
 import SignUp from "../Auth/SignUp/SignUp";
 import colors from "../../Utils/colors";
 import Close from 'material-ui/svg-icons/navigation/close';
+import Snackbar from 'material-ui/Snackbar';
 import AppBar from 'material-ui/AppBar';
 import IconButton from 'material-ui/IconButton';
 import IconMenu from 'material-ui/IconMenu';
@@ -13,6 +14,7 @@ import Popover from 'material-ui/Popover';
 import Exit from 'material-ui/svg-icons/action/exit-to-app';
 import SignUpIcon from 'material-ui/svg-icons/action/account-circle';
 import MenuItem from 'material-ui/MenuItem';
+import PropTypes  from 'prop-types';
 import Settings from 'material-ui/svg-icons/action/settings';
 import {Link} from 'react-router-dom';
 import {Icon} from 'antd';
@@ -157,7 +159,7 @@ export default class Header extends React.Component {
                 if(response.userRole!=="admin") {
                    console.log("Not an admin")
                 } else {
-                   this.props.history.push('/listUser')
+                   this.props.history.push('/listUser');
                    console.log("Admin")
                 }
             }.bind(this),
@@ -258,7 +260,9 @@ export default class Header extends React.Component {
         );
     }
 }
-
+Header.propTypes = {
+    history: PropTypes.object
+};
 const styles = {
     header: {
         width: "100%",
