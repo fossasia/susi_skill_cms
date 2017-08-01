@@ -15,6 +15,7 @@ import * as $ from "jquery";
 import {FloatingActionButton, Paper} from "material-ui";
 import CircleImage from "../CircleImage/CircleImage";
 import Save from 'material-ui/svg-icons/content/save';
+import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 
 export default class SkillListing extends React.Component {
 
@@ -66,6 +67,8 @@ export default class SkillListing extends React.Component {
 
     render() {
         return (
+          <div>
+            <StaticAppBar {...this.props} />
             <div style={styles.home}>
                 <Paper style={styles.paper_full_width}  rounded={false} >
                     <div style={styles.right}>
@@ -79,7 +82,6 @@ export default class SkillListing extends React.Component {
                             <Save/>
                         </FloatingActionButton>
                     </div>
-
                 </Paper>
                 <AceEditor
                     mode="markdown"
@@ -91,8 +93,8 @@ export default class SkillListing extends React.Component {
                     name="skill_code_editor"
                     editorProps={{$blockScrolling: true}}
                 />
-
             </div>
+          </div>
 
         );
     }
@@ -100,7 +102,8 @@ export default class SkillListing extends React.Component {
 
 const styles = {
     home: {
-        width: '100%'
+        width: '100%',
+        padding: "80px 30px 30px",
     },
     right: {
     display: 'flex',

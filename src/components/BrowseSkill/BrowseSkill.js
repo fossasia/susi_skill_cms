@@ -8,6 +8,7 @@ import * as $ from "jquery";
 import Link from "react-router-dom/es/Link";
 import colors from "../../Utils/colors";
 import CircleImage from "../CircleImage/CircleImage";
+import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 const models = [];
 const groups = [];
 const languages = [];
@@ -22,8 +23,7 @@ export default class BrowseSkill extends React.Component {
     }
 
     componentDidMount(){
-        this.loadInitialCards() 
-
+        this.loadInitialCards()
     }
 
     loadInitialCards = () => {
@@ -196,6 +196,8 @@ export default class BrowseSkill extends React.Component {
         };
 
         return (
+          <div>
+            <StaticAppBar {...this.props} />
             <div style={styles.container}>
                 <Paper style={style} zDepth={1}>
                     <div style={styles.center}>
@@ -242,6 +244,7 @@ export default class BrowseSkill extends React.Component {
                     </div>
                 </div>
             </div>
+          </div>
         );
     }
 }
@@ -261,7 +264,8 @@ const styles = {
         alignItems: "center",
         justifyContent: "center",
         flexDirection: "column",
-        width: "100%"
+        width: "100%",
+        padding: "80px 30px 30px",
     },
     propContainer: {
         width: 100,
