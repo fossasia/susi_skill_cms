@@ -13,6 +13,7 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 import BrowseExamples from "./components/BrowseExamples/BrowseExamples";
 import VisualEditor from "./components/VisualEditor/VisualEditor";
 import SkillListing from "./components/SkillPage/SkillListing";
+import Logout from './components/Auth/Logout.react';
 injectTapEventPlugin();
 
 class App extends React.Component {
@@ -30,6 +31,7 @@ class App extends React.Component {
                 <Route exact path="/visualEditor" component={VisualEditor}/>
                 <Route exact path="/skillPage" component={SkillListing}/>
                 <Route exact path="/settings" component={Settings}/>
+                <Route exact path="/logout" component={Logout} />
                 <Route exact path="/" component={BrowseSkill} />
                 <Route exact path="*" component={NotFound} />
               </Switch>

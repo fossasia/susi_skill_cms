@@ -16,13 +16,26 @@ import Settings from 'material-ui/svg-icons/action/settings';
 import { Link } from 'react-router-dom';
 import { Icon } from 'antd';
 import susiWhite from '../images/SUSIAI-white.png';
+import Chat from 'material-ui/svg-icons/communication/chat';
 import $ from 'jquery';
 import './StaticAppBar.css';
 
-var deleteCookie = function(name) {
-    document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-};
 const cookies = new Cookies();
+
+let TopRightMenuItems = (props) => (
+    <div>
+      <MenuItem primaryText="About" />
+      <a href='http://chat.susi.ai/'><MenuItem primaryText="Chat"
+        rightIcon={<Chat />} />
+      </a>
+      <MenuItem primaryText="Skills"
+        containerElement={<Link to="/" />}
+        rightIcon={<Icon type="code" />} />
+      <MenuItem primaryText="Settings"
+        containerElement={<Link to="/settings" />}
+        rightIcon={<Settings/>}/>
+    </div>
+)
 
 class StaticAppBar extends Component {
     constructor(props) {
@@ -119,13 +132,6 @@ class StaticAppBar extends Component {
   		})
   	}
 
-    logout = () => {
-        deleteCookie('loggedIn');
-        deleteCookie('serverUrl');
-        deleteCookie('email');
-        window.location.reload();
-    };
-
     render() {
 
       const closingStyle ={
@@ -144,7 +150,6 @@ class StaticAppBar extends Component {
         textAlign: 'center'
       }
 
-      // If Not Logged In
       let TopRightMenu = (props) => (
         <div onScroll={this.handleScroll}>
           <div>
@@ -168,59 +173,19 @@ class StaticAppBar extends Component {
               targetOrigin={{ horizontal: 'right', vertical: 'top' }}
               onRequestClose={this.closeOptions}
             >
-              <MenuItem primaryText="Settings"
-                containerElement={<Link to="/settings" />}
-                rightIcon={<Settings/>}/>
-              <MenuItem primaryText="Skill Editor"
-                containerElement={<Link to="/skillEditor" />}
-                rightIcon={<Icon type="code" />} />
-              <MenuItem primaryText="Login"
+              <TopRightMenuItems />
+              {cookies.get('loggedIn') ?
+               (<MenuItem primaryText="Logout"
+                containerElement={<Link to="/logout" />}
+                rightIcon={<Exit />}/>) :
+               (<MenuItem primaryText="Login"
                 onTouchTap={this.handleLogin}
-                rightIcon={<LoginIcon/>} />
+                rightIcon={<LoginIcon/>} />)
+              }
             </Popover>
           </div>
         </div>
       )
-
-      // Check Logged in
-      if (cookies.get('loggedIn')) {
-        TopRightMenu = (props) => (
-          <div onScroll={this.handleScroll}>
-            <div>
-              <IconMenu
-              {...props}
-                iconButtonElement={
-                  <IconButton
-                    iconStyle={{ fill: 'white' }}><MoreVertIcon /></IconButton>
-                }
-                targetOrigin={{ horizontal: 'right', vertical: 'top' }}
-                anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
-                onTouchTap={this.showOptions}
-                >
-              </IconMenu>
-            <Popover
-            {...props}
-              style={{ float: 'right', position: 'relative', right: '0px', margin: '46px 20px 0 0' }}
-              open={this.state.showOptions}
-              anchorEl={this.state.anchorEl}
-              anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-              targetOrigin={{ horizontal: 'right', vertical: 'top' }}
-              onRequestClose={this.closeOptions}
-            >
-              <MenuItem primaryText="Settings"
-                containerElement={<Link to="/settings" />}
-                rightIcon={<Settings/>}/>
-              <MenuItem primaryText="Skill Editor"
-                containerElement={<Link to="/skillEditor" />}
-                rightIcon={<Icon type="code" />} />
-              <MenuItem primaryText="Logout"
-                onTouchTap={this.logout}
-                rightIcon={<Exit />}/>
-            </Popover>
-          </div>
-        </div>
-      )
-      }
 
         return (
             <div>
