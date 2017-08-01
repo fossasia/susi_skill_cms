@@ -1,6 +1,6 @@
 import React from 'react';
 import Cookies from 'universal-cookie';
-// import Dialog from 'material-ui/Dialog';
+import Dialog from 'material-ui/Dialog';
 import Login from "../Auth/Login/Login";
 import SignUp from "../Auth/SignUp/SignUp";
 import colors from "../../Utils/colors";
