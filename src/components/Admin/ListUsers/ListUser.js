@@ -19,7 +19,7 @@ export default class ListUser extends React.Component {
             crossDomain: true,
             success: function (response) {
                 console.log(response.username)
-            }.bind(this),
+            },
             error: function (errorThrown) {
                 console.log(errorThrown)
             }

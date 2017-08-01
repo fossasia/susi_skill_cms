@@ -1,11 +1,11 @@
 import React from 'react';
 import Cookies from 'universal-cookie';
-import Dialog from 'material-ui/Dialog';
+// import Dialog from 'material-ui/Dialog';
 import Login from "../Auth/Login/Login";
 import SignUp from "../Auth/SignUp/SignUp";
 import colors from "../../Utils/colors";
 import Close from 'material-ui/svg-icons/navigation/close';
-import Snackbar from 'material-ui/Snackbar';
+// import Snackbar from 'material-ui/Snackbar';
 import AppBar from 'material-ui/AppBar';
 import IconButton from 'material-ui/IconButton';
 import IconMenu from 'material-ui/IconMenu';
