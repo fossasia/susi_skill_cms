@@ -66,7 +66,7 @@ class Login extends Component {
 
         let validEmail = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
         let loginEndPoint =
-            'http://api.susi.ai/aaa/login.json?type=access-token&login=' +
+            BASE_URL+'/aaa/login.json?type=access-token&login=' +
             this.state.email + '&password=' + this.state.password;
 
         if (email && validEmail) {
