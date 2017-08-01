@@ -32,7 +32,7 @@ class App extends React.Component {
                         <Route path="/skillEditor" component={Home} />
                         <Route path="/browseHistory" component={BrowseHistory} />
                         <Route path="/browseExamples" component={BrowseExamples} />
-                        <Route path="/listUsers" component={ListUser}/>
+                        <Route path="/listUser" component={ListUser}/>
                         <Route path="/browseSkill" component={BrowseSkill}/>
                         <Route path="/visualEditor" component={VisualEditor}/>
                         <Route path="/skillPage" component={SkillListing}/>

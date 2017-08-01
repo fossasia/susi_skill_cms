@@ -19,7 +19,6 @@ import Settings from 'material-ui/svg-icons/action/settings';
 import {Link} from 'react-router-dom';
 import {Icon} from 'antd';
 import susiLogo from '../images/susi-white.svg';
-import $ from 'jquery';
 
 var deleteCookie = function (name) {
     document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
@@ -84,7 +83,7 @@ export default class Header extends React.Component {
                                   containerElement={<Link to="/skillEditor"/>}
                                   rightIcon={<Icon type="code"/>}/>
                         <MenuItem primaryText="List Users"
-                                  onTouchTap={this.handleListUsers()}/>
+                                  containerElement={<Link to="/listUser"/>} />
                         <MenuItem primaryText="Logout"
                                   onTouchTap={this.logout}
                                   rightIcon={<Exit/>}/>
@@ -141,31 +140,6 @@ export default class Header extends React.Component {
     closeOptions = () => {
         this.setState({
             showOptions: false,
-        });
-    }
-
-    handleListUsers = () => {
-        let url;
-        url = "http://api.susi.ai/aaa/account-permissions.json";
-        $.ajax({
-           url: url,
-           dataType: 'jsonp',
-            jsonpCallback: 'py',
-            jsonp: 'callback',
-            crossDomain: true,
-            success: function (response) {
-               let keys = Object.keys(response)
-                console.log(response.userRole)
-                if(response.userRole!=="admin") {
-                   console.log("Not an admin")
-                } else {
-                   this.props.history.push('/listUser');
-                   console.log("Admin")
-                }
-            }.bind(this),
-            error: function (errorThrown) {
-                console.log(errorThrown)
-            }
         });
     }
 
