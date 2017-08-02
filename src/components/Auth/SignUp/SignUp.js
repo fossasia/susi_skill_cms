@@ -329,7 +329,7 @@ class SignUp extends Component {
                                 label="Sign Up"
                                 type="submit"
                                 disabled={!this.state.validForm}
-                                backgroundColor="#19314B"
+                                backgroundColor="#4285f4"
                                 labelColor="#fff"
                                 style={{margin:'15px 0 0 0 '}} />
                         </div>
@@ -343,7 +343,7 @@ class SignUp extends Component {
                             <RaisedButton
                                 label='Login'
                                 onTouchTap={this.handleOpen}
-                                backgroundColor="#19314B"
+                                backgroundColor="#4285f4"
                                 labelColor="#fff" />
                         </div>
                     </form>
@@ -365,6 +365,7 @@ class SignUp extends Component {
 SignUp.propTypes = {
     history: PropTypes.object,
     onRequestClose: PropTypes.func,
+    onLoginSignUp: PropTypes.func,
 }
 
 export default addUrlProps({ urlPropsQueryConfig })(SignUp);

@@ -7,6 +7,7 @@ import {Icon, notification} from 'antd';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from "material-ui/Table";
 import * as $ from "jquery";
 import colors from "../../Utils/colors";
+import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 const models = [];
 const groups = [];
 const languages = [];
@@ -177,6 +178,8 @@ export default class BrowseHistory extends React.Component {
 
 
         return (
+          <div>
+            <StaticAppBar {...this.props} />
             <div style={styles.container}>
                 <Paper style={style} zDepth={1}>
                     <div style={styles.center}>
@@ -256,6 +259,7 @@ export default class BrowseHistory extends React.Component {
                 </Table>
                 <p>{this.state.msg}</p>
             </div>
+          </div>
         );
     }
 }
@@ -272,7 +276,8 @@ const styles = {
         alignItems: "center",
         justifyContent: "center",
         flexDirection: "column",
-        width: "100%"
+        width: "100%",
+        padding: "80px 30px 30px",
     },
     propContainer: {
         width: 200,

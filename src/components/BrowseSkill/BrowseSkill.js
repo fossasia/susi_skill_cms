@@ -2,12 +2,14 @@ import React from "react";
 import MenuItem from "material-ui/MenuItem";
 import SelectField from "material-ui/SelectField";
 import { FloatingActionButton, Paper} from "material-ui";
+import Add from 'material-ui/svg-icons/content/add';
 import ContentAdd from "material-ui/svg-icons/navigation/arrow-forward";
 import {Card, CardTitle} from 'material-ui/Card';
 import * as $ from "jquery";
 import Link from "react-router-dom/es/Link";
 import colors from "../../Utils/colors";
 import CircleImage from "../CircleImage/CircleImage";
+import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 const models = [];
 const groups = [];
 const languages = [];
@@ -22,8 +24,7 @@ export default class BrowseSkill extends React.Component {
     }
 
     componentDidMount(){
-        this.loadInitialCards() 
-
+        this.loadInitialCards()
     }
 
     loadInitialCards = () => {
@@ -190,12 +191,15 @@ export default class BrowseSkill extends React.Component {
     };
 
     render() {
+
         const style = {
             width: "100%",
             padding: "10px"
         };
 
         return (
+          <div>
+            <StaticAppBar {...this.props} />
             <div style={styles.container}>
                 <Paper style={style} zDepth={1}>
                     <div style={styles.center}>
@@ -227,6 +231,12 @@ export default class BrowseSkill extends React.Component {
                         <FloatingActionButton backgroundColor={colors.fabButton} style={{marginLeft: 25}} onClick={this.buttonClick}>
                             <ContentAdd />
                         </FloatingActionButton>
+                        <Link to="/skillEditor">
+                            <FloatingActionButton
+                                backgroundColor={colors.fabButton} style={{marginLeft: 25}}>
+                                <Add />
+                            </FloatingActionButton>
+                        </Link>
                     </div>
 
                 </Paper>
@@ -242,6 +252,7 @@ export default class BrowseSkill extends React.Component {
                     </div>
                 </div>
             </div>
+          </div>
         );
     }
 }
@@ -261,7 +272,8 @@ const styles = {
         alignItems: "center",
         justifyContent: "center",
         flexDirection: "column",
-        width: "100%"
+        width: "100%",
+        padding: "80px 30px 30px",
     },
     propContainer: {
         width: 100,
