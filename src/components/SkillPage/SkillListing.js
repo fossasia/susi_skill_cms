@@ -17,7 +17,6 @@ import Avatar from 'material-ui/Avatar';
 import './SkillListing.css';
 import {FloatingActionButton, Paper, } from "material-ui";
 import CircleImage from "../CircleImage/CircleImage";
-import Save from 'material-ui/svg-icons/content/save';
 import EditBtn from 'material-ui/svg-icons/editor/mode-edit';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 
@@ -48,7 +47,7 @@ export default class SkillListing extends React.Component {
 
     componentDidMount() {
 
-        let baseUrl = 'http://192.168.43.187:4000/cms/getSkillMetadata.json';
+        let baseUrl = 'http://35.192.82.114/cms/getSkillMetadata.json';
 
         let url = this.props.location.state.url;
         let name = this.props.location.state.name;
@@ -99,7 +98,7 @@ export default class SkillListing extends React.Component {
         if (!('descriptions' in skillData)) {
 
             this.setState({
-                descriptions: 'No Descriptions Provided'
+                descriptions: 'No Description Provided'
             });
 
             console.log("From Description");
@@ -190,14 +189,14 @@ export default class SkillListing extends React.Component {
                             </div>
                         </Link>
                         <h4>
-                            <a href={this.state.authorUrl} target="_blank">{this.state.author}</a>
+                            <a href={this.state.authorUrl} target="_blank" rel="noopener noreferrer">{this.state.author}</a>
                         </h4>
                         <div className="examples">
                             {/*{console.log(this.state.skill_data)}*/}
                             {/*{this.state.skill_data.examples}*/}
                             {console.log(this.state)}
 
-                            {typeof this.state.examples == 'undefined' || this.state.examples == null || typeof this.state.examples[Object.keys(this.state.examples)[0]] == 'undefined'? '' : this.state.examples[Object.keys(this.state.examples)[0]].map((data) => {
+                            {typeof this.state.examples === 'undefined' || this.state.examples === null || typeof this.state.examples[Object.keys(this.state.examples)[0]] === 'undefined'? '' : this.state.examples[Object.keys(this.state.examples)[0]].map((data) => {
                                 return <Paper style={exampleStyle} zDepth={1}>{data}</Paper>
                             })}
                         </div>
@@ -219,9 +218,9 @@ export default class SkillListing extends React.Component {
                             <li>The Skill Contains content Dynamic Content that is updated real-time based on inputs from the
                                 User.</li> : ''}
 
-                        {this.state.terms_of_use == null?'':<li><a href={this.state.terms_of_use} target="_blank">Term & Condition</a></li>}
+                        {this.state.terms_of_use == null?'':<li><a href={this.state.terms_of_use} target="_blank" rel="noopener noreferrer">Term & Condition</a></li>}
 
-                        {this.state.terms_of_use == null?'':<li><a href={this.state.developer_privacy_policy} target="_blank">Developer Privacy Policy</a></li>}
+                        {this.state.terms_of_use == null?'':<li><a href={this.state.developer_privacy_policy} target="_blank" rel="noopener noreferrer">Developer Privacy Policy</a></li>}
 
                     </ul>
                 </div>
