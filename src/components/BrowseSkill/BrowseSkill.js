@@ -2,6 +2,7 @@ import React from "react";
 import MenuItem from "material-ui/MenuItem";
 import SelectField from "material-ui/SelectField";
 import { FloatingActionButton, Paper} from "material-ui";
+import Add from 'material-ui/svg-icons/content/add';
 import ContentAdd from "material-ui/svg-icons/navigation/arrow-forward";
 import {Card, CardTitle} from 'material-ui/Card';
 import * as $ from "jquery";
@@ -190,6 +191,7 @@ export default class BrowseSkill extends React.Component {
     };
 
     render() {
+
         const style = {
             width: "100%",
             padding: "10px"
@@ -229,6 +231,12 @@ export default class BrowseSkill extends React.Component {
                         <FloatingActionButton backgroundColor={colors.fabButton} style={{marginLeft: 25}} onClick={this.buttonClick}>
                             <ContentAdd />
                         </FloatingActionButton>
+                        <Link to="/skillEditor">
+                            <FloatingActionButton
+                                backgroundColor={colors.fabButton} style={{marginLeft: 25}}>
+                                <Add />
+                            </FloatingActionButton>
+                        </Link>
                     </div>
 
                 </Paper>
