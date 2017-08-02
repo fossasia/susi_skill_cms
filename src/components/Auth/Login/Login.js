@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import Paper from 'material-ui/Paper';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
-import { Link } from 'react-router-dom';
 import './Login.css';
 import PasswordField from 'material-ui-password-field'
 import $ from 'jquery';
@@ -167,9 +166,38 @@ class Login extends Component {
         this.setState({ open: true });
     };
 
+    handleSignUp = () => {
+        this.setState(
+            {
+              email: '',
+              password: '',
+              isFilled: false,
+              success: false,
+              validForm: false,
+              emailError: true,
+              passwordError: true,
+              checked: false,
+        });
+        this.props.onSignUpLogin();
+    };
+
+    handleForgotPassword = () => {
+      this.setState(
+          {
+            email: '',
+            password: '',
+            isFilled: false,
+            success: false,
+            validForm: false,
+            emailError: true,
+            passwordError: true,
+            checked: false,
+      });
+      this.props.onForgotPwdLogin();
+    }
+
     render() {
         // const { token } = this.props;
-        const hidden = '';
 
         const styles = {
             'width': '100%',
@@ -187,53 +215,52 @@ class Login extends Component {
                 </div>
                 <div className="loginForm">
                     <Paper zDepth={0}style={styles}>
-                        <h1>Login to SUSI</h1>
+                        <h3>Login to SUSI</h3>
                         <form onSubmit={this.handleSubmit}>
-
                             <div>
                                 <TextField name="email"
-                                           value={this.state.email}
-                                           onChange={this.handleChange}
-                                           errorText={this.emailErrorMessage}
-                                           floatingLabelText="Email" />
+                                    value={this.state.email}
+                                    onChange={this.handleChange}
+                                    errorText={this.emailErrorMessage}
+                                    floatingLabelText="Email" />
                             </div>
                             <div>
                                 <PasswordField
                                     name='password'
                                     style={fieldStyle}
                                     value={this.state.password}
-
                                     onChange={this.handleChange}
                                     errorText={this.passwordErrorMessage}
                                     floatingLabelText='Password' />
                             </div>
-                            <div>
-                                {hidden}
-                            </div>
+                            <span style={{
+                              margin: '3px 0'
+                            }}>{this.state.msg}</span>
                             <div>
                                 <RaisedButton
                                     label="Login"
                                     type="submit"
-                                    backgroundColor="#607D8B"
+                                    backgroundColor="#4285f4"
                                     labelColor="#fff"
-                                    disabled={!this.state.validForm} />
+                                    disabled={!this.state.validForm}
+                                    style={{margin:'15px 0 '}}/>
                             </div>
-                            <span>{this.state.msg}</span>
-                            <h1>OR</h1>
-                            <div>
-                                <Link to='/forgotpwd'
-                                      className="forgotpwdlink">
-                                    <b>Forgot Password?</b>
-                                </Link>
-                            {/*</div>*/}
-
-                             </div>
+                            <span className="forgotpwdlink"
+                              onClick={this.handleForgotPassword}>
+                              Forgot Password?
+                            </span>
+                            <br />
+                            <h4 style={{
+                              margin: '7px 0'
+                            }}>OR</h4>
                             <div>
                                 <h4>If you do not have an account, Please SignUp</h4>
                                     <RaisedButton
                                         label='SignUp'
-                                        backgroundColor="#19314B"
-                                        labelColor="#fff" />
+                                        onTouchTap={this.handleSignUp}
+                                        backgroundColor="#4285f4"
+                                        labelColor="#fff"
+                                        style={{margin:'15px 0 0 0'}}/>
                             </div>
                         </form>
                     </Paper>
@@ -245,7 +272,9 @@ class Login extends Component {
 }
 
 Login.propTypes = {
-    history: PropTypes.object
+    history: PropTypes.object,
+    onForgotPwdLogin: PropTypes.func,
+    onSignUpLogin: PropTypes.func,
 };
 
 export default addUrlProps({ urlPropsQueryConfig })(Login);

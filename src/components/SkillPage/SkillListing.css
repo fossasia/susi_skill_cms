@@ -1,9 +1,13 @@
+body {
+    height: auto;
+}
 .avatar-meta {
     display: flex;
 }
 
 .avatar {
     padding-right: 40px;
+    font-size: 48px;
 }
 .examples > div{
     margin-top:10px ;
@@ -15,4 +19,28 @@
 
 .margin-t-md {
     margin-top: 24px;
+}
+
+.skill_listing_container {
+    width: 100%;
+    max-width: 1000px;
+    font-size: 14px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 100px;
+}
+
+.skill_loading_container {
+    text-align: center;
+    margin-top: 100px;
+}
+
+.skill_edit_btn {
+    display: inline-block;
+    position: fixed;
+    bottom: 35px;
+    right: 72px;
+}
+.skill_edit_btn > button{
+    background-color: #4285f4;
 }

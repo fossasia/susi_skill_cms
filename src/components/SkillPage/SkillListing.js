@@ -12,23 +12,16 @@ import 'brace/theme/solarized_dark';
 import 'brace/theme/solarized_light';
 import 'brace/theme/terminal';
 import * as $ from "jquery";
-import {Paper} from "material-ui";
 import Divider from 'material-ui/Divider';
 import Avatar from 'material-ui/Avatar';
 import './SkillListing.css';
+import {FloatingActionButton, Paper, } from "material-ui";
+import CircleImage from "../CircleImage/CircleImage";
+import Save from 'material-ui/svg-icons/content/save';
+import EditBtn from 'material-ui/svg-icons/editor/mode-edit';
+import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 
-
-const skillData = {
-    name:'Lizard Spoke Game',
-    desc:'The game Rock, Paper, Scissors, Lizard, Spock. It is an expansion to the game Rock, Paper, Scissors. We both will  pick a variable and reveal. The winner will be  one who defeats the others. It goes like Scissors cuts Paper,Paper covers Rock, Rock crushes Lizard, Lizard poisons Spock, Spock smashes Scissors, Scissors decapitates Lizard, Lizard eats Paper, Paper disproves Spock, Spock vaporizes Rock, (and as it always has) Rock crushes Scissors.,',
-    author:"saurabhjn76",
-    authorUrl:'https://github.com/saurabhjn76',
-    examples:["Let's play a game","I am bored", "Suggest a game"],
-    tncUrl:"http://ispum.com",
-    dppUrl:"http://lorem.com",
-    thmb:"https://raw.githubusercontent.com/fossasia/susi_skill_data/fcae50dd3f0b4e34b19d306df53112cae1a60fdd/models/general/entertainment/en/lizard_spoke_game.png",
-    isDynamic:true
-};
+const defaultNullSkillList = ['image', 'author', 'author_url', 'developer_privacy_policy', 'terms_of_use', 'dynamic_content', 'examples'];
 
 export default class SkillListing extends React.Component {
 
@@ -36,26 +29,43 @@ export default class SkillListing extends React.Component {
         super(props);
 
         this.state = {
-            code:"// code", fontSizeCode:14, editorTheme:"github"
+            skill_data: {},
+            fontSizeCode: 14,
+            editorTheme: "github",
+            image: '',
+            author: '',
+            author_url: '',
+            developer_privacy_policy: '',
+            terms_of_use: '',
+            dynamic_content: '',
+            examples: '',
+            descriptions: '',
+            skill_name: '',
+            dataReceived: false
         };
 
     }
 
     componentDidMount() {
-        // let element = this.props.location.state.element
+
+        let baseUrl = 'http://192.168.43.187:4000/cms/getSkillMetadata.json';
+
         let url = this.props.location.state.url;
         let name = this.props.location.state.name;
-        name = name.replace(".txt","")
-        console.log(url)
-        if(url.indexOf("model") < 0) {
-            url = this.props.location.state.url + "?skill=" + name;
-        }
-        else {
-            url = this.props.location.state.url + "&skill=" + name;
-        }
+        name = name.replace(".txt", "");
 
-        url = url.toString()
-        url =  url.replace("getSkillList","getSkill");
+
+        let modelValue =  this.props.location.state.modelValue;
+        let groupValue = this.props.location.state.groupValue;
+        let languageValue = this.props.location.state.languageValue;
+
+        url  = baseUrl + '?model='+modelValue + '&group='+groupValue + '&language='+languageValue + '&skill='+name;
+
+        console.log("Url:"+url);
+
+
+
+        // url = 'http://192.168.43.187:4000/cms/getSkillMetadata.json?group=general&model=entertainment&language=en&skill=cat';
         console.log(url)
         let self = this;
         $.ajax({
@@ -65,73 +75,130 @@ export default class SkillListing extends React.Component {
             jsonp: 'callback',
             crossDomain: true,
             success: function (data) {
-                self.updateCode(data.text)
+                self.updateData(data.skill_metadata)
             }
         });
     };
 
-    updateCode = (newCode) => {
-        this.setState({
-            code: newCode,
-        });
-        console.log(this.state.code);
-    }
+    updateData = (skillData) => {
 
+        defaultNullSkillList.forEach((data) => {
+
+            if (!(data in skillData)) {
+                this.setState({
+                    [data]: null
+                })
+            }
+            else {
+                this.setState({
+                    [data]: skillData[data]
+                })
+            }
+        });
+
+        if (!('descriptions' in skillData)) {
+
+            this.setState({
+                descriptions: 'No Descriptions Provided'
+            });
+
+            console.log("From Description");
+        }
+        else {
+            this.setState({
+                descriptions: skillData['descriptions']
+            })
+        }
+
+        if (!('skill_name' in skillData)) {
+
+            let skill_name = this.props.location.state.name.replace(".txt", "");
+            skill_name = skill_name.charAt(0).toUpperCase() + skill_name.substring(1);
+
+            this.setState({
+                skill_name: skill_name
+            });
+
+            console.log(this.props.location.state.name.replace(".txt", "").charAt(0));
+        }
+        else {
+            this.setState({
+                skill_name: skillData['skill_name']
+            })
+        }
+
+        this.setState({
+            dataReceived: true
+        });
+    };
 
     render() {
-        
 
-        const exampleStyle ={
-            height:'auto',
+        const exampleStyle = {
+            height: 'auto',
             width: 200,
             marginRight: 20,
             textAlign: 'left',
             display: 'inline-block',
-            boxShadow:'none',
-            backgroundColor:'whitesmoke',
-            padding:'20px',
-            color:'#555'
+            boxShadow: 'none',
+            backgroundColor: 'whitesmoke',
+            padding: '20px',
+            color: '#555'
         }
 
         const styles = {
             home: {
                 width: '100%',
-                fontSize:'14px'
+                fontSize: '14px'
             },
             right: {
                 display: 'flex',
-                alignItems:"center",
+                alignItems: "center",
                 flexDirection: 'row',
                 padding: "10px",
             },
-            paper_full_width : {
+            paper_full_width: {
                 width: "100%",
-                marginBottom:10,
+                marginBottom: 10,
                 display: 'inline-block',
             }
         };
 
-
-
-        return (
-            <div style={styles.home}>
+        let renderElement = null;
+        if (!this.state.dataReceived) {
+            renderElement = <div><StaticAppBar {...this.props}/><h1 className="skill_loading_container">Loading...</h1></div>
+        }
+        else {
+            renderElement = <div><StaticAppBar {...this.props}/><div className="skill_listing_container" style={styles.home}>
                 <div className="avatar-meta margin-b-md">
                     <div className="avatar">
-                        <Avatar
-                            src={skillData.thmb}
-                            size={250}
-                        />
+                        {this.state.image == null?<CircleImage name={this.state.skill_name.toUpperCase()} size="250"/>:<Avatar src={this.state.image} size={250}/>}
+                        {/*<Avatar src={this.state.image} size={250}/>*/}
                     </div>
                     <div className="meta">
                         <h1 className="name">
-                            {skillData.name}
+                            {/*{this.state.skill_name}*/}
+                            {this.state.skill_name.split(' ').map((data) => {
+                                return data.charAt(0).toUpperCase() + data.substring(1);
+                            }).join(' ')}
                         </h1>
+                        <Link  to="" onlyActiveOnIndex="">
+                            <div className="skill_edit_btn">
+                                <FloatingActionButton>
+                                    <EditBtn />
+                                </FloatingActionButton>
+                            </div>
+                        </Link>
                         <h4>
-                            <Link to={skillData.authorUrl}>{skillData.author}</Link>
+                            <a href={this.state.authorUrl} target="_blank">{this.state.author}</a>
                         </h4>
                         <div className="examples">
-                            {skillData.examples.map((data)=>{
-                                return <Paper style={exampleStyle}  zDepth={1}>{data}</Paper>
+                            {/*{console.log(this.state.skill_data)}*/}
+                            {/*{this.state.skill_data.examples}*/}
+                            {console.log(this.state)}
+
+                            {typeof this.state.examples == 'undefined' || this.state.examples == null || typeof this.state.examples[Object.keys(this.state.examples)[0]] == 'undefined'? '' : this.state.examples[Object.keys(this.state.examples)[0]].map((data) => {
+                                return <Paper style={exampleStyle} zDepth={1}>{data}</Paper>
                             })}
                         </div>
                     </div>
@@ -141,47 +208,29 @@ export default class SkillListing extends React.Component {
                     <h1 className="title">
                         Description
                     </h1>
-                    <p>{skillData.desc}</p>
+                    <p>{this.state.descriptions}</p>
                 </div>
                 <div className="margin-b-md margin-t-md skill">
                     <h1 className="title">
                         Skills Details
                     </h1>
                     <ul>
-                        {skillData.isDynamic?<li>The Skill Contains content Dynamic Content that is updated real-time based on inputs from the User.</li>:''}
-                        <li><Link to={skillData.tncUrl}>Term & Condition</Link></li>
-                        <li><Link to={skillData.dppUrl}>Developer Privacy Policy</Link></li>
+                        {this.state.dynamic_content ?
+                            <li>The Skill Contains content Dynamic Content that is updated real-time based on inputs from the
+                                User.</li> : ''}
+
+                        {this.state.terms_of_use == null?'':<li><a href={this.state.terms_of_use} target="_blank">Term & Condition</a></li>}
+
+                        {this.state.terms_of_use == null?'':<li><a href={this.state.developer_privacy_policy} target="_blank">Developer Privacy Policy</a></li>}
+
                     </ul>
                 </div>
-                {
-
-                    /* <Paper style={styles.paper_full_width}  rounded={false} >
-                     <div style={styles.right}>
-                     <CircleImage name="Susi Wikipedia" size="48"/>
-                     <div style={{marginLeft:10, flex: 1}}>
-                     <p style={{fontWeight: 'bold'}}>Wikipedia Skill</p>
-                     <p>Wikipedia is a free online encyclopedia, created and edited by volunteers around the world and hosted by the Wikimedia Foundation.
-                     </p>
-                     </div>
-                     <FloatingActionButton backgroundColor="#f44336">
-                     <Save/>
-                     </FloatingActionButton>
-                     </div>
-
-                     </Paper>
-                     <AceEditor
-                     mode="markdown"
-                     theme={this.state.editorTheme}
-                     width="100%"
-                     fontSize={this.state.fontSizeCode}
-                     height= "600px"
-                     value={this.state.code}
-                     name="skill_code_editor"
-                     editorProps={{$blockScrolling: true}}
-                     />*/}
-
             </div>
+            </div>
+        }
 
+        return (
+            renderElement
         );
     }
 }

@@ -1,6 +1,5 @@
 import React from 'react';
 import { Icon } from 'antd';
-import Chatbox from "../Chatbox/Chatbox";
 import MenuItem from 'material-ui/MenuItem';
 import SelectField from 'material-ui/SelectField';
 import {FloatingActionButton, Paper, TextField} from "material-ui";
@@ -20,6 +19,7 @@ import 'brace/theme/solarized_light';
 import 'brace/theme/terminal';
 import * as $ from "jquery";
 import colors from "../../Utils/colors";
+import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 
 const models = [];
 const groups = [];
@@ -151,6 +151,8 @@ export default class Container extends React.Component {
             padding: "10px"
         };
         return (
+          <div>
+            <StaticAppBar {...this.props} />
             <div style={styles.home}>
                 <Paper style={style} zDepth={1}>
                     <div style={styles.center}>
@@ -223,19 +225,17 @@ export default class Container extends React.Component {
                         name="skill_code_editor"
                         editorProps={{$blockScrolling: true}}
                     />
-
-                    <Chatbox />
-
                 </div>
             </div>
-
+          </div>
         );
     }
 }
 
 const styles = {
     home: {
-        width: '100%'
+        width: '100%',
+        padding: "80px 30px 30px",
     },
     center: {
         display: "flex",
