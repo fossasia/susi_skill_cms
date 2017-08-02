@@ -45,15 +45,15 @@ export default class BrowseSkill extends React.Component {
                         <Link key={el}
                               to={{
                                   pathname: '/skillPage',
-                                  state: { url: url, element: el, name: data[el]}
+                                  state: { url: url, element: el, name: data[el], modelValue: self.state.modelValue, groupValue:self.state.groupValue, languageValue:self.state.languageValue}
                               }}>
                             <Card style={styles.row} key={el}>
                                 <div style={styles.right}>
-                                <CircleImage name={data[el].replace(/\.[^/.]+$/, "").toUpperCase()} size="48"/>
-                                <CardTitle
-                                    title={data[el].replace(/\.[^/.]+$/, "")}
-                                    titleStyle={{'fontSize':'18px'}}
-                                />
+                                    <CircleImage name={data[el].replace(/\.[^/.]+$/, "").toUpperCase()} size="48"/>
+                                    <CardTitle
+                                        title={data[el].replace(/\.[^/.]+$/, "")}
+                                        titleStyle={{'fontSize':'18px'}}
+                                    />
                                 </div>
                                 <div>
                                     {/*Empty div for description*/}
@@ -145,7 +145,7 @@ export default class BrowseSkill extends React.Component {
         let url;
         if(models.length>0&&languages.length>0&&groups.length>0) {
             console.log(models)
-           url  = "http://api.susi.ai/cms/getSkillList.json?model=" + models[this.state.modelValue].key + "&group=" + groups[this.state.groupValue].key + "&language=" + languages[this.state.languageValue].key;
+            url  = "http://api.susi.ai/cms/getSkillList.json?model=" + models[this.state.modelValue].key + "&group=" + groups[this.state.groupValue].key + "&language=" + languages[this.state.languageValue].key;
         }
         else{
             url = "http://api.susi.ai/cms/getSkillList.json"
@@ -169,7 +169,7 @@ export default class BrowseSkill extends React.Component {
                         <Link key={el}
                               to={{
                                   pathname: '/skillPage',
-                                  state: { url: url, element: el, name: data[el]}
+                                  state: { url: url, element: el, name: data[el], modelValue: self.state.modelValue, groupValue:self.state.groupValue, languageValue:self.state.languageValue}
                               }}>
                             <Card style={styles.row} key={el}>
                                 <CardTitle
@@ -198,61 +198,61 @@ export default class BrowseSkill extends React.Component {
         };
 
         return (
-          <div>
-            <StaticAppBar {...this.props} />
-            <div style={styles.container}>
-                <Paper style={style} zDepth={1}>
-                    <div style={styles.center}>
-                        <SelectField
-                            floatingLabelText="Model"
-                            style={{width:'130px'}}
-                            value={this.state.modelValue}
-                            onChange={this.handleModelChange}
-                            onMouseEnter={this.loadModels}
-                        >
-                            {models}
-                        </SelectField>
-                        <SelectField
-                            floatingLabelText="Group"
-                            style={{width:'160px'}}
-                            value={this.state.groupValue}
-                            onChange={this.handleGroupChange}
-                        >
-                            {groups}
-                        </SelectField>
-                        <SelectField
-                            floatingLabelText="Language"
-                            style={{width:'100px',marginRight:"10px"}}
-                            value={this.state.languageValue}
-                            onChange={this.handleLanguageChange}
-                        >
-                            {languages}
-                        </SelectField>
-                        <FloatingActionButton backgroundColor={colors.fabButton} style={{marginLeft: 25}} onClick={this.buttonClick}>
-                            <ContentAdd />
-                        </FloatingActionButton>
-                        <Link to="/skillEditor">
-                            <FloatingActionButton
-                                backgroundColor={colors.fabButton} style={{marginLeft: 25}}>
-                                <Add />
+            <div>
+                <StaticAppBar {...this.props} />
+                <div style={styles.container}>
+                    <Paper style={style} zDepth={1}>
+                        <div style={styles.center}>
+                            <SelectField
+                                floatingLabelText="Model"
+                                style={{width:'130px'}}
+                                value={this.state.modelValue}
+                                onChange={this.handleModelChange}
+                                onMouseEnter={this.loadModels}
+                            >
+                                {models}
+                            </SelectField>
+                            <SelectField
+                                floatingLabelText="Group"
+                                style={{width:'160px'}}
+                                value={this.state.groupValue}
+                                onChange={this.handleGroupChange}
+                            >
+                                {groups}
+                            </SelectField>
+                            <SelectField
+                                floatingLabelText="Language"
+                                style={{width:'100px',marginRight:"10px"}}
+                                value={this.state.languageValue}
+                                onChange={this.handleLanguageChange}
+                            >
+                                {languages}
+                            </SelectField>
+                            <FloatingActionButton backgroundColor={colors.fabButton} style={{marginLeft: 25}} onClick={this.buttonClick}>
+                                <ContentAdd />
                             </FloatingActionButton>
-                        </Link>
-                    </div>
+                            <Link to="/skillEditor">
+                                <FloatingActionButton
+                                    backgroundColor={colors.fabButton} style={{marginLeft: 25}}>
+                                    <Add />
+                                </FloatingActionButton>
+                            </Link>
+                        </div>
 
-                </Paper>
+                    </Paper>
 
-                <div style={{marginTop:"20px",   marginBottom: "40px",
-                    textAlign: "justify",
-                    fontSize: "0.1px", width: "100%"}}>
-                    <div className="row" style={styles.scroll}  >
-                        <div style={styles.gridList}>
-                            {this.state.skills}
+                    <div style={{marginTop:"20px",   marginBottom: "40px",
+                        textAlign: "justify",
+                        fontSize: "0.1px", width: "100%"}}>
+                        <div className="row" style={styles.scroll}  >
+                            <div style={styles.gridList}>
+                                {this.state.skills}
 
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-          </div>
         );
     }
 }
