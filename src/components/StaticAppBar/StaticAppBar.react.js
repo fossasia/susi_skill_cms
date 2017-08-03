@@ -26,10 +26,11 @@ const cookies = new Cookies();
 
 let TopRightMenuItems = (props) => (
     <div>
-      <MenuItem primaryText="About"
-        onTouchTap={this.handleClose}
-        containerElement={<Link to="/overview" />}
-        rightIcon={<Info/>}/>
+      <MenuItem
+        href="http://chat.susi.ai/overview"
+        rightIcon={<Info/>}>
+        About
+      </MenuItem>
       <MenuItem
         href="http://chat.susi.ai/"
         rightIcon={<Chat/>}>
