@@ -13,7 +13,7 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 import BrowseExamples from "./components/BrowseExamples/BrowseExamples";
 import VisualEditor from "./components/VisualEditor/VisualEditor";
 import SkillListing from "./components/SkillPage/SkillListing";
-import ListUser from "./components/Admin/ListUsers/ListUser";
+import ListUser from "./components/Admin/ListUser/ListUser";
 import Logout from './components/Auth/Logout.react';
 injectTapEventPlugin();
 
