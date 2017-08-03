@@ -21,6 +21,7 @@ import EditBtn from 'material-ui/svg-icons/editor/mode-edit';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 
 const defaultNullSkillList = ['image', 'author', 'author_url', 'developer_privacy_policy', 'terms_of_use', 'dynamic_content', 'examples'];
+let urlCode,name;
 
 export default class SkillListing extends React.Component {
 
@@ -42,16 +43,31 @@ export default class SkillListing extends React.Component {
             skill_name: '',
             dataReceived: false
         };
+        let url = this.props.location.state.url;
+        name = this.props.location.state.name;
+        name = name.replace(".txt", "");
+        if(url.indexOf("model") < 0) {
+            urlCode = this.props.location.state.url + "?skill=" + name;
+        }
+        else {
+            urlCode = this.props.location.state.url + "&skill=" + name;
+        }
+
+        urlCode = urlCode.toString()
+        urlCode =  urlCode.replace("getSkillList","getSkill");
+        console.log(urlCode);
+
 
     }
+
 
     componentDidMount() {
 
         let baseUrl = 'http://35.192.82.114/cms/getSkillMetadata.json';
-
         let url = this.props.location.state.url;
-        let name = this.props.location.state.name;
-        name = name.replace(".txt", "");
+
+
+
 
 
         let modelValue =  this.props.location.state.modelValue;
@@ -181,7 +197,10 @@ export default class SkillListing extends React.Component {
                                 return data.charAt(0).toUpperCase() + data.substring(1);
                             }).join(' ')}
                         </h1>
-                        <Link  to="" onlyActiveOnIndex="">
+                        <Link to={{
+                            pathname: '/skillEditor',
+                            state: { url: urlCode, name:name, }
+                        }}>
                             <div className="skill_edit_btn">
                                 <FloatingActionButton   backgroundColor={"#4285f4"} >
                                     <EditBtn />

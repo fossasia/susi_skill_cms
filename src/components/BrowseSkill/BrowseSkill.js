@@ -101,13 +101,14 @@ export default class BrowseSkill extends React.Component {
         this.setState({modelValue: value,groupSelect:false,languageSelect:true});
         if(groups.length===0) {
             $.ajax({
-                url: "http://api.susi.ai/cms/getGroups.json",
+                url: "http://api.susi.ai/aaa/getGroups.json",
                 jsonpCallback: 'pb',
                 dataType: 'jsonp',
                 jsonp: 'callback',
                 crossDomain: true,
                 success: function (data) {
                     console.log(data);
+                    data = data.groups;
                     for (let i = 0; i < data.length; i++) {
                         groups.push(<MenuItem value={i} key={data[i]} primaryText={`${data[i]}`}/>);
                     }
@@ -270,7 +271,7 @@ export default class BrowseSkill extends React.Component {
                         <FloatingActionButton backgroundColor={colors.fabButton} className='select' onClick={this.buttonClick}>
                             <ContentAdd />
                         </FloatingActionButton>
-                        <Link to="/skillEditor">
+                        <Link to="/skillCreator">
                             <FloatingActionButton
                                 backgroundColor={colors.fabButton} className='select'>
                                 <Add />
