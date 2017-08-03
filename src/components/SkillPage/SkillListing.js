@@ -1,5 +1,4 @@
 import React from 'react';
-import AceEditor from 'react-ace';
 import 'brace/mode/markdown';
 import 'brace/theme/github';
 import 'brace/theme/monokai';
@@ -11,9 +10,11 @@ import 'brace/theme/textmate';
 import 'brace/theme/solarized_dark';
 import 'brace/theme/solarized_light';
 import 'brace/theme/terminal';
-import * as $ from "jquery";
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
-
+import { FloatingActionButton} from "material-ui";
+import ContentSave from "material-ui/svg-icons/editor/mode-edit";
+import {Link} from "react-router-dom";
+let url,name,model,group,language,expert;
 export default class SkillListing extends React.Component {
 
     constructor(props) {
@@ -23,14 +24,11 @@ export default class SkillListing extends React.Component {
             code:"// code", fontSizeCode:14, editorTheme:"github"
         };
 
-    }
+        url = this.props.location.state.url;
+        name = this.props.location.state.name;
 
-    componentDidMount() {
-        // let element = this.props.location.state.element
-        let url = this.props.location.state.url;
-        let name = this.props.location.state.name;
         name = name.replace(".txt","")
-        console.log(url)
+        console.log(props)
         if(url.indexOf("model") < 0) {
             url = this.props.location.state.url + "?skill=" + name;
         }
@@ -41,25 +39,23 @@ export default class SkillListing extends React.Component {
         url = url.toString()
         url =  url.replace("getSkillList","getSkill");
         console.log(url)
-        let self = this;
-        $.ajax({
-            url: url,
-            jsonpCallback: 'pc',
-            dataType: 'jsonp',
-            jsonp: 'callback',
-            crossDomain: true,
-            success: function (data) {
-                self.updateCode(data.text)
-            }
-        });
-    };
 
-    updateCode = (newCode) => {
-        this.setState({
-            code: newCode,
-        });
-        console.log(this.state.code);
     }
+
+    componentDidMount() {
+        // let element = this.props.location.state.element
+
+        // let self = this;
+        // $.ajax({
+        //     url: url,
+        //     jsonpCallback: 'pc',
+        //     dataType: 'jsonp',
+        //     jsonp: 'callback',
+        //     crossDomain: true,
+        //     success: function (data) {
+        //     }
+        // });
+    };
 
 
     render() {
@@ -67,16 +63,19 @@ export default class SkillListing extends React.Component {
           <div>
             <StaticAppBar {...this.props} />
             <div style={styles.home}>
-                <AceEditor
-                    mode="markdown"
-                    theme={this.state.editorTheme}
-                    width="100%"
-                    fontSize={this.state.fontSizeCode}
-                    height= "600px"
-                    value={this.state.code}
-                    name="skill_code_editor"
-                    editorProps={{$blockScrolling: true}}
-                />
+                <center><h1>Skill Info</h1></center>
+                <Link to={{
+                    pathname: '/skillEditor',
+                    state: { url: url, name:name, }
+                }}>
+                <FloatingActionButton
+                    style={{right: 0,
+                    margin:40,
+                    bottom: 0,
+                    position: "absolute"}}>
+                    <ContentSave />
+                </FloatingActionButton>
+                </Link>
             </div>
           </div>
 
