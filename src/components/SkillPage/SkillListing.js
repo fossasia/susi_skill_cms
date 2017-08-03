@@ -12,9 +12,6 @@ import 'brace/theme/solarized_dark';
 import 'brace/theme/solarized_light';
 import 'brace/theme/terminal';
 import * as $ from "jquery";
-import {FloatingActionButton, Paper} from "material-ui";
-import CircleImage from "../CircleImage/CircleImage";
-import Save from 'material-ui/svg-icons/content/save';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 
 export default class SkillListing extends React.Component {
@@ -70,19 +67,6 @@ export default class SkillListing extends React.Component {
           <div>
             <StaticAppBar {...this.props} />
             <div style={styles.home}>
-                <Paper style={styles.paper_full_width}  rounded={false} >
-                    <div style={styles.right}>
-                    <CircleImage name="Susi Wikipedia" size="48"/>
-                        <div style={{marginLeft:10, flex: 1}}>
-                    <p style={{fontWeight: 'bold'}}>Wikipedia Skill</p>
-                        <p>Wikipedia is a free online encyclopedia, created and edited by volunteers around the world and hosted by the Wikimedia Foundation.
-                        </p>
-                        </div>
-                        <FloatingActionButton backgroundColor="#f44336">
-                            <Save/>
-                        </FloatingActionButton>
-                    </div>
-                </Paper>
                 <AceEditor
                     mode="markdown"
                     theme={this.state.editorTheme}
