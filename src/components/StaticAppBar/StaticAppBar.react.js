@@ -3,6 +3,7 @@ import Cookies from 'universal-cookie';
 import Dialog from 'material-ui/Dialog';
 import Login from "../Auth/Login/Login";
 import SignUp from "../Auth/SignUp/SignUp";
+import List from 'material-ui/svg-icons/action/list';
 import ForgotPassword from "../Auth/ForgotPassword/ForgotPassword";
 import Close from 'material-ui/svg-icons/navigation/close';
 import AppBar from 'material-ui/AppBar';
@@ -41,6 +42,11 @@ let TopRightMenuItems = (props) => (
         rightIcon={<SKillIcon/>}>
         Skills
       </MenuItem>
+      <MenuItem primaryText="List Users"
+          onTouchTap={this.handleClose}
+          containerElement={<Link to="/listUser" />}
+                rightIcon={<List/>}
+      />
       <MenuItem primaryText="Settings"
         onTouchTap={this.handleClose}
         containerElement={<Link to="/settings" />}
