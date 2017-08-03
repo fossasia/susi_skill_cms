@@ -37,7 +37,7 @@ export default class Container extends React.Component {
             url = this.props.location.state.url;
             skill_relative_path = this.props.location.state.url.match(/\?(.*)/)[1];
             fromListing = this.props.location.state.fromListing;
-            console.log(skill_relative_path)
+            console.log(fromListing)
             let self = this;
             $.ajax({
                 url: url,

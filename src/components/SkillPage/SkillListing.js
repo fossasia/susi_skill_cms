@@ -14,7 +14,7 @@ import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import { FloatingActionButton} from "material-ui";
 import ContentSave from "material-ui/svg-icons/editor/mode-edit";
 import {Link} from "react-router-dom";
-let url,name,model,group,language,expert;
+let url,name;
 export default class SkillListing extends React.Component {
 
     constructor(props) {
