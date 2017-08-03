@@ -183,7 +183,7 @@ export default class SkillListing extends React.Component {
                         </h1>
                         <Link  to="" onlyActiveOnIndex="">
                             <div className="skill_edit_btn">
-                                <FloatingActionButton>
+                                <FloatingActionButton   backgroundColor={"#4285f4"} >
                                     <EditBtn />
                                 </FloatingActionButton>
                             </div>
