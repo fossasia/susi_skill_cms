@@ -76,7 +76,14 @@ export default class ListUser extends Component {
                     let name = data[el];
                     console.log(name);
                     return (
-                        <TableRow key={i}><TableRowColumn>{name}</TableRowColumn></TableRow>
+                        <TableRow key={i}>
+                            <TableRowColumn>{++i}</TableRowColumn>
+                            <TableRowColumn>{name}</TableRowColumn>
+                            <TableRowColumn> </TableRowColumn>
+                            <TableRowColumn> </TableRowColumn>
+                            <TableRowColumn> </TableRowColumn>
+                            <TableRowColumn> </TableRowColumn>
+                        </TableRow>
                     )
                 });
                 self.setState({
@@ -115,6 +122,7 @@ export default class ListUser extends Component {
                         >
 
                             <TableRow>
+                                <TableHeaderColumn tooltip="Serial Number">serial number</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="E-mail">Email ID</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Name">Name</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Signup">Signup</TableHeaderColumn>
