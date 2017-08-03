@@ -26,39 +26,18 @@ const languages = [];
 const fontsizes =[];
 const codeEditorThemes =[];
 const cookies = new Cookies();
-let self,fromListing,url,skill_relative_path;
-export default class Container extends React.Component {
+let self;
+export default class CreateSkill extends React.Component {
 
     componentDidMount() {
         self = this;
         self.loadmodels()
-        console.log(this.props)
-            if (this.props.location.state) {
-            url = this.props.location.state.url;
-            skill_relative_path = this.props.location.state.url.match(/\?(.*)/)[1];
-            fromListing = this.props.location.state.fromListing;
-            console.log(fromListing)
-            let self = this;
-            $.ajax({
-                url: url,
-                jsonpCallback: 'pcc',
-                dataType: 'jsonp',
-                jsonp: 'callback',
-                crossDomain: true,
-                success: function (data) {
-                    self.updateCode(data.text)
-                }
-            });
-        }
-
-
     }
     onChange(newValue) {
         self.updateCode(newValue)
     }
 
     constructor(props) {
-        fromListing = false;
         super(props);
         this.state = {
             commitMessage:null, modelValue: null, groupValue:null, languageValue:null, expertValue:null,code:"::name <Skill_name>\n::author <author_name>\n::author_url <author_url>\n::description <description> \n::dynamic_content <Yes/No>\n::developer_privacy_policy <link>\n::image <image_url>\n::terms_of_use <link>\n\n\nUser query1|query2|quer3....\n!example:<The question that should be shown in public skill displays>\n!expect:<The answer expected for the above example>\nAnswer for the user query", fontSizeCode:14, editorTheme:"github"
@@ -75,9 +54,7 @@ export default class Container extends React.Component {
         for (let i = 0; i < themes.length; i++) {
             codeEditorThemes.push(<MenuItem value={themes[i]} key={themes[i]} primaryText={`${themes[i]}`}/>);
         }
-
     }
-
     loadmodels()
     {
         if(models.length===0) {
@@ -114,7 +91,7 @@ export default class Container extends React.Component {
                 crossDomain: true,
                 success: function (data) {
                     console.log(data);
-
+                    data= data.groups;
                     for (let i = 0; i < data.length; i++) {
                         groups.push(<MenuItem value={i} key={data[i]} primaryText={`${data[i]}`}/>);
                     }
@@ -162,7 +139,7 @@ export default class Container extends React.Component {
     handleLanguageChange = (event, index, value) => this.setState({languageValue: value});
     handleFontChange = (event, index, value) => this.setState({fontSizeCode: value});
     handleThemeChange = (event, index, value) => {this.setState({editorTheme: value});
-    console.log(this.state.editorTheme)}
+        console.log(this.state.editorTheme)}
 
     saveClick = () => {
 
@@ -174,43 +151,51 @@ export default class Container extends React.Component {
             });
             return 0;
         }
+        if(models.length===0||groups.length===0||languages.length===0||this.state.expertValue===null){
+            notification.open({
+                message: 'Error Processing your Request',
+                description: 'Please select a model, group, language and a skill',
+                icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
+            });
+            return 0;
+        }
 
-        let url= "http://api.susi.ai/cms/modifySkill.json?"+skill_relative_path+"&content="+encodeURIComponent(this.state.code)+"&changelog="+this.state.commitMessage;
-
+        //Need a review system before pushing to Susi Server.
+        let url= "http://api.susi.ai/cms/modifySkill.json?model="+models[this.state.modelValue].key+"&group="+groups[this.state.groupValue].key+"&language="+languages[this.state.languageValue].key+"&skill="+this.state.expertValue+"&content="+encodeURIComponent(this.state.code)+"&changelog="+this.state.commitMessage;
         console.log(url)
 
-            $.ajax({
-                url:url,
-                jsonpCallback: 'pc',
-                dataType: 'jsonp',
-                jsonp: 'callback',
-                crossDomain: true,
-                success: function (data) {
-                    console.log(data);
-                    if(data.accepted===true){
-                        notification.open({
-                            message: 'Accepted',
-                            description: 'Your Skill has been uploaded to the server',
-                            icon: <Icon type="check-circle" style={{ color: '#00C853' }} />,
-                        });
-                    }
-                    else{
-                        notification.open({
-                            message: 'Error Processing your Request',
-                            description: 'Please select a model, group, language and a skill',
-                            icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
-                        });
-                    }
-                },
-                error: function(e) {
-                    console.log(e);
+        $.ajax({
+            url:url,
+            jsonpCallback: 'pc',
+            dataType: 'jsonp',
+            jsonp: 'callback',
+            crossDomain: true,
+            success: function (data) {
+                console.log(data);
+                if(data.accepted===true){
+                    notification.open({
+                        message: 'Accepted',
+                        description: 'Your Skill has been uploaded to the server',
+                        icon: <Icon type="check-circle" style={{ color: '#00C853' }} />,
+                    });
+                }
+                else{
                     notification.open({
                         message: 'Error Processing your Request',
-                        description: 'Error in processing the request. Please try with some other skill',
+                        description: 'Please select a model, group, language and a skill',
                         icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
                     });
                 }
-            });
+            },
+            error: function(e) {
+                console.log(e);
+                notification.open({
+                    message: 'Error Processing your Request',
+                    description: 'Error in processing the request. Please try with some other skill',
+                    icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
+                });
+            }
+        });
     }
 
 
@@ -220,62 +205,96 @@ export default class Container extends React.Component {
             padding: "10px"
         };
         return (
-          <div>
-            <StaticAppBar {...this.props} />
-            <div style={styles.home}>
-                <Paper style={style} zDepth={1}>
-                  <div>Currently Editing : <h3>{url}</h3></div>
-                </Paper>
+            <div>
+                <StaticAppBar {...this.props} />
+                <div style={styles.home}>
+                    <Paper style={style} zDepth={1}>
+                        <div style={styles.center}>
+                            <div style={styles.dropdownDiv}>
+                                <SelectField
+                                    floatingLabelText="Model"
+                                    style={{width:'130px',marginLeft:10,marginRight:10}}
+                                    value={this.state.modelValue}
+                                    onChange={this.handleModelChange}
+                                >
+                                    {models}
+                                </SelectField>
+                                <SelectField
+                                    floatingLabelText="Group"
+                                    style={{width:'160px',marginLeft:10,marginRight:10}}
+                                    value={this.state.groupValue}
+                                    onChange={this.handleGroupChange}
+                                >
+                                    {groups}
+                                </SelectField>
+                                <SelectField
+                                    floatingLabelText="Language"
+                                    style={{width:'90px',marginLeft:10,marginRight:10}}
+                                    value={this.state.languageValue}
+                                    onChange={this.handleLanguageChange}
+                                >
+                                    {languages}
+                                </SelectField>
+                                <TextField
+                                    floatingLabelText="Enter Skill name"
+                                    floatingLabelFixed={true}
+                                    hintText="My SUSI Skill"
+                                    style={{marginLeft:10,marginRight:10}}
+                                    onChange={this.handleExpertChange}
+                                />
+                            </div>
+                        </div>
+                    </Paper>
 
-                <div style={styles.codeEditor}>
+                    <div style={styles.codeEditor}>
 
-                    <div style={styles.toolbar}>
-                        <span style={styles.button}><Icon type="cloud-download" style={styles.icon}/>Download as text</span>
-                        <span style={styles.button}>Size <SelectField
-                            style={{width:'60px'}}
-                            onChange={this.handleFontChange}
-                        >
+                        <div style={styles.toolbar}>
+                            <span style={styles.button}><Icon type="cloud-download" style={styles.icon}/>Download as text</span>
+                            <span style={styles.button}>Size <SelectField
+                                style={{width:'60px'}}
+                                onChange={this.handleFontChange}
+                            >
                             {fontsizes}
                         </SelectField></span>
 
-                        <span style={styles.button}>Theme <SelectField
-                            style={{width:'150px'}}
-                            onChange={this.handleThemeChange}
-                        >
+                            <span style={styles.button}>Theme <SelectField
+                                style={{width:'150px'}}
+                                onChange={this.handleThemeChange}
+                            >
                             {codeEditorThemes}
                         </SelectField></span>
 
+                        </div>
+                        <AceEditor
+                            mode="java"
+                            theme={this.state.editorTheme}
+                            width="100%"
+                            fontSize={this.state.fontSizeCode}
+                            height= "400px"
+                            value={this.state.code}
+                            showPrintMargin={false}
+                            name="skill_code_editor"
+                            onChange={this.onChange}
+                            editorProps={{$blockScrolling: true}}
+                        />
+                        {/*<Chatbox />*/}
                     </div>
-                    <AceEditor
-                        mode="java"
-                        theme={this.state.editorTheme}
-                        width="100%"
-                        fontSize={this.state.fontSizeCode}
-                        height= "400px"
-                        value={this.state.code}
-                        showPrintMargin={false}
-                        name="skill_code_editor"
-                        onChange={this.onChange}
-                        editorProps={{$blockScrolling: true}}
-                    />
-                    {/*<Chatbox />*/}
-                </div>
 
-                <div style={{display: "flex",alignItems:"center",textAlign:"center",justifyContent:"center", marginTop:10}}>
-                    <Paper style={{width:"100%",padding:10,display: "flex",alignItems:"center",textAlign:"center",justifyContent:"center"}} zDepth={1}>
+                    <div style={{display: "flex",alignItems:"center",textAlign:"center",justifyContent:"center", marginTop:10}}>
+                        <Paper style={{width:"100%",padding:10,display: "flex",alignItems:"center",textAlign:"center",justifyContent:"center"}} zDepth={1}>
 
-                    <TextField
-                        floatingLabelText="Commit message"
-                        floatingLabelFixed={true}
-                        hintText="Enter Commit Message"
-                        style={{width:"80%"}}
-                        onChange={this.handleCommitMessageChange}
-                    />
-                    <RaisedButton label="Save" backgroundColor="#4285f4" labelColor="#fff" style={{marginLeft:10}}  onTouchTap={this.saveClick} />
-                    </Paper>
+                            <TextField
+                                floatingLabelText="Commit message"
+                                floatingLabelFixed={true}
+                                hintText="Enter Commit Message"
+                                style={{width:"80%"}}
+                                onChange={this.handleCommitMessageChange}
+                            />
+                            <RaisedButton label="Save" backgroundColor="#4285f4" labelColor="#fff" style={{marginLeft:10}}  onTouchTap={this.saveClick} />
+                        </Paper>
+                    </div>
                 </div>
             </div>
-          </div>
         );
     }
 }
