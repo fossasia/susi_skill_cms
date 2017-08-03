@@ -9,7 +9,7 @@ import {
     TableHeader,
     TableHeaderColumn,
     TableRow,
-    // TableRowColumn,
+    TableRowColumn,
 } from 'material-ui/Table';
 
 
@@ -28,7 +28,7 @@ export default class ListUser extends Component {
             enableSelectAll: false,
             deselectOnClickaway: true,
             showCheckboxes: false,
-            height: '300px',
+            height: 'inherit',
             visible: false,
         }
     }
@@ -73,9 +73,10 @@ export default class ListUser extends Component {
                 data = data.username
                 let keys = Object.keys(data);
                 let username = keys.map((el, i) => {
+                    let name = data[el];
+                    console.log(name);
                     return (
-                        <div>
-                        </div>
+                        <TableRow key={i}><TableRowColumn>{name}</TableRowColumn></TableRow>
                     )
                 });
                 self.setState({
@@ -114,8 +115,8 @@ export default class ListUser extends Component {
                         >
 
                             <TableRow>
-                                <TableHeaderColumn tooltip="Name">Name</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="E-mail">Email ID</TableHeaderColumn>
+                                <TableHeaderColumn tooltip="Name">Name</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Signup">Signup</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Last Login">Last Login</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Last Login IP">IP of Last Login</TableHeaderColumn>
@@ -125,6 +126,7 @@ export default class ListUser extends Component {
                             displayRowCheckbox={false}
                             showRowHover={this.state.showRowHover}
                             stripedRows={this.state.stripedRows}>
+                            {this.state.username}
                         </TableBody>
 
                     </Table>
