@@ -9,6 +9,11 @@ body {
     padding-right: 40px;
     font-size: 48px;
 }
+
+.avatar > img {
+    padding: 10px;
+    background-color: white !important;
+}
 .examples > div{
     margin-top:10px ;
 }

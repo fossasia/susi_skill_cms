@@ -87,6 +87,7 @@ export default class BrowseSkill extends React.Component {
                 jsonp: 'callback',
                 crossDomain: true,
                 success: function (d) {
+                    d=d.modelsArray;
                     console.log(d);
                     for (let i = 0; i < d.length; i++) {
                         models.push(<MenuItem value={i} key={d[i]} primaryText={`${d[i]}`}/>);
@@ -101,7 +102,7 @@ export default class BrowseSkill extends React.Component {
         this.setState({modelValue: value,groupSelect:false,languageSelect:true});
         if(groups.length===0) {
             $.ajax({
-                url: "http://api.susi.ai/aaa/getGroups.json",
+                url: "http://api.susi.ai/cms/getGroups.json",
                 jsonpCallback: 'pb',
                 dataType: 'jsonp',
                 jsonp: 'callback',
@@ -128,6 +129,7 @@ export default class BrowseSkill extends React.Component {
                 crossDomain: true,
                 success: function (data) {
                     console.log(data);
+                    data=data.languagesArray;
                     for (let i = 0; i < data.length; i++) {
                         languages.push(<MenuItem value={i} key={data[i]} primaryText={`${data[i]}`}/>);
                     }
@@ -173,7 +175,7 @@ export default class BrowseSkill extends React.Component {
                         <Link key={el}
                               to={{
                                   pathname: '/skillPage',
-                                  state: { url: url, element: el, name: data[el], modelValue: self.state.modelValue, groupValue:self.state.groupValue, languageValue:self.state.languageValue}
+                                  state: { url: url, element: el, name: data[el], modelValue: models[self.state.modelValue].key, groupValue:groups[self.state.groupValue].key, languageValue:languages[self.state.languageValue].key}
                               }}>
                             <Card style={styles.row} key={el}>
                                 <CardTitle
@@ -202,83 +204,83 @@ export default class BrowseSkill extends React.Component {
         };
 
         return (
-          <div>
-            <StaticAppBar {...this.props} />
-            <div style={styles.container}>
-                <Paper style={style} zDepth={1}>
-                    <div style={styles.center}>
-                        <SelectField
-                            floatingLabelText="Model"
-                            value={this.state.modelValue}
-                            onChange={this.handleModelChange}
-                            onMouseEnter={this.loadModels}
-                            floatingLabelFixed={false}
-                            className='select'
-                            listStyle={{
-                                top: '100px'
-                            }}
-                            selectedMenuItemStyle={{
-                                color: '#4285f4'
-                            }}
-                            underlineFocusStyle={{
-                                color: '#4285f4'
+            <div>
+                <StaticAppBar {...this.props} />
+                <div style={styles.container}>
+                    <Paper style={style} zDepth={1}>
+                        <div style={styles.center}>
+                            <SelectField
+                                floatingLabelText="Model"
+                                value={this.state.modelValue}
+                                onChange={this.handleModelChange}
+                                onMouseEnter={this.loadModels}
+                                floatingLabelFixed={false}
+                                className='select'
+                                listStyle={{
+                                    top: '100px'
+                                }}
+                                selectedMenuItemStyle={{
+                                    color: '#4285f4'
+                                }}
+                                underlineFocusStyle={{
+                                    color: '#4285f4'
 
-                            }}
-                        >
-                            {models}
-                        </SelectField>
-                        <SelectField
-                            disabled={this.state.groupSelect}
-                            floatingLabelText="Group"
-                            value={this.state.groupValue}
-                            floatingLabelFixed={false}
-                            onChange={this.handleGroupChange}
-                            className='select'
-                            listStyle={{
-                                top: '100px'
-                            }}
-                            selectedMenuItemStyle={{
-                                color: '#4285f4'
-                            }}
-                            underlineFocusStyle={{
-                                color: '#4285f4'
+                                }}
+                            >
+                                {models}
+                            </SelectField>
+                            <SelectField
+                                disabled={this.state.groupSelect}
+                                floatingLabelText="Group"
+                                value={this.state.groupValue}
+                                floatingLabelFixed={false}
+                                onChange={this.handleGroupChange}
+                                className='select'
+                                listStyle={{
+                                    top: '100px'
+                                }}
+                                selectedMenuItemStyle={{
+                                    color: '#4285f4'
+                                }}
+                                underlineFocusStyle={{
+                                    color: '#4285f4'
 
-                            }}
-                        >
-                            {groups}
-                        </SelectField>
-                        <SelectField
-                            disabled={this.state.languageSelect}
-                            floatingLabelText="Language"
-                            value={this.state.languageValue}
-                            floatingLabelFixed={false}
-                            onChange={this.handleLanguageChange}
-                            className='select'
-                            listStyle={{
-                                top: '100px'
-                            }}
-                            selectedMenuItemStyle={{
-                                color: '#4285f4'
-                            }}
-                            underlineFocusStyle={{
-                                color: '#4285f4'
+                                }}
+                            >
+                                {groups}
+                            </SelectField>
+                            <SelectField
+                                disabled={this.state.languageSelect}
+                                floatingLabelText="Language"
+                                value={this.state.languageValue}
+                                floatingLabelFixed={false}
+                                onChange={this.handleLanguageChange}
+                                className='select'
+                                listStyle={{
+                                    top: '100px'
+                                }}
+                                selectedMenuItemStyle={{
+                                    color: '#4285f4'
+                                }}
+                                underlineFocusStyle={{
+                                    color: '#4285f4'
 
-                            }}
-                        >
-                            {languages}
-                        </SelectField>
-                        <div>
-                        <FloatingActionButton backgroundColor={colors.fabButton} className='select' onClick={this.buttonClick}>
-                            <ContentAdd />
-                        </FloatingActionButton>
-                        <Link to="/skillCreator">
-                            <FloatingActionButton
-                                backgroundColor={colors.fabButton} className='select'>
-                                <Add />
-                            </FloatingActionButton>
-                        </Link>
+                                }}
+                            >
+                                {languages}
+                            </SelectField>
+                            <div>
+                                <FloatingActionButton backgroundColor={colors.fabButton} className='select' onClick={this.buttonClick}>
+                                    <ContentAdd />
+                                </FloatingActionButton>
+                                <Link to="/skillCreator">
+                                    <FloatingActionButton
+                                        backgroundColor={colors.fabButton} className='select'>
+                                        <Add />
+                                    </FloatingActionButton>
+                                </Link>
+                            </div>
                         </div>
-                    </div>
 
                     </Paper>
 

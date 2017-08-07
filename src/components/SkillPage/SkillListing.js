@@ -41,7 +41,8 @@ export default class SkillListing extends React.Component {
             examples: '',
             descriptions: '',
             skill_name: '',
-            dataReceived: false
+            dataReceived: false,
+            imgUrl:''
         };
         let url = this.props.location.state.url;
         name = this.props.location.state.name;
@@ -63,7 +64,7 @@ export default class SkillListing extends React.Component {
 
     componentDidMount() {
 
-        let baseUrl = 'http://35.192.82.114/cms/getSkillMetadata.json';
+        let baseUrl = 'http://api.susi.ai/cms/getSkillMetadata.json';
         let url = this.props.location.state.url;
 
 
@@ -96,6 +97,10 @@ export default class SkillListing extends React.Component {
     };
 
     updateData = (skillData) => {
+
+        this.setState({
+            imgUrl:'https://raw.githubusercontent.com/fossasia/susi_skill_data/master/models/'+this.props.location.state.modelValue+'/'+this.props.location.state.groupValue+'/'+this.props.location.state.languageValue+'/'+skillData.image
+        });
 
         defaultNullSkillList.forEach((data) => {
 
@@ -149,6 +154,7 @@ export default class SkillListing extends React.Component {
 
     render() {
 
+
         const exampleStyle = {
             height: 'auto',
             width: 200,
@@ -187,7 +193,7 @@ export default class SkillListing extends React.Component {
             renderElement = <div><StaticAppBar {...this.props}/><div className="skill_listing_container" style={styles.home}>
                 <div className="avatar-meta margin-b-md">
                     <div className="avatar">
-                        {this.state.image == null?<CircleImage name={this.state.skill_name.toUpperCase()} size="250"/>:<Avatar src={this.state.image} size={250}/>}
+                        {this.state.image == null?<CircleImage name={this.state.skill_name.toUpperCase()} size="250"/>:<Avatar src={this.state.imgUrl} size={250}/>}
                         {/*<Avatar src={this.state.image} size={250}/>*/}
                     </div>
                     <div className="meta">
