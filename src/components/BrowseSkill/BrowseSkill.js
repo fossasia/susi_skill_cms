@@ -87,6 +87,7 @@ export default class BrowseSkill extends React.Component {
                 jsonp: 'callback',
                 crossDomain: true,
                 success: function (d) {
+                    d=d.modelsArray;
                     console.log(d);
                     for (let i = 0; i < d.length; i++) {
                         models.push(<MenuItem value={i} key={d[i]} primaryText={`${d[i]}`}/>);
@@ -101,7 +102,7 @@ export default class BrowseSkill extends React.Component {
         this.setState({modelValue: value,groupSelect:false,languageSelect:true});
         if(groups.length===0) {
             $.ajax({
-                url: "http://api.susi.ai/aaa/getGroups.json",
+                url: "http://api.susi.ai/cms/getGroups.json",
                 jsonpCallback: 'pb',
                 dataType: 'jsonp',
                 jsonp: 'callback',
@@ -128,6 +129,7 @@ export default class BrowseSkill extends React.Component {
                 crossDomain: true,
                 success: function (data) {
                     console.log(data);
+                    data=data.languagesArray
                     for (let i = 0; i < data.length; i++) {
                         languages.push(<MenuItem value={i} key={data[i]} primaryText={`${data[i]}`}/>);
                     }
