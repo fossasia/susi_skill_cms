@@ -1,0 +1,28 @@
+.SettingsTab{
+    padding: 0px;
+    width: auto;
+    margin: 0 auto;
+}
+.heading{
+    background-color: #f7f7f7;
+    height: 200px;
+}
+.tabs div{
+    background: #4285F4;
+    text-emphasis-color: #000000;
+    background-color: inherit;
+}
+.containerDiv{
+    background-color: #ffffff;
+}
+
+.h1{
+    padding-top: 65px;
+    font-size: 70px;
+}
+
+.containerPaper{
+    margin-top: -68px;
+    margin-left: 60px;
+    margin-right: 40px;
+}

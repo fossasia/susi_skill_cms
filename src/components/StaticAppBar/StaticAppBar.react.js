@@ -62,6 +62,7 @@ class StaticAppBar extends Component {
           showSignUp: false,
           showForgotPassword: false,
           showOptions: false,
+          showAdmin: false,
           anchorEl: null,
         }
     }
