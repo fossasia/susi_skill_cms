@@ -65,7 +65,7 @@ class Login extends Component {
 
         let validEmail = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
         let loginEndPoint =
-            BASE_URL+'/aaa/login.json?type=access-token&login=' +
+            'http://127.0.0.1:4000/aaa/login.json?type=access-token&login=' +
             this.state.email + '&password=' + this.state.password;
 
         if (email && validEmail) {
@@ -151,6 +151,22 @@ class Login extends Component {
         if (state.success) {
             cookies.set('loggedIn', loggedIn, { path: '/', maxAge: time });
             cookies.set('emailId', email, { path: '/', maxAge: time });
+            let url;
+            url = "http://127.0.0.1:4000/aaa/account-permissions.json?access_token="+loggedIn;
+            $.ajax({
+                url: url,
+                dataType: 'jsonp',
+                jsonpCallback: 'pg',
+                jsonp: 'callback',
+                crossDomain: true,
+                success: function (response) {
+                    cookies.set('UserRole', response.userRole, { path: '/', maxAge: time });
+                    console.log(response.userRole)
+                },
+                error: function (errorThrown) {
+                    console.log(errorThrown)
+                }
+            });
             window.location.reload();
 
         }
@@ -162,6 +178,7 @@ class Login extends Component {
             });
         }
     }
+
     handleOpen = () => {
         this.setState({ open: true });
     };

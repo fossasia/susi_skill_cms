@@ -22,6 +22,7 @@ import { Link } from 'react-router-dom';
 import susiWhite from '../images/SUSIAI-white.png';
 import $ from 'jquery';
 import './StaticAppBar.css';
+// import ListUser from "../Admin/ListUser/ListUser";
 
 const cookies = new Cookies();
 
@@ -42,11 +43,6 @@ let TopRightMenuItems = (props) => (
         rightIcon={<SKillIcon/>}>
         Skills
       </MenuItem>
-      <MenuItem primaryText="List Users"
-          onTouchTap={this.handleClose}
-          containerElement={<Link to="/listUser" />}
-                rightIcon={<List/>}
-      />
       <MenuItem primaryText="Settings"
         onTouchTap={this.handleClose}
         containerElement={<Link to="/settings" />}
@@ -212,6 +208,16 @@ class StaticAppBar extends Component {
                (<MenuItem primaryText="Login"
                 onTouchTap={this.handleLogin}
                 rightIcon={<LoginIcon/>} />)
+              }
+              {
+                  cookies.get('UserRole') === "admin" ?
+                      (<MenuItem primaryText="Admin"
+                                 containerElement={<Link to="/admin-panel" />}
+                                 rightIcon={<List />}/>) :
+                      (
+                          console.log("Base user role not an admin")
+                      )
+
               }
             </Popover>
           </div>
