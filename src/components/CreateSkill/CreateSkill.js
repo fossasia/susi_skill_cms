@@ -34,13 +34,22 @@ export default class CreateSkill extends React.Component {
         self.loadmodels()
     }
     onChange(newValue) {
+        const match = newValue.match(/^::image\s(.*)$/m);
+        if(match!==null) {
+            console.log(match[1]);
+
+            self.setState({
+                imageUrl: match[1]
+            });
+            console.log(new RegExp(/images\/\w+\.\w+/g).test(self.state.imageUrl));
+        }
         self.updateCode(newValue)
     }
 
     constructor(props) {
         super(props);
         this.state = {
-            commitMessage:null, modelValue: null, groupValue:null, languageValue:null, expertValue:null,code:"::name <Skill_name>\n::author <author_name>\n::author_url <author_url>\n::description <description> \n::dynamic_content <Yes/No>\n::developer_privacy_policy <link>\n::image <image_url>\n::terms_of_use <link>\n\n\nUser query1|query2|quer3....\n!example:<The question that should be shown in public skill displays>\n!expect:<The answer expected for the above example>\nAnswer for the user query", fontSizeCode:14, editorTheme:"github"
+            file:null,imageUrl:'<image_url>', commitMessage:null, modelValue: null, groupValue:null, languageValue:null, expertValue:null,code:"::name <Skill_name>\n::author <author_name>\n::author_url <author_url>\n::description <description> \n::dynamic_content <Yes/No>\n::developer_privacy_policy <link>\n::image <image_url>\n::terms_of_use <link>\n\n\nUser query1|query2|quer3....\n!example:<The question that should be shown in public skill displays>\n!expect:<The answer expected for the above example>\nAnswer for the user query", fontSizeCode:14, editorTheme:"github"
         };
         let fonts = [
             14,16,18,20,24,28,32,40
@@ -66,6 +75,7 @@ export default class CreateSkill extends React.Component {
                 crossDomain: true,
                 success: function (d) {
                     console.log(d);
+                    d= d.modelsArray;
                     for (let i = 0; i < d.length; i++) {
                         models.push(<MenuItem value={i} key={d[i]} primaryText={`${d[i]}`}/>);
                     }
@@ -75,6 +85,7 @@ export default class CreateSkill extends React.Component {
     }
 
     updateCode = (newCode) => {
+
         this.setState({
             code: newCode,
         });
@@ -84,7 +95,7 @@ export default class CreateSkill extends React.Component {
         this.setState({modelValue: value});
         if(groups.length===0) {
             $.ajax({
-                url: "http://api.susi.ai/aaa/getGroups.json",
+                url: "http://api.susi.ai/cms/getGroups.json",
                 jsonpCallback: 'pb',
                 dataType: 'jsonp',
                 jsonp: 'callback',
@@ -127,6 +138,7 @@ export default class CreateSkill extends React.Component {
                 crossDomain: true,
                 success: function (data) {
                     console.log(data);
+                    data = data.languagesArray;
                     for (let i = 0; i < data.length; i++) {
                         languages.push(<MenuItem value={i} key={data[i]} primaryText={`${data[i]}`}/>);
                     }
@@ -159,19 +171,49 @@ export default class CreateSkill extends React.Component {
             });
             return 0;
         }
+        console.log(this.state.imageUrl)
+        if(!new RegExp(/images\/\w+\.\w+/g).test(self.state.imageUrl)){
+            notification.open({
+                message: 'Error Processing your Request',
+                description: 'image must be in format of images/imageName.jpg',
+                icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
+            });
+            return 0;
+        }
+        if(this.state.file===null){
+            notification.open({
+                message: 'Error Processing your Request',
+                description: 'Image Not Given',
+                icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
+            });
+            return 0;
+        }
 
-        //Need a review system before pushing to Susi Server.
-        let url= "http://api.susi.ai/cms/modifySkill.json?model="+models[this.state.modelValue].key+"&group="+groups[this.state.groupValue].key+"&language="+languages[this.state.languageValue].key+"&skill="+this.state.expertValue+"&content="+encodeURIComponent(this.state.code)+"&changelog="+this.state.commitMessage;
-        console.log(url)
+        var form = new FormData();
+        form.append("model", models[this.state.modelValue].key);
+        form.append("group", groups[this.state.groupValue].key);
+        form.append("language", languages[this.state.languageValue].key);
+        form.append("skill", this.state.expertValue);
+        form.append("image", this.state.file);
+        form.append("content", this.state.code);
+        form.append("image_name", this.state.imageUrl.replace("images/",""));
 
-        $.ajax({
-            url:url,
-            jsonpCallback: 'pc',
-            dataType: 'jsonp',
-            jsonp: 'callback',
-            crossDomain: true,
-            success: function (data) {
-                console.log(data);
+
+        var settings = {
+            "async": true,
+            "crossDomain": true,
+            "url": "http://api.susi.ai/cms/createSkill.txt",
+            "method": "POST",
+            "processData": false,
+            "contentType": false,
+            "mimeType": "multipart/form-data",
+            "data": form
+        }
+
+        $.ajax(settings)
+            .done(function (response) {
+                let   data = JSON.parse(response);
+                console.log(response);
                 if(data.accepted===true){
                     notification.open({
                         message: 'Accepted',
@@ -182,22 +224,29 @@ export default class CreateSkill extends React.Component {
                 else{
                     notification.open({
                         message: 'Error Processing your Request',
-                        description: 'Please select a model, group, language and a skill',
+                        description: String(data.message),
                         icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
                     });
-                }
-            },
-            error: function(e) {
-                console.log(e);
+                }})
+            .fail(function (jqXHR, textStatus) {
                 notification.open({
                     message: 'Error Processing your Request',
-                    description: 'Error in processing the request. Please try with some other skill',
+                    description: String(textStatus),
                     icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
                 });
-            }
-        });
+            });
     }
 
+
+    _onChange =()=> {
+        // Assuming only image
+        var file = this.refs.file.files[0];
+        this.setState({
+            file:file
+        })
+        console.log(file) // Would see a path?
+        // TODO: concat files for setState
+    }
 
     render() {
         const style = {
@@ -208,6 +257,7 @@ export default class CreateSkill extends React.Component {
             <div>
                 <StaticAppBar {...this.props} />
                 <div style={styles.home}>
+
                     <Paper style={style} zDepth={1}>
                         <div style={styles.center}>
                             <div style={styles.dropdownDiv}>
@@ -279,19 +329,53 @@ export default class CreateSkill extends React.Component {
                         />
                         {/*<Chatbox />*/}
                     </div>
+                    <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
+                        <div style={{display: "flex",alignItems:"center",textAlign:"center",justifyContent:"center", marginTop:10, width: '49%'}}>
+                            <Paper style={{width:"100%",padding:10,display: "flex",alignItems:"center",textAlign:"center",justifyContent:"center"}} zDepth={1}>
 
-                    <div style={{display: "flex",alignItems:"center",textAlign:"center",justifyContent:"center", marginTop:10}}>
-                        <Paper style={{width:"100%",padding:10,display: "flex",alignItems:"center",textAlign:"center",justifyContent:"center"}} zDepth={1}>
+                                <TextField
+                                    floatingLabelText="Image Name"
+                                    floatingLabelFixed={true}
+                                    hintText="Image Name"
+                                    disabled={true}
+                                    value={this.state.imageUrl}
+                                    style={{flex: 1 }}
+                                />
+                                <RaisedButton
+                                    label="Choose an Image"
+                                    labelPosition="before"
+                                    containerElement="label"
+                                >
+                                    <input type="file" style={{
+                                        cursor: 'pointer',
+                                        position: 'absolute',
+                                        top: 0,
+                                        bottom: 0,
+                                        right: 0,
+                                        left: 0,
+                                        width: '100%',
+                                        opacity: 0,
+                                    }}
+                                           ref="file"
+                                           name="user[image]"
+                                           multiple="false"
+                                           onChange={this._onChange}/>
+                                </RaisedButton>
+                            </Paper>
+                        </div>
+                        <div style={{display: "flex",alignItems:"center",textAlign:"center",justifyContent:"center", marginTop:10, width: '49%'}}>
+                            <Paper style={{width:"100%",padding:10,display: "flex",alignItems:"center",textAlign:"center",justifyContent:"center"}} zDepth={1}>
 
-                            <TextField
-                                floatingLabelText="Commit message"
-                                floatingLabelFixed={true}
-                                hintText="Enter Commit Message"
-                                style={{width:"80%"}}
-                                onChange={this.handleCommitMessageChange}
-                            />
-                            <RaisedButton label="Save" backgroundColor="#4285f4" labelColor="#fff" style={{marginLeft:10}}  onTouchTap={this.saveClick} />
-                        </Paper>
+                                <TextField
+                                    floatingLabelText="Commit message"
+                                    floatingLabelFixed={true}
+                                    hintText="Enter Commit Message"
+                                    style={{width:"80%"}}
+                                    onChange={this.handleCommitMessageChange}
+                                />
+                                <RaisedButton label="Save" backgroundColor="#4285f4" labelColor="#fff" style={{marginLeft:10}}  onTouchTap={this.saveClick} />
+                            </Paper>
+                        </div>
                     </div>
                 </div>
             </div>
