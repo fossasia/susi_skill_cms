@@ -162,7 +162,7 @@ class Login extends Component {
                 success: function (response) {
                     cookies.set('UserRole', response.userRole, { path: '/', maxAge: time });
                     console.log(response.userRole)
-                }.bind(this),
+                },
                 error: function (errorThrown) {
                     console.log(errorThrown)
                 }
