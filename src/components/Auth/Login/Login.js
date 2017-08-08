@@ -65,7 +65,7 @@ class Login extends Component {
 
         let validEmail = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
         let loginEndPoint =
-            'http://127.0.0.1:4000/aaa/login.json?type=access-token&login=' +
+            BASE_URL + '/aaa/login.json?type=access-token&login=' +
             this.state.email + '&password=' + this.state.password;
 
         if (email && validEmail) {
@@ -162,7 +162,7 @@ class Login extends Component {
                 success: function (response) {
                     cookies.set('UserRole', response.userRole, { path: '/', maxAge: time });
                     console.log(response.userRole)
-                },
+                }.bind(this),
                 error: function (errorThrown) {
                     console.log(errorThrown)
                 }
