@@ -152,7 +152,7 @@ class Login extends Component {
             cookies.set('loggedIn', loggedIn, { path: '/', maxAge: time });
             cookies.set('emailId', email, { path: '/', maxAge: time });
             let url;
-            url = "http://127.0.0.1:4000/aaa/account-permissions.json?access_token="+loggedIn;
+            url = "http://api.susi.ai/aaa/account-permissions.json?access_token="+loggedIn;
             $.ajax({
                 url: url,
                 dataType: 'jsonp',
