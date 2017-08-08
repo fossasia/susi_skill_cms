@@ -38,7 +38,7 @@ export default class ListUser extends Component {
     componentDidMount() {
 
         let url;
-        url = "http://127.0.0.1:4000/aaa/account-permissions.json?access_token="+cookies.get('loggedIn');
+        url = "http://api.susi.ai/aaa/account-permissions.json?access_token="+cookies.get('loggedIn');
         $.ajax({
             url: url,
             dataType: 'jsonp',
@@ -62,7 +62,7 @@ export default class ListUser extends Component {
 
     fetchUsers = () => {
         let url;
-        url = "http://127.0.0.1:4000/aaa/getAllUsers.json?access_token="+cookies.get('loggedIn');
+        url = "http://api.susi.ai/aaa/getAllUsers.json?access_token="+cookies.get('loggedIn');
         let self = this;
         $.ajax({
             url: url,
