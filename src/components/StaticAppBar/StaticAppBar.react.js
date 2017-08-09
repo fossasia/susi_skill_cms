@@ -201,14 +201,6 @@ class StaticAppBar extends Component {
               onRequestClose={this.closeOptions}
             >
               <TopRightMenuItems />
-              {cookies.get('loggedIn') ?
-               (<MenuItem primaryText="Logout"
-                containerElement={<Link to="/logout" />}
-                rightIcon={<Exit />}/>) :
-               (<MenuItem primaryText="Login"
-                onTouchTap={this.handleLogin}
-                rightIcon={<LoginIcon/>} />)
-              }
               {
                   cookies.get('UserRole') === "admin" ?
                       (<MenuItem primaryText="Admin"
@@ -218,6 +210,14 @@ class StaticAppBar extends Component {
                           console.log("Base user role not an admin")
                       )
 
+              }
+              {cookies.get('loggedIn') ?
+               (<MenuItem primaryText="Logout"
+                containerElement={<Link to="/logout" />}
+                rightIcon={<Exit />}/>) :
+               (<MenuItem primaryText="Login"
+                onTouchTap={this.handleLogin}
+                rightIcon={<LoginIcon/>} />)
               }
             </Popover>
           </div>
