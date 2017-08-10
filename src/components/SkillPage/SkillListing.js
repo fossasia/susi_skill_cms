@@ -73,7 +73,6 @@ export default class SkillListing extends React.Component {
         let modelValue =  this.props.location.state.modelValue;
         let groupValue = this.props.location.state.groupValue;
         let languageValue = this.props.location.state.languageValue;
-        groupValue = groupValue.charAt(0).toUpperCase() + groupValue.substring(1);
 
         url  = baseUrl + '?model='+modelValue + '&group='+groupValue + '&language='+languageValue + '&skill='+name;
 
