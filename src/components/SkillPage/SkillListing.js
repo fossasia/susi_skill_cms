@@ -13,7 +13,6 @@ import 'brace/theme/solarized_light';
 import 'brace/theme/terminal';
 import * as $ from "jquery";
 import Divider from 'material-ui/Divider';
-import Avatar from 'material-ui/Avatar';
 import './SkillListing.css';
 import {FloatingActionButton, Paper, } from "material-ui";
 import CircleImage from "../CircleImage/CircleImage";
@@ -45,7 +44,6 @@ export default class SkillListing extends React.Component {
         };
         let url = this.props.location.state.url;
         name = this.props.location.state.name;
-        // name = name.replace(".txt", "");
         if(url.indexOf("model") < 0) {
             urlCode = this.props.location.state.url + "?skill=" + name;
         }
@@ -57,17 +55,13 @@ export default class SkillListing extends React.Component {
         urlCode =  urlCode.replace("getSkillList","getSkill");
         console.log(urlCode);
 
-
     }
 
 
     componentDidMount() {
 
-        let baseUrl = 'http://35.192.82.114/cms/getSkillMetadata.json';
+        let baseUrl = 'http://api.susi.ai/cms/getSkillMetadata.json';
         let url = this.props.location.state.url;
-
-
-
 
 
         let modelValue =  this.props.location.state.modelValue;
@@ -96,6 +90,10 @@ export default class SkillListing extends React.Component {
     };
 
     updateData = (skillData) => {
+
+        this.setState({
+            imgUrl:'https://raw.githubusercontent.com/fossasia/susi_skill_data/master/models/'+this.props.location.state.modelValue+'/'+this.props.location.state.groupValue+'/'+this.props.location.state.languageValue+'/'+skillData.image
+        });
 
         defaultNullSkillList.forEach((data) => {
             this.setState({
@@ -179,13 +177,16 @@ export default class SkillListing extends React.Component {
             renderElement = <div><StaticAppBar {...this.props}/><div className="skill_listing_container" style={styles.home}>
                 <div className="avatar-meta margin-b-md">
                     <div className="avatar">
-                        {this.state.image == null?<CircleImage name={this.state.skill_name.toUpperCase()} size="250"/>:<Avatar src={this.state.image} size={250}/>}
+                        {this.state.image == null?
+                            <CircleImage name={this.state.skill_name.toUpperCase()} size="250"/>:
+                            <img className="avatar-img" alt="Thumbnail" src={this.state.imgUrl}/>
+                          }
                         {/*<Avatar src={this.state.image} size={250}/>*/}
                     </div>
                     <div className="meta">
                         <h1 className="name">
                             {/*{this.state.skill_name}*/}
-                            {this.state.skill_name.split(' ').map((data) => {
+                            {name.split(' ').map((data) => {
                                 return data.charAt(0).toUpperCase() + data.substring(1);
                             }).join(' ')}
                         </h1>
