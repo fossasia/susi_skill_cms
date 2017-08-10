@@ -13,7 +13,6 @@ import 'brace/theme/solarized_light';
 import 'brace/theme/terminal';
 import * as $ from "jquery";
 import Divider from 'material-ui/Divider';
-import Avatar from 'material-ui/Avatar';
 import './SkillListing.css';
 import {FloatingActionButton, Paper, } from "material-ui";
 import CircleImage from "../CircleImage/CircleImage";
@@ -92,21 +91,17 @@ export default class SkillListing extends React.Component {
 
     updateData = (skillData) => {
 
-        defaultNullSkillList.forEach((data) => {
-
-            if (!(data in skillData)) {
-                this.setState({
-                    [data]: null
-                })
-            }
-            else {
-                this.setState({
-                    [data]: skillData[data]
-                })
-            }
+        this.setState({
+            imgUrl:'https://raw.githubusercontent.com/fossasia/susi_skill_data/master/models/'+this.props.location.state.modelValue+'/'+this.props.location.state.groupValue+'/'+this.props.location.state.languageValue+'/'+skillData.image
         });
 
-        if (!('descriptions' in skillData)) {
+        defaultNullSkillList.forEach((data) => {
+            this.setState({
+                [data]: skillData[data]
+            })
+        });
+
+        if (skillData['descriptions'] === null) {
 
             this.setState({
                 descriptions: 'No Description Provided'
@@ -120,7 +115,7 @@ export default class SkillListing extends React.Component {
             })
         }
 
-        if (!('skill_name' in skillData)) {
+        if (skillData['skill_name'] === null) {
 
             let skill_name = this.props.location.state.name;
             skill_name = skill_name.charAt(0).toUpperCase() + skill_name.substring(1);
@@ -182,7 +177,10 @@ export default class SkillListing extends React.Component {
             renderElement = <div><StaticAppBar {...this.props}/><div className="skill_listing_container" style={styles.home}>
                 <div className="avatar-meta margin-b-md">
                     <div className="avatar">
-                        {this.state.image == null?<CircleImage name={name.toUpperCase()} size="250"/>:<Avatar src={this.state.image} size={250}/>}
+                        {this.state.image == null?
+                            <CircleImage name={this.state.skill_name.toUpperCase()} size="250"/>:
+                            <img className="avatar-img" alt="Thumbnail" src={this.state.imgUrl}/>
+                          }
                         {/*<Avatar src={this.state.image} size={250}/>*/}
                     </div>
                     <div className="meta">
@@ -210,7 +208,7 @@ export default class SkillListing extends React.Component {
                             {/*{this.state.skill_data.examples}*/}
                             {console.log(this.state)}
 
-                            {typeof this.state.examples === 'undefined' || this.state.examples === null || typeof this.state.examples[Object.keys(this.state.examples)[0]] === 'undefined'? '' : this.state.examples[Object.keys(this.state.examples)[0]].map((data) => {
+                            {typeof this.state.examples === 'undefined' || this.state.examples === null || typeof this.state.examples[Object.keys(this.state.examples)[0]] === 'undefined'? '' : this.state.examples.map((data) => {
                                 return <Paper style={exampleStyle} zDepth={1}>{data}</Paper>
                             })}
                         </div>

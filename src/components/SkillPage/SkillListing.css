@@ -44,3 +44,8 @@ body {
 .skill_edit_btn > button{
     background-color: #4285f4;
 }
+
+.avatar-img {
+    height:250px;
+    width:auto;
+}

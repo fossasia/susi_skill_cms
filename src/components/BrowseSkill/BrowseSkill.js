@@ -54,7 +54,7 @@ export default class BrowseSkill extends React.Component {
                     }
                     if(skill.image){
                         image = 'https://raw.githubusercontent.com/fossasia/susi_skill_data/master/models/'+self.state.modelValue+'/'+
-                        self.state.groupValue+'/'+self.state.languageValue+'/'+skill.image;
+                            self.state.groupValue+'/'+self.state.languageValue+'/'+skill.image;
                     }
                     else{
                         image = ''
@@ -72,19 +72,19 @@ export default class BrowseSkill extends React.Component {
                     else{
                         description = 'No description available'
                     }
-                       
+
                     return (
                         <Link key={el}
                               to={{
                                   pathname: '/skillPage',
-                                  state: { url: url, element: el, name: skill_name, modelValue: self.state.modelValue, groupValue:self.state.groupValue, languageValue:self.state.languageValue}
+                                  state: { url: url, element: el, name: el, modelValue: self.state.modelValue, groupValue:self.state.groupValue, languageValue:self.state.languageValue}
                               }}>
                             <Card style={styles.row} key={el}>
                                 <div style={styles.right} key={el}>
                                     {image ? <div style={styles.imageContainer}>
                                         <img alt={skill_name} src={image} style={styles.image}/>
                                     </div>:
-                                    <CircleImage name={el} size="48"/>}
+                                        <CircleImage name={el} size="48"/>}
                                     <div style={styles.titleStyle}>"{examples}"</div>
                                 </div>
                                 <div style={styles.details}>
@@ -210,7 +210,7 @@ export default class BrowseSkill extends React.Component {
                     }
                     if(skill.image){
                         image = 'https://raw.githubusercontent.com/fossasia/susi_skill_data/master/models/'+self.state.modelValue+'/'+
-                        self.state.groupValue+'/'+self.state.languageValue+'/'+skill.image;
+                            self.state.groupValue+'/'+self.state.languageValue+'/'+skill.image;
                     }
                     else{
                         image = ''
@@ -232,14 +232,14 @@ export default class BrowseSkill extends React.Component {
                         <Link key={el}
                               to={{
                                   pathname: '/skillPage',
-                                  state: { url: url, element: el, name: skill_name, modelValue: self.state.modelValue, groupValue:self.state.groupValue, languageValue:self.state.languageValue}
+                                  state: { url: url, element: el, name: el, modelValue: self.state.modelValue, groupValue:self.state.groupValue, languageValue:self.state.languageValue}
                               }}>
                             <Card style={styles.row} key={el}>
                                 <div style={styles.right} key={el}>
                                     {image ? <div style={styles.imageContainer}>
                                         <img alt={skill_name} src={image} style={styles.image}/>
                                     </div>:
-                                    <CircleImage name={el} size="48"/>}
+                                        <CircleImage name={el} size="48"/>}
                                     <div style={styles.titleStyle}>"{examples}"</div>
                                 </div>
                                 <div style={styles.details}>
@@ -268,83 +268,83 @@ export default class BrowseSkill extends React.Component {
         };
 
         return (
-          <div>
-            <StaticAppBar {...this.props} />
-            <div style={styles.container}>
-                <Paper style={style} zDepth={1}>
-                    <div style={styles.center}>
-                        <SelectField
-                            floatingLabelText="Model"
-                            value={this.state.modelValue}
-                            onChange={this.handleModelChange}
-                            onMouseEnter={this.loadModels}
-                            floatingLabelFixed={false}
-                            className='select'
-                            listStyle={{
-                                top: '100px'
-                            }}
-                            selectedMenuItemStyle={{
-                                color: '#4285f4'
-                            }}
-                            underlineFocusStyle={{
-                                color: '#4285f4'
+            <div>
+                <StaticAppBar {...this.props} />
+                <div style={styles.container}>
+                    <Paper style={style} zDepth={1}>
+                        <div style={styles.center}>
+                            <SelectField
+                                floatingLabelText="Model"
+                                value={this.state.modelValue}
+                                onChange={this.handleModelChange}
+                                onMouseEnter={this.loadModels}
+                                floatingLabelFixed={false}
+                                className='select'
+                                listStyle={{
+                                    top: '100px'
+                                }}
+                                selectedMenuItemStyle={{
+                                    color: '#4285f4'
+                                }}
+                                underlineFocusStyle={{
+                                    color: '#4285f4'
 
-                            }}
-                        >
-                            {models}
-                        </SelectField>
-                        <SelectField
-                            disabled={this.state.groupSelect}
-                            floatingLabelText="Group"
-                            value={this.state.groupValue}
-                            floatingLabelFixed={false}
-                            onChange={this.handleGroupChange}
-                            className='select'
-                            listStyle={{
-                                top: '100px'
-                            }}
-                            selectedMenuItemStyle={{
-                                color: '#4285f4'
-                            }}
-                            underlineFocusStyle={{
-                                color: '#4285f4'
+                                }}
+                            >
+                                {models}
+                            </SelectField>
+                            <SelectField
+                                disabled={this.state.groupSelect}
+                                floatingLabelText="Group"
+                                value={this.state.groupValue}
+                                floatingLabelFixed={false}
+                                onChange={this.handleGroupChange}
+                                className='select'
+                                listStyle={{
+                                    top: '100px'
+                                }}
+                                selectedMenuItemStyle={{
+                                    color: '#4285f4'
+                                }}
+                                underlineFocusStyle={{
+                                    color: '#4285f4'
 
-                            }}
-                        >
-                            {groups}
-                        </SelectField>
-                        <SelectField
-                            disabled={this.state.languageSelect}
-                            floatingLabelText="Language"
-                            value={this.state.languageValue}
-                            floatingLabelFixed={false}
-                            onChange={this.handleLanguageChange}
-                            className='select'
-                            listStyle={{
-                                top: '100px'
-                            }}
-                            selectedMenuItemStyle={{
-                                color: '#4285f4'
-                            }}
-                            underlineFocusStyle={{
-                                color: '#4285f4'
+                                }}
+                            >
+                                {groups}
+                            </SelectField>
+                            <SelectField
+                                disabled={this.state.languageSelect}
+                                floatingLabelText="Language"
+                                value={this.state.languageValue}
+                                floatingLabelFixed={false}
+                                onChange={this.handleLanguageChange}
+                                className='select'
+                                listStyle={{
+                                    top: '100px'
+                                }}
+                                selectedMenuItemStyle={{
+                                    color: '#4285f4'
+                                }}
+                                underlineFocusStyle={{
+                                    color: '#4285f4'
 
-                            }}
-                        >
-                            {languages}
-                        </SelectField>
-                        <div>
-                        <FloatingActionButton backgroundColor={colors.fabButton} className='select' onClick={this.buttonClick}>
-                            <ContentAdd />
-                        </FloatingActionButton>
-                        <Link to="/skillCreator">
-                            <FloatingActionButton
-                                backgroundColor={colors.fabButton} className='select'>
-                                <Add />
-                            </FloatingActionButton>
-                        </Link>
+                                }}
+                            >
+                                {languages}
+                            </SelectField>
+                            <div>
+                                <FloatingActionButton backgroundColor={colors.fabButton} className='select' onClick={this.buttonClick}>
+                                    <ContentAdd />
+                                </FloatingActionButton>
+                                <Link to="/skillCreator">
+                                    <FloatingActionButton
+                                        backgroundColor={colors.fabButton} className='select'>
+                                        <Add />
+                                    </FloatingActionButton>
+                                </Link>
+                            </div>
                         </div>
-                    </div>
 
                     </Paper>
 
@@ -373,7 +373,7 @@ const styles = {
         flexDirection: 'row',
         flexWrap: 'wrap'
     },
-    imageContainer:{   
+    imageContainer:{
         position: 'relative',
         height: '80px',
         width: '80px',
@@ -399,7 +399,7 @@ const styles = {
     },
     description:{
         textAlign:'left',
-        fontSize: '14px'   
+        fontSize: '14px'
     },
     listStyle: {
         width: "100%",
@@ -455,14 +455,14 @@ const styles = {
         height: '130px'
     },
     titleStyle:{
-    textAlign: 'left',
-    fontStyle: 'italic',
-    fontSize: '16px',
-    textOverflow: 'ellipsis',
-    overflow: 'hidden',
-    width: '138px',
-    marginLeft: '15px',
-    verticalAlign: 'middle',
-    display: 'block'
-}
+        textAlign: 'left',
+        fontStyle: 'italic',
+        fontSize: '16px',
+        textOverflow: 'ellipsis',
+        overflow: 'hidden',
+        width: '138px',
+        marginLeft: '15px',
+        verticalAlign: 'middle',
+        display: 'block'
+    }
 }
