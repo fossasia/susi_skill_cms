@@ -31,7 +31,7 @@ class App extends React.Component {
                 <Route exact path="/browseHistory" component={BrowseHistory} />
                 <Route exact path="/browseExamples" component={BrowseExamples} />
                 <Route exact path="/browseSkill" component={BrowseSkill}/>
-                <Route exact path="/admin-panel" component={Admin}/>
+                <Route exact path="/admin" component={Admin}/>
                 <Route path="/listUser" component={ListUser}/>
                 <Route exact path="/visualEditor" component={VisualEditor}/>
                 <Route exact path="/skillPage" component={SkillListing}/>

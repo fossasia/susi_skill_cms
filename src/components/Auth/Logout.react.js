@@ -1,5 +1,8 @@
 import {Component} from 'react';
 import PropTypes from 'prop-types';
+import Cookies from 'universal-cookie'
+
+const cookies = new Cookies();
 
 var deleteCookie = function(name) {
     document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
@@ -18,7 +21,7 @@ class Logout extends Component {
     deleteCookie('loggedIn');
     deleteCookie('serverUrl');
     deleteCookie('email');
-    deleteCookie('UserRole');
+    cookies.set('showAdmin', false, { path: '/', maxAge: time });
     this.props.history.push('/');
     window.location.reload();
   }

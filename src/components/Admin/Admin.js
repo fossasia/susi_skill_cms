@@ -21,7 +21,7 @@ class Admin extends Component {
 
     componentDidMount() {
         let url;
-        url = "http://api.susi.ai/aaa/account-permissions.json?access_token="+cookies.get('loggedIn');
+        url = "http://api.susi.ai/aaa/showAdminService.json?access_token="+cookies.get('loggedIn');
         $.ajax({
             url: url,
             dataType: 'jsonp',
@@ -29,12 +29,11 @@ class Admin extends Component {
             jsonp: 'callback',
             crossDomain: true,
             success: function (response) {
-                console.log(response.userRole)
-                if (response.userRole !== "admin") {
+                console.log(response.showAdmin)
+                if (response.showAdmin !== true) {
                     this.setState({
                         showNotAdminDialog: true,
                     })
-                    console.log("user role = " + response.userRole)
                 } else {
                     this.setState({
                         showNotAdminDialog: false,
@@ -73,11 +72,11 @@ class Admin extends Component {
                 </div>
                 <div>
                     <Dialog
-                        title="Not an admin"
+                        title="Permission Denied"
                         actions={actions}
                         modal={true}
                         open={this.state.showNotAdminDialog}>
-                        You are not an admin yet!! :(
+                        You do not have permissions yet to access this page!! :(
                     </Dialog>
                 </div>
                 <div>

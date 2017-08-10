@@ -151,8 +151,9 @@ class Login extends Component {
         if (state.success) {
             cookies.set('loggedIn', loggedIn, { path: '/', maxAge: time });
             cookies.set('emailId', email, { path: '/', maxAge: time });
+            cookies.set('showAdmin', false, { path: '/', maxAge: time });
             let url;
-            url = "http://api.susi.ai/aaa/account-permissions.json?access_token="+loggedIn;
+            url = "http://api.susi.ai/aaa/showAdminService.json?access_token="+loggedIn;
             $.ajax({
                 url: url,
                 dataType: 'jsonp',
@@ -160,8 +161,8 @@ class Login extends Component {
                 jsonp: 'callback',
                 crossDomain: true,
                 success: function (response) {
-                    cookies.set('UserRole', response.userRole, { path: '/', maxAge: time });
-                    console.log(response.userRole)
+                    cookies.set('showAdmin', response.showAdmin, { path: '/', maxAge: time });
+                    console.log(response.showAdmin)
                 },
                 error: function (errorThrown) {
                     console.log(errorThrown)

@@ -202,12 +202,12 @@ class StaticAppBar extends Component {
             >
               <TopRightMenuItems />
               {
-                  cookies.get('UserRole') === "admin" ?
+                  cookies.get('showAdmin') === true ?
                       (<MenuItem primaryText="Admin"
-                                 containerElement={<Link to="/admin-panel" />}
+                                 containerElement={<Link to="/admin" />}
                                  rightIcon={<List />}/>) :
                       (
-                          console.log("Base user role not an admin")
+                          console.log("Admin page not allowed")
                       )
 
               }
