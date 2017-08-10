@@ -4,7 +4,7 @@ import SelectField from "material-ui/SelectField";
 import { FloatingActionButton, Paper} from "material-ui";
 import Add from 'material-ui/svg-icons/content/add';
 import ContentAdd from "material-ui/svg-icons/navigation/arrow-forward";
-import {Card, CardTitle} from 'material-ui/Card';
+import {Card} from 'material-ui/Card';
 import * as $ from "jquery";
 import Link from "react-router-dom/es/Link";
 import colors from "../../Utils/colors";
@@ -20,7 +20,7 @@ export default class BrowseSkill extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            modelValue: "general", skillURL:null, groupValue:"knowledge", languageValue:"en", expertValue:null, skills: [], first_open:true,
+            modelValue: "general", skillURL:null, groupValue:"Knowledge", languageValue:"en", expertValue:null, skills: [], first_open:true,
             groupSelect:true,
             languageSelect:true
         };
@@ -41,25 +41,55 @@ export default class BrowseSkill extends React.Component {
             jsonp: 'callback',
             crossDomain: true,
             success: function (data) {
-                data = data.skills;
-                let keys = Object.keys(data);
-                let skills = keys.map((el, i) => {
+                let skills = Object.keys(data.skills);
+                skills = skills.map((el, i) => {
+                    let skill = data.skills[el];
+                    let skill_name, examples, image,description;
+                    if(skill.skill_name){
+                        skill_name = skill.skill_name;
+                        skill_name = skill_name.charAt(0).toUpperCase() + skill_name.slice(1);
+                    }
+                    else{
+                        skill_name = 'Name not available';
+                    }
+                    if(skill.image){
+                        image = 'https://raw.githubusercontent.com/fossasia/susi_skill_data/master/models/'+self.state.modelValue+'/'+
+                        self.state.groupValue+'/'+self.state.languageValue+'/'+skill.image;
+                    }
+                    else{
+                        image = ''
+                    }
+                    if(skill.examples){
+                        examples = skill.examples;
+                        examples = examples[0];
+                    }
+                    else{
+                        examples = null
+                    }
+                    if(skill.descriptions){
+                        description = skill.descriptions;
+                    }
+                    else{
+                        description = 'No description available'
+                    }
+                       
                     return (
                         <Link key={el}
                               to={{
                                   pathname: '/skillPage',
-                                  state: { url: url, element: el, name: data[el], modelValue: self.state.modelValue, groupValue:self.state.groupValue, languageValue:self.state.languageValue}
+                                  state: { url: url, element: el, name: skill_name, modelValue: self.state.modelValue, groupValue:self.state.groupValue, languageValue:self.state.languageValue}
                               }}>
                             <Card style={styles.row} key={el}>
-                                <div style={styles.right}>
-                                    <CircleImage name={data[el].replace(/\.[^/.]+$/, "").toUpperCase()} size="48"/>
-                                    <CardTitle
-                                        title={data[el].replace(/\.[^/.]+$/, "")}
-                                        titleStyle={{'fontSize':'18px'}}
-                                    />
+                                <div style={styles.right} key={el}>
+                                    {image ? <div style={styles.imageContainer}>
+                                        <img alt={skill_name} src={image} style={styles.image}/>
+                                    </div>:
+                                    <CircleImage name={el} size="48"/>}
+                                    <div style={styles.titleStyle}>"{examples}"</div>
                                 </div>
-                                <div>
-                                    {/*Empty div for description*/}
+                                <div style={styles.details}>
+                                    <h3 style={styles.name}>{skill_name}</h3>
+                                    <p style={styles.description}>{description}</p>
                                 </div>
                             </Card>
                         </Link>
@@ -70,7 +100,6 @@ export default class BrowseSkill extends React.Component {
                     skills : skills,
                     skillURL: url
                 })
-                console.log(self.state)
 
             }
         });
@@ -90,7 +119,7 @@ export default class BrowseSkill extends React.Component {
                     d=d.modelsArray;
                     console.log(d);
                     for (let i = 0; i < d.length; i++) {
-                        models.push(<MenuItem value={i} key={d[i]} primaryText={`${d[i]}`}/>);
+                        models.push(<MenuItem value={d[i]} key={d[i]} primaryText={`${d[i]}`}/>);
                     }
 
                 }
@@ -111,7 +140,7 @@ export default class BrowseSkill extends React.Component {
                     console.log(data);
                     data = data.groups;
                     for (let i = 0; i < data.length; i++) {
-                        groups.push(<MenuItem value={i} key={data[i]} primaryText={`${data[i]}`}/>);
+                        groups.push(<MenuItem value={data[i]} key={data[i]} primaryText={`${data[i]}`}/>);
                     }
                 }
             });
@@ -131,7 +160,7 @@ export default class BrowseSkill extends React.Component {
                     console.log(data);
                     data=data.languagesArray
                     for (let i = 0; i < data.length; i++) {
-                        languages.push(<MenuItem value={i} key={data[i]} primaryText={`${data[i]}`}/>);
+                        languages.push(<MenuItem value={data[i]} key={data[i]} primaryText={`${data[i]}`}/>);
                     }
                     console.log("languages ", languages)
                 }
@@ -151,7 +180,7 @@ export default class BrowseSkill extends React.Component {
         let url;
         if(models.length>0&&languages.length>0&&groups.length>0) {
             console.log(models)
-            url  = "http://api.susi.ai/cms/getSkillList.json?model=" + models[this.state.modelValue].key + "&group=" + groups[this.state.groupValue].key + "&language=" + languages[this.state.languageValue].key;
+            url  = "http://api.susi.ai/cms/getSkillList.json?model=" + this.state.modelValue + "&group=" + this.state.groupValue + "&language=" + this.state.languageValue;
         }
         else{
             url = "http://api.susi.ai/cms/getSkillList.json"
@@ -168,20 +197,55 @@ export default class BrowseSkill extends React.Component {
             jsonp: 'callback',
             crossDomain: true,
             success: function (data) {
-                data = data.skills;
-                let keys = Object.keys(data);
-                let skills = keys.map((el, i) => {
+                let skills = Object.keys(data.skills);
+                skills = skills.map((el, i) => {
+                    let skill = data.skills[el];
+                    let skill_name, examples, image,description;
+                    if(skill.skill_name){
+                        skill_name = skill.skill_name;
+                        skill_name = skill_name.charAt(0).toUpperCase() + skill_name.slice(1);
+                    }
+                    else{
+                        skill_name = 'Name not available';
+                    }
+                    if(skill.image){
+                        image = 'https://raw.githubusercontent.com/fossasia/susi_skill_data/master/models/'+self.state.modelValue+'/'+
+                        self.state.groupValue+'/'+self.state.languageValue+'/'+skill.image;
+                    }
+                    else{
+                        image = ''
+                    }
+                    if(skill.examples){
+                        examples = skill.examples;
+                        examples= examples[0];
+                    }
+                    else{
+                        examples = null
+                    }
+                    if(skill.descriptions){
+                        description = skill.descriptions;
+                    }
+                    else{
+                        description = 'No description available'
+                    }
                     return (
                         <Link key={el}
                               to={{
                                   pathname: '/skillPage',
-                                  state: { url: url, element: el, name: data[el], modelValue: self.state.modelValue, groupValue:self.state.groupValue, languageValue:self.state.languageValue}
+                                  state: { url: url, element: el, name: skill_name, modelValue: self.state.modelValue, groupValue:self.state.groupValue, languageValue:self.state.languageValue}
                               }}>
                             <Card style={styles.row} key={el}>
-                                <CardTitle
-                                    title={data[el].replace(/\.[^/.]+$/, "")}
-                                    titleStyle={{'fontSize':'18px'}}
-                                />
+                                <div style={styles.right} key={el}>
+                                    {image ? <div style={styles.imageContainer}>
+                                        <img alt={skill_name} src={image} style={styles.image}/>
+                                    </div>:
+                                    <CircleImage name={el} size="48"/>}
+                                    <div style={styles.titleStyle}>"{examples}"</div>
+                                </div>
+                                <div style={styles.details}>
+                                    <h3 style={styles.name}>{skill_name}</h3>
+                                    <p style={styles.description}>{description}</p>
+                                </div>
                             </Card>
                         </Link>
                     )
@@ -309,7 +373,35 @@ const styles = {
         flexDirection: 'row',
         flexWrap: 'wrap'
     },
-    liStyle: {
+    imageContainer:{   
+        position: 'relative',
+        height: '80px',
+        width: '80px',
+        verticalAlign: 'top'
+    },
+    name:{
+        textAlign: 'left',
+        fontSize: '15px',
+        color: '#4285f4',
+        margin: '4px 0'
+    },
+    details:{
+        paddingLeft:'10px'
+    },
+    image:{
+        maxWidth: '100%',
+        border: 0
+    },
+    feedback:{
+        color:'#4285f4',
+        fill:'#4285f4',
+        display: "flex",
+    },
+    description:{
+        textAlign:'left',
+        fontSize: '14px'   
+    },
+    listStyle: {
         width: "100%",
     },
     container: {
@@ -329,14 +421,19 @@ const styles = {
         margin: '20px auto 10px',
     },
     row: {
-        width: 210,
-        height: 120,
+        width: 280,
+        minHeight:'200px',
         margin:"10px",
-        overflow:'auto',
+        overflow:'hidden',
         justifyContent: "center",
         fontSize: '10px',
         textAlign: 'center',
         display: 'inline-block',
+        background: '#f2f2f2',
+        borderRadius: '5px',
+        backgroundColor: '#f4f6f6',
+        border: '1px solid #eaeded',
+        padding: '4px',
     },
     scroll: {
         display: 'flex',
@@ -353,6 +450,19 @@ const styles = {
         display: 'flex',
         alignItems:"center",
         flexDirection: 'row',
-        padding: "10px",
+        padding: "8px",
+        background: '#fff',
+        height: '130px'
     },
+    titleStyle:{
+    textAlign: 'left',
+    fontStyle: 'italic',
+    fontSize: '16px',
+    textOverflow: 'ellipsis',
+    overflow: 'hidden',
+    width: '138px',
+    marginLeft: '15px',
+    verticalAlign: 'middle',
+    display: 'block'
+}
 }

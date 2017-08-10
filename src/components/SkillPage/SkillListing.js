@@ -45,7 +45,6 @@ export default class SkillListing extends React.Component {
         };
         let url = this.props.location.state.url;
         name = this.props.location.state.name;
-        name = name.replace(".txt", "");
         if(url.indexOf("model") < 0) {
             urlCode = this.props.location.state.url + "?skill=" + name;
         }
@@ -57,17 +56,13 @@ export default class SkillListing extends React.Component {
         urlCode =  urlCode.replace("getSkillList","getSkill");
         console.log(urlCode);
 
-
     }
 
 
     componentDidMount() {
 
-        let baseUrl = 'http://35.192.82.114/cms/getSkillMetadata.json';
+        let baseUrl = 'http://api.susi.ai/cms/getSkillMetadata.json';
         let url = this.props.location.state.url;
-
-
-
 
 
         let modelValue =  this.props.location.state.modelValue;
@@ -127,7 +122,7 @@ export default class SkillListing extends React.Component {
 
         if (!('skill_name' in skillData)) {
 
-            let skill_name = this.props.location.state.name.replace(".txt", "");
+            let skill_name = this.props.location.state.name;
             skill_name = skill_name.charAt(0).toUpperCase() + skill_name.substring(1);
 
             this.setState({
@@ -187,13 +182,13 @@ export default class SkillListing extends React.Component {
             renderElement = <div><StaticAppBar {...this.props}/><div className="skill_listing_container" style={styles.home}>
                 <div className="avatar-meta margin-b-md">
                     <div className="avatar">
-                        {this.state.image == null?<CircleImage name={this.state.skill_name.toUpperCase()} size="250"/>:<Avatar src={this.state.image} size={250}/>}
+                        {this.state.image == null?<CircleImage name={name.toUpperCase()} size="250"/>:<Avatar src={this.state.image} size={250}/>}
                         {/*<Avatar src={this.state.image} size={250}/>*/}
                     </div>
                     <div className="meta">
                         <h1 className="name">
                             {/*{this.state.skill_name}*/}
-                            {this.state.skill_name.split(' ').map((data) => {
+                            {name.split(' ').map((data) => {
                                 return data.charAt(0).toUpperCase() + data.substring(1);
                             }).join(' ')}
                         </h1>
