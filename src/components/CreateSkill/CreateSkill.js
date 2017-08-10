@@ -252,7 +252,7 @@ export default class CreateSkill extends React.Component {
                         <div style={styles.center}>
                             <div style={styles.dropdownDiv}>
                                 <SelectField
-                                    floatingLabelText="Group"
+                                    floatingLabelText="Category"
                                     style={{width:'160px',marginLeft:10,marginRight:10}}
                                     value={this.state.groupValue}
                                     onChange={this.handleGroupChange}
@@ -274,6 +274,34 @@ export default class CreateSkill extends React.Component {
                                     style={{marginLeft:10,marginRight:10}}
                                     onChange={this.handleExpertChange}
                                 />
+                                <TextField
+                                    floatingLabelText="Image Name"
+                                    floatingLabelFixed={true}
+                                    hintText="Image Name"
+                                    disabled={true}
+                                    value={this.state.imageUrl}
+                                    style={{flex: 1 }}
+                                />
+                                <RaisedButton
+                                    label="Choose an Image"
+                                    labelPosition="before"
+                                    containerElement="label"
+                                >
+                                    <input type="file" style={{
+                                        cursor: 'pointer',
+                                        position: 'absolute',
+                                        top: 0,
+                                        bottom: 0,
+                                        right: 0,
+                                        left: 0,
+                                        width: '100%',
+                                        opacity: 0,
+                                    }}
+                                           ref="file"
+                                           name="user[image]"
+                                           multiple="false"
+                                           onChange={this._onChange}/>
+                                </RaisedButton>
                             </div>
                         </div>
                     </Paper>
@@ -311,41 +339,7 @@ export default class CreateSkill extends React.Component {
                         />
                         {/*<Chatbox />*/}
                     </div>
-                    <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
-                        <div style={{display: "flex",alignItems:"center",textAlign:"center",justifyContent:"center", marginTop:10, width: '49%'}}>
-                            <Paper style={{width:"100%",padding:10,display: "flex",alignItems:"center",textAlign:"center",justifyContent:"center"}} zDepth={1}>
-
-                                <TextField
-                                    floatingLabelText="Image Name"
-                                    floatingLabelFixed={true}
-                                    hintText="Image Name"
-                                    disabled={true}
-                                    value={this.state.imageUrl}
-                                    style={{flex: 1 }}
-                                />
-                                <RaisedButton
-                                    label="Choose an Image"
-                                    labelPosition="before"
-                                    containerElement="label"
-                                >
-                                    <input type="file" style={{
-                                        cursor: 'pointer',
-                                        position: 'absolute',
-                                        top: 0,
-                                        bottom: 0,
-                                        right: 0,
-                                        left: 0,
-                                        width: '100%',
-                                        opacity: 0,
-                                    }}
-                                           ref="file"
-                                           name="user[image]"
-                                           multiple="false"
-                                           onChange={this._onChange}/>
-                                </RaisedButton>
-                            </Paper>
-                        </div>
-                        <div style={{display: "flex",alignItems:"center",textAlign:"center",justifyContent:"center", marginTop:10, width: '49%'}}>
+                    <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between',marginTop:10}}>
                             <Paper style={{width:"100%",padding:10,display: "flex",alignItems:"center",textAlign:"center",justifyContent:"center"}} zDepth={1}>
 
                                 <TextField
@@ -357,7 +351,6 @@ export default class CreateSkill extends React.Component {
                                 />
                                 <RaisedButton label="Save" backgroundColor="#4285f4" labelColor="#fff" style={{marginLeft:10}}  onTouchTap={this.saveClick} />
                             </Paper>
-                        </div>
                     </div>
                 </div>
             </div>
