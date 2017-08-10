@@ -1,4 +1,5 @@
 import React from 'react';
+import isoConv from 'iso-language-converter';
 import { Icon } from 'antd';
 import MenuItem from 'material-ui/MenuItem';
 import SelectField from 'material-ui/SelectField';
@@ -20,7 +21,6 @@ import 'brace/theme/terminal';
 import * as $ from "jquery";
 import {notification} from 'antd';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
-const models = [];
 const groups = [];
 const languages = [];
 const fontsizes =[];
@@ -31,7 +31,7 @@ export default class CreateSkill extends React.Component {
 
     componentDidMount() {
         self = this;
-        self.loadmodels()
+        self.handleModelChange();
     }
     onChange(newValue) {
         self.updateCode(newValue)
@@ -40,7 +40,12 @@ export default class CreateSkill extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            commitMessage:null, modelValue: null, groupValue:null, languageValue:null, expertValue:null,code:"::name <Skill_name>\n::author <author_name>\n::author_url <author_url>\n::description <description> \n::dynamic_content <Yes/No>\n::developer_privacy_policy <link>\n::image <image_url>\n::terms_of_use <link>\n\n\nUser query1|query2|quer3....\n!example:<The question that should be shown in public skill displays>\n!expect:<The answer expected for the above example>\nAnswer for the user query", fontSizeCode:14, editorTheme:"github"
+            commitMessage:null,
+            modelValue: null,
+            groupValue:null,
+            languageValue:null,
+            expertValue:null,
+            code:"::name <Skill_name>\n::author <author_name>\n::author_url <author_url>\n::description <description> \n::dynamic_content <Yes/No>\n::developer_privacy_policy <link>\n::image <image_url>\n::terms_of_use <link>\n\n\nUser query1|query2|quer3....\n!example:<The question that should be shown in public skill displays>\n!expect:<The answer expected for the above example>\nAnswer for the user query", fontSizeCode:14, editorTheme:"github"
         };
         let fonts = [
             14,16,18,20,24,28,32,40
@@ -55,24 +60,6 @@ export default class CreateSkill extends React.Component {
             codeEditorThemes.push(<MenuItem value={themes[i]} key={themes[i]} primaryText={`${themes[i]}`}/>);
         }
     }
-    loadmodels()
-    {
-        if(models.length===0) {
-            $.ajax({
-                url: "http://api.susi.ai/cms/getModel.json",
-                jsonpCallback: 'pa',
-                dataType: 'jsonp',
-                jsonp: 'callback',
-                crossDomain: true,
-                success: function (d) {
-                    console.log(d);
-                    for (let i = 0; i < d.length; i++) {
-                        models.push(<MenuItem value={i} key={d[i]} primaryText={`${d[i]}`}/>);
-                    }
-                }
-            });
-        }
-    }
 
     updateCode = (newCode) => {
         this.setState({
@@ -80,20 +67,20 @@ export default class CreateSkill extends React.Component {
         });
     }
 
-    handleModelChange = (event, index, value) => {
-        this.setState({modelValue: value});
+    handleModelChange = (event, index) => {
+        this.setState({groupSelect:false,languageSelect:true});
         if(groups.length===0) {
             $.ajax({
-                url: "http://api.susi.ai/aaa/getGroups.json",
+                url: "http://api.susi.ai/cms/getGroups.json",
                 jsonpCallback: 'pb',
                 dataType: 'jsonp',
                 jsonp: 'callback',
                 crossDomain: true,
                 success: function (data) {
                     console.log(data);
-                    data= data.groups;
+                    data = data.groups;
                     for (let i = 0; i < data.length; i++) {
-                        groups.push(<MenuItem value={i} key={data[i]} primaryText={`${data[i]}`}/>);
+                        groups.push(<MenuItem value={data[i]} key={data[i]} primaryText={`${data[i]}`}/>);
                     }
                 }
             });
@@ -117,7 +104,7 @@ export default class CreateSkill extends React.Component {
     };
 
     handleGroupChange = (event, index, value) => {
-        this.setState({groupValue: value});
+        this.setState({groupValue: value,groupSelect:false,languageSelect:false});
         if(languages.length===0) {
             $.ajax({
                 url: "http://api.susi.ai/cms/getAllLanguages.json",
@@ -127,8 +114,14 @@ export default class CreateSkill extends React.Component {
                 crossDomain: true,
                 success: function (data) {
                     console.log(data);
+                    data=data.languagesArray
                     for (let i = 0; i < data.length; i++) {
-                        languages.push(<MenuItem value={i} key={data[i]} primaryText={`${data[i]}`}/>);
+                        if(isoConv(data[i])){
+                            languages.push(<MenuItem value={data[i]} key={data[i]} primaryText={isoConv(data[i])}/>);
+                        }
+                        else {
+                            languages.push(<MenuItem value={data[i]} key={data[i]} primaryText={'Universal'}/>);
+                        }
                     }
                     console.log("languages ", languages)
                 }
@@ -151,7 +144,7 @@ export default class CreateSkill extends React.Component {
             });
             return 0;
         }
-        if(models.length===0||groups.length===0||languages.length===0||this.state.expertValue===null){
+        if(groups.length===0||languages.length===0||this.state.expertValue===null){
             notification.open({
                 message: 'Error Processing your Request',
                 description: 'Please select a model, group, language and a skill',
@@ -161,7 +154,7 @@ export default class CreateSkill extends React.Component {
         }
 
         //Need a review system before pushing to Susi Server.
-        let url= "http://api.susi.ai/cms/modifySkill.json?model="+models[this.state.modelValue].key+"&group="+groups[this.state.groupValue].key+"&language="+languages[this.state.languageValue].key+"&skill="+this.state.expertValue+"&content="+encodeURIComponent(this.state.code)+"&changelog="+this.state.commitMessage;
+        let url= "http://api.susi.ai/cms/modifySkill.json?model=general&group="+groups[this.state.groupValue].key+"&language="+languages[this.state.languageValue].key+"&skill="+this.state.expertValue+"&content="+encodeURIComponent(this.state.code)+"&changelog="+this.state.commitMessage;
         console.log(url)
 
         $.ajax({
@@ -212,15 +205,7 @@ export default class CreateSkill extends React.Component {
                         <div style={styles.center}>
                             <div style={styles.dropdownDiv}>
                                 <SelectField
-                                    floatingLabelText="Model"
-                                    style={{width:'130px',marginLeft:10,marginRight:10}}
-                                    value={this.state.modelValue}
-                                    onChange={this.handleModelChange}
-                                >
-                                    {models}
-                                </SelectField>
-                                <SelectField
-                                    floatingLabelText="Group"
+                                    floatingLabelText="Category"
                                     style={{width:'160px',marginLeft:10,marginRight:10}}
                                     value={this.state.groupValue}
                                     onChange={this.handleGroupChange}
