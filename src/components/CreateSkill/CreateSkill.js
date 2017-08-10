@@ -20,7 +20,7 @@ import 'brace/theme/terminal';
 import * as $ from "jquery";
 import {notification} from 'antd';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
-const models = [];
+import LinearProgress from 'material-ui/LinearProgress';
 const groups = [];
 const languages = [];
 const fontsizes =[];
@@ -31,7 +31,7 @@ export default class CreateSkill extends React.Component {
 
     componentDidMount() {
         self = this;
-        self.loadmodels()
+        self.loadgroups()
     }
     onChange(newValue) {
         const match = newValue.match(/^::image\s(.*)$/m);
@@ -49,7 +49,7 @@ export default class CreateSkill extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            file:null,imageUrl:'<image_url>', commitMessage:null, modelValue: null, groupValue:null, languageValue:null, expertValue:null,code:"::name <Skill_name>\n::author <author_name>\n::author_url <author_url>\n::description <description> \n::dynamic_content <Yes/No>\n::developer_privacy_policy <link>\n::image <image_url>\n::terms_of_use <link>\n\n\nUser query1|query2|quer3....\n!example:<The question that should be shown in public skill displays>\n!expect:<The answer expected for the above example>\nAnswer for the user query", fontSizeCode:14, editorTheme:"github"
+            loading:false,file:null,imageUrl:'<image_url>', commitMessage:null, modelValue: null, groupValue:null, languageValue:null, expertValue:null,code:"::name <Skill_name>\n::author <author_name>\n::author_url <author_url>\n::description <description> \n::dynamic_content <Yes/No>\n::developer_privacy_policy <link>\n::image <image_url>\n::terms_of_use <link>\n\n\nUser query1|query2|quer3....\n!example:<The question that should be shown in public skill displays>\n!expect:<The answer expected for the above example>\nAnswer for the user query", fontSizeCode:14, editorTheme:"github"
         };
         let fonts = [
             14,16,18,20,24,28,32,40
@@ -64,20 +64,20 @@ export default class CreateSkill extends React.Component {
             codeEditorThemes.push(<MenuItem value={themes[i]} key={themes[i]} primaryText={`${themes[i]}`}/>);
         }
     }
-    loadmodels()
+    loadgroups()
     {
-        if(models.length===0) {
+        if(groups.length===0) {
             $.ajax({
-                url: "http://api.susi.ai/cms/getModel.json",
+                url: "http://api.susi.ai/cms/getGroups.json",
                 jsonpCallback: 'pa',
                 dataType: 'jsonp',
                 jsonp: 'callback',
                 crossDomain: true,
                 success: function (d) {
                     console.log(d);
-                    d= d.modelsArray;
+                    d= d.groups;
                     for (let i = 0; i < d.length; i++) {
-                        models.push(<MenuItem value={i} key={d[i]} primaryText={`${d[i]}`}/>);
+                        groups.push(<MenuItem value={i} key={d[i]} primaryText={`${d[i]}`}/>);
                     }
                 }
             });
@@ -85,30 +85,9 @@ export default class CreateSkill extends React.Component {
     }
 
     updateCode = (newCode) => {
-
         this.setState({
             code: newCode,
         });
-    }
-
-    handleModelChange = (event, index, value) => {
-        this.setState({modelValue: value});
-        if(groups.length===0) {
-            $.ajax({
-                url: "http://api.susi.ai/cms/getGroups.json",
-                jsonpCallback: 'pb',
-                dataType: 'jsonp',
-                jsonp: 'callback',
-                crossDomain: true,
-                success: function (data) {
-                    console.log(data);
-                    data= data.groups;
-                    for (let i = 0; i < data.length; i++) {
-                        groups.push(<MenuItem value={i} key={data[i]} primaryText={`${data[i]}`}/>);
-                    }
-                }
-            });
-        }
     }
 
     handleExpertChange = (event) => {
@@ -163,10 +142,10 @@ export default class CreateSkill extends React.Component {
             });
             return 0;
         }
-        if(models.length===0||groups.length===0||languages.length===0||this.state.expertValue===null){
+        if(groups.length===0||languages.length===0||this.state.expertValue===null){
             notification.open({
                 message: 'Error Processing your Request',
-                description: 'Please select a model, group, language and a skill',
+                description: 'Please select a group, language and a skill',
                 icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
             });
             return 0;
@@ -188,9 +167,12 @@ export default class CreateSkill extends React.Component {
             });
             return 0;
         }
+        this.setState({
+            loading:true
+        });
 
         var form = new FormData();
-        form.append("model", models[this.state.modelValue].key);
+        form.append("model", "general");
         form.append("group", groups[this.state.groupValue].key);
         form.append("language", languages[this.state.languageValue].key);
         form.append("skill", this.state.expertValue);
@@ -198,11 +180,10 @@ export default class CreateSkill extends React.Component {
         form.append("content", this.state.code);
         form.append("image_name", this.state.imageUrl.replace("images/",""));
 
-
         var settings = {
             "async": true,
             "crossDomain": true,
-            "url": "http://api.susi.ai/cms/createSkill.txt",
+            "url": "http://api.susi.ai/cms/createSkill.json",
             "method": "POST",
             "processData": false,
             "contentType": false,
@@ -212,6 +193,9 @@ export default class CreateSkill extends React.Component {
 
         $.ajax(settings)
             .done(function (response) {
+                self.setState({
+                    loading:false
+                });
                 let   data = JSON.parse(response);
                 console.log(response);
                 if(data.accepted===true){
@@ -222,6 +206,9 @@ export default class CreateSkill extends React.Component {
                     });
                 }
                 else{
+                    self.setState({
+                        loading:false
+                    });
                     notification.open({
                         message: 'Error Processing your Request',
                         description: String(data.message),
@@ -229,6 +216,9 @@ export default class CreateSkill extends React.Component {
                     });
                 }})
             .fail(function (jqXHR, textStatus) {
+                self.setState({
+                    loading:false
+                });
                 notification.open({
                     message: 'Error Processing your Request',
                     description: String(textStatus),
@@ -262,14 +252,6 @@ export default class CreateSkill extends React.Component {
                         <div style={styles.center}>
                             <div style={styles.dropdownDiv}>
                                 <SelectField
-                                    floatingLabelText="Model"
-                                    style={{width:'130px',marginLeft:10,marginRight:10}}
-                                    value={this.state.modelValue}
-                                    onChange={this.handleModelChange}
-                                >
-                                    {models}
-                                </SelectField>
-                                <SelectField
                                     floatingLabelText="Group"
                                     style={{width:'160px',marginLeft:10,marginRight:10}}
                                     value={this.state.groupValue}
@@ -297,7 +279,7 @@ export default class CreateSkill extends React.Component {
                     </Paper>
 
                     <div style={styles.codeEditor}>
-
+                        {this.state.loading && <LinearProgress mode="indeterminate" color="#4285f4" />}
                         <div style={styles.toolbar}>
                             <span style={styles.button}><Icon type="cloud-download" style={styles.icon}/>Download as text</span>
                             <span style={styles.button}>Size <SelectField
