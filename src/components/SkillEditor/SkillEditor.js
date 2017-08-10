@@ -175,7 +175,7 @@ export default class Container extends React.Component {
             return 0;
         }
 
-        let url= "http://api.susi.ai/cms/modifySkill.json?"+skill_relative_path+"&content="+encodeURIComponent(this.state.code)+"&changelog="+this.state.commitMessage;
+        let url= "http://api.susi.ai/cms/modifySkill.json?"+skill_relative_path+"&content="+encodeURIComponent(this.state.code)+"&changelog="+this.state.commitMessage+"&access_token="+cookies.get('loggedIn');
 
         console.log(url)
 

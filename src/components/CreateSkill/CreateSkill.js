@@ -49,7 +49,7 @@ export default class CreateSkill extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            loading:false,file:null,imageUrl:'<image_url>', commitMessage:null, modelValue: null, groupValue:null, languageValue:null, expertValue:null,code:"::name <Skill_name>\n::author <author_name>\n::author_url <author_url>\n::description <description> \n::dynamic_content <Yes/No>\n::developer_privacy_policy <link>\n::image <image_url>\n::terms_of_use <link>\n\n\nUser query1|query2|quer3....\n!example:<The question that should be shown in public skill displays>\n!expect:<The answer expected for the above example>\nAnswer for the user query", fontSizeCode:14, editorTheme:"github"
+            showImage:false,loading:false,file:null,imageUrl:'<image_url>', commitMessage:null, modelValue: null, groupValue:null, languageValue:null, expertValue:null,code:"::name <Skill_name>\n::author <author_name>\n::author_url <author_url>\n::description <description> \n::dynamic_content <Yes/No>\n::developer_privacy_policy <link>\n::image <image_url>\n::terms_of_use <link>\n\n\nUser query1|query2|quer3....\n!example:<The question that should be shown in public skill displays>\n!expect:<The answer expected for the above example>\nAnswer for the user query", fontSizeCode:14, editorTheme:"github"
         };
         let fonts = [
             14,16,18,20,24,28,32,40
@@ -228,11 +228,22 @@ export default class CreateSkill extends React.Component {
     }
 
 
-    _onChange =()=> {
+    _onChange =(event)=> {
         // Assuming only image
         var file = this.refs.file.files[0];
+        if (event.target.files && event.target.files[0]) {
+            let reader = new FileReader();
+            reader.onload = (e) => {
+                this.setState({image: e.target.result});
+            };
+            reader.readAsDataURL(event.target.files[0]);
+            self.setState({
+                showImage:true
+            })
+        }
         this.setState({
             file:file
+
         })
         console.log(file) // Would see a path?
         // TODO: concat files for setState
@@ -274,14 +285,7 @@ export default class CreateSkill extends React.Component {
                                     style={{marginLeft:10,marginRight:10}}
                                     onChange={this.handleExpertChange}
                                 />
-                                <TextField
-                                    floatingLabelText="Image Name"
-                                    floatingLabelFixed={true}
-                                    hintText="Image Name"
-                                    disabled={true}
-                                    value={this.state.imageUrl}
-                                    style={{flex: 1 }}
-                                />
+                                { this.state.showImage &&  <img alt="preview" id="target" style={{width:60,height:60,borderRadius:"50%",marginRight:20,border: 0}}src={this.state.image}/> }
                                 <RaisedButton
                                     label="Choose an Image"
                                     labelPosition="before"
