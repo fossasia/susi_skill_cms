@@ -42,19 +42,23 @@ export default class BrowseSkill extends React.Component {
             crossDomain: true,
             success: function (data) {
                 data = data.skills;
-                let keys = Object.keys(data);
-                let skills = keys.map((el, i) => {
+                let nameArr = [];
+                for (let name in data) {
+                    nameArr.push(name)
+                }
+
+                let skills = nameArr.map((el, i) => {
                     return (
                         <Link key={el}
                               to={{
                                   pathname: '/skillPage',
-                                  state: { url: url, element: el, name: data[el], modelValue: self.state.modelValue, groupValue:self.state.groupValue, languageValue:self.state.languageValue}
+                                  state: { url: url, element: el, name: el, modelValue: self.state.modelValue, groupValue:self.state.groupValue, languageValue:self.state.languageValue}
                               }}>
                             <Card style={styles.row} key={el}>
                                 <div style={styles.right}>
-                                    <CircleImage name={data[el].replace(/\.[^/.]+$/, "").toUpperCase()} size="48"/>
+                                    <CircleImage name={el.toUpperCase()} size="48"/>
                                     <CardTitle
-                                        title={data[el].replace(/\.[^/.]+$/, "")}
+                                        title={el.toUpperCase()}
                                         titleStyle={{'fontSize':'18px'}}
                                     />
                                 </div>
@@ -169,17 +173,22 @@ export default class BrowseSkill extends React.Component {
             crossDomain: true,
             success: function (data) {
                 data = data.skills;
-                let keys = Object.keys(data);
-                let skills = keys.map((el, i) => {
+
+                let nameArr = [];
+                for (let name in data) {
+                    nameArr.push(name)
+                }
+
+                let skills = nameArr.map((el, i) => {
                     return (
                         <Link key={el}
                               to={{
                                   pathname: '/skillPage',
-                                  state: { url: url, element: el, name: data[el], modelValue: self.state.modelValue, groupValue:self.state.groupValue, languageValue:self.state.languageValue}
+                                  state: { url: url, element: el, name: el, modelValue: self.state.modelValue, groupValue:self.state.groupValue, languageValue:self.state.languageValue}
                               }}>
                             <Card style={styles.row} key={el}>
                                 <CardTitle
-                                    title={data[el].replace(/\.[^/.]+$/, "")}
+                                    title={el}
                                     titleStyle={{'fontSize':'18px'}}
                                 />
                             </Card>
@@ -204,83 +213,83 @@ export default class BrowseSkill extends React.Component {
         };
 
         return (
-          <div>
-            <StaticAppBar {...this.props} />
-            <div style={styles.container}>
-                <Paper style={style} zDepth={1}>
-                    <div style={styles.center}>
-                        <SelectField
-                            floatingLabelText="Model"
-                            value={this.state.modelValue}
-                            onChange={this.handleModelChange}
-                            onMouseEnter={this.loadModels}
-                            floatingLabelFixed={false}
-                            className='select'
-                            listStyle={{
-                                top: '100px'
-                            }}
-                            selectedMenuItemStyle={{
-                                color: '#4285f4'
-                            }}
-                            underlineFocusStyle={{
-                                color: '#4285f4'
+            <div>
+                <StaticAppBar {...this.props} />
+                <div style={styles.container}>
+                    <Paper style={style} zDepth={1}>
+                        <div style={styles.center}>
+                            <SelectField
+                                floatingLabelText="Model"
+                                value={this.state.modelValue}
+                                onChange={this.handleModelChange}
+                                onMouseEnter={this.loadModels}
+                                floatingLabelFixed={false}
+                                className='select'
+                                listStyle={{
+                                    top: '100px'
+                                }}
+                                selectedMenuItemStyle={{
+                                    color: '#4285f4'
+                                }}
+                                underlineFocusStyle={{
+                                    color: '#4285f4'
 
-                            }}
-                        >
-                            {models}
-                        </SelectField>
-                        <SelectField
-                            disabled={this.state.groupSelect}
-                            floatingLabelText="Group"
-                            value={this.state.groupValue}
-                            floatingLabelFixed={false}
-                            onChange={this.handleGroupChange}
-                            className='select'
-                            listStyle={{
-                                top: '100px'
-                            }}
-                            selectedMenuItemStyle={{
-                                color: '#4285f4'
-                            }}
-                            underlineFocusStyle={{
-                                color: '#4285f4'
+                                }}
+                            >
+                                {models}
+                            </SelectField>
+                            <SelectField
+                                disabled={this.state.groupSelect}
+                                floatingLabelText="Group"
+                                value={this.state.groupValue}
+                                floatingLabelFixed={false}
+                                onChange={this.handleGroupChange}
+                                className='select'
+                                listStyle={{
+                                    top: '100px'
+                                }}
+                                selectedMenuItemStyle={{
+                                    color: '#4285f4'
+                                }}
+                                underlineFocusStyle={{
+                                    color: '#4285f4'
 
-                            }}
-                        >
-                            {groups}
-                        </SelectField>
-                        <SelectField
-                            disabled={this.state.languageSelect}
-                            floatingLabelText="Language"
-                            value={this.state.languageValue}
-                            floatingLabelFixed={false}
-                            onChange={this.handleLanguageChange}
-                            className='select'
-                            listStyle={{
-                                top: '100px'
-                            }}
-                            selectedMenuItemStyle={{
-                                color: '#4285f4'
-                            }}
-                            underlineFocusStyle={{
-                                color: '#4285f4'
+                                }}
+                            >
+                                {groups}
+                            </SelectField>
+                            <SelectField
+                                disabled={this.state.languageSelect}
+                                floatingLabelText="Language"
+                                value={this.state.languageValue}
+                                floatingLabelFixed={false}
+                                onChange={this.handleLanguageChange}
+                                className='select'
+                                listStyle={{
+                                    top: '100px'
+                                }}
+                                selectedMenuItemStyle={{
+                                    color: '#4285f4'
+                                }}
+                                underlineFocusStyle={{
+                                    color: '#4285f4'
 
-                            }}
-                        >
-                            {languages}
-                        </SelectField>
-                        <div>
-                        <FloatingActionButton backgroundColor={colors.fabButton} className='select' onClick={this.buttonClick}>
-                            <ContentAdd />
-                        </FloatingActionButton>
-                        <Link to="/skillCreator">
-                            <FloatingActionButton
-                                backgroundColor={colors.fabButton} className='select'>
-                                <Add />
-                            </FloatingActionButton>
-                        </Link>
+                                }}
+                            >
+                                {languages}
+                            </SelectField>
+                            <div>
+                                <FloatingActionButton backgroundColor={colors.fabButton} className='select' onClick={this.buttonClick}>
+                                    <ContentAdd />
+                                </FloatingActionButton>
+                                <Link to="/skillCreator">
+                                    <FloatingActionButton
+                                        backgroundColor={colors.fabButton} className='select'>
+                                        <Add />
+                                    </FloatingActionButton>
+                                </Link>
+                            </div>
                         </div>
-                    </div>
 
                     </Paper>
 

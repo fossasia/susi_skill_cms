@@ -45,7 +45,7 @@ export default class SkillListing extends React.Component {
         };
         let url = this.props.location.state.url;
         name = this.props.location.state.name;
-        name = name.replace(".txt", "");
+        // name = name.replace(".txt", "");
         if(url.indexOf("model") < 0) {
             urlCode = this.props.location.state.url + "?skill=" + name;
         }
@@ -73,6 +73,7 @@ export default class SkillListing extends React.Component {
         let modelValue =  this.props.location.state.modelValue;
         let groupValue = this.props.location.state.groupValue;
         let languageValue = this.props.location.state.languageValue;
+        groupValue = groupValue.charAt(0).toUpperCase() + groupValue.substring(1);
 
         url  = baseUrl + '?model='+modelValue + '&group='+groupValue + '&language='+languageValue + '&skill='+name;
 
@@ -98,20 +99,12 @@ export default class SkillListing extends React.Component {
     updateData = (skillData) => {
 
         defaultNullSkillList.forEach((data) => {
-
-            if (!(data in skillData)) {
-                this.setState({
-                    [data]: null
-                })
-            }
-            else {
-                this.setState({
-                    [data]: skillData[data]
-                })
-            }
+            this.setState({
+                [data]: skillData[data]
+            })
         });
 
-        if (!('descriptions' in skillData)) {
+        if (skillData['descriptions'] === null) {
 
             this.setState({
                 descriptions: 'No Description Provided'
@@ -125,9 +118,9 @@ export default class SkillListing extends React.Component {
             })
         }
 
-        if (!('skill_name' in skillData)) {
+        if (skillData['skill_name'] === null) {
 
-            let skill_name = this.props.location.state.name.replace(".txt", "");
+            let skill_name = this.props.location.state.name;
             skill_name = skill_name.charAt(0).toUpperCase() + skill_name.substring(1);
 
             this.setState({
@@ -215,7 +208,7 @@ export default class SkillListing extends React.Component {
                             {/*{this.state.skill_data.examples}*/}
                             {console.log(this.state)}
 
-                            {typeof this.state.examples === 'undefined' || this.state.examples === null || typeof this.state.examples[Object.keys(this.state.examples)[0]] === 'undefined'? '' : this.state.examples[Object.keys(this.state.examples)[0]].map((data) => {
+                            {typeof this.state.examples === 'undefined' || this.state.examples === null || typeof this.state.examples[Object.keys(this.state.examples)[0]] === 'undefined'? '' : this.state.examples.map((data) => {
                                 return <Paper style={exampleStyle} zDepth={1}>{data}</Paper>
                             })}
                         </div>
