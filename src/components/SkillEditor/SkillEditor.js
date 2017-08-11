@@ -35,6 +35,7 @@ export default class Container extends React.Component {
         console.log(this.props)
             if (this.props.location.state) {
             url = this.props.location.state.url;
+            console.log(url)
             skill_relative_path = this.props.location.state.url.match(/\?(.*)/)[1];
             fromListing = this.props.location.state.fromListing;
             console.log(fromListing)
@@ -50,8 +51,6 @@ export default class Container extends React.Component {
                 }
             });
         }
-
-
     }
     onChange(newValue) {
         self.updateCode(newValue)
@@ -175,7 +174,7 @@ export default class Container extends React.Component {
             return 0;
         }
 
-        let url= "http://api.susi.ai/cms/modifySkill.json?"+skill_relative_path+"&content="+encodeURIComponent(this.state.code)+"&changelog="+this.state.commitMessage;
+        let url= "http://api.susi.ai/cms/modifySkill.json?"+skill_relative_path+"&content="+encodeURIComponent(this.state.code)+"&changelog="+this.state.commitMessage+"&access_token="+cookies.get('loggedIn');
 
         console.log(url)
 
