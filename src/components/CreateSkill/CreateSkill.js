@@ -203,7 +203,6 @@ export default class CreateSkill extends React.Component {
                 console.log(response);
                 if(data.accepted===true){
                     self.props.history.push({  pathname: '/skillPage',
-                        search: '?the=search',
                         state: {
                             from_upload: true,
                             expertValue:  self.state.expertValue,
