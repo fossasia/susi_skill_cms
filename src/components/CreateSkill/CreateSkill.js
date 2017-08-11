@@ -1,4 +1,4 @@
-import React from 'react';
+import React from  'react';
 import { Icon } from 'antd';
 import MenuItem from 'material-ui/MenuItem';
 import SelectField from 'material-ui/SelectField';
@@ -26,6 +26,7 @@ const languages = [];
 const fontsizes =[];
 const codeEditorThemes =[];
 const cookies = new Cookies();
+
 let self;
 export default class CreateSkill extends React.Component {
 
@@ -134,6 +135,7 @@ export default class CreateSkill extends React.Component {
 
     saveClick = () => {
 
+
         if(!cookies.get('loggedIn')) {
             notification.open({
                 message: 'Not logged In',
@@ -167,6 +169,7 @@ export default class CreateSkill extends React.Component {
             });
             return 0;
         }
+
         this.setState({
             loading:true
         });
@@ -199,11 +202,21 @@ export default class CreateSkill extends React.Component {
                 let   data = JSON.parse(response);
                 console.log(response);
                 if(data.accepted===true){
+                    self.props.history.push({  pathname: '/skillPage',
+                        search: '?the=search',
+                        state: {
+                            from_upload: true,
+                            expertValue:  self.state.expertValue,
+                            groupValue: groups[self.state.groupValue].key ,
+                            languageValue: languages[self.state.languageValue].key,
+                        }});
+
                     notification.open({
                         message: 'Accepted',
                         description: 'Your Skill has been uploaded to the server',
                         icon: <Icon type="check-circle" style={{ color: '#00C853' }} />,
                     });
+
                 }
                 else{
                     self.setState({
