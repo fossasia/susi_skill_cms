@@ -105,7 +105,7 @@ export default class ListUser extends Component {
                 <div>
                     <StaticAppBar {...this.props} />
                     <div className="banner">
-                        <h1 className="h1">Registered Users</h1>
+                        {/*<h1 className="h1">Registered Users</h1>*/}
                     </div>
                 </div>
                 <div>

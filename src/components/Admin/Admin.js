@@ -7,6 +7,7 @@ import Cookies from 'universal-cookie'
 import FlatButton from 'material-ui/FlatButton';
 import PropTypes from 'prop-types';
 import Tabs from 'react-tabs-navigation'
+import ListUser from "./ListUser/ListUser";
 
 const cookies = new Cookies();
 
@@ -43,7 +44,7 @@ class Admin extends Component {
             }.bind(this),
             error: function (errorThrown) {
                 this.setState({
-                    showNotAdminDialog: true,
+                    showNotAdminDialog: false,
                 })
                 console.log(errorThrown)
             }.bind(this),
@@ -65,7 +66,12 @@ class Admin extends Component {
             />,
         ];
 
+        const tabStyle = {
+            backgroundColor: '#4285F4',
+        };
+
         return(
+
             <div className="containerDiv">
                 <div className="heading">
                     <StaticAppBar {...this.props}/>
@@ -81,7 +87,35 @@ class Admin extends Component {
                     </Dialog>
                 </div>
                 <div>
-
+                    <Tabs
+                        tabs={[
+                            {
+                                children: () => (
+                                    <div>
+                                        This is the first tab content
+                                    </div>
+                                ),
+                                displayName: 'Admin'
+                            },
+                            {
+                                children: () => (
+                                    <div>
+                                        <ListUser />
+                                    </div>
+                                ),
+                                displayName: 'Users'
+                            },
+                            {
+                                children: () => (
+                                    <div>
+                                        This is the second tab content
+                                    </div>
+                                ),
+                                displayName: 'Permissions'
+                            }
+                        ]}
+                        lineStyle={tabStyle}
+                    />
                 </div>
             </div>
         )
