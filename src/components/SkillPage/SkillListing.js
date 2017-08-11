@@ -42,57 +42,92 @@ export default class SkillListing extends React.Component {
             skill_name: '',
             dataReceived: false
         };
-        let url = this.props.location.state.url;
-        name = this.props.location.state.name;
-        if(url.indexOf("model") < 0) {
-            urlCode = this.props.location.state.url + "?skill=" + name;
-        }
-        else {
-            urlCode = this.props.location.state.url + "&skill=" + name;
-        }
+        console.log(this.props.location.state)
 
-        urlCode = urlCode.toString()
-        urlCode =  urlCode.replace("getSkillList","getSkill");
-        console.log(urlCode);
+        if(this.props.location.state.url!== undefined) {
+            let url = this.props.location.state.url;
+            name = this.props.location.state.name;
+            if (url.indexOf("model") < 0) {
+                urlCode = this.props.location.state.url + "?skill=" + name;
+            }
+            else {
+                urlCode = this.props.location.state.url + "&skill=" + name;
+            }
+
+            urlCode = urlCode.toString()
+            urlCode = urlCode.replace("getSkillList", "getSkill");
+            console.log(urlCode);
+        }
 
     }
 
 
     componentDidMount() {
+        if(this.props.location.state.url!== undefined) {
+            let baseUrl = 'http://api.susi.ai/cms/getSkillMetadata.json';
+            let url = this.props.location.state.url;
 
-        let baseUrl = 'http://api.susi.ai/cms/getSkillMetadata.json';
-        let url = this.props.location.state.url;
+            let modelValue = this.props.location.state.modelValue;
+            let groupValue = this.props.location.state.groupValue;
+            let languageValue = this.props.location.state.languageValue;
+
+            url = baseUrl + '?model=' + modelValue + '&group=' + groupValue + '&language=' + languageValue + '&skill=' + name;
+
+            console.log("Url:" + url);
+
+            // url = 'http://192.168.43.187:4000/cms/getSkillMetadata.json?group=general&model=entertainment&language=en&skill=cat';
+            console.log(url)
+            let self = this;
+            $.ajax({
+                url: url,
+                jsonpCallback: 'pc',
+                dataType: 'jsonp',
+                jsonp: 'callback',
+                crossDomain: true,
+                success: function (data) {
+                    self.updateData(data.skill_metadata)
+                }
+            });
+        }
+        if(this.props.location.state.from_upload!== undefined){
+            let baseUrl = 'http://api.susi.ai/cms/getSkillMetadata.json';
+            let url;
+
+            let modelValue = "general";
+            let groupValue = this.props.location.state.groupValue;
+            let languageValue = this.props.location.state.languageValue;
+            let expertValue = this.props.location.state.expertValue;
 
 
-        let modelValue =  this.props.location.state.modelValue;
-        let groupValue = this.props.location.state.groupValue;
-        let languageValue = this.props.location.state.languageValue;
+            url = baseUrl + '?model=' + modelValue + '&group=' + groupValue + '&language=' + languageValue + '&skill=' + expertValue;
 
-        url  = baseUrl + '?model='+modelValue + '&group='+groupValue + '&language='+languageValue + '&skill='+name;
+            console.log("Url meta:" + url);
 
-        console.log("Url:"+url);
+            urlCode = url.toString()
+            urlCode = url.replace("getSkillMetadata", "getSkill");
+            console.log(url)
+            let self = this;
+            $.ajax({
+                url: url,
+                jsonpCallback: 'pc',
+                dataType: 'jsonp',
+                jsonp: 'callback',
+                crossDomain: true,
+                success: function (data) {
+                    self.updateData(data.skill_metadata)
+
+                }
+            });
+        }
 
 
 
-        // url = 'http://192.168.43.187:4000/cms/getSkillMetadata.json?group=general&model=entertainment&language=en&skill=cat';
-        console.log(url)
-        let self = this;
-        $.ajax({
-            url: url,
-            jsonpCallback: 'pc',
-            dataType: 'jsonp',
-            jsonp: 'callback',
-            crossDomain: true,
-            success: function (data) {
-                self.updateData(data.skill_metadata)
-            }
-        });
     };
 
     updateData = (skillData) => {
 
         this.setState({
-            imgUrl:'https://raw.githubusercontent.com/fossasia/susi_skill_data/master/models/'+this.props.location.state.modelValue+'/'+this.props.location.state.groupValue+'/'+this.props.location.state.languageValue+'/'+skillData.image
+                imgUrl:'https://raw.githubusercontent.com/fossasia/susi_skill_data/master/models/'+this.props.location.state.modelValue+'/'+this.props.location.state.groupValue+'/'+this.props.location.state.languageValue+'/'+skillData.image
         });
 
         defaultNullSkillList.forEach((data) => {
@@ -117,19 +152,15 @@ export default class SkillListing extends React.Component {
 
         if (skillData['skill_name'] === null) {
 
-            let skill_name = this.props.location.state.name;
-            skill_name = skill_name.charAt(0).toUpperCase() + skill_name.substring(1);
-
             this.setState({
-                skill_name: skill_name
+                skill_name: "No Name Given"
             });
-
-            console.log(this.props.location.state.name.replace(".txt", "").charAt(0));
         }
         else {
             this.setState({
                 skill_name: skillData['skill_name']
             })
+            name = skillData['skill_name']
         }
 
         this.setState({
@@ -177,7 +208,7 @@ export default class SkillListing extends React.Component {
             renderElement = <div><StaticAppBar {...this.props}/><div className="skill_listing_container" style={styles.home}>
                 <div className="avatar-meta margin-b-md">
                     <div className="avatar">
-                        {this.state.image == null?
+                        {this.state.imgUrl === undefined?
                             <CircleImage name={this.state.skill_name.toUpperCase()} size="250"/>:
                             <img className="avatar-img" alt="Thumbnail" src={this.state.imgUrl}/>
                           }
@@ -186,7 +217,8 @@ export default class SkillListing extends React.Component {
                     <div className="meta">
                         <h1 className="name">
                             {/*{this.state.skill_name}*/}
-                            {name.split(' ').map((data) => {
+                            {
+                                name.split(' ').map((data) => {
                                 return data.charAt(0).toUpperCase() + data.substring(1);
                             }).join(' ')}
                         </h1>
