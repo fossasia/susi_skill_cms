@@ -6,6 +6,7 @@ import $ from 'jquery'
 import Cookies from 'universal-cookie'
 import FlatButton from 'material-ui/FlatButton';
 import PropTypes from 'prop-types';
+import Tabs from 'react-tabs-navigation'
 
 const cookies = new Cookies();
 
@@ -76,7 +77,7 @@ class Admin extends Component {
                         actions={actions}
                         modal={true}
                         open={this.state.showNotAdminDialog}>
-                        You do not have permissions yet to access this page!! :(
+                        You do not have permissions to access this page!! :(
                     </Dialog>
                 </div>
                 <div>

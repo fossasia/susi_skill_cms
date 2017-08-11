@@ -26,6 +26,7 @@
     "react-dom": "^15.6.1",
     "react-router": "^4.1.1",
     "react-router-dom": "^4.1.1",
+    "react-tabs-navigation": "^0.4.4",
     "react-tap-event-plugin": "^2.0.1",
     "react-url-query": "^1.2.0",
     "surge": "^0.19.0",
