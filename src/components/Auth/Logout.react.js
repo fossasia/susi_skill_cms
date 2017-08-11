@@ -21,7 +21,7 @@ class Logout extends Component {
     deleteCookie('loggedIn');
     deleteCookie('serverUrl');
     deleteCookie('email');
-    cookies.set('showAdmin', false, { path: '/', maxAge: time });
+    cookies.set('showAdmin', false, { path: '/', maxAge: 604800 });
     this.props.history.push('/');
     window.location.reload();
   }
