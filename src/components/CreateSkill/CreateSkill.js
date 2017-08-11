@@ -169,7 +169,7 @@ export default class CreateSkill extends React.Component {
             });
             return 0;
         }
-        
+
         this.setState({
             loading:true
         });

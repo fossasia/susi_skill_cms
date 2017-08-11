@@ -1,4 +1,5 @@
 import React from "react";
+import isoConv from 'iso-language-converter';
 import MenuItem from "material-ui/MenuItem";
 import SelectField from "material-ui/SelectField";
 import { FloatingActionButton, Paper} from "material-ui";
@@ -11,7 +12,6 @@ import colors from "../../Utils/colors";
 import CircleImage from "../CircleImage/CircleImage";
 import './BrowseSkill.css';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
-const models = [];
 const groups = [];
 const languages = [];
 
@@ -20,14 +20,21 @@ export default class BrowseSkill extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            modelValue: "general", skillURL:null, groupValue:"Knowledge", languageValue:"en", expertValue:null, skills: [], first_open:true,
+            modelValue: "general",
+            skillURL:null,
+            groupValue:"Knowledge",
+            languageValue:"en",
+            expertValue:null,
+            skills: [],
+            first_open:true,
             groupSelect:true,
             languageSelect:true
         };
     }
 
     componentDidMount(){
-        this.loadInitialCards()
+        this.loadInitialCards();
+        this.handleModelChange();
     }
 
     loadInitialCards = () => {
@@ -106,29 +113,8 @@ export default class BrowseSkill extends React.Component {
     };
 
 
-    loadModels()
-    {
-        if(models.length===0) {
-            $.ajax({
-                url: "http://api.susi.ai/cms/getModel.json",
-                jsonpCallback: 'pa',
-                dataType: 'jsonp',
-                jsonp: 'callback',
-                crossDomain: true,
-                success: function (d) {
-                    d=d.modelsArray;
-                    console.log(d);
-                    for (let i = 0; i < d.length; i++) {
-                        models.push(<MenuItem value={d[i]} key={d[i]} primaryText={`${d[i]}`}/>);
-                    }
-
-                }
-            });
-        }
-    }
-
-    handleModelChange = (event, index, value) => {
-        this.setState({modelValue: value,groupSelect:false,languageSelect:true});
+    handleModelChange = (event, index) => {
+        this.setState({groupSelect:false,languageSelect:true});
         if(groups.length===0) {
             $.ajax({
                 url: "http://api.susi.ai/cms/getGroups.json",
@@ -160,7 +146,12 @@ export default class BrowseSkill extends React.Component {
                     console.log(data);
                     data=data.languagesArray
                     for (let i = 0; i < data.length; i++) {
-                        languages.push(<MenuItem value={data[i]} key={data[i]} primaryText={`${data[i]}`}/>);
+                        if(isoConv(data[i])){
+                            languages.push(<MenuItem value={data[i]} key={data[i]} primaryText={isoConv(data[i])}/>);
+                        }
+                        else {
+                            languages.push(<MenuItem value={data[i]} key={data[i]} primaryText={'Universal'}/>);
+                        }
                     }
                     console.log("languages ", languages)
                 }
@@ -178,14 +169,12 @@ export default class BrowseSkill extends React.Component {
 
     buttonClick = () => {
         let url;
-        if(models.length>0&&languages.length>0&&groups.length>0) {
-            console.log(models)
+        if(languages.length>0&&groups.length>0) {
             url  = "http://api.susi.ai/cms/getSkillList.json?model=" + this.state.modelValue + "&group=" + this.state.groupValue + "&language=" + this.state.languageValue;
         }
         else{
             url = "http://api.susi.ai/cms/getSkillList.json"
         }
-        console.log(models);
 
         console.log(url);
 
@@ -274,28 +263,8 @@ export default class BrowseSkill extends React.Component {
                     <Paper style={style} zDepth={1}>
                         <div style={styles.center}>
                             <SelectField
-                                floatingLabelText="Model"
-                                value={this.state.modelValue}
-                                onChange={this.handleModelChange}
-                                onMouseEnter={this.loadModels}
-                                floatingLabelFixed={false}
-                                className='select'
-                                listStyle={{
-                                    top: '100px'
-                                }}
-                                selectedMenuItemStyle={{
-                                    color: '#4285f4'
-                                }}
-                                underlineFocusStyle={{
-                                    color: '#4285f4'
-
-                                }}
-                            >
-                                {models}
-                            </SelectField>
-                            <SelectField
                                 disabled={this.state.groupSelect}
-                                floatingLabelText="Group"
+                                floatingLabelText="Category"
                                 value={this.state.groupValue}
                                 floatingLabelFixed={false}
                                 onChange={this.handleGroupChange}
