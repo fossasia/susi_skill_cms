@@ -13,11 +13,14 @@
     padding-right: 70px;
 }
 .containerDiv{
-    background-color: #ffffff;
+    background-color: #f7f7f7;
 }
 
 .temp{
     margin-top: 30px;
+    margin-left: 20px;
+    margin-right: 20px;
+    background-color: #F7F7F7;
 }
 
 .h1{
