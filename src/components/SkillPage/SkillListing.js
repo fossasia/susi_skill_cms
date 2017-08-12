@@ -67,7 +67,7 @@ export default class SkillListing extends React.Component {
             let baseUrl = 'http://api.susi.ai/cms/getSkillMetadata.json';
             let url = this.props.location.state.url;
 
-            let modelValue = this.props.location.state.modelValue;
+            let modelValue = "general";
             let groupValue = this.props.location.state.groupValue;
             let languageValue = this.props.location.state.languageValue;
 
@@ -127,7 +127,7 @@ export default class SkillListing extends React.Component {
     updateData = (skillData) => {
 
         this.setState({
-                imgUrl:'https://raw.githubusercontent.com/fossasia/susi_skill_data/master/models/'+this.props.location.state.modelValue+'/'+this.props.location.state.groupValue+'/'+this.props.location.state.languageValue+'/'+skillData.image
+            imgUrl:'https://raw.githubusercontent.com/fossasia/susi_skill_data/master/models/general/'+this.props.location.state.groupValue+'/'+this.props.location.state.languageValue+'/'+skillData.image
         });
 
         defaultNullSkillList.forEach((data) => {
@@ -211,7 +211,7 @@ export default class SkillListing extends React.Component {
                         {this.state.imgUrl === undefined?
                             <CircleImage name={this.state.skill_name.toUpperCase()} size="250"/>:
                             <img className="avatar-img" alt="Thumbnail" src={this.state.imgUrl}/>
-                          }
+                        }
                         {/*<Avatar src={this.state.image} size={250}/>*/}
                     </div>
                     <div className="meta">
@@ -219,8 +219,8 @@ export default class SkillListing extends React.Component {
                             {/*{this.state.skill_name}*/}
                             {
                                 name.split(' ').map((data) => {
-                                return data.charAt(0).toUpperCase() + data.substring(1);
-                            }).join(' ')}
+                                    return data.charAt(0).toUpperCase() + data.substring(1);
+                                }).join(' ')}
                         </h1>
                         <Link to={{
                             pathname: '/skillEditor',
