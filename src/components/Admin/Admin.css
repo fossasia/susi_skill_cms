@@ -7,10 +7,9 @@
     background-color: #f7f7f7;
     height: 150px;
 }
-.tabs div{
-    background: #4285F4;
-    text-emphasis-color: #000000;
-    background-color: inherit;
+.tabs{
+    padding-left: 70px;
+    padding-right: 70px;
 }
 .containerDiv{
     background-color: #ffffff;
@@ -18,7 +17,8 @@
 
 .h1{
     padding-top: 65px;
-    font-size: 70px;
+    font-size: 40px;
+    margin-left: 21px;
 }
 
 .containerPaper{

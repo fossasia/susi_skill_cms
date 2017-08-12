@@ -6,10 +6,14 @@ import $ from 'jquery'
 import Cookies from 'universal-cookie'
 import FlatButton from 'material-ui/FlatButton';
 import PropTypes from 'prop-types';
-import Tabs from 'react-tabs-navigation'
+import Paper from 'material-ui/Paper';
+import {Tabs} from 'antd';
 import ListUser from "./ListUser/ListUser";
+// import ListUser from "./ListUser/ListUser";
 
 const cookies = new Cookies();
+
+const TabPane = Tabs.TabPane;
 
 class Admin extends Component {
 
@@ -17,13 +21,14 @@ class Admin extends Component {
         super(props)
 
         this.state = {
+            tabPosition: 'top',
             showNotAdminDialog: false,
         }
     }
 
     componentDidMount() {
         let url;
-        url = "http://api.susi.ai/aaa/showAdminService.json?access_token="+cookies.get('loggedIn');
+        url = "http://api.susi.ai/aaa/showAdminService.json?access_token=" + cookies.get('loggedIn');
         $.ajax({
             url: url,
             dataType: 'jsonp',
@@ -67,10 +72,13 @@ class Admin extends Component {
         ];
 
         const tabStyle = {
-            backgroundColor: '#4285F4',
+            width: '100%',
+            animated: false,
+            textAlign: 'center',
+            display: 'inline-block',
         };
 
-        return(
+        return (
 
             <div className="containerDiv">
                 <div className="heading">
@@ -86,36 +94,16 @@ class Admin extends Component {
                         You do not have permissions to access this page!! :(
                     </Dialog>
                 </div>
-                <div>
-                    <Tabs
-                        tabs={[
-                            {
-                                children: () => (
-                                    <div>
-                                        This is the first tab content
-                                    </div>
-                                ),
-                                displayName: 'Admin'
-                            },
-                            {
-                                children: () => (
-                                    <div>
-                                        <ListUser />
-                                    </div>
-                                ),
-                                displayName: 'Users'
-                            },
-                            {
-                                children: () => (
-                                    <div>
-                                        This is the second tab content
-                                    </div>
-                                ),
-                                displayName: 'Permissions'
-                            }
-                        ]}
-                        lineStyle={tabStyle}
-                    />
+                <div className="tabs">
+                    <Paper style={tabStyle} zDepth={5}>
+                        <Tabs tabPosition={this.state.tabPosition}  animated={false}>
+                            <TabPane tab="Admin" key="1">Content of Tab 1</TabPane>
+                            <TabPane tab="Users" key="2">
+                                <ListUser />
+                            </TabPane>
+                            <TabPane tab="Permissions" key="3">Content of Tab 3</TabPane>
+                        </Tabs>
+                    </Paper>
                 </div>
             </div>
         )
