@@ -13,7 +13,6 @@ import 'brace/theme/solarized_light';
 import 'brace/theme/terminal';
 import * as $ from "jquery";
 import Divider from 'material-ui/Divider';
-import Avatar from 'material-ui/Avatar';
 import './SkillListing.css';
 import {FloatingActionButton, Paper, } from "material-ui";
 import CircleImage from "../CircleImage/CircleImage";
@@ -41,59 +40,88 @@ export default class SkillListing extends React.Component {
             examples: '',
             descriptions: '',
             skill_name: '',
-            dataReceived: false,
-            imgUrl:''
+            dataReceived: false
         };
-        let url = this.props.location.state.url;
-        name = this.props.location.state.name;
-        name = name.replace(".txt", "");
-        if(url.indexOf("model") < 0) {
-            urlCode = this.props.location.state.url + "?skill=" + name;
-        }
-        else {
-            urlCode = this.props.location.state.url + "&skill=" + name;
-        }
+        console.log(this.props.location.state)
 
-        urlCode = urlCode.toString()
-        urlCode =  urlCode.replace("getSkillList","getSkill");
-        console.log(urlCode);
+        if(this.props.location.state.url!== undefined) {
+            let url = this.props.location.state.url;
+            name = this.props.location.state.name;
+            if (url.indexOf("model") < 0) {
+                urlCode = this.props.location.state.url + "?skill=" + name;
+            }
+            else {
+                urlCode = this.props.location.state.url + "&skill=" + name;
+            }
 
+            urlCode = urlCode.toString()
+            urlCode = urlCode.replace("getSkillList", "getSkill");
+            console.log(urlCode);
+        }
 
     }
 
 
     componentDidMount() {
+        if(this.props.location.state.url!== undefined) {
+            let baseUrl = 'http://api.susi.ai/cms/getSkillMetadata.json';
+            let url = this.props.location.state.url;
 
-        let baseUrl = 'http://api.susi.ai/cms/getSkillMetadata.json';
-        let url = this.props.location.state.url;
+            let modelValue = this.props.location.state.modelValue;
+            let groupValue = this.props.location.state.groupValue;
+            let languageValue = this.props.location.state.languageValue;
+
+            url = baseUrl + '?model=' + modelValue + '&group=' + groupValue + '&language=' + languageValue + '&skill=' + name;
+
+            console.log("Url:" + url);
+
+            // url = 'http://192.168.43.187:4000/cms/getSkillMetadata.json?group=general&model=entertainment&language=en&skill=cat';
+            console.log(url)
+            let self = this;
+            $.ajax({
+                url: url,
+                jsonpCallback: 'pc',
+                dataType: 'jsonp',
+                jsonp: 'callback',
+                crossDomain: true,
+                success: function (data) {
+                    self.updateData(data.skill_metadata)
+                }
+            });
+        }
+        if(this.props.location.state.from_upload!== undefined){
+            let baseUrl = 'http://api.susi.ai/cms/getSkillMetadata.json';
+            let url;
+
+            let modelValue = "general";
+            let groupValue = this.props.location.state.groupValue;
+            let languageValue = this.props.location.state.languageValue;
+            let expertValue = this.props.location.state.expertValue;
+
+
+            url = baseUrl + '?model=' + modelValue + '&group=' + groupValue + '&language=' + languageValue + '&skill=' + expertValue;
+
+            console.log("Url meta:" + url);
+
+            urlCode = url.toString()
+            urlCode = url.replace("getSkillMetadata", "getSkill");
+            console.log(url)
+            let self = this;
+            $.ajax({
+                url: url,
+                jsonpCallback: 'pc',
+                dataType: 'jsonp',
+                jsonp: 'callback',
+                crossDomain: true,
+                success: function (data) {
+                    self.updateData(data.skill_metadata)
+
+                }
+            });
+        }
 
 
 
-
-
-        let modelValue =  this.props.location.state.modelValue;
-        let groupValue = this.props.location.state.groupValue;
-        let languageValue = this.props.location.state.languageValue;
-
-        url  = baseUrl + '?model='+modelValue + '&group='+groupValue + '&language='+languageValue + '&skill='+name;
-
-        console.log("Url:"+url);
-
-
-
-        // url = 'http://192.168.43.187:4000/cms/getSkillMetadata.json?group=general&model=entertainment&language=en&skill=cat';
-        console.log(url)
-        let self = this;
-        $.ajax({
-            url: url,
-            jsonpCallback: 'pc',
-            dataType: 'jsonp',
-            jsonp: 'callback',
-            crossDomain: true,
-            success: function (data) {
-                self.updateData(data.skill_metadata)
-            }
-        });
     };
 
     updateData = (skillData) => {
@@ -103,20 +131,12 @@ export default class SkillListing extends React.Component {
         });
 
         defaultNullSkillList.forEach((data) => {
-
-            if (!(data in skillData)) {
-                this.setState({
-                    [data]: null
-                })
-            }
-            else {
-                this.setState({
-                    [data]: skillData[data]
-                })
-            }
+            this.setState({
+                [data]: skillData[data]
+            })
         });
 
-        if (!('descriptions' in skillData)) {
+        if (skillData['descriptions'] === null) {
 
             this.setState({
                 descriptions: 'No Description Provided'
@@ -130,21 +150,17 @@ export default class SkillListing extends React.Component {
             })
         }
 
-        if (!('skill_name' in skillData)) {
-
-            let skill_name = this.props.location.state.name.replace(".txt", "");
-            skill_name = skill_name.charAt(0).toUpperCase() + skill_name.substring(1);
+        if (skillData['skill_name'] === null) {
 
             this.setState({
-                skill_name: skill_name
+                skill_name: "No Name Given"
             });
-
-            console.log(this.props.location.state.name.replace(".txt", "").charAt(0));
         }
         else {
             this.setState({
                 skill_name: skillData['skill_name']
             })
+            name = skillData['skill_name']
         }
 
         this.setState({
@@ -153,7 +169,6 @@ export default class SkillListing extends React.Component {
     };
 
     render() {
-
 
         const exampleStyle = {
             height: 'auto',
@@ -193,15 +208,19 @@ export default class SkillListing extends React.Component {
             renderElement = <div><StaticAppBar {...this.props}/><div className="skill_listing_container" style={styles.home}>
                 <div className="avatar-meta margin-b-md">
                     <div className="avatar">
-                        {this.state.image == null?<CircleImage name={this.state.skill_name.toUpperCase()} size="250"/>:<Avatar src={this.state.imgUrl} size={250}/>}
+                        {this.state.imgUrl === undefined?
+                            <CircleImage name={this.state.skill_name.toUpperCase()} size="250"/>:
+                            <img className="avatar-img" alt="Thumbnail" src={this.state.imgUrl}/>
+                        }
                         {/*<Avatar src={this.state.image} size={250}/>*/}
                     </div>
                     <div className="meta">
                         <h1 className="name">
                             {/*{this.state.skill_name}*/}
-                            {this.state.skill_name.split(' ').map((data) => {
-                                return data.charAt(0).toUpperCase() + data.substring(1);
-                            }).join(' ')}
+                            {
+                                name.split(' ').map((data) => {
+                                    return data.charAt(0).toUpperCase() + data.substring(1);
+                                }).join(' ')}
                         </h1>
                         <Link to={{
                             pathname: '/skillEditor',
@@ -221,7 +240,7 @@ export default class SkillListing extends React.Component {
                             {/*{this.state.skill_data.examples}*/}
                             {console.log(this.state)}
 
-                            {typeof this.state.examples === 'undefined' || this.state.examples === null || typeof this.state.examples[Object.keys(this.state.examples)[0]] === 'undefined'? '' : this.state.examples[Object.keys(this.state.examples)[0]].map((data) => {
+                            {typeof this.state.examples === 'undefined' || this.state.examples === null || typeof this.state.examples[Object.keys(this.state.examples)[0]] === 'undefined'? '' : this.state.examples.map((data) => {
                                 return <Paper style={exampleStyle} zDepth={1}>{data}</Paper>
                             })}
                         </div>
