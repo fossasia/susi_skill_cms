@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
+import github from '../images/github-logo.png'
 import isoConv from 'iso-language-converter';
 import Dialog from 'material-ui/Dialog';
+import CircleImage from "../CircleImage/CircleImage";
 import * as $ from "jquery";
-import Link from "react-router-dom/es/Link";
 import Close from 'material-ui/svg-icons/navigation/close';
 import {
   Table,
@@ -21,6 +22,11 @@ const imageStyle = {
       verticalAlign: 'middle',
       border: 0
 }
+const githubProfile = {
+  height: 30,
+  width: 30,
+  verticalAlign: 'middle',
+}
 
 export default class AuthorSkills extends Component {
 
@@ -34,6 +40,17 @@ export default class AuthorSkills extends Component {
             languageValue:"en",
             skills: []
         };
+    }
+
+    checkImage = (image) => {
+      $.get(image)
+        .done(function() {
+          console.log(true)
+          return true
+        }).fail(function() {
+          console.log(false)
+          return false
+        })
     }
 
     loadSkillCards = (author) => {
@@ -58,13 +75,15 @@ export default class AuthorSkills extends Component {
                   }
                   let image = 'https://raw.githubusercontent.com/fossasia/susi_skill_data/master/models/general/'+
                     parse[6]+'/'+parse[7]+'/images/'+parse[8].split('.')[0]+'.png';
+                  let skillImage = this.checkImage(image) ?
+                    <span><CircleImage name={name} size="40"/></span>:
+                    <span><img style={imageStyle} alt={name} src={image} /></span>;
+
                   return (
                     <TableRow>
                       <TableRowColumn>
                         <div>
-                          <span>
-                            <img style={imageStyle} alt={'IMG'} src={image} />
-                          </span>
+                          {skillImage}
                           {name}
                         </div>
                       </TableRowColumn>
@@ -103,7 +122,8 @@ export default class AuthorSkills extends Component {
                     contentStyle={{width: '50%',minWidth: '300px'}}
                     onRequestClose={this.props.close} >
                     <div style={headingStyle}>
-                        <h3>Skills by {this.props.author}</h3>
+                        <h3>Skills by {this.props.author} </h3>
+                        <a href={this.props.author_url} ><img alt={'GitHub'} style={githubProfile} src={github}/></a>
                     </div>
                     <div>
                         <Table

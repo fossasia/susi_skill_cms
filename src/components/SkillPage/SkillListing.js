@@ -254,8 +254,6 @@ export default class SkillListing extends React.Component {
                             author: <span style={authorStyle} onClick={this.openAuthorSkills}>{this.state.author}</span>
                         </h4>
                         <div className="examples">
-                            {/*{console.log(this.state.skill_data)}*/}
-                            {/*{this.state.skill_data.examples}*/}
                             {console.log(this.state)}
 
                             {typeof this.state.examples === 'undefined' || this.state.examples === null || typeof this.state.examples[Object.keys(this.state.examples)[0]] === 'undefined'? '' : this.state.examples.map((data) => {
@@ -299,6 +297,7 @@ export default class SkillListing extends React.Component {
                         open={this.state.showAuthorSkills}
                         close={this.closeAuthorSkills}
                         author={this.state.author}
+                        author_url={this.state.author_url}
                         groups={this.props.location.state.groups}
                         languages={this.props.location.state.languages}/>
                 </div>
