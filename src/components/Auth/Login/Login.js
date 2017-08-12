@@ -65,7 +65,7 @@ class Login extends Component {
 
         let validEmail = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
         let loginEndPoint =
-            BASE_URL+'/aaa/login.json?type=access-token&login=' +
+            BASE_URL + '/aaa/login.json?type=access-token&login=' +
             this.state.email + '&password=' + this.state.password;
 
         if (email && validEmail) {
@@ -81,13 +81,31 @@ class Login extends Component {
                     let accessToken = response.access_token;
                     let state = this.state;
                     let time = response.valid_seconds;
+                    let showAdmin = false;
                     state.isFilled = true;
                     state.accessToken = accessToken;
                     state.success = true;
                     state.msg = response.message;
                     state.time = time;
                     this.setState(state);
-                    this.handleOnSubmit(email, accessToken, time);
+                    let newUrl;
+                    newUrl = "http://api.susi.ai/aaa/showAdminService.json?access_token="+accessToken;
+                    $.ajax({
+                        url: newUrl,
+                        dataType: 'jsonp',
+                        jsonpCallback: 'pasdg',
+                        jsonp: 'callback',
+                        crossDomain: true,
+                        success: function (newResponse) {
+                            showAdmin = newResponse.showAdmin;
+                            console.log(newResponse.showAdmin)
+                        },
+                        error: function (newErrorThrown) {
+                            showAdmin = false;
+                            console.log(newErrorThrown)
+                        }
+                    });
+                    this.handleOnSubmit(email, accessToken, showAdmin, time);
                     let msg = 'You are loggedin';
                     state.msg = msg;
                     this.setState(state);
@@ -146,11 +164,12 @@ class Login extends Component {
         this.setState(state);
     }
 
-    handleOnSubmit = (email, loggedIn, time) => {
+    handleOnSubmit = (email, loggedIn, showAdmin, time) => {
         let state = this.state;
         if (state.success) {
             cookies.set('loggedIn', loggedIn, { path: '/', maxAge: time });
             cookies.set('emailId', email, { path: '/', maxAge: time });
+            cookies.set('showAdmin', showAdmin, { path: '/', maxAge: time });
             window.location.reload();
 
         }
@@ -162,6 +181,7 @@ class Login extends Component {
             });
         }
     }
+
     handleOpen = () => {
         this.setState({ open: true });
     };

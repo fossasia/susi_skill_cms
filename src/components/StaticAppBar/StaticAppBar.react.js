@@ -22,6 +22,7 @@ import { Link } from 'react-router-dom';
 import susiWhite from '../images/SUSIAI-white.png';
 import $ from 'jquery';
 import './StaticAppBar.css';
+// import ListUser from "../Admin/ListUser/ListUser";
 
 const cookies = new Cookies();
 
@@ -42,11 +43,6 @@ let TopRightMenuItems = (props) => (
         rightIcon={<SKillIcon/>}>
         Skills
       </MenuItem>
-      <MenuItem primaryText="List Users"
-          onTouchTap={this.handleClose}
-          containerElement={<Link to="/listUser" />}
-                rightIcon={<List/>}
-      />
       <MenuItem primaryText="Settings"
         onTouchTap={this.handleClose}
         containerElement={<Link to="/settings" />}
@@ -62,6 +58,7 @@ class StaticAppBar extends Component {
           showSignUp: false,
           showForgotPassword: false,
           showOptions: false,
+          showAdmin: false,
           anchorEl: null,
         }
     }
@@ -204,6 +201,16 @@ class StaticAppBar extends Component {
               onRequestClose={this.closeOptions}
             >
               <TopRightMenuItems />
+              {
+                  cookies.get('showAdmin') ?
+                      (<MenuItem primaryText="Admin"
+                                 containerElement={<Link to="/admin" />}
+                                 rightIcon={<List />}/>) :
+                      (
+                          console.log("Admin page not allowed " + cookies.get('showAdmin'))
+                      )
+
+              }
               {cookies.get('loggedIn') ?
                (<MenuItem primaryText="Logout"
                 containerElement={<Link to="/logout" />}
