@@ -91,7 +91,7 @@ class StaticAppBar extends Component {
             }.bind(this),
             error: function (newErrorThrown) {
                 console.log(newErrorThrown)
-            }.bind(this),
+            }
         });
 
         var didScroll;
