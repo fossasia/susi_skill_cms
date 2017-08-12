@@ -38,7 +38,7 @@ export default class ListUser extends Component {
     componentDidMount() {
 
         let url;
-        url = "http://api.susi.ai/aaa/account-permissions.json?access_token="+cookies.get('loggedIn');
+        url = "http://api.susi.ai/aaa/showAdminService.json?access_token="+cookies.get('loggedIn');
         $.ajax({
             url: url,
             dataType: 'jsonp',
@@ -46,15 +46,17 @@ export default class ListUser extends Component {
             jsonp: 'callback',
             crossDomain: true,
             success: function (response) {
-                console.log(response.userRole)
-                if (response.userRole !== "admin") {
-                    console.log("Not an admin")
+                console.log(response.showAdmin)
+                if (response.showAdmin) {
+                    if(this.state.username.length === 0)
+                        this.fetchUsers();
+                    console.log("Page loading...")
                 } else {
-                    this.fetchUsers();
-                    console.log("Admin")
+                    console.log("Not allowed to access this page!")
                 }
             }.bind(this),
             error: function (errorThrown) {
+                console.log("Not allowed to access this page!")
                 console.log(errorThrown)
             }
         });

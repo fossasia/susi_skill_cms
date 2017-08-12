@@ -81,13 +81,31 @@ class Login extends Component {
                     let accessToken = response.access_token;
                     let state = this.state;
                     let time = response.valid_seconds;
+                    let showAdmin = false;
                     state.isFilled = true;
                     state.accessToken = accessToken;
                     state.success = true;
                     state.msg = response.message;
                     state.time = time;
                     this.setState(state);
-                    this.handleOnSubmit(email, accessToken, time);
+                    let newUrl;
+                    newUrl = "http://api.susi.ai/aaa/showAdminService.json?access_token="+accessToken;
+                    $.ajax({
+                        url: newUrl,
+                        dataType: 'jsonp',
+                        jsonpCallback: 'pasdg',
+                        jsonp: 'callback',
+                        crossDomain: true,
+                        success: function (newResponse) {
+                            showAdmin = newResponse.showAdmin;
+                            console.log(newResponse.showAdmin)
+                        },
+                        error: function (newErrorThrown) {
+                            showAdmin = false;
+                            console.log(newErrorThrown)
+                        }
+                    });
+                    this.handleOnSubmit(email, accessToken, showAdmin, time);
                     let msg = 'You are loggedin';
                     state.msg = msg;
                     this.setState(state);
@@ -146,28 +164,12 @@ class Login extends Component {
         this.setState(state);
     }
 
-    handleOnSubmit = (email, loggedIn, time) => {
+    handleOnSubmit = (email, loggedIn, showAdmin, time) => {
         let state = this.state;
         if (state.success) {
             cookies.set('loggedIn', loggedIn, { path: '/', maxAge: time });
             cookies.set('emailId', email, { path: '/', maxAge: time });
-            cookies.set('showAdmin', false, { path: '/', maxAge: time });
-            let url;
-            url = "http://api.susi.ai/aaa/showAdminService.json?access_token="+loggedIn;
-            $.ajax({
-                url: url,
-                dataType: 'jsonp',
-                jsonpCallback: 'pg',
-                jsonp: 'callback',
-                crossDomain: true,
-                success: function (response) {
-                    cookies.set('showAdmin', response.showAdmin, { path: '/', maxAge: time });
-                    console.log(response.showAdmin)
-                },
-                error: function (errorThrown) {
-                    console.log(errorThrown)
-                }
-            });
+            cookies.set('showAdmin', showAdmin, { path: '/', maxAge: time });
             window.location.reload();
 
         }

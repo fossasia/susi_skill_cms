@@ -202,12 +202,12 @@ class StaticAppBar extends Component {
             >
               <TopRightMenuItems />
               {
-                  cookies.get('showAdmin') === true ?
+                  cookies.get('showAdmin') ?
                       (<MenuItem primaryText="Admin"
                                  containerElement={<Link to="/admin" />}
                                  rightIcon={<List />}/>) :
                       (
-                          console.log("Admin page not allowed")
+                          console.log("Admin page not allowed " + cookies.get('showAdmin'))
                       )
 
               }

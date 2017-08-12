@@ -13,7 +13,8 @@ class Logout extends Component {
   constructor(props){
     super(props);
     this.state = {
-      'loggedIn' : ''
+      'loggedIn' : '',
+      'showAdmin' : ''
     }
   }
 
@@ -21,7 +22,7 @@ class Logout extends Component {
     deleteCookie('loggedIn');
     deleteCookie('serverUrl');
     deleteCookie('email');
-    cookies.set('showAdmin', false, { path: '/', maxAge: 604800 });
+    deleteCookie('showAdmin');
     this.props.history.push('/');
     window.location.reload();
   }
