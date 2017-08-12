@@ -9,7 +9,7 @@ import {Table} from 'antd';
 const cookies = new Cookies();
 
 const columns = [{
-        title: 'Serial Number',
+        title: 'S.No.',
         dataIndex: 'serialNum',
         sorter: true,
         width: '5%',
@@ -116,14 +116,14 @@ export default class ListUser extends Component {
                     let name = data[el].replace("email:", "");
                     console.log(name);
                     return (
-                        <TableRow key={i}>
+                        {/*<TableRow key={i}>
                             <TableRowColumn>{++i}</TableRowColumn>
                             <TableRowColumn>{name}</TableRowColumn>
                             <TableRowColumn> </TableRowColumn>
                             <TableRowColumn> </TableRowColumn>
                             <TableRowColumn> </TableRowColumn>
                             <TableRowColumn> </TableRowColumn>
-                        </TableRow>
+                        </TableRow> */}
                     )
                 });
                 self.setState({

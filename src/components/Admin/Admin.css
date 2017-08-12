@@ -8,11 +8,16 @@
     height: 150px;
 }
 .tabs{
+    margin-top: -35px;
     padding-left: 70px;
     padding-right: 70px;
 }
 .containerDiv{
     background-color: #ffffff;
+}
+
+.temp{
+    margin-top: 1;
 }
 
 .h1{
@@ -21,7 +26,7 @@
     margin-left: 21px;
 }
 
-.containerPaper{
+.containerPaper{0pxgit s
     margin-top: -68px;
     margin-left: 60px;
     margin-right: 40px;
