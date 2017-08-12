@@ -65,7 +65,7 @@ class Login extends Component {
 
         let validEmail = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
         let loginEndPoint =
-            BASE_URL+'/aaa/login.json?type=access-token&login=' +
+            BASE_URL + '/aaa/login.json?type=access-token&login=' +
             this.state.email + '&password=' + this.state.password;
 
         if (email && validEmail) {
@@ -146,7 +146,7 @@ class Login extends Component {
         this.setState(state);
     }
 
-    handleOnSubmit = (email, loggedIn, time) => {
+    handleOnSubmit = (email, loggedIn, showAdmin, time) => {
         let state = this.state;
         if (state.success) {
             cookies.set('loggedIn', loggedIn, { path: '/', maxAge: time });
@@ -162,6 +162,7 @@ class Login extends Component {
             });
         }
     }
+
     handleOpen = () => {
         this.setState({ open: true });
     };
@@ -169,31 +170,31 @@ class Login extends Component {
     handleSignUp = () => {
         this.setState(
             {
-              email: '',
-              password: '',
-              isFilled: false,
-              success: false,
-              validForm: false,
-              emailError: true,
-              passwordError: true,
-              checked: false,
-        });
+                email: '',
+                password: '',
+                isFilled: false,
+                success: false,
+                validForm: false,
+                emailError: true,
+                passwordError: true,
+                checked: false,
+            });
         this.props.onSignUpLogin();
     };
 
     handleForgotPassword = () => {
-      this.setState(
-          {
-            email: '',
-            password: '',
-            isFilled: false,
-            success: false,
-            validForm: false,
-            emailError: true,
-            passwordError: true,
-            checked: false,
-      });
-      this.props.onForgotPwdLogin();
+        this.setState(
+            {
+                email: '',
+                password: '',
+                isFilled: false,
+                success: false,
+                validForm: false,
+                emailError: true,
+                passwordError: true,
+                checked: false,
+            });
+        this.props.onForgotPwdLogin();
     }
 
     render() {
@@ -219,10 +220,10 @@ class Login extends Component {
                         <form onSubmit={this.handleSubmit}>
                             <div>
                                 <TextField name="email"
-                                    value={this.state.email}
-                                    onChange={this.handleChange}
-                                    errorText={this.emailErrorMessage}
-                                    floatingLabelText="Email" />
+                                           value={this.state.email}
+                                           onChange={this.handleChange}
+                                           errorText={this.emailErrorMessage}
+                                           floatingLabelText="Email" />
                             </div>
                             <div>
                                 <PasswordField
@@ -234,7 +235,7 @@ class Login extends Component {
                                     floatingLabelText='Password' />
                             </div>
                             <span style={{
-                              margin: '3px 0'
+                                margin: '3px 0'
                             }}>{this.state.msg}</span>
                             <div>
                                 <RaisedButton
@@ -246,21 +247,21 @@ class Login extends Component {
                                     style={{margin:'15px 0 '}}/>
                             </div>
                             <span className="forgotpwdlink"
-                              onClick={this.handleForgotPassword}>
+                                  onClick={this.handleForgotPassword}>
                               Forgot Password?
                             </span>
                             <br />
                             <h4 style={{
-                              margin: '7px 0'
+                                margin: '7px 0'
                             }}>OR</h4>
                             <div>
                                 <h4>If you do not have an account, Please SignUp</h4>
-                                    <RaisedButton
-                                        label='SignUp'
-                                        onTouchTap={this.handleSignUp}
-                                        backgroundColor="#4285f4"
-                                        labelColor="#fff"
-                                        style={{margin:'15px 0 0 0'}}/>
+                                <RaisedButton
+                                    label='SignUp'
+                                    onTouchTap={this.handleSignUp}
+                                    backgroundColor="#4285f4"
+                                    labelColor="#fff"
+                                    style={{margin:'15px 0 0 0'}}/>
                             </div>
                         </form>
                     </Paper>

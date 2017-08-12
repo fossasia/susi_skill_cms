@@ -1,19 +1,47 @@
 import React, {Component} from 'react';
 import './ListUser.css';
-import StaticAppBar from '../../StaticAppBar/StaticAppBar.react';
 import $ from 'jquery';
 import Cookies from 'universal-cookie'
+import {Table} from 'antd';
 // import Dialog from 'material-ui/Dialog';
-import {
-    Table,
-    TableBody,
-    TableHeader,
-    TableHeaderColumn,
-    TableRow,
-    TableRowColumn,
-} from 'material-ui/Table';
 
 const cookies = new Cookies();
+
+const columns = [{
+    title: 'S.No.',
+    dataIndex: 'serialNum',
+    sorter: true,
+    width: '5%',
+},
+    {
+        title: 'Email ID',
+        dataIndex: 'email',
+        sorter: true,
+        render: name => `${name.first} ${name.last}`,       //make changes here to render data
+        width: '30%',
+    },
+    {
+        title: 'Name',
+        dataIndex: 'name',
+        sorter: true,
+        width: '10%',
+    },
+    {
+        title: 'Signup',
+        dataIndex: 'signup',
+        width: '20%',
+    },
+    {
+        title: 'Last Login',
+        dataIndex: 'lastLogin',
+        width: '20%'
+    },
+    {
+        title: 'IP of Last Login',
+        dataIndex: 'ipLastLogin',
+        width: '15%'
+    }
+];
 
 export default class ListUser extends Component {
 
@@ -21,24 +49,31 @@ export default class ListUser extends Component {
         super(props)
         this.state = {
             username: [],
-            fixedHeader: false,
-            fixedFooter: false,
-            stripedRows: false,
-            showRowHover: true,
-            selectable: false,
-            multiSelectable: false,
-            enableSelectAll: false,
-            deselectOnClickaway: true,
-            showCheckboxes: false,
-            height: 'inherit',
-            visible: false,
+            data: [],
+            pagination: {},
+            loading: false,
         }
+    }
+
+    handleTableChange = (pagination, filters, sorter) => {
+        const pager = { ...this.state.pagination };
+        pager.current = pagination.current;
+        this.setState({
+            pagination: pager,
+        });
+        this.fetch({
+            results: pagination.pageSize,
+            page: pagination.current,
+            sortField: sorter.field,
+            sortOrder: sorter.order,
+            ...filters,
+        });
     }
 
     componentDidMount() {
 
         let url;
-        url = "http://api.susi.ai/aaa/account-permissions.json?access_token="+cookies.get('loggedIn');
+        url = "http://api.susi.ai/aaa/showAdminService.json?access_token=" + cookies.get('loggedIn');
         $.ajax({
             url: url,
             dataType: 'jsonp',
@@ -46,15 +81,17 @@ export default class ListUser extends Component {
             jsonp: 'callback',
             crossDomain: true,
             success: function (response) {
-                console.log(response.userRole)
-                if (response.userRole !== "admin") {
-                    console.log("Not an admin")
+                console.log(response.showAdmin)
+                if (response.showAdmin) {
+                    if (this.state.username.length === 0)
+                        this.fetchUsers();
+                    console.log("Page loading...")
                 } else {
-                    this.fetchUsers();
-                    console.log("Admin")
+                    console.log("Not allowed to access this page!")
                 }
             }.bind(this),
             error: function (errorThrown) {
+                console.log("Not allowed to access this page!")
                 console.log(errorThrown)
             }
         });
@@ -62,7 +99,7 @@ export default class ListUser extends Component {
 
     fetchUsers = () => {
         let url;
-        url = "http://api.susi.ai/aaa/getAllUsers.json?access_token="+cookies.get('loggedIn');
+        url = "http://api.susi.ai/aaa/getAllUsers.json?access_token=" + cookies.get('loggedIn');
         let self = this;
         $.ajax({
             url: url,
@@ -78,18 +115,11 @@ export default class ListUser extends Component {
                     let name = data[el].replace("email:", "");
                     console.log(name);
                     return (
-                        <TableRow key={i}>
-                            <TableRowColumn>{++i}</TableRowColumn>
-                            <TableRowColumn>{name}</TableRowColumn>
-                            <TableRowColumn> </TableRowColumn>
-                            <TableRowColumn> </TableRowColumn>
-                            <TableRowColumn> </TableRowColumn>
-                            <TableRowColumn> </TableRowColumn>
-                        </TableRow>
+                        {}
                     )
                 });
                 self.setState({
-                    username : username,
+                    username: username,
                 })
                 console.log(self.state)
             },
@@ -103,43 +133,15 @@ export default class ListUser extends Component {
         return (
             <div>
                 <div>
-                    <StaticAppBar {...this.props} />
-                    <div className="banner">
-                        <h1 className="h1">Registered Users</h1>
+                    <div>
+                        <Table columns={columns}
+                               rowKey={record => record.registered}
+                               dataSource={this.state.data}
+                               pagination={this.state.pagination}
+                               loading={this.state.loading}
+                               onChange={this.handleTableChange}
+                        />
                     </div>
-                </div>
-                <div>
-                    <Table
-                        height={this.state.height}
-                        fixedHeader={false}
-                        fixedFooter={false}
-                        selectable={false}
-                        multiSelectable={false}
-                        style={{marginTop: 10}}
-                    >
-                        <TableHeader
-                            displaySelectAll={false}
-                            adjustForCheckbox={false}
-                            enableSelectAll={false}
-                        >
-
-                            <TableRow>
-                                <TableHeaderColumn tooltip="Serial Number">serial number</TableHeaderColumn>
-                                <TableHeaderColumn tooltip="E-mail">Email ID</TableHeaderColumn>
-                                <TableHeaderColumn tooltip="Name">Name</TableHeaderColumn>
-                                <TableHeaderColumn tooltip="Signup">Signup</TableHeaderColumn>
-                                <TableHeaderColumn tooltip="Last Login">Last Login</TableHeaderColumn>
-                                <TableHeaderColumn tooltip="Last Login IP">IP of Last Login</TableHeaderColumn>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody
-                            displayRowCheckbox={false}
-                            showRowHover={this.state.showRowHover}
-                            stripedRows={this.state.stripedRows}>
-                            {this.state.username}
-                        </TableBody>
-
-                    </Table>
                 </div>
             </div>
         );
