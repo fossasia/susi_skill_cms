@@ -1,5 +1,6 @@
 import React from 'react';
 import {Link} from 'react-router-dom'
+import AuthorSkills from '../AuthorSkills/AuthorSkills'
 import 'brace/mode/markdown';
 import 'brace/theme/github';
 import 'brace/theme/monokai';
@@ -15,7 +16,7 @@ import * as $ from "jquery";
 import Divider from 'material-ui/Divider';
 import './SkillListing.css';
 import {FloatingActionButton, Paper, } from "material-ui";
-import CircleImage from "../CircleImage/CircleImage";
+import CircleImage from '../CircleImage/CircleImage';
 import EditBtn from 'material-ui/svg-icons/editor/mode-edit';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 
@@ -43,7 +44,7 @@ export default class SkillListing extends React.Component {
             dataReceived: false,
             imgUrl: null
         };
-        console.log(this.props.location.state)
+        console.log(this.props.location.state.groups)
 
         if(this.props.location.state.url!== undefined) {
             let url = this.props.location.state.url;
@@ -64,6 +65,7 @@ export default class SkillListing extends React.Component {
 
 
     componentDidMount() {
+
         if(this.props.location.state.url!== undefined) {
             let baseUrl = 'http://api.susi.ai/cms/getSkillMetadata.json';
             let url = this.props.location.state.url;
@@ -171,7 +173,20 @@ export default class SkillListing extends React.Component {
         });
     };
 
+    openAuthorSkills = () => {
+        this.refs.author.loadSkillCards(this.state.author);
+        this.setState({showAuthorSkills: true});
+    }
+
+    closeAuthorSkills = () => {
+        this.setState({showAuthorSkills: false});
+  }
+
     render() {
+
+        const authorStyle = {
+            cursor: 'pointer'
+        }
 
         const exampleStyle = {
             height: 'auto',
@@ -236,7 +251,7 @@ export default class SkillListing extends React.Component {
                             </div>
                         </Link>
                         <h4>
-                            <a href={this.state.author_url} target="_blank" rel="noopener noreferrer">{this.state.author}</a>
+                            author: <span style={authorStyle} onClick={this.openAuthorSkills}>{this.state.author}</span>
                         </h4>
                         <div className="examples">
                             {/*{console.log(this.state.skill_data)}*/}
@@ -276,7 +291,18 @@ export default class SkillListing extends React.Component {
         }
 
         return (
-            renderElement
+            <div>
+                <div>{renderElement}</div>
+                <div>
+                    <AuthorSkills
+                        ref="author"
+                        open={this.state.showAuthorSkills}
+                        close={this.closeAuthorSkills}
+                        author={this.state.author}
+                        groups={this.props.location.state.groups}
+                        languages={this.props.location.state.languages}/>
+                </div>
+            </div>
         );
     }
 }
