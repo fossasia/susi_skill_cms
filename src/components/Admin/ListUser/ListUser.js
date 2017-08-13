@@ -151,7 +151,8 @@ export default class ListUser extends Component {
                 userList.map((data,i)=>{
                     let user = {
                         serialNum:++i + (page-1) *50,
-                        email:data.name
+                        email:data.name,
+                        userRole:data.userRole
                     }
                     users.push(user);
                     return 1
