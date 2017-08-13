@@ -154,6 +154,7 @@ export default class ListUser extends Component {
         // Read total count from server
         // pagination.total = data.totalCount;
         pagination.total = 472;
+        pagination.pageSize = 50;
         this.setState({
             loading: false,
             pagination,
@@ -174,7 +175,7 @@ export default class ListUser extends Component {
                                dataSource={this.state.data}
                                pagination={this.state.pagination}
                                loading={this.state.loading}
-                               size={this.state.middle}
+                               size="middle"
                                onChange={this.handleTableChange}
                         />
                     </div>
