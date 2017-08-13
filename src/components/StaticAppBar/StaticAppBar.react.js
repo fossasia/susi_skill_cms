@@ -22,35 +22,31 @@ import { Link } from 'react-router-dom';
 import susiWhite from '../images/SUSIAI-white.png';
 import $ from 'jquery';
 import './StaticAppBar.css';
+// import ListUser from "../Admin/ListUser/ListUser";
 
 const cookies = new Cookies();
 
 let TopRightMenuItems = (props) => (
     <div>
-      <MenuItem
-        href="http://chat.susi.ai/overview"
-        rightIcon={<Info/>}>
-        About
-      </MenuItem>
-      <MenuItem
-        href="http://chat.susi.ai/"
-        rightIcon={<Chat/>}>
-        Chat
-      </MenuItem>
-      <MenuItem
-        href="http://skills.susi.ai/"
-        rightIcon={<SKillIcon/>}>
-        Skills
-      </MenuItem>
-      <MenuItem primaryText="List Users"
-          onTouchTap={this.handleClose}
-          containerElement={<Link to="/listUser" />}
-                rightIcon={<List/>}
-      />
-      <MenuItem primaryText="Settings"
-        onTouchTap={this.handleClose}
-        containerElement={<Link to="/settings" />}
-        rightIcon={<Settings/>}/>
+        <MenuItem
+            href="http://chat.susi.ai/overview"
+            rightIcon={<Info/>}>
+            About
+        </MenuItem>
+        <MenuItem
+            href="http://chat.susi.ai/"
+            rightIcon={<Chat/>}>
+            Chat
+        </MenuItem>
+        <MenuItem
+            href="http://skills.susi.ai/"
+            rightIcon={<SKillIcon/>}>
+            Skills
+        </MenuItem>
+        <MenuItem primaryText="Settings"
+                  onTouchTap={this.handleClose}
+                  containerElement={<Link to="/settings" />}
+                  rightIcon={<Settings/>}/>
     </div>
 )
 
@@ -58,11 +54,12 @@ class StaticAppBar extends Component {
     constructor(props) {
         super(props);
         this.state = {
-          showLogin: false,
-          showSignUp: false,
-          showForgotPassword: false,
-          showOptions: false,
-          anchorEl: null,
+            showLogin: false,
+            showSignUp: false,
+            showForgotPassword: false,
+            showOptions: false,
+            showAdmin: false,
+            anchorEl: null,
         }
     }
 
@@ -76,10 +73,33 @@ class StaticAppBar extends Component {
 
     componentDidMount() {
         window.addEventListener('scroll', this.handleScroll);
+        let url;
+        url = "http://api.susi.ai/aaa/showAdminService.json?access_token="+cookies.get('loggedIn');
+        $.ajax({
+            url: url,
+            dataType: 'jsonp',
+            jsonpCallback: 'pfns',
+            jsonp: 'callback',
+            crossDomain: true,
+            success: function (newResponse) {
+                let ShowAdmin = newResponse.showAdmin;
+                cookies.set('showAdmin', ShowAdmin)
+                this.setState({
+                    showAdmin: ShowAdmin,
+                })
+                console.log(newResponse.showAdmin)
+            }.bind(this),
+            error: function (newErrorThrown) {
+                console.log(newErrorThrown)
+            }
+        });
 
         var didScroll;
         var lastScrollTop = 0;
         var delta = 5;
+        this.setState({
+            showAdmin: cookies.get('showAdmin'),
+        })
         var navbarHeight = $('header').outerHeight();
         $(window).scroll(function (event) {
             didScroll = true;
@@ -114,108 +134,118 @@ class StaticAppBar extends Component {
     }
 
     showOptions = (event) => {
-  		this.setState({
-        showOptions: true,
-  			anchorEl: event.currentTarget,
-      });
-  	}
+        this.setState({
+            showOptions: true,
+            anchorEl: event.currentTarget,
+        });
+    }
 
-  	closeOptions = () => {
-  		this.setState({
-        showOptions: false,
-      });
-  	}
+    closeOptions = () => {
+        this.setState({
+            showOptions: false,
+        });
+    }
 
     handleLogin = () => {
-      this.setState({
-        showLogin: true,
-        showSignUp: false,
-        showForgotPassword: false,
-        showOptions: false,
-      });
+        this.setState({
+            showLogin: true,
+            showSignUp: false,
+            showForgotPassword: false,
+            showOptions: false,
+        });
     }
 
     handleSignUp = () => {
-      this.setState({
-        showSignUp: true,
-        showLogin: false,
-        showForgotPassword: false,
-        showOptions: false,
-      });
+        this.setState({
+            showSignUp: true,
+            showLogin: false,
+            showForgotPassword: false,
+            showOptions: false,
+        });
     }
 
     handleForgotPassword = () => {
-      this.setState({
-        showSignUp: false,
-        showLogin: false,
-        showForgotPassword: true,
-        showOptions: false,
-      });
+        this.setState({
+            showSignUp: false,
+            showLogin: false,
+            showForgotPassword: true,
+            showOptions: false,
+        });
     }
 
     handleClose = ()  => {
-  		this.setState({
-  			showOptions: false,
-  			showLogin: false,
-  			showSignUp: false,
-        showForgotPassword: false,
-  		})
-  	}
+        this.setState({
+            showOptions: false,
+            showLogin: false,
+            showSignUp: false,
+            showForgotPassword: false,
+        })
+    }
 
     render() {
 
-      const closingStyle ={
-          position: 'absolute',
-          zIndex: 1200,
-          fill: '#444',
-          width: '26px',
-          height: '26px',
-          right: '10px',
-          top: '10px',
-          cursor:'pointer'
-      }
+        const closingStyle ={
+            position: 'absolute',
+            zIndex: 1200,
+            fill: '#444',
+            width: '26px',
+            height: '26px',
+            right: '10px',
+            top: '10px',
+            cursor:'pointer'
+        }
 
-      const bodyStyle = {
-        'padding': 0,
-        textAlign: 'center'
-      }
+        const bodyStyle = {
+            'padding': 0,
+            textAlign: 'center'
+        }
 
-      let TopRightMenu = (props) => (
-        <div onScroll={this.handleScroll}>
-          <div>
-            <IconMenu
-            {...props}
-              iconButtonElement={
-                <IconButton
-                  iconStyle={{ fill: 'white' }}><MoreVertIcon /></IconButton>
-              }
-              targetOrigin={{ horizontal: 'right', vertical: 'top' }}
-              anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
-              onTouchTap={this.showOptions}
-              >
-            </IconMenu>
-            <Popover
-            {...props}
-              style={{ float: 'right', position: 'relative', right: '0px', margin: '46px 20px 0 0' }}
-              open={this.state.showOptions}
-              anchorEl={this.state.anchorEl}
-              anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-              targetOrigin={{ horizontal: 'right', vertical: 'top' }}
-              onRequestClose={this.closeOptions}
-            >
-              <TopRightMenuItems />
-              {cookies.get('loggedIn') ?
-               (<MenuItem primaryText="Logout"
-                containerElement={<Link to="/logout" />}
-                rightIcon={<Exit />}/>) :
-               (<MenuItem primaryText="Login"
-                onTouchTap={this.handleLogin}
-                rightIcon={<LoginIcon/>} />)
-              }
-            </Popover>
-          </div>
-        </div>
-      )
+        let TopRightMenu = (props) => (
+            <div onScroll={this.handleScroll}>
+                <div>
+                    <IconMenu
+                        {...props}
+                        iconButtonElement={
+                            <IconButton
+                                iconStyle={{ fill: 'white' }}><MoreVertIcon /></IconButton>
+                        }
+                        targetOrigin={{ horizontal: 'right', vertical: 'top' }}
+                        anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
+                        onTouchTap={this.showOptions}
+                    >
+                    </IconMenu>
+                    <Popover
+                        {...props}
+                        style={{ float: 'right', position: 'relative', right: '0px', margin: '46px 20px 0 0' }}
+                        open={this.state.showOptions}
+                        anchorEl={this.state.anchorEl}
+                        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                        targetOrigin={{ horizontal: 'right', vertical: 'top' }}
+                        onRequestClose={this.closeOptions}
+                    >
+                        <TopRightMenuItems />
+                        {
+                             this.state.showAdmin === true ?
+                                (<MenuItem primaryText="Admin"
+                                           containerElement={<Link to="/admin" />}
+                                           rightIcon={<List />}/>) :
+                                (
+                                    console.log("Admin page allowed " + cookies.get('showAdmin'))
+                                )
+
+                        }
+                        {cookies.get('loggedIn') ?
+                            (<MenuItem primaryText="Logout"
+                                       containerElement={<Link to="/logout" />}
+                                       rightIcon={<Exit />}/>) :
+                            (<MenuItem primaryText="Login"
+                                       onTouchTap={this.handleLogin}
+                                       rightIcon={<LoginIcon/>} />)
+                        }
+                    </Popover>
+                </div>
+            </div>
+        )
 
         return (
             <div>
@@ -242,8 +272,8 @@ class StaticAppBar extends Component {
                     contentStyle={{ width: '35%', minWidth: '300px' }}
                 >
                     <Login {...this.props}
-                      onForgotPwdLogin={this.handleForgotPassword}
-                      onSignUpLogin={this.handleSignUp}/>
+                           onForgotPwdLogin={this.handleForgotPassword}
+                           onSignUpLogin={this.handleSignUp}/>
                     <Close style={closingStyle}
                            onTouchTap={this.handleClose} />
                 </Dialog>
@@ -257,8 +287,8 @@ class StaticAppBar extends Component {
                     contentStyle={{ width: '35%', minWidth: '300px' }}
                 >
                     <SignUp {...this.props}
-                      onRequestClose={this.handleClose}
-                      onLoginSignUp={this.handleLogin} />
+                            onRequestClose={this.handleClose}
+                            onLoginSignUp={this.handleLogin} />
                     <Close style={closingStyle}
                            onTouchTap={this.handleClose} />
                 </Dialog>
@@ -272,9 +302,9 @@ class StaticAppBar extends Component {
                     onRequestClose={this.handleClose}
                 >
                     <ForgotPassword {...this.props}
-                      onRequestClose={this.handleClose} />
+                                    onRequestClose={this.handleClose} />
                     <Close style={closingStyle}
-                        onTouchTap={this.handleClose} />
+                           onTouchTap={this.handleClose} />
                 </Dialog>
             </div>
         );

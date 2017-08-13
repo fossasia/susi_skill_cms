@@ -1,19 +1,51 @@
 import React, {Component} from 'react';
 import './ListUser.css';
-import StaticAppBar from '../../StaticAppBar/StaticAppBar.react';
 import $ from 'jquery';
 import Cookies from 'universal-cookie'
-// import Dialog from 'material-ui/Dialog';
-import {
-    Table,
-    TableBody,
-    TableHeader,
-    TableHeaderColumn,
-    TableRow,
-    TableRowColumn,
-} from 'material-ui/Table';
+import {Table} from 'antd';
 
 const cookies = new Cookies();
+
+const columns = [{
+    title: 'S.No.',
+    dataIndex: 'serialNum',
+    sorter: false,
+    width: '5%',
+},
+    {
+        title: 'Email ID',
+        dataIndex: 'email',
+        sorter: false,
+        width: '25%',
+    },
+    {
+        title: 'Name',
+        dataIndex: 'name',
+        sorter: false,
+        width: '15%',
+    },
+    {
+        title: 'Signup',
+        dataIndex: 'signup',
+        width: '15%',
+    },
+    {
+        title: 'Last Login',
+        dataIndex: 'lastLogin',
+        width: '15%'
+    },
+    {
+        title: 'IP of Last Login',
+        dataIndex: 'ipLastLogin',
+        width: '15%'
+    },
+    {
+        title: 'User Role',
+        dataIndex: 'userRole',
+        sorter: false,
+        width: '10%',
+    }
+];
 
 export default class ListUser extends Component {
 
@@ -21,24 +53,32 @@ export default class ListUser extends Component {
         super(props)
         this.state = {
             username: [],
-            fixedHeader: false,
-            fixedFooter: false,
-            stripedRows: false,
-            showRowHover: true,
-            selectable: false,
-            multiSelectable: false,
-            enableSelectAll: false,
-            deselectOnClickaway: true,
-            showCheckboxes: false,
-            height: 'inherit',
-            visible: false,
+            data: [],
+            middle: '50',
+            pagination: {},
+            loading: false
         }
     }
 
-    componentDidMount() {
+    handleTableChange = (pagination, filters, sorter) => {
+        const pager = { ...this.state.pagination };
+        pager.current = pagination.current;
+        this.setState({
+            pagination: pager,
+        });
+        this.fetch({
+            results: pagination.pageSize,
+            page: pagination.current,
+            sortField: sorter.field,
+            sortOrder: sorter.order,
+            ...filters,
+        });
+    }
 
+    componentDidMount() {
+        const pagination = { ...this.state.pagination };
         let url;
-        url = "http://api.susi.ai/aaa/account-permissions.json?access_token="+cookies.get('loggedIn');
+        url = "http://api.susi.ai/aaa/showAdminService.json?access_token=" + cookies.get('loggedIn');
         $.ajax({
             url: url,
             dataType: 'jsonp',
@@ -46,101 +86,99 @@ export default class ListUser extends Component {
             jsonp: 'callback',
             crossDomain: true,
             success: function (response) {
-                console.log(response.userRole)
-                if (response.userRole !== "admin") {
-                    console.log("Not an admin")
+                console.log(response.showAdmin)
+                if (response.showAdmin) {
+                    let getPagesUrl = "http://api.susi.ai/aaa/getUsers.json?access_token=" + cookies.get('loggedIn')
+                        + "&getUserCount=true";
+                    $.ajax({
+                        url: getPagesUrl,
+                        dataType: 'jsonp',
+                        jsonpCallback: 'pvsdu',
+                        jsonp: 'callback',
+                        crossDomain: true,
+                        success: function (data) {
+                            console.log(data);
+                            pagination.total = data.userCount;
+                            pagination.pageSize = 50;
+                            this.setState({
+                                loading: false,
+                                pagination,
+                            });
+                            console.log(pagination);
+                            this.fetch();
+                        }.bind(this),
+                        error: function (errorThrown) {
+                            console.log(errorThrown)
+                        }
+                    });
                 } else {
-                    this.fetchUsers();
-                    console.log("Admin")
+                    console.log("Not allowed to access this page!")
                 }
+            }.bind(this),
+            error: function (errorThrown) {
+                console.log("Not allowed to access this page!")
+                console.log(errorThrown)
+            }
+        });
+
+
+    }
+
+    fetch = (params = {}) => {
+        let url;
+        let page;
+        if(params.page!==undefined){
+            console.log(params.page)
+            page = params.page;
+        }
+        else{
+            page =1;
+        }
+        url = "http://api.susi.ai/aaa/getUsers.json?access_token=" + cookies.get('loggedIn')
+            + "&page="+page;
+        $.ajax({
+            url: url,
+            dataType: 'jsonp',
+            jsonpCallback: 'pvsdu',
+            jsonp: 'callback',
+            crossDomain: true,
+            success: function (data) {
+                console.log(data.users);
+                let userList = data.users;
+                let users =[];
+                userList.map((data,i)=>{
+                    let user = {
+                        serialNum:++i + (page-1) *50,
+                        email:data.name,
+                        userRole:data.userRole
+                    }
+                    users.push(user);
+                    return 1
+                })
+                console.log(users);
+                this.setState({
+                    data:users
+                })
             }.bind(this),
             error: function (errorThrown) {
                 console.log(errorThrown)
             }
         });
-    }
+        // Read total count from server
+        // pagination.total = data.totalCount;
 
-    fetchUsers = () => {
-        let url;
-        url = "http://api.susi.ai/aaa/getAllUsers.json?access_token="+cookies.get('loggedIn');
-        let self = this;
-        $.ajax({
-            url: url,
-            dataType: 'jsonp',
-            jsonpCallback: 'pu',
-            jsonp: 'callback',
-            crossDomain: true,
-            success: function (data) {
-                console.log(data.username)
-                data = data.username
-                let keys = Object.keys(data);
-                let username = keys.map((el, i) => {
-                    let name = data[el].replace("email:", "");
-                    console.log(name);
-                    return (
-                        <TableRow key={i}>
-                            <TableRowColumn>{++i}</TableRowColumn>
-                            <TableRowColumn>{name}</TableRowColumn>
-                            <TableRowColumn> </TableRowColumn>
-                            <TableRowColumn> </TableRowColumn>
-                            <TableRowColumn> </TableRowColumn>
-                            <TableRowColumn> </TableRowColumn>
-                        </TableRow>
-                    )
-                });
-                self.setState({
-                    username : username,
-                })
-                console.log(self.state)
-            },
-            error: function (errorThrown) {
-                console.log(errorThrown)
-            }
-        });
     }
 
     render() {
         return (
-            <div>
-                <div>
-                    <StaticAppBar {...this.props} />
-                    <div className="banner">
-                        <h1 className="h1">Registered Users</h1>
-                    </div>
-                </div>
-                <div>
-                    <Table
-                        height={this.state.height}
-                        fixedHeader={false}
-                        fixedFooter={false}
-                        selectable={false}
-                        multiSelectable={false}
-                        style={{marginTop: 10}}
-                    >
-                        <TableHeader
-                            displaySelectAll={false}
-                            adjustForCheckbox={false}
-                            enableSelectAll={false}
-                        >
-
-                            <TableRow>
-                                <TableHeaderColumn tooltip="Serial Number">serial number</TableHeaderColumn>
-                                <TableHeaderColumn tooltip="E-mail">Email ID</TableHeaderColumn>
-                                <TableHeaderColumn tooltip="Name">Name</TableHeaderColumn>
-                                <TableHeaderColumn tooltip="Signup">Signup</TableHeaderColumn>
-                                <TableHeaderColumn tooltip="Last Login">Last Login</TableHeaderColumn>
-                                <TableHeaderColumn tooltip="Last Login IP">IP of Last Login</TableHeaderColumn>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody
-                            displayRowCheckbox={false}
-                            showRowHover={this.state.showRowHover}
-                            stripedRows={this.state.stripedRows}>
-                            {this.state.username}
-                        </TableBody>
-
-                    </Table>
-                </div>
+            <div className="table">
+                <Table columns={columns}
+                       rowKey={record => record.registered}
+                       dataSource={this.state.data}
+                       pagination={this.state.pagination}
+                       loading={this.state.loading}
+                       onChange={this.handleTableChange}
+                />
             </div>
         );
     }

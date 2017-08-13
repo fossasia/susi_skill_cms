@@ -1,0 +1,35 @@
+.SettingsTab{
+    padding: 0px;
+    width: auto;
+    margin: 0 auto;
+}
+.heading{
+    height: 150px;
+}
+.tabs{
+    margin-top: -10px;
+    padding-left: 25px;
+    padding-right: 30px;
+}
+.containerDiv{
+    background-color: #ffffff;
+}
+
+.container{
+    margin-top: 30px;
+    margin-left: 20px;
+    margin-right: 20px;
+    background-color: #ffffff;
+}
+
+.h1{
+    padding-top: 65px;
+    font-size: 40px;
+    margin-left: 21px;
+}
+
+.containerPaper{
+    margin-top: -68px;
+    margin-left: 60px;
+    margin-right: 40px;
+}
