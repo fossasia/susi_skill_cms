@@ -97,15 +97,14 @@ class Admin extends Component {
                 <div className="container">
                     <Paper>
                         <div className="tabs">
-                            <Tabs tabPosition={this.state.tabPosition}  animated={false}>
-                                <TabPane tab="Admin" key="1">Tab for Admin Content</TabPane>
-                                <TabPane tab="Users" key="2">
-                                    <ListUser />
-                                </TabPane>
-                                <TabPane tab="Permissions" key="3">Permission Content Tab</TabPane>
-                            </Tabs>
                             <Paper style={tabStyle} zDepth={5}>
-
+                                <Tabs tabPosition={this.state.tabPosition}  animated={false}>
+                                    <TabPane tab="Admin" key="1">Tab for Admin Content</TabPane>
+                                    <TabPane tab="Users" key="2">
+                                        <ListUser />
+                                    </TabPane>
+                                    <TabPane tab="Permissions" key="3">Permission Content Tab</TabPane>
+                                </Tabs>
                             </Paper>
                         </div>
                     </Paper>

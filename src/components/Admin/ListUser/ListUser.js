@@ -3,7 +3,6 @@ import './ListUser.css';
 import $ from 'jquery';
 import Cookies from 'universal-cookie'
 import {Table} from 'antd';
-// import Dialog from 'material-ui/Dialog';
 
 const cookies = new Cookies();
 
@@ -17,24 +16,23 @@ const columns = [{
         title: 'Email ID',
         dataIndex: 'email',
         sorter: true,
-        render: name => `${name.first} ${name.last}`,       //make changes here to render data
         width: '30%',
     },
     {
         title: 'Name',
         dataIndex: 'name',
         sorter: true,
-        width: '10%',
+        width: '15%',
     },
     {
         title: 'Signup',
         dataIndex: 'signup',
-        width: '20%',
+        width: '17%',
     },
     {
         title: 'Last Login',
         dataIndex: 'lastLogin',
-        width: '20%'
+        width: '18%'
     },
     {
         title: 'IP of Last Login',
@@ -52,7 +50,7 @@ export default class ListUser extends Component {
             data: [],
             middle: '50',
             pagination: {},
-            loading: false,
+            loading: false
         }
     }
 
@@ -72,7 +70,7 @@ export default class ListUser extends Component {
     }
 
     componentDidMount() {
-
+        const pagination = { ...this.state.pagination };
         let url;
         url = "http://api.susi.ai/aaa/showAdminService.json?access_token=" + cookies.get('loggedIn');
         $.ajax({
@@ -84,9 +82,30 @@ export default class ListUser extends Component {
             success: function (response) {
                 console.log(response.showAdmin)
                 if (response.showAdmin) {
-                    if (this.state.username.length === 0)
-                        this.fetchUsers();
-                    console.log("Page loading...")
+                    console.log('hey');
+                    let getPagesUrl = "http://api.susi.ai/aaa/getUsers.json?access_token=" + cookies.get('loggedIn')
+                        + "&getUserCount=true";
+                    $.ajax({
+                        url: getPagesUrl,
+                        dataType: 'jsonp',
+                        jsonpCallback: 'pvsdu',
+                        jsonp: 'callback',
+                        crossDomain: true,
+                        success: function (data) {
+                            console.log(data);
+                            pagination.total = data.userCount;
+                            pagination.pageSize = 50;
+                            this.setState({
+                                loading: false,
+                                pagination,
+                            });
+                            console.log(pagination);
+                            this.fetch();
+                        }.bind(this),
+                        error: function (errorThrown) {
+                            console.log(errorThrown)
+                        }
+                    });
                 } else {
                     console.log("Not allowed to access this page!")
                 }
@@ -96,13 +115,23 @@ export default class ListUser extends Component {
                 console.log(errorThrown)
             }
         });
-        this.fetch()
+
+
     }
 
     fetch = (params = {}) => {
         let url;
+        let page;
+        if(params.page!==undefined){
+            console.log(params.page)
+            page = params.page;
+        }
+        else{
+            page =1;
+            console.log('hey there')
+        }
         url = "http://api.susi.ai/aaa/getUsers.json?access_token=" + cookies.get('loggedIn')
-            + "&getPageCount=true";
+            + "&page="+page;
         $.ajax({
             url: url,
             dataType: 'jsonp',
@@ -110,24 +139,28 @@ export default class ListUser extends Component {
             jsonp: 'callback',
             crossDomain: true,
             success: function (data) {
-                console.log(data.pageCount)
-            },
+                console.log(data.users);
+                let userList = data.users;
+                let users =[];
+                userList.map((data,i)=>{
+                    let user = {
+                        serialNum:++i,
+                        name:data.name,
+                        email:data.name
+                    }
+                    users.push(user);
+                })
+                console.log(users);
+                this.setState({
+                    data:users
+                })
+            }.bind(this),
             error: function (errorThrown) {
                 console.log(errorThrown)
             }
         });
-        const pagination = { ...this.state.pagination };
         // Read total count from server
         // pagination.total = data.totalCount;
-        pagination.total = 472;
-        pagination.pageSize = 50;
-        this.setState({
-            loading: false,
-            pagination,
-        });
-    }
-
-    fetchUsers = () => {
 
     }
 
