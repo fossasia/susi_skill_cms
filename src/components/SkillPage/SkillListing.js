@@ -40,7 +40,8 @@ export default class SkillListing extends React.Component {
             examples: '',
             descriptions: '',
             skill_name: '',
-            dataReceived: false
+            dataReceived: false,
+            imgUrl: null
         };
         console.log(this.props.location.state)
 
@@ -127,7 +128,9 @@ export default class SkillListing extends React.Component {
     updateData = (skillData) => {
 
         this.setState({
+
             imgUrl:'https://raw.githubusercontent.com/fossasia/susi_skill_data/master/models/general/'+this.props.location.state.groupValue+'/'+this.props.location.state.languageValue+'/'+skillData.image
+
         });
 
         defaultNullSkillList.forEach((data) => {
@@ -208,7 +211,7 @@ export default class SkillListing extends React.Component {
             renderElement = <div><StaticAppBar {...this.props}/><div className="skill_listing_container" style={styles.home}>
                 <div className="avatar-meta margin-b-md">
                     <div className="avatar">
-                        {this.state.imgUrl === undefined?
+                        {this.state.image== null?
                             <CircleImage name={this.state.skill_name.toUpperCase()} size="250"/>:
                             <img className="avatar-img" alt="Thumbnail" src={this.state.imgUrl}/>
                         }
@@ -233,7 +236,7 @@ export default class SkillListing extends React.Component {
                             </div>
                         </Link>
                         <h4>
-                            <a href={this.state.authorUrl} target="_blank" rel="noopener noreferrer">{this.state.author}</a>
+                            <a href={this.state.author_url} target="_blank" rel="noopener noreferrer">{this.state.author}</a>
                         </h4>
                         <div className="examples">
                             {/*{console.log(this.state.skill_data)}*/}
