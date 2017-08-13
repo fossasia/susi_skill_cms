@@ -68,7 +68,7 @@ export default class SkillListing extends React.Component {
             let baseUrl = 'http://api.susi.ai/cms/getSkillMetadata.json';
             let url = this.props.location.state.url;
 
-            let modelValue = this.props.location.state.modelValue;
+            let modelValue = "general";
             let groupValue = this.props.location.state.groupValue;
             let languageValue = this.props.location.state.languageValue;
 
@@ -128,7 +128,9 @@ export default class SkillListing extends React.Component {
     updateData = (skillData) => {
 
         this.setState({
-            imgUrl:'https://raw.githubusercontent.com/fossasia/susi_skill_data/master/models/'+this.props.location.state.modelValue+'/'+this.props.location.state.groupValue+'/'+this.props.location.state.languageValue+'/'+skillData.image
+
+            imgUrl:'https://raw.githubusercontent.com/fossasia/susi_skill_data/master/models/general/'+this.props.location.state.groupValue+'/'+this.props.location.state.languageValue+'/'+skillData.image
+
         });
 
         defaultNullSkillList.forEach((data) => {
