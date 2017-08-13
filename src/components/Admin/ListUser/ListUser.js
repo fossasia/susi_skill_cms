@@ -50,6 +50,7 @@ export default class ListUser extends Component {
         this.state = {
             username: [],
             data: [],
+            middle: '50',
             pagination: {},
             loading: false,
         }
@@ -95,21 +96,43 @@ export default class ListUser extends Component {
                 console.log(errorThrown)
             }
         });
+        this.fetch()
     }
 
-    fetchUsers = () => {
+    fetch = (params = {}) => {
+        {/*console.log('params:', params);
+        this.setState({ loading: true });
+        reqwest({
+            url: 'https://randomuser.me/api',
+            method: 'get',
+            data: {
+                results: 10,
+                ...params,
+            },
+            type: 'json',
+        }).then((data) => {
+            const pagination = { ...this.state.pagination };
+            // Read total count from server
+            // pagination.total = data.totalCount;
+            pagination.total = 200;
+            this.setState({
+                loading: false,
+                data: data.results,
+                pagination,
+            });
+        });*/}
         let url;
-        url = "http://api.susi.ai/aaa/getAllUsers.json?access_token=" + cookies.get('loggedIn');
-        let self = this;
+        url = "http://api.susi.ai/aaa/getUsers.json?access_token=" + cookies.get('loggedIn')
+            + "&getPageCount=true";
         $.ajax({
             url: url,
             dataType: 'jsonp',
-            jsonpCallback: 'pu',
+            jsonpCallback: 'pvsdu',
             jsonp: 'callback',
             crossDomain: true,
             success: function (data) {
-                console.log(data.username)
-                data = data.username
+                console.log(data.pageCount)
+                {/*data = data.username
                 let keys = Object.keys(data);
                 let username = keys.map((el, i) => {
                     let name = data[el].replace("email:", "");
@@ -121,12 +144,24 @@ export default class ListUser extends Component {
                 self.setState({
                     username: username,
                 })
-                console.log(self.state)
+                console.log(self.state)*/}
             },
             error: function (errorThrown) {
                 console.log(errorThrown)
             }
         });
+        const pagination = { ...this.state.pagination };
+        // Read total count from server
+        // pagination.total = data.totalCount;
+        pagination.total = 472;
+        this.setState({
+            loading: false,
+            pagination,
+        });
+    }
+
+    fetchUsers = () => {
+
     }
 
     render() {
@@ -139,6 +174,7 @@ export default class ListUser extends Component {
                                dataSource={this.state.data}
                                pagination={this.state.pagination}
                                loading={this.state.loading}
+                               size={this.state.middle}
                                onChange={this.handleTableChange}
                         />
                     </div>
