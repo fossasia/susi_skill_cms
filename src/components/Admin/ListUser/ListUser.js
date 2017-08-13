@@ -88,7 +88,6 @@ export default class ListUser extends Component {
             success: function (response) {
                 console.log(response.showAdmin)
                 if (response.showAdmin) {
-                    console.log('hey');
                     let getPagesUrl = "http://api.susi.ai/aaa/getUsers.json?access_token=" + cookies.get('loggedIn')
                         + "&getUserCount=true";
                     $.ajax({
@@ -134,7 +133,6 @@ export default class ListUser extends Component {
         }
         else{
             page =1;
-            console.log('hey there')
         }
         url = "http://api.susi.ai/aaa/getUsers.json?access_token=" + cookies.get('loggedIn')
             + "&page="+page;
