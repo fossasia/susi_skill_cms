@@ -9,25 +9,25 @@ const cookies = new Cookies();
 const columns = [{
     title: 'S.No.',
     dataIndex: 'serialNum',
-    sorter: true,
+    sorter: false,
     width: '5%',
 },
     {
         title: 'Email ID',
         dataIndex: 'email',
-        sorter: true,
-        width: '30%',
+        sorter: false,
+        width: '25%',
     },
     {
         title: 'Name',
         dataIndex: 'name',
-        sorter: true,
+        sorter: false,
         width: '15%',
     },
     {
         title: 'Signup',
         dataIndex: 'signup',
-        width: '17%',
+        width: '20%',
     },
     {
         title: 'Last Login',
@@ -144,11 +144,11 @@ export default class ListUser extends Component {
                 let users =[];
                 userList.map((data,i)=>{
                     let user = {
-                        serialNum:++i,
-                        name:data.name,
+                        serialNum:++i + (page-1) *50,
                         email:data.name
                     }
                     users.push(user);
+                    return 1
                 })
                 console.log(users);
                 this.setState({
@@ -166,19 +166,14 @@ export default class ListUser extends Component {
 
     render() {
         return (
-            <div>
-                <div>
-                    <div>
-                        <Table columns={columns}
-                               rowKey={record => record.registered}
-                               dataSource={this.state.data}
-                               pagination={this.state.pagination}
-                               loading={this.state.loading}
-                               size="middle"
-                               onChange={this.handleTableChange}
-                        />
-                    </div>
-                </div>
+            <div className="table">
+                <Table columns={columns}
+                       rowKey={record => record.registered}
+                       dataSource={this.state.data}
+                       pagination={this.state.pagination}
+                       loading={this.state.loading}
+                       onChange={this.handleTableChange}
+                />
             </div>
         );
     }

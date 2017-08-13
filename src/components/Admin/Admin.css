@@ -4,23 +4,22 @@
     margin: 0 auto;
 }
 .heading{
-    background-color: #f7f7f7;
     height: 150px;
 }
 .tabs{
-    margin-top: -30px;
-    padding-left: 70px;
-    padding-right: 70px;
+    margin-top: -10px;
+    padding-left: 25px;
+    padding-right: 30px;
 }
 .containerDiv{
-    background-color: #f7f7f7;
+    background-color: #ffffff;
 }
 
 .container{
     margin-top: 30px;
     margin-left: 20px;
     margin-right: 20px;
-    background-color: #F7F7F7;
+    background-color: #ffffff;
 }
 
 .h1{

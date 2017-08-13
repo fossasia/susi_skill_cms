@@ -94,19 +94,15 @@ class Admin extends Component {
                         You do not have permissions to access this page!! :(
                     </Dialog>
                 </div>
-                <div className="container">
-                    <Paper>
-                        <div className="tabs">
-                            <Paper style={tabStyle} zDepth={5}>
-                                <Tabs tabPosition={this.state.tabPosition}  animated={false}>
-                                    <TabPane tab="Admin" key="1">Tab for Admin Content</TabPane>
-                                    <TabPane tab="Users" key="2">
-                                        <ListUser />
-                                    </TabPane>
-                                    <TabPane tab="Permissions" key="3">Permission Content Tab</TabPane>
-                                </Tabs>
-                            </Paper>
-                        </div>
+                <div className="tabs">
+                    <Paper style={tabStyle} zDepth={0}>
+                        <Tabs tabPosition={this.state.tabPosition} animated={false}>
+                            <TabPane tab="Admin" key="1">Tab for Admin Content</TabPane>
+                            <TabPane tab="Users" key="2">
+                                <ListUser/>
+                            </TabPane>
+                            <TabPane tab="Permissions" key="3">Permission Content Tab</TabPane>
+                        </Tabs>
                     </Paper>
                 </div>
             </div>
