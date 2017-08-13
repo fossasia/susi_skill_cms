@@ -100,27 +100,6 @@ export default class ListUser extends Component {
     }
 
     fetch = (params = {}) => {
-        {/*console.log('params:', params);
-        this.setState({ loading: true });
-        reqwest({
-            url: 'https://randomuser.me/api',
-            method: 'get',
-            data: {
-                results: 10,
-                ...params,
-            },
-            type: 'json',
-        }).then((data) => {
-            const pagination = { ...this.state.pagination };
-            // Read total count from server
-            // pagination.total = data.totalCount;
-            pagination.total = 200;
-            this.setState({
-                loading: false,
-                data: data.results,
-                pagination,
-            });
-        });*/}
         let url;
         url = "http://api.susi.ai/aaa/getUsers.json?access_token=" + cookies.get('loggedIn')
             + "&getPageCount=true";
@@ -132,19 +111,6 @@ export default class ListUser extends Component {
             crossDomain: true,
             success: function (data) {
                 console.log(data.pageCount)
-                {/*data = data.username
-                let keys = Object.keys(data);
-                let username = keys.map((el, i) => {
-                    let name = data[el].replace("email:", "");
-                    console.log(name);
-                    return (
-                        {}
-                    )
-                });
-                self.setState({
-                    username: username,
-                })
-                console.log(self.state)*/}
             },
             error: function (errorThrown) {
                 console.log(errorThrown)
