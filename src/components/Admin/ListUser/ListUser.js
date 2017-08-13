@@ -27,17 +27,23 @@ const columns = [{
     {
         title: 'Signup',
         dataIndex: 'signup',
-        width: '20%',
+        width: '15%',
     },
     {
         title: 'Last Login',
         dataIndex: 'lastLogin',
-        width: '18%'
+        width: '15%'
     },
     {
         title: 'IP of Last Login',
         dataIndex: 'ipLastLogin',
         width: '15%'
+    },
+    {
+        title: 'User Role',
+        dataIndex: 'userRole',
+        sorter: false,
+        width: '10%',
     }
 ];
 
