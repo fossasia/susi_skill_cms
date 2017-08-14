@@ -27,6 +27,8 @@ export default class BrowseSkill extends React.Component {
             languageValue:"en",
             expertValue:null,
             skills: [],
+            groups: [],
+            languages: [],
             first_open:true,
             groupSelect:true,
             languageSelect:true
@@ -90,7 +92,12 @@ export default class BrowseSkill extends React.Component {
                         <Link key={el}
                               to={{
                                   pathname: '/skillPage',
-                                  state: { url: url, element: el, name: el, modelValue: self.state.modelValue, groupValue:self.state.groupValue, languageValue:self.state.languageValue}
+                                  state: { url: url,
+                                           element: el,
+                                           name: el,
+                                           modelValue: self.state.modelValue,
+                                           groupValue:self.state.groupValue,
+                                           languageValue:self.state.languageValue,}
                               }}>
                             <Card style={styles.row} key={el}>
                                 <div style={styles.right} key={el}>
@@ -129,12 +136,12 @@ export default class BrowseSkill extends React.Component {
                 jsonp: 'callback',
                 crossDomain: true,
                 success: function (data) {
-                    console.log(data);
                     data = data.groups;
+                    this.setState({groups: data});
                     for (let i = 0; i < data.length; i++) {
                         groups.push(<MenuItem value={data[i]} key={data[i]} primaryText={`${data[i]}`}/>);
                     }
-                }
+                }.bind(this)
             });
         }
     }
@@ -151,6 +158,7 @@ export default class BrowseSkill extends React.Component {
                 success: function (data) {
                     console.log(data);
                     data=data.languagesArray
+                    this.setState({languages: data});
                     for (let i = 0; i < data.length; i++) {
                         if(isoConv(data[i])){
                             languages.push(<MenuItem value={data[i]} key={data[i]} primaryText={isoConv(data[i])}/>);
@@ -160,7 +168,7 @@ export default class BrowseSkill extends React.Component {
                         }
                     }
                     console.log("languages ", languages)
-                }
+                }.bind(this)
             });
         }
     }
@@ -227,7 +235,14 @@ export default class BrowseSkill extends React.Component {
                         <Link key={el}
                               to={{
                                   pathname: '/skillPage',
-                                  state: { url: url, element: el, name: el, modelValue: self.state.modelValue, groupValue:self.state.groupValue, languageValue:self.state.languageValue}
+                                  state: { url: url,
+                                           element: el,
+                                           name: el,
+                                           modelValue: self.state.modelValue,
+                                           groupValue:self.state.groupValue,
+                                           languageValue:self.state.languageValue,
+                                           groups: self.state.groups,
+                                           languages: self.state.languages}
                               }}>
                             <Card style={styles.row} key={el}>
                                 <div style={styles.right} key={el}>

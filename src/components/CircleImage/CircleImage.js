@@ -48,6 +48,8 @@ export default class CircleImage extends React.Component {
         const innerStyle = {
             lineHeight: size,
             textAlign: 'center',
+            overflow: 'initial',
+            marginRight: 10,
             borderRadius
         };
 
