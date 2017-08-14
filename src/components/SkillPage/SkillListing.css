@@ -1,6 +1,13 @@
 body {
     height: auto;
 }
+
+abbr[title] {
+  border-bottom: none !important;
+  cursor: inherit !important;
+  text-decoration: none !important;
+}
+
 .avatar-meta {
     display: flex;
 }

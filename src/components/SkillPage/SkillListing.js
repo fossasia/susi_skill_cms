@@ -14,10 +14,24 @@ import 'brace/theme/terminal';
 import * as $ from "jquery";
 import Divider from 'material-ui/Divider';
 import './SkillListing.css';
-import {FloatingActionButton, Paper, } from "material-ui";
+import {
+  FloatingActionButton,
+  Paper,
+  RaisedButton,
+  Checkbox
+} from "material-ui";
 import CircleImage from "../CircleImage/CircleImage";
 import EditBtn from 'material-ui/svg-icons/editor/mode-edit';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
+import {
+  Table,
+  TableBody,
+  TableHeader,
+  TableHeaderColumn,
+  TableRow,
+  TableRowColumn,
+} from 'material-ui/Table';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 const defaultNullSkillList = ['image', 'author', 'author_url', 'developer_privacy_policy', 'terms_of_use', 'dynamic_content', 'examples'];
 let urlCode,name;
@@ -41,7 +55,9 @@ export default class SkillListing extends React.Component {
             descriptions: '',
             skill_name: '',
             dataReceived: false,
-            imgUrl: null
+            imgUrl: null,
+            commits: [],
+            commitsChecked:[],
         };
         console.log(this.props.location.state)
 
@@ -62,6 +78,59 @@ export default class SkillListing extends React.Component {
 
     }
 
+    getSkillAtCommitIDUrl = () => {
+      let skillAtCommitIDUrl = null;
+      let baseUrl = ' http://api.susi.ai/cms/getFileAtCommitID.json';
+      let modelValue = "general";
+      if(this.props.location.state.url!== undefined) {
+        let groupValue = this.props.location.state.groupValue;
+        let languageValue = this.props.location.state.languageValue;
+        let skillName = this.props.location.state.name;
+        skillAtCommitIDUrl = baseUrl + '?model=' + modelValue
+                                + '&group=' + groupValue + '&language=' + languageValue
+                                + '&skill=' + skillName + '&commitID=';
+      }
+      if(this.props.location.state.from_upload!== undefined){
+          let baseUrl = 'http://api.susi.ai/cms/getSkillMetadata.json';
+          let groupValue = this.props.location.state.groupValue;
+          let languageValue = this.props.location.state.languageValue;
+          let skillName = this.props.location.state.expertValue;
+          skillAtCommitIDUrl = baseUrl + '?model=' + modelValue
+                                  + '&group=' + groupValue + '&language=' + languageValue
+                                  + '&skill=' + skillName + '&commitID=';
+      }
+      console.log(skillAtCommitIDUrl);
+      return skillAtCommitIDUrl;
+    }
+
+    getCommitHistory = (commitHistoryURL) => {
+      console.log(commitHistoryURL);
+      let self = this;
+      $.ajax({
+          url: commitHistoryURL,
+          jsonpCallback: 'pv',
+          dataType: 'jsonp',
+          jsonp: 'callback',
+          crossDomain: true,
+          success: function (commitsData) {
+              self.setCommitHistory(commitsData);
+          }
+      });
+    }
+
+    setCommitHistory = (commitsData) => {
+      console.log(commitsData);
+      if(commitsData.accepted){
+        let commits = commitsData.commits ? commitsData.commits : [];
+        if(commits.length > 0){
+          commits[0].latest = true;
+        }
+        this.setState({
+          commits:commits
+        });
+        console.log(this.state);
+      }
+    }
 
     componentDidMount() {
         if(this.props.location.state.url!== undefined) {
@@ -74,9 +143,10 @@ export default class SkillListing extends React.Component {
 
             url = baseUrl + '?model=' + modelValue + '&group=' + groupValue + '&language=' + languageValue + '&skill=' + name;
 
-            console.log("Url:" + url);
+            let commitHistoryBaseURL = 'http://api.susi.ai/cms/getSkillHistory.json';
+            let commitHistoryURL = commitHistoryBaseURL + '?model=' + modelValue + '&group=' + groupValue + '&language=' + languageValue + '&skill=' + name;
 
-            // url = 'http://192.168.43.187:4000/cms/getSkillMetadata.json?group=general&model=entertainment&language=en&skill=cat';
+            console.log("Url:" + url);
             console.log(url)
             let self = this;
             $.ajax({
@@ -89,6 +159,7 @@ export default class SkillListing extends React.Component {
                     self.updateData(data.skill_metadata)
                 }
             });
+            this.getCommitHistory(commitHistoryURL);
         }
         if(this.props.location.state.from_upload!== undefined){
             let baseUrl = 'http://api.susi.ai/cms/getSkillMetadata.json';
@@ -101,6 +172,9 @@ export default class SkillListing extends React.Component {
 
 
             url = baseUrl + '?model=' + modelValue + '&group=' + groupValue + '&language=' + languageValue + '&skill=' + expertValue;
+
+            let commitHistoryBaseURL = 'http://api.susi.ai/cms/getSkillHistory.json';
+            let commitHistoryURL = commitHistoryBaseURL + '?model=' + modelValue + '&group=' + groupValue + '&language=' + languageValue + '&skill=' + expertValue;
 
             console.log("Url meta:" + url);
 
@@ -119,10 +193,8 @@ export default class SkillListing extends React.Component {
 
                 }
             });
+            this.getCommitHistory(commitHistoryURL);
         }
-
-
-
     };
 
     updateData = (skillData) => {
@@ -171,6 +243,65 @@ export default class SkillListing extends React.Component {
         });
     };
 
+    onCheck = (event,isInputChecked) => {
+      console.log(event.target.name);
+      let commitsChecked = this.state.commitsChecked;
+      if(isInputChecked){
+        commitsChecked.push(event.target.name);
+      }
+      else{
+        var index = commitsChecked.indexOf(event.target.name);
+        if(index > -1){
+          commitsChecked.splice(index,1);
+        }
+      }
+      console.log(commitsChecked);
+      this.setState({
+        commitsChecked: commitsChecked,
+      });
+    }
+
+    getCheckedCommits = () => {
+      let commitsChecked = this.state.commitsChecked;
+      let commits = this.state.commits;
+      if(commitsChecked.length === 2){
+        var commitIndex1 = parseInt(commitsChecked[0],10);
+        var commitIndex2 = parseInt(commitsChecked[1],10);
+        let commit1 = commits[commitIndex1];
+        let commit2 = commits[commitIndex2];
+        let orderedCommits = [commit1];
+        if(commitIndex2 > commitIndex1){
+          orderedCommits.unshift(commit2);
+        }
+        else{
+          orderedCommits.push(commit2);
+        }
+        console.log(orderedCommits);
+        return orderedCommits;
+      }
+      else if (commitsChecked.length === 1) {
+        let commit = commits[parseInt(commitsChecked[0],10)];
+        return [commit];
+      }
+      return;
+    }
+
+    getSkillMetadata = () => {
+      let metaData = {
+        modelValue: "general",
+        groupValue: "",
+        languageValue: "",
+        skillName: ""
+      }
+      if(this.props.location.state.url!== undefined) {
+        metaData.modelValue = "general";
+        metaData.groupValue = this.props.location.state.groupValue;
+        metaData.languageValue = this.props.location.state.languageValue;
+        metaData.skillName = this.props.location.state.name;
+      }
+      return metaData;
+    }
+
     render() {
 
         const exampleStyle = {
@@ -203,11 +334,74 @@ export default class SkillListing extends React.Component {
             }
         };
 
+        let compareBtnLabel;
+        if(this.state.commitsChecked.length === 1){
+          compareBtnLabel = "View Selected Version"
+        }
+        else if(this.state.commitsChecked.length === 2){
+          compareBtnLabel = "Compare Selected Versions"
+        }
+
+        const compareBtnStyle = {
+          marginTop: '20px',
+        }
+
         let renderElement = null;
         if (!this.state.dataReceived) {
             renderElement = <div><StaticAppBar {...this.props}/><h1 className="skill_loading_container">Loading...</h1></div>
         }
         else {
+          let commitHistoryTableHeader =
+            <TableRow>
+              <TableHeaderColumn style={{width:'20px'}}></TableHeaderColumn>
+              <TableHeaderColumn>Commit Date</TableHeaderColumn>
+              <TableHeaderColumn>Commit ID</TableHeaderColumn>
+              <TableHeaderColumn>Commit Message</TableHeaderColumn>
+            </TableRow>;
+
+          let commits = this.state.commits;
+
+          let commitHistoryTableRows = commits.map((commit,index)=>{
+            let commitsChecked = this.state.commitsChecked;
+            let checkBox = <Checkbox
+              name={index.toString()}
+              onCheck={this.onCheck}/>;
+            if(commitsChecked.length === 2 && commitsChecked.indexOf(index.toString()) === -1){
+              checkBox = <Checkbox
+                name={index.toString()}
+                onCheck={this.onCheck}
+                disabled={true}/>
+            }
+            return(
+              <TableRow>
+                <TableRowColumn style={{width:'20px'}}>
+                  {checkBox}
+                </TableRowColumn>
+                <TableRowColumn>
+                  <abbr title={commit.commitDate}>{commit.commitDate}</abbr>
+                </TableRowColumn>
+                <TableRowColumn>
+                  <abbr title={commit.commitID}>{commit.commitID}</abbr>
+                </TableRowColumn>
+                <TableRowColumn>
+                  <abbr title={commit.commit_message}>{commit.commit_message}</abbr>
+                </TableRowColumn>
+              </TableRow>
+            );
+          });
+
+          const commitHistoryTable =
+          <MuiThemeProvider>
+            <Table selectable={false}>
+              <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
+                {commitHistoryTableHeader}
+              </TableHeader>
+              <TableBody displayRowCheckbox={false}>
+                {commitHistoryTableRows}
+              </TableBody>
+            </Table>
+          </MuiThemeProvider>;
+
             renderElement = <div><StaticAppBar {...this.props}/><div className="skill_listing_container" style={styles.home}>
                 <div className="avatar-meta margin-b-md">
                     <div className="avatar">
@@ -258,7 +452,7 @@ export default class SkillListing extends React.Component {
                 </div>
                 <div className="margin-b-md margin-t-md skill">
                     <h1 className="title">
-                        Skills Details
+                        Skill Details
                     </h1>
                     <ul>
                         {this.state.dynamic_content ?
@@ -270,6 +464,31 @@ export default class SkillListing extends React.Component {
                         {this.state.terms_of_use == null?'':<li><a href={this.state.developer_privacy_policy} target="_blank" rel="noopener noreferrer">Developer Privacy Policy</a></li>}
 
                     </ul>
+                </div>
+                <div className="margin-b-md margin-t-md skill">
+                    <h1 className="title">
+                        Skill History
+                    </h1>
+                    {commitHistoryTable}
+                    {(this.state.commitsChecked.length === 1 || this.state.commitsChecked.length === 2) &&
+                    <Link to={{
+                        pathname: '/skillHistory',
+                        state: {
+                          url: this.getSkillAtCommitIDUrl(),
+                          skillMeta: this.getSkillMetadata(),
+                          name:name,
+                          commits: this.getCheckedCommits(),
+                          latestCommit: this.state.commits[0]
+                        }
+                    }}>
+                      <RaisedButton
+                        label={compareBtnLabel}
+                        backgroundColor="#4285f4"
+                        labelColor="#fff"
+                        style={compareBtnStyle}
+                      />
+                    </Link>
+                  }
                 </div>
             </div>
             </div>
