@@ -97,7 +97,7 @@ export default class BrowseSkill extends React.Component {
                                            name: el,
                                            modelValue: self.state.modelValue,
                                            groupValue:self.state.groupValue,
-                                           languageValue:self.state.languageValue}
+                                           languageValue:self.state.languageValue,}
                               }}>
                             <Card style={styles.row} key={el}>
                                 <div style={styles.right} key={el}>

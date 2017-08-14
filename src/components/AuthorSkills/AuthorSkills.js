@@ -1,9 +1,10 @@
 import React, {Component} from 'react';
-import github from '../images/github-logo.png'
+import github from '../images/github-logo.png';
 import isoConv from 'iso-language-converter';
 import Dialog from 'material-ui/Dialog';
-import CircleImage from "../CircleImage/CircleImage";
 import * as $ from "jquery";
+import Img from 'react-image';
+import CircleImage from "../CircleImage/CircleImage";
 import Close from 'material-ui/svg-icons/navigation/close';
 import {
   Table,
@@ -38,20 +39,11 @@ export default class AuthorSkills extends Component {
             skillURL:null,
             groupValue:"Knowledge",
             languageValue:"en",
-            skills: []
+            skills: [],
+            image: false
         };
     }
 
-    checkImage = (image) => {
-      $.get(image)
-        .done(function() {
-          console.log(true)
-          return true
-        }).fail(function() {
-          console.log(false)
-          return false
-        })
-    }
 
     loadSkillCards = (author) => {
       console.log(author)
@@ -65,7 +57,6 @@ export default class AuthorSkills extends Component {
                 let skillByAuthor = Object.keys(data);
                 skillByAuthor = skillByAuthor.slice(0,skillByAuthor.length-1)
                 skills = skillByAuthor.map((skill) => {
-                  console.log(data[skill])
                   let parse = data[skill].split('/');
                   let name = parse[8].split('.')[0];
                   name = name.charAt(0).toUpperCase() + name.slice(1);
@@ -73,17 +64,24 @@ export default class AuthorSkills extends Component {
                     let temp = name.split('_');
                     name = temp[0]+ ' '+ temp[1];
                   }
+
                   let image = 'https://raw.githubusercontent.com/fossasia/susi_skill_data/master/models/general/'+
-                    parse[6]+'/'+parse[7]+'/images/'+parse[8].split('.')[0]+'.png';
-                  let skillImage = this.checkImage(image) ?
-                    <span><CircleImage name={name} size="40"/></span>:
-                    <span><img style={imageStyle} alt={name} src={image} /></span>;
+                    parse[6]+'/'+parse[7]+'/images/'+parse[8].split('.')[0];
+                    let image1 = image + '.png';
+                    let image2 = image + '.jpg';
 
                   return (
                     <TableRow>
                       <TableRowColumn>
                         <div>
-                          {skillImage}
+                          <Img
+                            style={imageStyle}
+                            src={[
+                              image1,
+                              image2
+                            ]}
+                            unloader={<CircleImage name={name} size="40"/>}
+                        />
                           {name}
                         </div>
                       </TableRowColumn>
@@ -122,8 +120,7 @@ export default class AuthorSkills extends Component {
                     contentStyle={{width: '50%',minWidth: '300px'}}
                     onRequestClose={this.props.close} >
                     <div style={headingStyle}>
-                        <h3>Skills by {this.props.author} </h3>
-                        <a href={this.props.author_url} ><img alt={'GitHub'} style={githubProfile} src={github}/></a>
+                        <h3>Skills by {this.props.author} <a href={this.props.author_url} ><img alt={'GitHub'} style={githubProfile} src={github}/></a></h3>
                     </div>
                     <div>
                         <Table
