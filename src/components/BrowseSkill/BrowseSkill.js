@@ -38,6 +38,8 @@ export default class BrowseSkill extends React.Component {
     componentDidMount(){
         this.loadInitialCards();
         this.handleModelChange();
+        this.handleGroupChange();
+        this.setState({groupValue: "Knowledge"});
     }
 
     loadInitialCards = () => {
