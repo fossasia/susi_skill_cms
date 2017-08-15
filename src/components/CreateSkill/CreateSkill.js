@@ -34,23 +34,26 @@ export default class CreateSkill extends React.Component {
         self = this;
         self.loadgroups()
     }
-    onChange(newValue) {
-        const match = newValue.match(/^::image\s(.*)$/m);
-        if(match!==null) {
-            console.log(match[1]);
 
-            self.setState({
-                imageUrl: match[1]
-            });
-            console.log(new RegExp(/images\/\w+\.\w+/g).test(self.state.imageUrl));
-        }
-        self.updateCode(newValue)
-    }
 
     constructor(props) {
         super(props);
         this.state = {
-            showImage:false,loading:false,file:null,imageUrl:'<image_url>', commitMessage:null, modelValue: null, groupValue:null, languageValue:null, expertValue:null,code:"::name <Skill_name>\n::author <author_name>\n::author_url <author_url>\n::description <description> \n::dynamic_content <Yes/No>\n::developer_privacy_policy <link>\n::image <image_url>\n::terms_of_use <link>\n\n\nUser query1|query2|quer3....\n!example:<The question that should be shown in public skill displays>\n!expect:<The answer expected for the above example>\nAnswer for the user query", fontSizeCode:14, editorTheme:"github"
+            groupSelect:true,
+            languageSelect:true,
+            expertSelect:true,
+            showImage:false,
+            loading:false,
+            file:null,
+            imageUrl:'<image_url>',
+            commitMessage:null,
+            modelValue: null,
+            groupValue:null,
+            languageValue:null,
+            expertValue:null,
+            code:"::name <Skill_name>\n::author <author_name>\n::author_url <author_url>\n::description <description> \n::dynamic_content <Yes/No>\n::developer_privacy_policy <link>\n::image <image_url>\n::terms_of_use <link>\n\n\nUser query1|query2|quer3....\n!example:<The question that should be shown in public skill displays>\n!expect:<The answer expected for the above example>\nAnswer for the user query",
+            fontSizeCode:14,
+            editorTheme:"github"
         };
         let fonts = [
             14,16,18,20,24,28,32,40
@@ -64,6 +67,28 @@ export default class CreateSkill extends React.Component {
         for (let i = 0; i < themes.length; i++) {
             codeEditorThemes.push(<MenuItem value={themes[i]} key={themes[i]} primaryText={`${themes[i]}`}/>);
         }
+    }
+    onChange(newValue) {
+        const match = newValue.match(/^::image\s(.*)$/m);
+        const nameMatch = newValue.match(/^::name\s(.*)$/m);
+        console.log(nameMatch);
+        if(nameMatch) {
+            console.log('pahunch gyua')
+            self.setState({
+                expertValue: nameMatch[1]
+            });
+            console.log(self.state.expertValue)
+        }
+
+        if(match!==null) {
+            console.log(match[1]);
+
+            self.setState({
+                imageUrl: match[1]
+            });
+            console.log(new RegExp(/images\/\w+\.\w+/g).test(self.state.imageUrl));
+        }
+        self.updateCode(newValue)
     }
     loadgroups()
     {
@@ -93,8 +118,11 @@ export default class CreateSkill extends React.Component {
 
     handleExpertChange = (event) => {
         console.log(event.target.value);
+        const expertValue = event.target.value;
+        const code = this.state.code.replace(/^::name\s(.*)$/m, `::name ${expertValue}`);
         this.setState({
-            expertValue: event.target.value,
+            expertValue,
+            code
         });
 
     };
@@ -108,7 +136,7 @@ export default class CreateSkill extends React.Component {
     };
 
     handleGroupChange = (event, index, value) => {
-        this.setState({groupValue: value});
+        this.setState({groupValue: value,groupSelect:false,languageSelect:false});
         if(languages.length===0) {
             $.ajax({
                 url: "http://api.susi.ai/cms/getAllLanguages.json",
@@ -128,7 +156,7 @@ export default class CreateSkill extends React.Component {
         }
     }
 
-    handleLanguageChange = (event, index, value) => this.setState({languageValue: value});
+    handleLanguageChange = (event, index, value) => this.setState({languageValue: value,expertSelect:false});
     handleFontChange = (event, index, value) => this.setState({fontSizeCode: value});
     handleThemeChange = (event, index, value) => {this.setState({editorTheme: value});
         console.log(this.state.editorTheme)}
@@ -178,11 +206,10 @@ export default class CreateSkill extends React.Component {
         form.append("model", "general");
         form.append("group", groups[this.state.groupValue].key);
         form.append("language", languages[this.state.languageValue].key);
-        form.append("skill", this.state.expertValue);
+        form.append("skill", this.state.expertValue.trim().replace(/\s/g,"_"));
         form.append("image", this.state.file);
         form.append("content", this.state.code);
         form.append("image_name", this.state.imageUrl.replace("images/",""));
-
         var settings = {
             "async": true,
             "crossDomain": true,
@@ -284,6 +311,7 @@ export default class CreateSkill extends React.Component {
                                 </SelectField>
                                 <SelectField
                                     floatingLabelText="Language"
+                                    disabled={this.state.languageSelect}
                                     style={{width:'90px',marginLeft:10,marginRight:10}}
                                     value={this.state.languageValue}
                                     onChange={this.handleLanguageChange}
@@ -291,9 +319,11 @@ export default class CreateSkill extends React.Component {
                                     {languages}
                                 </SelectField>
                                 <TextField
-                                    floatingLabelText="Enter Skill name"
-                                    floatingLabelFixed={true}
-                                    hintText="My SUSI Skill"
+                                    disabled={this.state.expertSelect}
+                                    floatingLabelText="Skill name"
+                                    floatingLabelFixed={false}
+                                    value={this.state.expertValue}
+                                    hintText="Skill name"
                                     style={{marginLeft:10,marginRight:10}}
                                     onChange={this.handleExpertChange}
                                 />

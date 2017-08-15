@@ -236,7 +236,7 @@ export default class SkillListing extends React.Component {
                         <h1 className="name">
                             {/*{this.state.skill_name}*/}
                             {
-                                name.split(' ').map((data) => {
+                                name&&name.split(' ').map((data) => {
                                     return data.charAt(0).toUpperCase() + data.substring(1);
                                 }).join(' ')}
                         </h1>
