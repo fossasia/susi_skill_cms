@@ -323,7 +323,7 @@ export default class CreateSkill extends React.Component {
                                     floatingLabelText="Skill name"
                                     floatingLabelFixed={false}
                                     value={this.state.expertValue}
-                                    hintText="My SUSI Skill"
+                                    hintText="Skill name"
                                     style={{marginLeft:10,marginRight:10}}
                                     onChange={this.handleExpertChange}
                                 />
