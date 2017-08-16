@@ -15,6 +15,11 @@ import './BrowseSkill.css';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 const groups = [];
 const languages = [];
+function compare(a, b) {
+    if (a.skill_name < b.skill_name) { return -1; }
+    if (a.skill_name > b.skill_name) { return 1; }
+    return 0;
+  }
 
 export default class BrowseSkill extends React.Component {
 
@@ -54,8 +59,17 @@ export default class BrowseSkill extends React.Component {
             crossDomain: true,
             success: function (data) {
                 let skills = Object.keys(data.skills);
-                skills = skills.map((el, i) => {
-                    let skill = data.skills[el];
+                skills.sort();
+                let skillArray=[];
+                skills.map((el, i) => {
+                    data.skills[el].el=el;
+                     skillArray.push(data.skills[el]);
+                     return(skillArray);
+                });
+                skillArray.sort(compare);
+                                
+                skills = skillArray.map((el, i) => {
+                    let skill = el;
                     let skill_name, examples, image,description;
                     if(skill.skill_name){
                         skill_name = skill.skill_name;
@@ -64,7 +78,7 @@ export default class BrowseSkill extends React.Component {
                     else{
                         skill_name = 'Name not available';
                     }
-                    if(skill.image){
+                     if(skill.image){
                         image = 'https://raw.githubusercontent.com/fossasia/susi_skill_data/master/models/'+self.state.modelValue+'/'+
                             self.state.groupValue+'/'+self.state.languageValue+'/'+skill.image;
                     }
@@ -89,24 +103,24 @@ export default class BrowseSkill extends React.Component {
                     else{
                         description = 'No description available'
                     }
-
+ 
                     return (
-                        <Link key={el}
+                        <Link key={el.el}
                               to={{
                                   pathname: '/skillPage',
                                   state: { url: url,
-                                           element: el,
-                                           name: el,
+                                           element: el.el,
+                                           name: el.el,
                                            modelValue: self.state.modelValue,
                                            groupValue:self.state.groupValue,
                                            languageValue:self.state.languageValue,}
                               }}>
-                            <Card style={styles.row} key={el}>
-                                <div style={styles.right} key={el}>
+                            <Card style={styles.row} key={el.el}>
+                                <div style={styles.right} key={el.el}>
                                     {image ? <div style={styles.imageContainer}>
                                         <img alt={skill_name} src={image} style={styles.image}/>
                                     </div>:
-                                        <CircleImage name={el} size="48"/>}
+                                        <CircleImage name={el.el} size="48"/>}
                                     <div style={styles.titleStyle}>"{examples}"</div>
                                 </div>
                                 <div style={styles.details}>
