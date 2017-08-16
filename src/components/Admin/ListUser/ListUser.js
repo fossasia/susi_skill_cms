@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import './ListUser.css';
 import $ from 'jquery';
 import Cookies from 'universal-cookie'
-import {Table} from 'antd';
+import Table from 'antd/lib/table';
 
 const cookies = new Cookies();
 
@@ -19,8 +19,8 @@ const columns = [{
         width: '25%',
     },
     {
-        title: 'Name',
-        dataIndex: 'name',
+        title: 'Activation Status',
+        dataIndex: 'confirmed',
         sorter: false,
         width: '15%',
     },
@@ -150,6 +150,10 @@ export default class ListUser extends Component {
                     let user = {
                         serialNum:++i + (page-1) *50,
                         email:data.name,
+                        confirmed:data.confirmed,
+                        signup:data.signupTime,
+                        lastLogin:data.lastLoginTime,
+                        ipLastLogin:data.lastLoginIP,
                         userRole:data.userRole
                     }
                     users.push(user);

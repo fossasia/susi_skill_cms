@@ -1,5 +1,6 @@
 import React from 'react';
 import {Link} from 'react-router-dom'
+import AuthorSkills from '../AuthorSkills/AuthorSkills'
 import 'brace/mode/markdown';
 import 'brace/theme/github';
 import 'brace/theme/monokai';
@@ -59,7 +60,7 @@ export default class SkillListing extends React.Component {
             commits: [],
             commitsChecked:[],
         };
-        console.log(this.props.location.state)
+        console.log(this.props.location.state.groups)
 
         if(this.props.location.state.url!== undefined) {
             let url = this.props.location.state.url;
@@ -133,6 +134,7 @@ export default class SkillListing extends React.Component {
     }
 
     componentDidMount() {
+
         if(this.props.location.state.url!== undefined) {
             let baseUrl = 'http://api.susi.ai/cms/getSkillMetadata.json';
             let url = this.props.location.state.url;
@@ -302,18 +304,29 @@ export default class SkillListing extends React.Component {
       return metaData;
     }
 
+    openAuthorSkills = () => {
+        this.refs.author.loadSkillCards(this.state.author);
+        this.setState({showAuthorSkills: true});
+    }
+
+    closeAuthorSkills = () => {
+        this.setState({showAuthorSkills: false});
+  }
+
     render() {
+
+        const authorStyle = {
+            cursor: 'pointer'
+        }
 
         const exampleStyle = {
             height: 'auto',
             width: 200,
             marginRight: 20,
-            textAlign: 'left',
-            display: 'inline-block',
             boxShadow: 'none',
             backgroundColor: 'whitesmoke',
             padding: '20px',
-            color: '#555'
+            color: '#555',
         }
 
         const styles = {
@@ -415,7 +428,7 @@ export default class SkillListing extends React.Component {
                         <h1 className="name">
                             {/*{this.state.skill_name}*/}
                             {
-                                name.split(' ').map((data) => {
+                                name&&name.split(' ').map((data) => {
                                     return data.charAt(0).toUpperCase() + data.substring(1);
                                 }).join(' ')}
                         </h1>
@@ -430,11 +443,10 @@ export default class SkillListing extends React.Component {
                             </div>
                         </Link>
                         <h4>
-                            <a href={this.state.author_url} target="_blank" rel="noopener noreferrer">{this.state.author}</a>
+                            author: <span style={authorStyle} onClick={this.openAuthorSkills}>{this.state.author}</span>
                         </h4>
-                        <div className="examples">
-                            {/*{console.log(this.state.skill_data)}*/}
-                            {/*{this.state.skill_data.examples}*/}
+                        <div className="examples" style={{display: "flex",
+                            flexWrap: 'wrap'}}>
                             {console.log(this.state)}
 
                             {typeof this.state.examples === 'undefined' || this.state.examples === null || typeof this.state.examples[Object.keys(this.state.examples)[0]] === 'undefined'? '' : this.state.examples.map((data) => {
@@ -495,7 +507,19 @@ export default class SkillListing extends React.Component {
         }
 
         return (
-            renderElement
+            <div>
+                <div>{renderElement}</div>
+                <div>
+                    <AuthorSkills
+                        ref="author"
+                        open={this.state.showAuthorSkills}
+                        close={this.closeAuthorSkills}
+                        author={this.state.author}
+                        author_url={this.state.author_url}
+                        groups={this.props.location.state.groups}
+                        languages={this.props.location.state.languages}/>
+                </div>
+            </div>
         );
     }
 }
