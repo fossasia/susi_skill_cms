@@ -192,12 +192,10 @@ export default class SkillListing extends React.Component {
             height: 'auto',
             width: 200,
             marginRight: 20,
-            textAlign: 'left',
-            display: 'inline-block',
             boxShadow: 'none',
             backgroundColor: 'whitesmoke',
             padding: '20px',
-            color: '#555'
+            color: '#555',
         }
 
         const styles = {
@@ -253,7 +251,8 @@ export default class SkillListing extends React.Component {
                         <h4>
                             author: <span style={authorStyle} onClick={this.openAuthorSkills}>{this.state.author}</span>
                         </h4>
-                        <div className="examples">
+                        <div className="examples" style={{display: "flex",
+                            flexWrap: 'wrap'}}>
                             {console.log(this.state)}
 
                             {typeof this.state.examples === 'undefined' || this.state.examples === null || typeof this.state.examples[Object.keys(this.state.examples)[0]] === 'undefined'? '' : this.state.examples.map((data) => {
