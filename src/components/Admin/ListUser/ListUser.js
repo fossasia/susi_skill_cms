@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import './ListUser.css';
 import $ from 'jquery';
 import Cookies from 'universal-cookie'
-import {Table} from 'antd';
+import Table from 'antd/lib/table';
 
 const cookies = new Cookies();
 

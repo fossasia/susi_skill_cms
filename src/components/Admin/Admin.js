@@ -7,7 +7,7 @@ import Cookies from 'universal-cookie'
 import FlatButton from 'material-ui/FlatButton';
 import PropTypes from 'prop-types';
 import Paper from 'material-ui/Paper';
-import {Tabs} from 'antd';
+import Tabs from 'antd/lib/tabs';
 import ListUser from "./ListUser/ListUser";
 // import ListUser from "./ListUser/ListUser";
 
