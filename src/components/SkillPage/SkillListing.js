@@ -12,27 +12,17 @@ import 'brace/theme/textmate';
 import 'brace/theme/solarized_dark';
 import 'brace/theme/solarized_light';
 import 'brace/theme/terminal';
-import * as $ from "jquery";
+import $ from "jquery";
 import Divider from 'material-ui/Divider';
 import './SkillListing.css';
 import {
   FloatingActionButton,
   Paper,
   RaisedButton,
-  Checkbox
 } from "material-ui";
 import CircleImage from "../CircleImage/CircleImage";
 import EditBtn from 'material-ui/svg-icons/editor/mode-edit';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
-import {
-  Table,
-  TableBody,
-  TableHeader,
-  TableHeaderColumn,
-  TableRow,
-  TableRowColumn,
-} from 'material-ui/Table';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 const defaultNullSkillList = ['image', 'author', 'author_url', 'developer_privacy_policy', 'terms_of_use', 'dynamic_content', 'examples'];
 let urlCode,name;
@@ -55,6 +45,7 @@ export default class SkillListing extends React.Component {
             examples: '',
             descriptions: '',
             skill_name: '',
+            showAuthorSkills: false,
             dataReceived: false,
             imgUrl: null,
             commits: [],
@@ -79,59 +70,6 @@ export default class SkillListing extends React.Component {
 
     }
 
-    getSkillAtCommitIDUrl = () => {
-      let skillAtCommitIDUrl = null;
-      let baseUrl = ' http://api.susi.ai/cms/getFileAtCommitID.json';
-      let modelValue = "general";
-      if(this.props.location.state.url!== undefined) {
-        let groupValue = this.props.location.state.groupValue;
-        let languageValue = this.props.location.state.languageValue;
-        let skillName = this.props.location.state.name;
-        skillAtCommitIDUrl = baseUrl + '?model=' + modelValue
-                                + '&group=' + groupValue + '&language=' + languageValue
-                                + '&skill=' + skillName + '&commitID=';
-      }
-      if(this.props.location.state.from_upload!== undefined){
-          let baseUrl = 'http://api.susi.ai/cms/getSkillMetadata.json';
-          let groupValue = this.props.location.state.groupValue;
-          let languageValue = this.props.location.state.languageValue;
-          let skillName = this.props.location.state.expertValue;
-          skillAtCommitIDUrl = baseUrl + '?model=' + modelValue
-                                  + '&group=' + groupValue + '&language=' + languageValue
-                                  + '&skill=' + skillName + '&commitID=';
-      }
-      console.log(skillAtCommitIDUrl);
-      return skillAtCommitIDUrl;
-    }
-
-    getCommitHistory = (commitHistoryURL) => {
-      console.log(commitHistoryURL);
-      let self = this;
-      $.ajax({
-          url: commitHistoryURL,
-          jsonpCallback: 'pv',
-          dataType: 'jsonp',
-          jsonp: 'callback',
-          crossDomain: true,
-          success: function (commitsData) {
-              self.setCommitHistory(commitsData);
-          }
-      });
-    }
-
-    setCommitHistory = (commitsData) => {
-      console.log(commitsData);
-      if(commitsData.accepted){
-        let commits = commitsData.commits ? commitsData.commits : [];
-        if(commits.length > 0){
-          commits[0].latest = true;
-        }
-        this.setState({
-          commits:commits
-        });
-        console.log(this.state);
-      }
-    }
 
     componentDidMount() {
 
@@ -145,11 +83,7 @@ export default class SkillListing extends React.Component {
 
             url = baseUrl + '?model=' + modelValue + '&group=' + groupValue + '&language=' + languageValue + '&skill=' + name;
 
-            let commitHistoryBaseURL = 'http://api.susi.ai/cms/getSkillHistory.json';
-            let commitHistoryURL = commitHistoryBaseURL + '?model=' + modelValue + '&group=' + groupValue + '&language=' + languageValue + '&skill=' + name;
-
             console.log("Url:" + url);
-            console.log(url)
             let self = this;
             $.ajax({
                 url: url,
@@ -161,7 +95,6 @@ export default class SkillListing extends React.Component {
                     self.updateData(data.skill_metadata)
                 }
             });
-            this.getCommitHistory(commitHistoryURL);
         }
         if(this.props.location.state.from_upload!== undefined){
             let baseUrl = 'http://api.susi.ai/cms/getSkillMetadata.json';
@@ -172,11 +105,7 @@ export default class SkillListing extends React.Component {
             let languageValue = this.props.location.state.languageValue;
             let expertValue = this.props.location.state.expertValue;
 
-
             url = baseUrl + '?model=' + modelValue + '&group=' + groupValue + '&language=' + languageValue + '&skill=' + expertValue;
-
-            let commitHistoryBaseURL = 'http://api.susi.ai/cms/getSkillHistory.json';
-            let commitHistoryURL = commitHistoryBaseURL + '?model=' + modelValue + '&group=' + groupValue + '&language=' + languageValue + '&skill=' + expertValue;
 
             console.log("Url meta:" + url);
 
@@ -192,19 +121,15 @@ export default class SkillListing extends React.Component {
                 crossDomain: true,
                 success: function (data) {
                     self.updateData(data.skill_metadata)
-
                 }
             });
-            this.getCommitHistory(commitHistoryURL);
         }
     };
 
     updateData = (skillData) => {
 
         this.setState({
-
             imgUrl:'https://raw.githubusercontent.com/fossasia/susi_skill_data/master/models/general/'+this.props.location.state.groupValue+'/'+this.props.location.state.languageValue+'/'+skillData.image
-
         });
 
         defaultNullSkillList.forEach((data) => {
@@ -214,11 +139,9 @@ export default class SkillListing extends React.Component {
         });
 
         if (skillData['descriptions'] === null) {
-
             this.setState({
                 descriptions: 'No Description Provided'
             });
-
             console.log("From Description");
         }
         else {
@@ -228,7 +151,6 @@ export default class SkillListing extends React.Component {
         }
 
         if (skillData['skill_name'] === null) {
-
             this.setState({
                 skill_name: "No Name Given"
             });
@@ -245,49 +167,6 @@ export default class SkillListing extends React.Component {
         });
     };
 
-    onCheck = (event,isInputChecked) => {
-      console.log(event.target.name);
-      let commitsChecked = this.state.commitsChecked;
-      if(isInputChecked){
-        commitsChecked.push(event.target.name);
-      }
-      else{
-        var index = commitsChecked.indexOf(event.target.name);
-        if(index > -1){
-          commitsChecked.splice(index,1);
-        }
-      }
-      console.log(commitsChecked);
-      this.setState({
-        commitsChecked: commitsChecked,
-      });
-    }
-
-    getCheckedCommits = () => {
-      let commitsChecked = this.state.commitsChecked;
-      let commits = this.state.commits;
-      if(commitsChecked.length === 2){
-        var commitIndex1 = parseInt(commitsChecked[0],10);
-        var commitIndex2 = parseInt(commitsChecked[1],10);
-        let commit1 = commits[commitIndex1];
-        let commit2 = commits[commitIndex2];
-        let orderedCommits = [commit1];
-        if(commitIndex2 > commitIndex1){
-          orderedCommits.unshift(commit2);
-        }
-        else{
-          orderedCommits.push(commit2);
-        }
-        console.log(orderedCommits);
-        return orderedCommits;
-      }
-      else if (commitsChecked.length === 1) {
-        let commit = commits[parseInt(commitsChecked[0],10)];
-        return [commit];
-      }
-      return;
-    }
-
     getSkillMetadata = () => {
       let metaData = {
         modelValue: "general",
@@ -296,10 +175,14 @@ export default class SkillListing extends React.Component {
         skillName: ""
       }
       if(this.props.location.state.url!== undefined) {
-        metaData.modelValue = "general";
         metaData.groupValue = this.props.location.state.groupValue;
         metaData.languageValue = this.props.location.state.languageValue;
         metaData.skillName = this.props.location.state.name;
+      }
+      if(this.props.location.state.from_upload!== undefined){
+          metaData.groupValue = this.props.location.state.groupValue;
+          metaData.languageValue = this.props.location.state.languageValue;
+          metaData.skillName = this.props.location.state.expertValue;
       }
       return metaData;
     }
@@ -317,16 +200,6 @@ export default class SkillListing extends React.Component {
 
         const authorStyle = {
             cursor: 'pointer'
-        }
-
-        const exampleStyle = {
-            height: 'auto',
-            width: 200,
-            marginRight: 20,
-            boxShadow: 'none',
-            backgroundColor: 'whitesmoke',
-            padding: '20px',
-            color: '#555',
         }
 
         const styles = {
@@ -347,82 +220,44 @@ export default class SkillListing extends React.Component {
             }
         };
 
-        let compareBtnLabel;
-        if(this.state.commitsChecked.length === 1){
-          compareBtnLabel = "View Selected Version"
-        }
-        else if(this.state.commitsChecked.length === 2){
-          compareBtnLabel = "Compare Selected Versions"
-        }
-
-        const compareBtnStyle = {
-          marginTop: '20px',
-        }
-
         let renderElement = null;
         if (!this.state.dataReceived) {
             renderElement = <div><StaticAppBar {...this.props}/><h1 className="skill_loading_container">Loading...</h1></div>
         }
         else {
-          let commitHistoryTableHeader =
-            <TableRow>
-              <TableHeaderColumn style={{width:'20px'}}></TableHeaderColumn>
-              <TableHeaderColumn>Commit Date</TableHeaderColumn>
-              <TableHeaderColumn>Commit ID</TableHeaderColumn>
-              <TableHeaderColumn>Commit Message</TableHeaderColumn>
-            </TableRow>;
-
-          let commits = this.state.commits;
-
-          let commitHistoryTableRows = commits.map((commit,index)=>{
-            let commitsChecked = this.state.commitsChecked;
-            let checkBox = <Checkbox
-              name={index.toString()}
-              onCheck={this.onCheck}/>;
-            if(commitsChecked.length === 2 && commitsChecked.indexOf(index.toString()) === -1){
-              checkBox = <Checkbox
-                name={index.toString()}
-                onCheck={this.onCheck}
-                disabled={true}/>
-            }
-            return(
-              <TableRow>
-                <TableRowColumn style={{width:'20px'}}>
-                  {checkBox}
-                </TableRowColumn>
-                <TableRowColumn>
-                  <abbr title={commit.commitDate}>{commit.commitDate}</abbr>
-                </TableRowColumn>
-                <TableRowColumn>
-                  <abbr title={commit.commitID}>{commit.commitID}</abbr>
-                </TableRowColumn>
-                <TableRowColumn>
-                  <abbr title={commit.commit_message}>{commit.commit_message}</abbr>
-                </TableRowColumn>
-              </TableRow>
-            );
-          });
-
-          const commitHistoryTable =
-          <MuiThemeProvider>
-            <Table selectable={false}>
-              <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
-                {commitHistoryTableHeader}
-              </TableHeader>
-              <TableBody displayRowCheckbox={false}>
-                {commitHistoryTableRows}
-              </TableBody>
-            </Table>
-          </MuiThemeProvider>;
-
             renderElement = <div><StaticAppBar {...this.props}/><div className="skill_listing_container" style={styles.home}>
-                <div className="avatar-meta margin-b-md">
                     <div className="avatar">
                         {this.state.image== null?
                             <CircleImage name={this.state.skill_name.toUpperCase()} size="250"/>:
                             <img className="avatar-img" alt="Thumbnail" src={this.state.imgUrl}/>
                         }
                         {/*<Avatar src={this.state.image} size={250}/>*/}
+                    </div>
+                    <div className='linkButtons'>
+                      <Link to={{
+                          pathname: '/skillEditor',
+                          state: { url: urlCode, name:name, }
+                      }}>
+                          <div className="skillEditBtn">
+                              <FloatingActionButton   backgroundColor={"#4285f4"} >
+                                  <EditBtn />
+                              </FloatingActionButton>
+                          </div>
+                      </Link>
+                      <Link to={{
+                          pathname: '/versions',
+                          state: {
+                            skillMeta: this.getSkillMetadata(),
+                          }
+                      }}>
+                        <div className="skillVersionBtn">
+                          <RaisedButton
+                            label="Versions"
+                            backgroundColor="#4285f4"
+                            labelColor="#fff"
+                          />
+                        </div>
+                      </Link>
                     </div>
                     <div className="meta">
                         <h1 className="name">
@@ -432,25 +267,26 @@ export default class SkillListing extends React.Component {
                                     return data.charAt(0).toUpperCase() + data.substring(1);
                                 }).join(' ')}
                         </h1>
-                        <Link to={{
-                            pathname: '/skillEditor',
-                            state: { url: urlCode, name:name, }
-                        }}>
-                            <div className="skill_edit_btn">
-                                <FloatingActionButton   backgroundColor={"#4285f4"} >
-                                    <EditBtn />
-                                </FloatingActionButton>
-                            </div>
-                        </Link>
                         <h4>
                             author: <span style={authorStyle} onClick={this.openAuthorSkills}>{this.state.author}</span>
                         </h4>
-                        <div className="examples" style={{display: "flex",
-                            flexWrap: 'wrap'}}>
+                      <div className="avatar-meta margin-b-md">
+                        <div className="examples">
                             {console.log(this.state)}
 
-                            {typeof this.state.examples === 'undefined' || this.state.examples === null || typeof this.state.examples[Object.keys(this.state.examples)[0]] === 'undefined'? '' : this.state.examples.map((data) => {
-                                return <Paper style={exampleStyle} zDepth={1}>{data}</Paper>
+                            { typeof this.state.examples === 'undefined' ||
+                              this.state.examples === null ||
+                              typeof this.state.examples[Object.keys(this.state.examples)[0]] === 'undefined'? '' :
+                              this.state.examples.map((data) => {
+                                return (
+                                  <Paper
+                                    className='exampleTile'
+                                    style={{backgroundColor: '#f5f5f5'}}
+                                    zDepth={1}
+                                  >
+                                    {data}
+                                  </Paper>
+                                )
                             })}
                         </div>
                     </div>
@@ -476,31 +312,6 @@ export default class SkillListing extends React.Component {
                         {this.state.terms_of_use == null?'':<li><a href={this.state.developer_privacy_policy} target="_blank" rel="noopener noreferrer">Developer Privacy Policy</a></li>}
 
                     </ul>
-                </div>
-                <div className="margin-b-md margin-t-md skill">
-                    <h1 className="title">
-                        Skill History
-                    </h1>
-                    {commitHistoryTable}
-                    {(this.state.commitsChecked.length === 1 || this.state.commitsChecked.length === 2) &&
-                    <Link to={{
-                        pathname: '/skillHistory',
-                        state: {
-                          url: this.getSkillAtCommitIDUrl(),
-                          skillMeta: this.getSkillMetadata(),
-                          name:name,
-                          commits: this.getCheckedCommits(),
-                          latestCommit: this.state.commits[0]
-                        }
-                    }}>
-                      <RaisedButton
-                        label={compareBtnLabel}
-                        backgroundColor="#4285f4"
-                        labelColor="#fff"
-                        style={compareBtnStyle}
-                      />
-                    </Link>
-                  }
                 </div>
             </div>
             </div>

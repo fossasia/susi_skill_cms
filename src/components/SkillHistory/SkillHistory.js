@@ -53,7 +53,7 @@ class SkillHistory extends Component {
                       self.updateData([{
                         code:data.file,
                         commit:propState.commits[0]
-                      }],propState.name)
+                      }],propState.skillMeta)
                   }
               });
             }
@@ -82,7 +82,7 @@ class SkillHistory extends Component {
                           },{
                             code:data2.file,
                             commit:propState.commits[1]
-                          }],propState.name,propState.skillMeta)
+                          }],propState.skillMeta)
                         }
                     });
                   }
@@ -93,10 +93,10 @@ class SkillHistory extends Component {
       }
     }
 
-    updateData = (commitData,name,metaData) => {
+    updateData = (commitData,metaData) => {
       this.setState({
         commitData:commitData,
-        skillName:name,
+        skillName:metaData.skillName,
         skillMeta:metaData
       });
     }
@@ -171,7 +171,7 @@ class SkillHistory extends Component {
                         state: {
                           latestCommit: this.props.location.state.latestCommit,
                           revertingCommit: this.state.commitData[0],
-                          name: this.props.location.state.name,
+                          name: this.state.skillName,
                           url: this.props.location.state.url,
                           skillMeta:this.props.location.state.skillMeta,
                         }
