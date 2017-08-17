@@ -1,16 +1,41 @@
 body {
     height: auto;
 }
+
+abbr[title] {
+  border-bottom: none;
+  cursor: inherit;
+  text-decoration: none;
+}
+
 .avatar-meta {
     display: flex;
+    min-height: 200px;
 }
 
 .avatar {
     padding-right: 40px;
     font-size: 48px;
+    float: left;
 }
+
+.examples{
+  display: flex;
+  flex-wrap: wrap;
+}
+
 .examples > div{
     margin-top:10px ;
+}
+
+.exampleTile{
+  height: auto;
+  width: 200px;
+  margin-right: 20px;
+  box-shadow: none;
+  padding: 20px;
+  color: #555;
+  max-height: 80px;
 }
 
 .margin-b-md {
@@ -28,6 +53,8 @@ body {
     margin-left: auto;
     margin-right: auto;
     margin-top: 100px;
+    padding-left: 1%;
+    padding-right: 1%;
 }
 
 .skill_loading_container {
@@ -35,17 +62,45 @@ body {
     margin-top: 100px;
 }
 
-.skill_edit_btn {
-    display: inline-block;
-    position: fixed;
-    bottom: 35px;
-    right: 72px;
+.linkButtons {
+  display: inline;
+  float: right;
+  margin-top: 10px;
 }
-.skill_edit_btn > button{
+
+.skillEditBtn {
+  display: inline;
+  margin-top: -10px;
+  float: left;
+}
+
+.skillEditBtn > button{
     background-color: #4285f4;
 }
 
+.skillVersionBtn {
+  display: inline;
+  margin-left: 10px;
+}
+
 .avatar-img {
-    height:250px;
+    height:200px;
     width:auto;
+}
+
+@media only screen and (min-width: 0px) and (max-width: 768px){
+
+  .avatar-img {
+      width: 90%;
+      height: auto;
+  }
+
+  .exampleTile{
+    width: 90%;
+  }
+
+  .avatar-meta {
+      display: flex;
+      min-height: 0px;
+  }
 }

@@ -141,9 +141,11 @@ class StaticAppBar extends Component {
     }
 
     closeOptions = () => {
+      if(this.state.showOptions){
         this.setState({
             showOptions: false,
         });
+      }
     }
 
     handleLogin = () => {

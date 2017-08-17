@@ -12,11 +12,15 @@ import 'brace/theme/textmate';
 import 'brace/theme/solarized_dark';
 import 'brace/theme/solarized_light';
 import 'brace/theme/terminal';
-import * as $ from "jquery";
+import $ from "jquery";
 import Divider from 'material-ui/Divider';
 import './SkillListing.css';
-import {FloatingActionButton, Paper, } from "material-ui";
-import CircleImage from '../CircleImage/CircleImage';
+import {
+  FloatingActionButton,
+  Paper,
+  RaisedButton,
+} from "material-ui";
+import CircleImage from "../CircleImage/CircleImage";
 import EditBtn from 'material-ui/svg-icons/editor/mode-edit';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 
@@ -41,8 +45,11 @@ export default class SkillListing extends React.Component {
             examples: '',
             descriptions: '',
             skill_name: '',
+            showAuthorSkills: false,
             dataReceived: false,
-            imgUrl: null
+            imgUrl: null,
+            commits: [],
+            commitsChecked:[],
         };
         console.log(this.props.location.state.groups)
 
@@ -77,9 +84,6 @@ export default class SkillListing extends React.Component {
             url = baseUrl + '?model=' + modelValue + '&group=' + groupValue + '&language=' + languageValue + '&skill=' + name;
 
             console.log("Url:" + url);
-
-            // url = 'http://192.168.43.187:4000/cms/getSkillMetadata.json?group=general&model=entertainment&language=en&skill=cat';
-            console.log(url)
             let self = this;
             $.ajax({
                 url: url,
@@ -101,7 +105,6 @@ export default class SkillListing extends React.Component {
             let languageValue = this.props.location.state.languageValue;
             let expertValue = this.props.location.state.expertValue;
 
-
             url = baseUrl + '?model=' + modelValue + '&group=' + groupValue + '&language=' + languageValue + '&skill=' + expertValue;
 
             console.log("Url meta:" + url);
@@ -118,21 +121,15 @@ export default class SkillListing extends React.Component {
                 crossDomain: true,
                 success: function (data) {
                     self.updateData(data.skill_metadata)
-
                 }
             });
         }
-
-
-
     };
 
     updateData = (skillData) => {
 
         this.setState({
-
             imgUrl:'https://raw.githubusercontent.com/fossasia/susi_skill_data/master/models/general/'+this.props.location.state.groupValue+'/'+this.props.location.state.languageValue+'/'+skillData.image
-
         });
 
         defaultNullSkillList.forEach((data) => {
@@ -142,11 +139,9 @@ export default class SkillListing extends React.Component {
         });
 
         if (skillData['descriptions'] === null) {
-
             this.setState({
                 descriptions: 'No Description Provided'
             });
-
             console.log("From Description");
         }
         else {
@@ -156,7 +151,6 @@ export default class SkillListing extends React.Component {
         }
 
         if (skillData['skill_name'] === null) {
-
             this.setState({
                 skill_name: "No Name Given"
             });
@@ -173,6 +167,26 @@ export default class SkillListing extends React.Component {
         });
     };
 
+    getSkillMetadata = () => {
+      let metaData = {
+        modelValue: "general",
+        groupValue: "",
+        languageValue: "",
+        skillName: ""
+      }
+      if(this.props.location.state.url!== undefined) {
+        metaData.groupValue = this.props.location.state.groupValue;
+        metaData.languageValue = this.props.location.state.languageValue;
+        metaData.skillName = this.props.location.state.name;
+      }
+      if(this.props.location.state.from_upload!== undefined){
+          metaData.groupValue = this.props.location.state.groupValue;
+          metaData.languageValue = this.props.location.state.languageValue;
+          metaData.skillName = this.props.location.state.expertValue;
+      }
+      return metaData;
+    }
+
     openAuthorSkills = () => {
         this.refs.author.loadSkillCards(this.state.author);
         this.setState({showAuthorSkills: true});
@@ -186,16 +200,6 @@ export default class SkillListing extends React.Component {
 
         const authorStyle = {
             cursor: 'pointer'
-        }
-
-        const exampleStyle = {
-            height: 'auto',
-            width: 200,
-            marginRight: 20,
-            boxShadow: 'none',
-            backgroundColor: 'whitesmoke',
-            padding: '20px',
-            color: '#555',
         }
 
         const styles = {
@@ -222,13 +226,38 @@ export default class SkillListing extends React.Component {
         }
         else {
             renderElement = <div><StaticAppBar {...this.props}/><div className="skill_listing_container" style={styles.home}>
-                <div className="avatar-meta margin-b-md">
                     <div className="avatar">
                         {this.state.image== null?
                             <CircleImage name={this.state.skill_name.toUpperCase()} size="250"/>:
                             <img className="avatar-img" alt="Thumbnail" src={this.state.imgUrl}/>
                         }
                         {/*<Avatar src={this.state.image} size={250}/>*/}
+                    </div>
+                    <div className='linkButtons'>
+                      <Link to={{
+                          pathname: '/skillEditor',
+                          state: { url: urlCode, name:name, }
+                      }}>
+                          <div className="skillEditBtn">
+                              <FloatingActionButton   backgroundColor={"#4285f4"} >
+                                  <EditBtn />
+                              </FloatingActionButton>
+                          </div>
+                      </Link>
+                      <Link to={{
+                          pathname: '/versions',
+                          state: {
+                            skillMeta: this.getSkillMetadata(),
+                          }
+                      }}>
+                        <div className="skillVersionBtn">
+                          <RaisedButton
+                            label="Versions"
+                            backgroundColor="#4285f4"
+                            labelColor="#fff"
+                          />
+                        </div>
+                      </Link>
                     </div>
                     <div className="meta">
                         <h1 className="name">
@@ -238,25 +267,26 @@ export default class SkillListing extends React.Component {
                                     return data.charAt(0).toUpperCase() + data.substring(1);
                                 }).join(' ')}
                         </h1>
-                        <Link to={{
-                            pathname: '/skillEditor',
-                            state: { url: urlCode, name:name, }
-                        }}>
-                            <div className="skill_edit_btn">
-                                <FloatingActionButton   backgroundColor={"#4285f4"} >
-                                    <EditBtn />
-                                </FloatingActionButton>
-                            </div>
-                        </Link>
                         <h4>
                             author: <span style={authorStyle} onClick={this.openAuthorSkills}>{this.state.author}</span>
                         </h4>
-                        <div className="examples" style={{display: "flex",
-                            flexWrap: 'wrap'}}>
+                      <div className="avatar-meta margin-b-md">
+                        <div className="examples">
                             {console.log(this.state)}
 
-                            {typeof this.state.examples === 'undefined' || this.state.examples === null || typeof this.state.examples[Object.keys(this.state.examples)[0]] === 'undefined'? '' : this.state.examples.map((data) => {
-                                return <Paper style={exampleStyle} zDepth={1}>{data}</Paper>
+                            { typeof this.state.examples === 'undefined' ||
+                              this.state.examples === null ||
+                              typeof this.state.examples[Object.keys(this.state.examples)[0]] === 'undefined'? '' :
+                              this.state.examples.map((data) => {
+                                return (
+                                  <Paper
+                                    className='exampleTile'
+                                    style={{backgroundColor: '#f5f5f5'}}
+                                    zDepth={1}
+                                  >
+                                    {data}
+                                  </Paper>
+                                )
                             })}
                         </div>
                     </div>
@@ -270,7 +300,7 @@ export default class SkillListing extends React.Component {
                 </div>
                 <div className="margin-b-md margin-t-md skill">
                     <h1 className="title">
-                        Skills Details
+                        Skill Details
                     </h1>
                     <ul>
                         {this.state.dynamic_content ?

@@ -17,6 +17,9 @@ import SkillListing from "./components/SkillPage/SkillListing";
 import ListUser from "./components/Admin/ListUser/ListUser";
 import Logout from './components/Auth/Logout.react';
 import CreateSkill from "./components/CreateSkill/CreateSkill";
+import SkillVersion from "./components/SkillVersion/SkillVersion";
+import SkillHistory from "./components/SkillHistory/SkillHistory";
+import SkillRollBack from "./components/SkillRollBack/SkillRollBack";
 injectTapEventPlugin();
 
 class App extends React.Component {
@@ -38,6 +41,9 @@ class App extends React.Component {
                         <Route exact path="/settings" component={Settings}/>
                         <Route exact path="/logout" component={Logout} />
                         <Route exact path="/skillCreator" component={CreateSkill}/>
+                        <Route exact path="/versions" component={SkillVersion}/>
+                        <Route exact path="/skillHistory" component={SkillHistory}/>
+                        <Route exact path="/skillRollBack" component={SkillRollBack}/>
                         <Route exact path="/" component={BrowseSkill} />
                         <Route exact path="*" component={NotFound} />
                     </Switch>
