@@ -481,7 +481,8 @@ const styles = {
     },
     dropdownDiv:{
         display: "flex",
-        alignItems: "center"
+        alignItems: "center",
+        flexWrap: "wrap"
 
     },
     toolbar: {

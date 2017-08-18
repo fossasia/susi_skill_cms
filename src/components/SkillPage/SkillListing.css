@@ -91,12 +91,18 @@ abbr[title] {
 @media only screen and (min-width: 0px) and (max-width: 768px){
 
   .avatar-img {
-      width: 90%;
-      height: auto;
+     display:inline;
   }
+    .avatar {
+        float:none;
+        text-align:center;
+    }
 
   .exampleTile{
     width: 90%;
+  }
+  .skill_listing_container {
+      padding: 32px;
   }
 
   .avatar-meta {
