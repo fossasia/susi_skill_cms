@@ -73,7 +73,6 @@ export default class CreateSkill extends React.Component {
         const nameMatch = newValue.match(/^::name\s(.*)$/m);
         console.log(nameMatch);
         if(nameMatch) {
-            console.log('pahunch gyua')
             self.setState({
                 expertValue: nameMatch[1]
             });
