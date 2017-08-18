@@ -51,7 +51,7 @@ export default class SkillListing extends React.Component {
             commits: [],
             commitsChecked:[],
         };
-        console.log(this.props.location.state.groups)
+        console.log(this.props.location.state)
 
         if(this.props.location.state.url!== undefined) {
             let url = this.props.location.state.url;
@@ -104,7 +104,6 @@ export default class SkillListing extends React.Component {
             let groupValue = this.props.location.state.groupValue;
             let languageValue = this.props.location.state.languageValue;
             let expertValue = this.props.location.state.expertValue;
-
             url = baseUrl + '?model=' + modelValue + '&group=' + groupValue + '&language=' + languageValue + '&skill=' + expertValue;
 
             console.log("Url meta:" + url);
@@ -221,6 +220,11 @@ export default class SkillListing extends React.Component {
         };
 
         let renderElement = null;
+        let oldModelValue = "general";
+        let oldGroupValue = this.props.location.state.groupValue;
+        let oldLanguageValue = this.props.location.state.languageValue;
+        let oldImageValue = this.state.imgUrl;
+        let imageValue = this.state.image;
         if (!this.state.dataReceived) {
             renderElement = <div><StaticAppBar {...this.props}/><h1 className="skill_loading_container">Loading...</h1></div>
         }
@@ -236,7 +240,8 @@ export default class SkillListing extends React.Component {
                     <div className='linkButtons'>
                       <Link to={{
                           pathname: '/skillEditor',
-                          state: { url: urlCode, name:name, }
+                          state: { url: urlCode, name:name,oldExpertValue:this.props.location.state.name,oldModelValue:oldModelValue,oldGroupValue:oldGroupValue,oldLanguageValue:oldLanguageValue, 
+                            oldImageUrl:oldImageValue, oldImageValue:imageValue}
                       }}>
                           <div className="skillEditBtn">
                               <FloatingActionButton   backgroundColor={"#4285f4"} >

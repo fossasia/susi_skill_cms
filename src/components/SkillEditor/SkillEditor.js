@@ -20,25 +20,26 @@ import 'brace/theme/terminal';
 import * as $ from "jquery";
 import notification from 'antd/lib/notification';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
-const models = [];
 const groups = [];
 const languages = [];
 const fontsizes =[];
 const codeEditorThemes =[];
 const cookies = new Cookies();
-let self,fromListing,url,skill_relative_path;
+let self,url;
 export default class Container extends React.Component {
 
     componentDidMount() {
-        self = this;
-        self.loadmodels()
-        console.log(this.props)
+        self = this;      
+        self.loadgroups();
+        self.loadlanguages();
+        this.setState({
+            groupValue:this.props.location.state.oldGroupValue,
+            languageValue:this.props.location.state.oldLanguageValue,
+            expertValue:this.props.location.state.oldExpertValue,
+            imageUrl:this.props.location.state.oldImageValue
+        })
             if (this.props.location.state) {
             url = this.props.location.state.url;
-            console.log(url)
-            skill_relative_path = this.props.location.state.url.match(/\?(.*)/)[1];
-            fromListing = this.props.location.state.fromListing;
-            console.log(fromListing)
             let self = this;
             $.ajax({
                 url: url,
@@ -52,16 +53,45 @@ export default class Container extends React.Component {
             });
         }
     }
+
     onChange(newValue) {
+        const match = newValue.match(/^::image\s(.*)$/m);
+        if(match!==null) {
+            console.log(match[1]);
+
+            self.setState({
+                imageUrl: match[1],                
+                codeChanged:true
+            });
+        }
         self.updateCode(newValue)
     }
 
     constructor(props) {
-        fromListing = false;
         super(props);
+        console.log(this.props.location.state);
         this.state = {
-            commitMessage:null, modelValue: null, groupValue:null, languageValue:null, expertValue:null,code:"::name <Skill_name>\n::author <author_name>\n::author_url <author_url>\n::description <description> \n::dynamic_content <Yes/No>\n::developer_privacy_policy <link>\n::image <image_url>\n::terms_of_use <link>\n\n\nUser query1|query2|quer3....\n!example:<The question that should be shown in public skill displays>\n!expect:<The answer expected for the above example>\nAnswer for the user query", fontSizeCode:14, editorTheme:"github"
+            showImage:true,
+            image:this.props.location.state.oldImageUrl,
+            commitMessage:null,
+            modelValue: 'general',
+            file:null,
+            codeChanged:false,
+            oldModelValue: this.props.location.state.oldModelValue,
+            groupValue:this.props.location.state.oldGroupValue,
+            oldGroupValue:this.props.location.state.oldGroupValue,
+            languageValue:this.props.location.state.oldLanguageValue,
+            oldLanguageValue:this.props.location.state.oldLanguageValue,
+            expertValue:this.props.location.state.oldExpertValue,
+            oldExpertValue: this.props.location.state.oldExpertValue,
+            oldImageUrl:this.props.location.state.oldImageValue,
+            imageUrl:this.props.location.state.oldImageValue,
+            image_name_changed:false,
+            code:"::name <Skill_name>\n::author <author_name>\n::author_url <author_url>\n::description <description> \n::dynamic_content <Yes/No>\n::developer_privacy_policy <link>\n::image <image_url>\n::terms_of_use <link>\n\n\nUser query1|query2|quer3....\n!example:<The question that should be shown in public skill displays>\n!expect:<The answer expected for the above example>\nAnswer for the user query",
+            fontSizeCode:14,
+            editorTheme:"github"
         };
+        console.log(this.state);
         let fonts = [
             14,16,18,20,24,28,32,40
         ];
@@ -76,20 +106,37 @@ export default class Container extends React.Component {
         }
 
     }
-
-    loadmodels()
+    loadgroups()
     {
-        if(models.length===0) {
+        if(groups.length===0) {
             $.ajax({
-                url: "http://api.susi.ai/cms/getModel.json",
+                url: "http://api.susi.ai/cms/getGroups.json",
                 jsonpCallback: 'pa',
                 dataType: 'jsonp',
                 jsonp: 'callback',
                 crossDomain: true,
                 success: function (d) {
-                    console.log(d);
+                    d= d.groups;
                     for (let i = 0; i < d.length; i++) {
-                        models.push(<MenuItem value={i} key={d[i]} primaryText={`${d[i]}`}/>);
+                        groups.push(<MenuItem value={d[i]} key={d[i]} primaryText={`${d[i]}`}/>);
+                    }
+                }
+            });
+        }
+    }
+    loadlanguages()
+    {
+        if(languages.length===0) {
+            $.ajax({
+                url: "http://api.susi.ai/cms/getAllLanguages.json",
+                jsonpCallback: 'pc',
+                dataType: 'jsonp',
+                jsonp: 'callback',
+                crossDomain: true,
+                success: function (data) {       
+                    data = data.languagesArray;
+                    for (let i = 0; i < data.length; i++) {
+                        languages.push(<MenuItem value={data[i]} key={data[i]} primaryText={`${data[i]}`}/>);
                     }
                 }
             });
@@ -98,7 +145,7 @@ export default class Container extends React.Component {
 
     updateCode = (newCode) => {
         this.setState({
-            code: newCode,
+            code: newCode
         });
     }
 
@@ -112,10 +159,8 @@ export default class Container extends React.Component {
                 jsonp: 'callback',
                 crossDomain: true,
                 success: function (data) {
-                    console.log(data);
-
                     for (let i = 0; i < data.length; i++) {
-                        groups.push(<MenuItem value={i} key={data[i]} primaryText={`${data[i]}`}/>);
+                        groups.push(<MenuItem value={data[i]} key={data[i]} primaryText={`${data[i]}`}/>);
                     }
                 }
             });
@@ -123,19 +168,15 @@ export default class Container extends React.Component {
     }
 
     handleExpertChange = (event) => {
-        console.log(event.target.value);
         this.setState({
             expertValue: event.target.value,
         });
-
     };
 
     handleCommitMessageChange = (event) => {
-        console.log(event.target.value);
         this.setState({
             commitMessage: event.target.value,
         });
-
     };
 
     handleGroupChange = (event, index, value) => {
@@ -148,22 +189,45 @@ export default class Container extends React.Component {
                 jsonp: 'callback',
                 crossDomain: true,
                 success: function (data) {
-                    console.log(data);
+                    console.log(data);                    
+                    data = data.languagesArray;
                     for (let i = 0; i < data.length; i++) {
-                        languages.push(<MenuItem value={i} key={data[i]} primaryText={`${data[i]}`}/>);
+                        languages.push(<MenuItem value={data[i]} key={data[i]} primaryText={`${data[i]}`}/>);
                     }
-                    console.log("languages ", languages)
                 }
             });
         }
     }
 
+    _onChange =(event)=> {
+        // Assuming only image
+        var file = this.refs.file.files[0];
+        if (event.target.files && event.target.files[0]) {
+            let reader = new FileReader();
+            reader.onload = (e) => {
+                this.setState({image: e.target.result});
+            };
+            reader.readAsDataURL(event.target.files[0]);
+            self.setState({
+                showImage:true,
+                image_name_changed:true
+            });
+        }
+        console.log(file);
+        this.setState({
+            file:file
+        });
+    }
+
+
     handleLanguageChange = (event, index, value) => this.setState({languageValue: value});
     handleFontChange = (event, index, value) => this.setState({fontSizeCode: value});
-    handleThemeChange = (event, index, value) => {this.setState({editorTheme: value});
-    console.log(this.state.editorTheme)}
-
+    handleThemeChange = (event, index, value) => this.setState({editorTheme: value});
+    
     saveClick = () => {
+        this.setState({
+            loading: true
+        })
 
         if(!cookies.get('loggedIn')) {
             notification.open({
@@ -171,59 +235,181 @@ export default class Container extends React.Component {
                 description: 'Please login and then try to create/edit a skill',
                 icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
             });
+            self.setState({
+                loading:false
+            });
             return 0;
         }
+        console.log(this.state)
+        if(!new RegExp(/images\/\w+\.\w+/g).test(self.state.imageUrl)){
+            notification.open({
+                message: 'Error Processing your Request',
+                description: 'image must be in format of images/imageName.jpg',
+                icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
+            });
+            self.setState({
+                loading:false
+            });
+            return 0;
+        }
+        if(this.state.commitMessage===null){
+            notification.open({
+                message: 'Please add a commit message',
+                icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
+            });
+            self.setState({
+                loading:false
+            });
+            return 0;
+        }
+        if(this.state.oldGroupValue === this.state.groupValue && this.state.oldExpertValue === this.state.expertValue && this.state.oldLanguageValue === this.state.languageValue 
+            && !this.state.codeChanged && !this.state.image_name_changed){
+            notification.open({
+                message: 'Please make some changes to save the Skill',
+                icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
+            });
+            self.setState({
+                loading:false
+            });
+            return 0;
+        }
+        let file;
 
-        let url= "http://api.susi.ai/cms/modifySkill.json?"+skill_relative_path+"&content="+encodeURIComponent(this.state.code)+"&changelog="+this.state.commitMessage+"&access_token="+cookies.get('loggedIn');
+        var form = new FormData();
+        console.log(this.state.oldExpertValue);
+        console.log(this.state.expertValue);
+        form.append("OldModel", "general");
+        form.append("OldGroup",this.state.oldGroupValue);
+        form.append("OldLanguage", this.state.oldLanguageValue);
+        form.append("OldSkill",this.state.oldExpertValue );
+        form.append("NewModel", "general");
+        form.append("NewGroup", this.state.groupValue);
+        form.append("NewLanguage", this.state.languageValue);
+        form.append("NewSkill", this.state.expertValue);
+        form.append("changelog", this.state.commitMessage );
+        form.append("content", this.state.code);
+        form.append("imageChanged", this.state.image_name_changed);
+        form.append("old_image_name", this.state.oldImageUrl.replace("images/",""));
+        form.append("new_image_name", this.state.imageUrl.replace("images/",""));
+        form.append("image_name_changed", this.state.image_name_changed);        
+        form.append('access_token',cookies.get('loggedIn'));
 
-        console.log(url)
+        if(this.state.image_name_changed){
+            file = this.state.file;
+            form.append("image", file);
+        }
 
-            $.ajax({
-                url:url,
-                jsonpCallback: 'pc',
-                dataType: 'jsonp',
-                jsonp: 'callback',
-                crossDomain: true,
-                success: function (data) {
-                    console.log(data);
-                    if(data.accepted===true){
-                        notification.open({
-                            message: 'Accepted',
-                            description: 'Your Skill has been uploaded to the server',
-                            icon: <Icon type="check-circle" style={{ color: '#00C853' }} />,
-                        });
-                    }
-                    else{
-                        notification.open({
-                            message: 'Error Processing your Request',
-                            description: 'Please select a model, group, language and a skill',
-                            icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
-                        });
-                    }
-                },
-                error: function(e) {
-                    console.log(e);
+        var settings = {
+          "async": true,
+          "crossDomain": true,
+          "url": "http://api.susi.ai/cms/modifySkill.json",
+          "method": "POST",
+          "processData": false,
+          "contentType": false,
+          "mimeType": "multipart/form-data",
+          "data": form
+        }
+        console.log(settings);
+        for(var pair of form.entries()) {
+                console.log(pair[0]+ ', '+ pair[1]);
+              }
+        $.ajax(settings)
+            .done(function (response) {
+                self.setState({
+                    loading:false
+                });
+                let   data = JSON.parse(response);
+                if(data.accepted===true){
                     notification.open({
-                        message: 'Error Processing your Request',
-                        description: 'Error in processing the request. Please try with some other skill',
-                        icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
+                        message: 'Accepted',
+                        description: 'Your Skill has been uploaded to the server',
+                        icon: <Icon type="check-circle" style={{ color: '#00C853' }} />
                     });
                 }
+                else{
+                    self.setState({
+                        loading:false
+                    });
+                    notification.open({
+                        message: 'Error Processing your Request',
+                        description: String(data.message),
+                        icon: <Icon type="close-circle" style={{ color: '#f44336' }} />
+                    });
+                }
+            })
+            .fail(function (jqXHR, textStatus) {
+                self.setState({
+                    loading:false
+                });
+                notification.open({
+                    message: 'Error Processing your Request',
+                    description: String(textStatus),
+                    icon: <Icon type="close-circle" style={{ color: '#f44336' }} />
+                })
             });
     }
-
 
     render() {
         const style = {
             width: "100%",
             padding: "10px"
-        };
+        }
         return (
           <div>
             <StaticAppBar {...this.props} />
             <div style={styles.home}>
                 <Paper style={style} zDepth={1}>
                   <div>Currently Editing : <h3>{url}</h3></div>
+                    <div style={styles.center}>
+                        <div style={styles.dropdownDiv}>
+                            <SelectField
+                                floatingLabelText="Category"
+                                style={{width:'160px',marginLeft:10,marginRight:10}}
+                                value={this.state.groupValue}
+                                onChange={this.handleGroupChange}
+                            >
+                                {groups}
+                            </SelectField>
+                            <SelectField
+                                floatingLabelText="Language"
+                                style={{width:'90px',marginLeft:10,marginRight:10}}
+                                value={this.state.languageValue}
+                                onChange={this.handleLanguageChange}
+                            >
+                                {languages}
+                            </SelectField>
+                            <TextField
+                                floatingLabelText="Enter Skill name"
+                                floatingLabelFixed={true}
+                                style={{marginLeft:10,marginRight:10}}
+                                value={this.state.expertValue}
+                                onChange={this.handleExpertChange}
+                            />
+                            { this.state.showImage &&  <img alt="preview" id="target" style={{width:60,height:60,borderRadius:"50%",marginRight:20,border: 0}}src={this.state.image}/> }
+                            <RaisedButton
+                                label="Choose an Image"
+                                labelPosition="before"
+                                backgroundColor="#4285f4" 
+                                containerElement="label"
+                                labelColor="#fff"
+                            >
+                                <input type="file" style={{
+                                    cursor: 'pointer',
+                                    position: 'absolute',
+                                    top: 0,
+                                    bottom: 0,
+                                    right: 0,
+                                    left: 0,
+                                    width: '100%',
+                                    opacity: 0,
+                                }}
+                                       ref="file"
+                                       name="user[image]"
+                                       multiple="false"
+                                       onChange={this._onChange}/>
+                            </RaisedButton>
+                        </div>
+                    </div>
                 </Paper>
 
                 <div style={styles.codeEditor}>
@@ -270,13 +456,13 @@ export default class Container extends React.Component {
                         style={{width:"80%"}}
                         onChange={this.handleCommitMessageChange}
                     />
-                    <RaisedButton label="Save" backgroundColor="#4285f4" labelColor="#fff" style={{marginLeft:10}}  onTouchTap={this.saveClick} />
+                    <RaisedButton label={this.state.loading?"Saving":"Save"} disabled={this.state.loading} backgroundColor="#4285f4" labelColor="#fff" style={{marginLeft:10}}  onTouchTap={this.saveClick} />
                     </Paper>
                 </div>
             </div>
           </div>
         );
-    }
+}
 }
 
 const styles = {
@@ -331,3 +517,4 @@ const styles = {
         opacity: 0,
     },
 }
+
