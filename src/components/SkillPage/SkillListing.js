@@ -100,16 +100,16 @@ export default class SkillListing extends React.Component {
                 if (this.props.location.state.from_upload !== undefined) {
                     let baseUrl = 'http://api.susi.ai/cms/getSkillMetadata.json';
                     let url;
-        
+
                     let modelValue = "general";
                     let groupValue = this.props.location.state.groupValue;
                     let languageValue = this.props.location.state.languageValue;
                     let expertValue = this.props.location.state.expertValue;
-        
+
                     url = baseUrl + '?model=' + modelValue + '&group=' + groupValue + '&language=' + languageValue + '&skill=' + expertValue;
-        
+
                     console.log("Url meta:" + url);
-        
+
                     urlCode = url.toString()
                     urlCode = url.replace("getSkillMetadata", "getSkill");
                     console.log(url)
@@ -124,7 +124,7 @@ export default class SkillListing extends React.Component {
                             self.updateData(data.skill_metadata)
                         }
                     });
-                } 
+                }
             }
 
     };
@@ -169,28 +169,6 @@ export default class SkillListing extends React.Component {
             dataReceived: true
         });
     };
-
-    getSkillMetadata = () => {
-        let metaData = {
-            modelValue: "general",
-            groupValue: "",
-            languageValue: "",
-            skillName: ""
-        }
-        if (this.url !== undefined) {
-            metaData.groupValue = this.groupValue;
-            metaData.languageValue = this.languageValue;
-            metaData.skillName = this.name;
-        }
-        if(this.props.location.state!==undefined){
-            if (this.props.location.state.from_upload !== undefined) {
-                metaData.groupValue = this.props.location.state.groupValue;
-                metaData.languageValue = this.props.location.state.languageValue;
-                metaData.skillName = this.props.location.state.expertValue;
-            }
-        }
-        return metaData;
-    }
 
     openAuthorSkills = () => {
         this.refs.author.loadSkillCards(this.state.author);
@@ -251,7 +229,7 @@ export default class SkillListing extends React.Component {
                                 state: { url: urlCode, name:name,
                                 oldExpertValue:this.name,
                                 oldGroupValue:oldGroupValue,
-                                oldLanguageValue:oldLanguageValue, 
+                                oldLanguageValue:oldLanguageValue,
                             oldImageUrl:oldImageValue, oldImageValue:imageValue }
                             }}>
                                 <div className="skillEditBtn">
@@ -261,10 +239,7 @@ export default class SkillListing extends React.Component {
                                 </div>
                             </Link>
                             <Link to={{
-                                pathname: '/versions/'+this.groupValue+'/'+this.name+'/'+this.languageValue,
-                                state: {
-                                    skillMeta: this.getSkillMetadata(),
-                                }
+                                pathname: '/'+this.groupValue+ '/'+this.name+'/versions/'+this.languageValue,
                             }}>
                                 <div className="skillVersionBtn">
                                     <RaisedButton

@@ -17,10 +17,16 @@ export default class BrowseExamples extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            modelValue: null, groupValue:null, languageValue:null, expertValue:null, skills:[], examples:[],test : []
+            modelValue: null,
+            groupValue:null,
+            languageValue:null,
+            expertValue:null,
+            skills:[],
+            examples:[],
+            test : [],
         };
     }
-    
+
     componentDidMount(){
         this.loadInitialExamples();
     }
@@ -42,7 +48,6 @@ export default class BrowseExamples extends React.Component {
                     return (<li style={styles.liStyle} key={i}>
                         <Card>
                             <CardHeader
-
                                 title={el.match(/\/([\w]*)\.[\w]{1,5}$/)[1]}
                                 subtitle={el}
                                 actAsExpander={true}

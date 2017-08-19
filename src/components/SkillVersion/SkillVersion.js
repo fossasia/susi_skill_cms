@@ -25,9 +25,9 @@ class SkillVersion extends Component {
           dataReceived: false,
           skillMeta: {
             modelValue: "general",
-            groupValue: "",
-            languageValue: "",
-            skillName: ""
+            groupValue: this.props.location.pathname.split('/')[1],
+            languageValue: this.props.location.pathname.split('/')[4],
+            skillName: this.props.location.pathname.split('/')[2]
           },
           checkBoxChecks:[],
       };
@@ -35,16 +35,13 @@ class SkillVersion extends Component {
   }
 
   componentDidMount(){
-    if(this.props.location.state.skillMeta){
-      let skillMetaData = this.props.location.state.skillMeta;
       let commitHistoryBaseURL = 'http://api.susi.ai/cms/getSkillHistory.json';
       let commitHistoryURL = commitHistoryBaseURL +
-                            '?model=' + skillMetaData.modelValue +
-                            '&group=' + skillMetaData.groupValue +
-                            '&language=' + skillMetaData.languageValue +
-                            '&skill=' + skillMetaData.skillName;
+                            '?model=' + this.state.skillMeta.modelValue +
+                            '&group=' + this.state.skillMeta.groupValue +
+                            '&language=' + this.state.skillMeta.languageValue +
+                            '&skill=' + this.state.skillMeta.skillName;
       this.getCommitHistory(commitHistoryURL);
-    }
   }
 
   getCommitHistory = (commitHistoryURL) => {
@@ -85,16 +82,13 @@ class SkillVersion extends Component {
       this.setState({
         commits:commits,
         dataReceived: true,
-        skillMeta: this.props.location.state.skillMeta,
         commitsChecked: initChecked,
         checkBoxChecks: initCheckBoxStates,
       });
-      console.log(this.state);
     }
   }
 
   onCheck = (event,isInputChecked) => {
-    console.log(event.target.name);
     var checkBoxID = parseInt(event.target.name,10);
     let commitsChecked = this.state.commitsChecked;
     let checkBoxStates = this.state.checkBoxChecks;
@@ -157,23 +151,9 @@ class SkillVersion extends Component {
       else{
         orderedCommits.push(commit2);
       }
-      console.log(orderedCommits);
       return orderedCommits;
     }
     return;
-  }
-
-  getSkillAtCommitIDUrl = () => {
-    let baseUrl = ' http://api.susi.ai/cms/getFileAtCommitID.json';
-    let skillMetaData = this.state.skillMeta;
-    let skillAtCommitIDUrl = baseUrl +
-                            '?model=' + skillMetaData.modelValue +
-                            '&group=' + skillMetaData.groupValue +
-                            '&language=' + skillMetaData.languageValue +
-                            '&skill=' + skillMetaData.skillName +
-                            '&commitID=';
-    console.log(skillAtCommitIDUrl);
-    return skillAtCommitIDUrl;
   }
 
   render(){
@@ -222,13 +202,10 @@ class SkillVersion extends Component {
           </TableRowColumn>
           <TableRowColumn>
           <Link to={{
-              pathname: '/skillHistory',
-              state: {
-                url: this.getSkillAtCommitIDUrl(),
-                skillMeta: this.state.skillMeta,
-                commits: [commit],
-                latestCommit: this.state.commits[0]
-              }
+              pathname: '/'+this.state.skillMeta.groupValue+
+                        '/'+this.state.skillMeta.skillName+
+                        '/version/'+this.state.skillMeta.languageValue+
+                        '/'+commit.commitID,
           }}>
             <abbr title={commit.commitDate}>{commit.commitDate}</abbr>
           </Link>
@@ -255,6 +232,8 @@ class SkillVersion extends Component {
       </Table>
     </MuiThemeProvider>;
 
+    let checkedCommits = this.getCheckedCommits();
+
     return(
       <div>
         <StaticAppBar {...this.props} />
@@ -275,13 +254,11 @@ class SkillVersion extends Component {
                 </div>
                 {(this.state.commitsChecked.length === 2) &&
                 <Link to={{
-                    pathname: '/skillHistory',
-                    state: {
-                      url: this.getSkillAtCommitIDUrl(),
-                      skillMeta: this.state.skillMeta,
-                      commits: this.getCheckedCommits(),
-                      latestCommit: this.state.commits[0]
-                    }
+                    pathname: '/'+this.state.skillMeta.groupValue+
+                              '/'+this.state.skillMeta.skillName+
+                              '/compare/'+this.state.skillMeta.languageValue+
+                              '/'+checkedCommits[0].commitID+
+                              '/'+checkedCommits[1].commitID,
                 }}>
                   <RaisedButton
                     label="Compare Selected Versions"

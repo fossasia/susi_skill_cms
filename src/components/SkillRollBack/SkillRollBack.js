@@ -25,54 +25,77 @@ const cookies = new Cookies();
 class SkillRollBack extends Component {
     constructor(props) {
         super(props);
+        var parsePath = this.props.location.pathname.split('/');
         this.state = {
             code:"::name <Skill_name>\n::author <author_name>\n::author_url <author_url>\n::description <description> \n::dynamic_content <Yes/No>\n::developer_privacy_policy <link>\n::image <image_url>\n::terms_of_use <link>\n\n\nUser query1|query2|quer3....\n!example:<The question that should be shown in public skill displays>\n!expect:<The answer expected for the above example>\nAnswer for the user query",
             fontSizeCode:14,
             editorTheme:"github",
-            skillName: '',
             url:'',
-            skillMeta: {},
+            skillMeta: {
+              modelValue: "general",
+              groupValue: parsePath[1],
+              languageValue: parsePath[4],
+              skillName: parsePath[2]
+            },
+            latestCommit: parsePath[5],
+            revertingCommit: parsePath[6],
             commitData: [],
             commitMessage:'',
         };
         console.log(this.props)
     }
 
+    getSkillAtCommitIDUrl = () => {
+      let baseUrl = ' http://api.susi.ai/cms/getFileAtCommitID.json';
+      let skillMetaData = this.state.skillMeta;
+      let skillAtCommitIDUrl = baseUrl +
+                              '?model=' + skillMetaData.modelValue +
+                              '&group=' + skillMetaData.groupValue +
+                              '&language=' + skillMetaData.languageValue +
+                              '&skill=' + skillMetaData.skillName +
+                              '&commitID=';
+      return skillAtCommitIDUrl;
+    }
+
     componentDidMount(){
-      if(this.props.location){
-        if(this.props.location.state){
-          let propState = this.props.location.state;
-          if(propState.url){
-            let baseUrl = propState.url;
-            let self = this;
-            var url = baseUrl + propState.latestCommit.commitID;
-            console.log(url);
+      let baseUrl = this.getSkillAtCommitIDUrl() ;
+      let self = this;
+      var url1 = baseUrl + self.state.latestCommit;
+      console.log(url1);
+      $.ajax({
+          url: url1,
+          jsonpCallback: 'pc',
+          dataType: 'jsonp',
+          jsonp: 'callback',
+          crossDomain: true,
+          success: function (data1) {
+            var url2 = baseUrl + self.state.revertingCommit;
+            console.log(url2);
             $.ajax({
-                url: url,
-                jsonpCallback: 'pc',
+                url: url2,
+                jsonpCallback: 'pd',
                 dataType: 'jsonp',
                 jsonp: 'callback',
                 crossDomain: true,
-                success: function (data) {
-                    self.updateData([{
-                      code:data.file,
-                      commit:propState.latestCommit
-                    },propState.revertingCommit],propState.name,propState.url,propState.skillMeta)
+                success: function (data2) {
+                  self.updateData([{
+                    code:data1.file,
+                    commitID:self.state.latestCommit,
+                  },{
+                    code:data2.file,
+                    commitID:self.state.revertingCommit,
+                  }])
                 }
             });
           }
-        }
-      }
+      });
     }
 
-    updateData = (commitData,name,url,metaData) => {
+    updateData = (commitData) => {
       this.setState({
         commitData: commitData,
-        skillName: name,
-        url: url,
-        skillMeta:metaData,
         code: commitData[1].code,
-        commitMessage: 'Reverting to Commit - '+commitData[1].commit.commitID
+        commitMessage: 'Reverting to Commit - '+commitData[1].commitID
       });
     }
 
@@ -168,7 +191,11 @@ class SkillRollBack extends Component {
                 description: 'Your Skill has been uploaded to the server',
                 icon: <Icon type="check-circle" style={{ color: '#00C853' }} />,
               });
-              this.props.history.push({  pathname: '/skillPage',
+              this.props.history.push(
+                {
+                  pathname: '/'+skillMetaData.groupValue+
+                            '/'+skillMetaData.skillName+
+                            '/'+skillMetaData.languageValue,
                   state: {
                       from_upload: true,
                       expertValue:  skillMetaData.skillName,
@@ -211,11 +238,11 @@ class SkillRollBack extends Component {
           <div style={styles.home}>
             {this.state.commitData.length === 2 && (<div style={{display:'block'}}>
             <Paper style={style} zDepth={1}>
-              <div>Currently Viewing : <h3>{this.state.skillName}</h3></div>
+              <div>Currently Viewing : <h3>{this.state.skillMeta.skillName}</h3></div>
             </Paper>
               <div className='version-code-left'>
-                <span>commitID: <b>{this.state.commitData[0].commit.commitID}</b></span><br/>
-                <span><b>{this.state.commitData[0].commit.latest && "Latest "}Revision</b></span>
+                <span>commitID: <b>{this.state.commitData[0].commitID}</b></span><br/>
+                <span><b>Latest Revision</b></span>
               <div style={styles.codeEditor}>
               <AceEditor
                   mode="java"
@@ -232,7 +259,7 @@ class SkillRollBack extends Component {
               </div>
               </div>
               <div className='version-code-right'>
-                <span>commitID: <b>{this.state.commitData[1].commit.commitID}</b></span><br/>
+                <span>commitID: <b>{this.state.commitData[1].commitID}</b></span><br/>
                 <span><b>Your Text</b></span>
               <div style={styles.codeEditor}>
               <AceEditor
