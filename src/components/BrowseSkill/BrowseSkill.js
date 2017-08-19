@@ -236,15 +236,13 @@ export default class BrowseSkill extends React.Component {
                     return (
                         <Link key={el}
                               to={{
-                                  pathname: '/skill',
+                                  pathname: '/'+self.state.groupValue+'/'+el+'/'+self.state.languageValue,
                                   state: { url: url,
-                                           element: el,
-                                           name: el,
-                                           modelValue: self.state.modelValue,
-                                           groupValue:self.state.groupValue,
-                                           languageValue:self.state.languageValue,
-                                           groups: self.state.groups,
-                                           languages: self.state.languages}
+                                      element: el,
+                                      name: el,
+                                      modelValue: self.state.modelValue,
+                                      groupValue:self.state.groupValue,
+                                      languageValue:self.state.languageValue,}
                               }}>
                             <Card style={styles.row} key={el}>
                                 <div style={styles.right} key={el}>
