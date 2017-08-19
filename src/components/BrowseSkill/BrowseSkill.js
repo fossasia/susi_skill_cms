@@ -93,7 +93,7 @@ export default class BrowseSkill extends React.Component {
                     return (
                         <Link key={el}
                               to={{
-                                  pathname: '/skillPage',
+                                  pathname: '/'+self.state.groupValue+'/'+el+'/'+self.state.languageValue,
                                   state: { url: url,
                                            element: el,
                                            name: el,
@@ -236,7 +236,7 @@ export default class BrowseSkill extends React.Component {
                     return (
                         <Link key={el}
                               to={{
-                                  pathname: '/skillPage',
+                                  pathname: '/skill',
                                   state: { url: url,
                                            element: el,
                                            name: el,
