@@ -50,7 +50,6 @@ export default class Container extends React.Component {
             fontSizeCode: 14,
             editorTheme: "github"
         };
-        console.log(this.state);
         let fonts = [
             14, 16, 18, 20, 24, 28, 32, 40
         ];

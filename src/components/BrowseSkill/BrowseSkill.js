@@ -1,12 +1,12 @@
-import React from "react";
+import React from 'react';
 import styles from './SkillStyle';
 import isoConv from 'iso-language-converter';
 import MenuItem from "material-ui/MenuItem";
 import SelectField from "material-ui/SelectField";
-import { FloatingActionButton, Paper} from "material-ui";
+import { FloatingActionButton, Paper } from "material-ui";
 import Add from 'material-ui/svg-icons/content/add';
 import ContentAdd from "material-ui/svg-icons/navigation/arrow-forward";
-import {Card} from 'material-ui/Card';
+import { Card } from 'material-ui/Card';
 import * as $ from "jquery";
 import Link from "react-router-dom/es/Link";
 import colors from "../../Utils/colors";
@@ -22,24 +22,24 @@ export default class BrowseSkill extends React.Component {
         super(props);
         this.state = {
             modelValue: "general",
-            skillURL:null,
-            groupValue:"Knowledge",
-            languageValue:"en",
-            expertValue:null,
+            skillURL: null,
+            groupValue: "Knowledge",
+            languageValue: "en",
+            expertValue: null,
             skills: [],
             groups: [],
             languages: [],
-            first_open:true,
-            groupSelect:true,
-            languageSelect:true
+            first_open: true,
+            groupSelect: true,
+            languageSelect: true
         };
     }
 
-    componentDidMount(){
+    componentDidMount() {
         this.loadInitialCards();
         this.handleModelChange();
         this.handleGroupChange();
-        this.setState({groupValue: "Knowledge"});
+        this.setState({ groupValue: "Knowledge" });
     }
 
     loadInitialCards = () => {
@@ -56,57 +56,59 @@ export default class BrowseSkill extends React.Component {
                 let skills = Object.keys(data.skills);
                 skills = skills.map((el, i) => {
                     let skill = data.skills[el];
-                    let skill_name, examples, image,description;
-                    if(skill.skill_name){
+                    let skill_name, examples, image, description;
+                    if (skill.skill_name) {
                         skill_name = skill.skill_name;
                         skill_name = skill_name.charAt(0).toUpperCase() + skill_name.slice(1);
                     }
-                    else{
+                    else {
                         skill_name = 'Name not available';
                     }
-                    if(skill.image){
-                        image = 'https://raw.githubusercontent.com/fossasia/susi_skill_data/master/models/'+self.state.modelValue+'/'+
-                            self.state.groupValue+'/'+self.state.languageValue+'/'+skill.image;
+                    if (skill.image) {
+                        image = 'https://raw.githubusercontent.com/fossasia/susi_skill_data/master/models/' + self.state.modelValue + '/' +
+                            self.state.groupValue + '/' + self.state.languageValue + '/' + skill.image;
                     }
-                    else{
+                    else {
                         image = ''
                     }
-                    if(skill.examples){
+                    if (skill.examples) {
                         examples = skill.examples;
                         examples = examples[0];
                     }
-                    else{
+                    else {
                         examples = null
                     }
-                    if(skill.descriptions){
-                        if(skill.descriptions.length > 120) {
-                            description = skill.descriptions.substring(0,119)+"...";
+                    if (skill.descriptions) {
+                        if (skill.descriptions.length > 120) {
+                            description = skill.descriptions.substring(0, 119) + "...";
                         }
-                        else{
+                        else {
                             description = skill.descriptions;
                         }
                     }
-                    else{
+                    else {
                         description = 'No description available'
                     }
 
                     return (
                         <Link key={el}
-                              to={{
-                                  pathname: '/'+self.state.groupValue+'/'+el+'/'+self.state.languageValue,
-                                  state: { url: url,
-                                           element: el,
-                                           name: el,
-                                           modelValue: self.state.modelValue,
-                                           groupValue:self.state.groupValue,
-                                           languageValue:self.state.languageValue,}
-                              }}>
+                            to={{
+                                pathname: '/' + self.state.groupValue + '/' + el + '/' + self.state.languageValue,
+                                state: {
+                                    url: url,
+                                    element: el,
+                                    name: el,
+                                    modelValue: self.state.modelValue,
+                                    groupValue: self.state.groupValue,
+                                    languageValue: self.state.languageValue,
+                                }
+                            }}>
                             <Card style={styles.row} key={el}>
                                 <div style={styles.right} key={el}>
                                     {image ? <div style={styles.imageContainer}>
-                                        <img alt={skill_name} src={image} style={styles.image}/>
-                                    </div>:
-                                        <CircleImage name={el} size="48"/>}
+                                        <img alt={skill_name} src={image} style={styles.image} />
+                                    </div> :
+                                        <CircleImage name={el} size="48" />}
                                     <div style={styles.titleStyle}>"{examples}"</div>
                                 </div>
                                 <div style={styles.details}>
@@ -119,7 +121,7 @@ export default class BrowseSkill extends React.Component {
                 });
 
                 self.setState({
-                    skills : skills,
+                    skills: skills,
                     skillURL: url
                 })
 
@@ -129,8 +131,8 @@ export default class BrowseSkill extends React.Component {
 
 
     handleModelChange = (event, index) => {
-        this.setState({groupSelect:false,languageSelect:true});
-        if(groups.length===0) {
+        this.setState({ groupSelect: false, languageSelect: true });
+        if (groups.length === 0) {
             $.ajax({
                 url: "http://api.susi.ai/cms/getGroups.json",
                 jsonpCallback: 'pb',
@@ -139,9 +141,9 @@ export default class BrowseSkill extends React.Component {
                 crossDomain: true,
                 success: function (data) {
                     data = data.groups;
-                    this.setState({groups: data});
+                    this.setState({ groups: data });
                     for (let i = 0; i < data.length; i++) {
-                        groups.push(<MenuItem value={data[i]} key={data[i]} primaryText={`${data[i]}`}/>);
+                        groups.push(<MenuItem value={data[i]} key={data[i]} primaryText={`${data[i]}`} />);
                     }
                 }.bind(this)
             });
@@ -149,8 +151,8 @@ export default class BrowseSkill extends React.Component {
     };
 
     handleGroupChange = (event, index, value) => {
-        this.setState({groupValue: value,groupSelect:false,languageSelect:false});
-        if(languages.length===0) {
+        this.setState({ groupValue: value, groupSelect: false, languageSelect: false });
+        if (languages.length === 0) {
             $.ajax({
                 url: "http://api.susi.ai/cms/getAllLanguages.json",
                 jsonpCallback: 'pc',
@@ -158,24 +160,23 @@ export default class BrowseSkill extends React.Component {
                 jsonp: 'callback',
                 crossDomain: true,
                 success: function (data) {
-                    console.log(data);
-                    data=data.languagesArray;
-                    this.setState({languages: data});
+
+                    data = data.languagesArray
+                    this.setState({ languages: data });
                     for (let i = 0; i < data.length; i++) {
-                        if(isoConv(data[i])){
-                            languages.push(<MenuItem value={data[i]} key={data[i]} primaryText={isoConv(data[i])}/>);
+                        if (isoConv(data[i])) {
+                            languages.push(<MenuItem value={data[i]} key={data[i]} primaryText={isoConv(data[i])} />);
                         }
                         else {
-                            languages.push(<MenuItem value={data[i]} key={data[i]} primaryText={'Universal'}/>);
+                            languages.push(<MenuItem value={data[i]} key={data[i]} primaryText={'Universal'} />);
                         }
                     }
-                    console.log("languages ", languages)
                 }.bind(this)
             });
         }
     };
 
-    handleLanguageChange = (event, index, value) => this.setState({languageValue: value});
+    handleLanguageChange = (event, index, value) => this.setState({ languageValue: value });
 
     handleToggle = (event, toggled) => {
         this.setState({
@@ -185,10 +186,10 @@ export default class BrowseSkill extends React.Component {
 
     buttonClick = () => {
         let url;
-        if(languages.length>0&&groups.length>0) {
-            url  = "http://api.susi.ai/cms/getSkillList.json?model=" + this.state.modelValue + "&group=" + this.state.groupValue + "&language=" + this.state.languageValue;
+        if (languages.length > 0 && groups.length > 0) {
+            url = "http://api.susi.ai/cms/getSkillList.json?model=" + this.state.modelValue + "&group=" + this.state.groupValue + "&language=" + this.state.languageValue;
         }
-        else{
+        else {
             url = "http://api.susi.ai/cms/getSkillList.json"
         }
 
@@ -205,51 +206,53 @@ export default class BrowseSkill extends React.Component {
                 let skills = Object.keys(data.skills);
                 skills = skills.map((el, i) => {
                     let skill = data.skills[el];
-                    let skill_name, examples, image,description;
-                    if(skill.skill_name){
+                    let skill_name, examples, image, description;
+                    if (skill.skill_name) {
                         skill_name = skill.skill_name;
                         skill_name = skill_name.charAt(0).toUpperCase() + skill_name.slice(1);
                     }
-                    else{
+                    else {
                         skill_name = 'Name not available';
                     }
-                    if(skill.image){
-                        image = 'https://raw.githubusercontent.com/fossasia/susi_skill_data/master/models/'+self.state.modelValue+'/'+
-                            self.state.groupValue+'/'+self.state.languageValue+'/'+skill.image;
+                    if (skill.image) {
+                        image = 'https://raw.githubusercontent.com/fossasia/susi_skill_data/master/models/' + self.state.modelValue + '/' +
+                            self.state.groupValue + '/' + self.state.languageValue + '/' + skill.image;
                     }
-                    else{
+                    else {
                         image = ''
                     }
-                    if(skill.examples){
+                    if (skill.examples) {
                         examples = skill.examples;
-                        examples= examples[0];
+                        examples = examples[0];
                     }
-                    else{
+                    else {
                         examples = null
                     }
-                    if(skill.descriptions){
+                    if (skill.descriptions) {
                         description = skill.descriptions;
                     }
-                    else{
+                    else {
                         description = 'No description available'
                     }
                     return (
                         <Link key={el}
-                              to={{
-                                  pathname: '/'+self.state.groupValue+'/'+el+'/'+self.state.languageValue,
-                                  state: { url: url,
-                                      element: el,
-                                      name: el,
-                                      modelValue: self.state.modelValue,
-                                      groupValue:self.state.groupValue,
-                                      languageValue:self.state.languageValue,}
-                              }}>
+                            to={{
+                                pathname: '/' + self.state.groupValue + '/' + el + '/' + self.state.languageValue,
+                                state: {
+                                    url: url,
+                                    element: el,
+                                    name: el,
+                                    modelValue: self.state.modelValue,
+                                    groupValue: self.state.groupValue,
+                                    languageValue: self.state.languageValue,
+                                }
+                            }}>
                             <Card style={styles.row} key={el}>
                                 <div style={styles.right} key={el}>
                                     {image ? <div style={styles.imageContainer}>
-                                        <img alt={skill_name} src={image} style={styles.image}/>
-                                    </div>:
-                                        <CircleImage name={el} size="48"/>}
+                                        <img alt={skill_name} src={image} style={styles.image} />
+                                    </div> :
+                                        <CircleImage name={el} size="48" />}
                                     <div style={styles.titleStyle}>"{examples}"</div>
                                 </div>
                                 <div style={styles.details}>
@@ -262,7 +265,7 @@ export default class BrowseSkill extends React.Component {
                 });
 
                 self.setState({
-                    skills : skills,
+                    skills: skills,
                     skillURL: url
                 });
                 console.log(self.state)
@@ -338,9 +341,11 @@ export default class BrowseSkill extends React.Component {
 
                     </Paper>
 
-                    <div style={{marginTop:"20px",   marginBottom: "40px",
+                    <div style={{
+                        marginTop: "20px", marginBottom: "40px",
                         textAlign: "justify",
-                        fontSize: "0.1px", width: "100%"}}>
+                        fontSize: "0.1px", width: "100%"
+                    }}>
                         <div className="row" style={styles.scroll}  >
                             <div style={styles.gridList}>
                                 {this.state.skills}
