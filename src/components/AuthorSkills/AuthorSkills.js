@@ -6,6 +6,7 @@ import * as $ from "jquery";
 import Img from 'react-image';
 import CircleImage from "../CircleImage/CircleImage";
 import Close from 'material-ui/svg-icons/navigation/close';
+import './AuthorSkills.css';
 import {
   Table,
   TableBody,
@@ -70,19 +71,28 @@ export default class AuthorSkills extends Component {
                     let image1 = image + '.png';
                     let image2 = image + '.jpg';
 
+                  let skillURL = 'http://skills.susi.ai/' + parse[6] + '/' + parse[8].split('.')[0] + '/' + parse[7];
+
                   return (
                     <TableRow>
                       <TableRowColumn>
                         <div>
-                          <Img
-                            style={imageStyle}
-                            src={[
-                              image1,
-                              image2
-                            ]}
-                            unloader={<CircleImage name={name} size="40"/>}
-                        />
+                          <a
+                            href={skillURL} >
+                            <Img
+                              style={imageStyle}
+                              src={[
+                                image1,
+                                image2
+                              ]}
+                              unloader={<CircleImage name={name} size="40"/>}
+                          />
+                        </a>
+                          <a
+                            href={skillURL}
+                            className="effect-underline" >
                           {name}
+                        </a>
                         </div>
                       </TableRowColumn>
                       <TableRowColumn>{parse[6]}</TableRowColumn>
