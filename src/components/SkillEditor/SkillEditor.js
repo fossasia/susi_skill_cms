@@ -26,7 +26,7 @@ const fontsizes = [];
 const codeEditorThemes = [];
 const cookies = new Cookies();
 
-let self, url ;
+let self, url;
 export default class Container extends React.Component {
 
     constructor(props) {
@@ -38,7 +38,7 @@ export default class Container extends React.Component {
             modelValue: 'general',
             file: null,
             codeChanged: false,
-             groupValue: this.props.location.pathname.split('/')[1],
+            groupValue: this.props.location.pathname.split('/')[1],
             oldGroupValue: this.props.location.pathname.split('/')[1],
             languageValue: this.props.location.pathname.split('/')[4],
             expertValue: this.props.location.pathname.split('/')[2],
@@ -156,17 +156,18 @@ export default class Container extends React.Component {
         });
 
     }
-    onChange(newValue) {
+    handleChange(newValue) {
+
         const match = newValue.match(/^::image\s(.*)$/m);
         if (match !== null) {
             console.log(match[1]);
-
-            self.setState({
+            
+            this.setState({
                 imageUrl: match[1],
                 codeChanged: true
             });
-        }
-        self.updateCode(newValue)
+        }        
+        this.updateCode(newValue);
     }
 
     updateCode = (newCode) => {
@@ -261,19 +262,20 @@ export default class Container extends React.Component {
                 description: 'Please login and then try to create/edit a skill',
                 icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
             });
-            self.setState({
+            this.setState({
                 loading: false
             });
             return 0;
         }
-        console.log(this.state);
-        if (!new RegExp(/images\/\w+\.\w+/g).test(self.state.imageUrl)) {
+
+        console.log(this.state)
+        if (!new RegExp(/images\/\w+\.\w+/g).test(this.state.imageUrl)) {
             notification.open({
                 message: 'Error Processing your Request',
                 description: 'image must be in format of images/imageName.jpg',
                 icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
             });
-            self.setState({
+            this.setState({
                 loading: false
             });
             return 0;
@@ -283,7 +285,7 @@ export default class Container extends React.Component {
                 message: 'Please add a commit message',
                 icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
             });
-            self.setState({
+            this.setState({
                 loading: false
             });
             return 0;
@@ -363,7 +365,7 @@ export default class Container extends React.Component {
                 }
             })
             .fail(function (jqXHR, textStatus) {
-                self.setState({
+                this.setState({
                     loading: false
                 });
                 notification.open({
@@ -371,8 +373,9 @@ export default class Container extends React.Component {
                     description: String(textStatus),
                     icon: <Icon type="close-circle" style={{ color: '#f44336' }} />
                 })
-            });
-    };
+
+            }.bind(this));
+    }
 
     render() {
         const style = {
@@ -465,7 +468,7 @@ export default class Container extends React.Component {
                             value={this.state.code}
                             showPrintMargin={false}
                             name="skill_code_editor"
-                            onChange={this.onChange}
+                            onChange={this.handleChange.bind(this)}
                             editorProps={{ $blockScrolling: true }}
                         />
                         {/*<Chatbox />*/}
