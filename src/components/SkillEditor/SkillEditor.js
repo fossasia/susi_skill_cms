@@ -67,8 +67,8 @@ export default class Container extends React.Component {
 
     }
     updateData(skillData) {
-        this.imgUrl = 'https://raw.githubusercontent.com/fossasia/susi_skill_data/master/models/general/' + this.state.groupValue + '/' + this.state.languageValue + '/' + skillData.image;
-        console.log('imgUrl - editor', this.imgUrl);
+        this.imgUrl = 'https://raw.githubusercontent.com/fossasia/susi_skill_data/master/models/general/' + this.state.groupValue + '/' + this.state.languageValue + '/' + skillData.image
+
         this.setState({
             'image': this.imgUrl
         });
@@ -132,7 +132,6 @@ export default class Container extends React.Component {
         this.setState({
             skillUrl:url
         })
-        console.log('metadata', url)
         $.ajax({
             url: url,
             jsonpCallback: 'pd',
@@ -145,7 +144,6 @@ export default class Container extends React.Component {
         });
 
         url = 'http://api.susi.ai/cms/getSkill.json?skill=' + this.props.location.pathname.split('/')[2];
-        console.log('SkillEditor', url);
 /*         skill_relative_path = this.props.location.pathname.split('/')[2];
  */        $.ajax({
             url: url,
@@ -163,8 +161,6 @@ export default class Container extends React.Component {
 
         const match = newValue.match(/^::image\s(.*)$/m);
         if (match !== null) {
-            console.log(match[1]);
-
             this.setState({
                 imageUrl: match[1],
                 codeChanged: true
@@ -219,7 +215,6 @@ export default class Container extends React.Component {
                 jsonp: 'callback',
                 crossDomain: true,
                 success: function (data) {
-                    console.log(data);
                     data = data.languagesArray;
                     for (let i = 0; i < data.length; i++) {
                         languages.push(<MenuItem value={data[i]} key={data[i]} primaryText={`${data[i]}`} />);
@@ -243,7 +238,6 @@ export default class Container extends React.Component {
                 image_name_changed: true
             });
         }
-        console.log(file);
         this.setState({
             file: file
         });
@@ -270,8 +264,6 @@ export default class Container extends React.Component {
             });
             return 0;
         }
-
-        console.log(this.state)
         if (!new RegExp(/images\/\w+\.\w+/g).test(this.state.imageUrl)) {
             notification.open({
                 message: 'Error Processing your Request',
@@ -339,10 +331,6 @@ export default class Container extends React.Component {
             "mimeType": "multipart/form-data",
             "data": form
         };
-        console.log(settings);
-        for (let pair of form.entries()) {
-            console.log(pair[0] + ', ' + pair[1]);
-        }
         $.ajax(settings)
             .done(function (response) {
                 self.setState({
@@ -416,7 +404,7 @@ export default class Container extends React.Component {
                                     value={this.state.expertValue}
                                     onChange={this.handleExpertChange}
                                 />
-                                {this.state.showImage && <img alt="preview" id="target" style={{ width: 60, height: 60, borderRadius: "50%", marginRight: 20, border: 0 }} src={this.state.image} />}
+                                {this.state.showImage && <img alt="preview" id="target" style={styles.image} src={this.state.image} />}
                                 <RaisedButton
                                     label="Choose an Image"
                                     labelPosition="before"
@@ -515,6 +503,13 @@ const styles = {
         alignItems: "center",
         flexWrap: "wrap"
 
+    },
+    image:{
+        width: 60,
+        height: 60,
+        borderRadius: "50%",
+        marginRight: 20,
+        border: 0
     },
     toolbar: {
         width: "100%",
