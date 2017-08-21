@@ -8,6 +8,7 @@ export default class NotFound extends React.Component {
             <div>
                 <StaticAppBar {...this.props} />
                 <h1 style={styles.bg}>404 &nbsp; :(</h1>
+                <h2 style ={styles.h2Style}>Not Found</h2>
             </div>
         )
     }
@@ -15,10 +16,12 @@ export default class NotFound extends React.Component {
 
 const styles = {
     bg: {
-        height: '90px',
         lineHeight:'90px',
         textAlign: 'center',
-        fontSize:'200px',
+        fontSize:'80px',
         padding: "100px 30px 30px",
+    },
+    h2Style:{
+        textAlign: 'center'
     }
 };

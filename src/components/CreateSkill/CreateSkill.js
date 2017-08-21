@@ -332,7 +332,9 @@ export default class CreateSkill extends React.Component {
                                 <RaisedButton
                                     label="Choose an Image"
                                     labelPosition="before"
+                                    backgroundColor="#4285f4"
                                     containerElement="label"
+                                    labelColor="#fff"
                                 >
                                     <input type="file" style={{
                                         cursor: 'pointer',
@@ -421,7 +423,8 @@ const styles = {
     },
     dropdownDiv:{
         display: "flex",
-        alignItems: "center"
+        alignItems: "center",
+        flexWrap: "wrap"
 
     },
     toolbar: {
