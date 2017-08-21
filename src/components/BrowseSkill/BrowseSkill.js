@@ -146,7 +146,7 @@ export default class BrowseSkill extends React.Component {
                 }.bind(this)
             });
         }
-    }
+    };
 
     handleGroupChange = (event, index, value) => {
         this.setState({groupValue: value,groupSelect:false,languageSelect:false});
@@ -159,7 +159,7 @@ export default class BrowseSkill extends React.Component {
                 crossDomain: true,
                 success: function (data) {
                     console.log(data);
-                    data=data.languagesArray
+                    data=data.languagesArray;
                     this.setState({languages: data});
                     for (let i = 0; i < data.length; i++) {
                         if(isoConv(data[i])){
@@ -173,7 +173,7 @@ export default class BrowseSkill extends React.Component {
                 }.bind(this)
             });
         }
-    }
+    };
 
     handleLanguageChange = (event, index, value) => this.setState({languageValue: value});
 
@@ -266,7 +266,7 @@ export default class BrowseSkill extends React.Component {
                 self.setState({
                     skills : skills,
                     skillURL: url
-                })
+                });
                 console.log(self.state)
             }
         });

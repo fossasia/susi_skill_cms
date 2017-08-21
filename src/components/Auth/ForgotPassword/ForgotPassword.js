@@ -135,7 +135,7 @@ class ForgotPassword extends Component {
 				}.bind(this)
 			});
 		}
-	}
+	};
 
 	render() {
 
@@ -143,11 +143,11 @@ class ForgotPassword extends Component {
 			'width': '100%',
 			'textAlign': 'center',
 			'padding': '10px'
-		}
+		};
 
 		const underlineFocusStyle= {
 			color: '#4285f4',
-		}
+		};
 
 		const closingStyle ={
 			position: 'absolute',
@@ -158,7 +158,7 @@ class ForgotPassword extends Component {
 			right: '10px',
 			top: '10px',
 			cursor:'pointer'
-		}
+		};
 
 		return (
 			<div className="forgotPwdForm">
@@ -208,6 +208,6 @@ class ForgotPassword extends Component {
 ForgotPassword.propTypes = {
     history: PropTypes.object,
     onRequestClose: PropTypes.func,
-}
+};
 
 export default ForgotPassword;

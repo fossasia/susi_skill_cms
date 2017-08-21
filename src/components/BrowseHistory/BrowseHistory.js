@@ -48,7 +48,7 @@ export default class BrowseHistory extends React.Component {
         this.setState({
             code: newCode,
         });
-    }
+    };
 
     handleModelChange = (event, index, value) => {
         this.setState({modelValue: value});
@@ -67,7 +67,7 @@ export default class BrowseHistory extends React.Component {
                 }
             });
         }
-    }
+    };
     handleExpertChange = (event) => {
         console.log(event.target.value);
         this.setState({
@@ -93,7 +93,7 @@ export default class BrowseHistory extends React.Component {
                 }
             });
         }
-    }
+    };
 
     handleLanguageChange = (event, index, value) => this.setState({languageValue: value});
 
@@ -153,7 +153,7 @@ export default class BrowseHistory extends React.Component {
                             icon: <Icon type="close-circle" style={{color: '#f44336'}}/>,
                         });
                     }
-                    self.setState({tableData: array, msg: ""})
+                    self.setState({tableData: array, msg: ""});
                     console.log(self.state.tableData)
                 },
                 error: function (e) {
@@ -167,7 +167,7 @@ export default class BrowseHistory extends React.Component {
                     }
                 }
             });
-    }
+    };
 
     // handleChange = (event, index, value) => this.setState({value});
     render() {
@@ -289,4 +289,4 @@ const styles = {
         margin: '20px auto 10px',
     },
 
-}
+};

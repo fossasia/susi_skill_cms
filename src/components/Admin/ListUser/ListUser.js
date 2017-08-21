@@ -50,7 +50,7 @@ const columns = [{
 export default class ListUser extends Component {
 
     constructor(props) {
-        super(props)
+        super(props);
         this.state = {
             username: [],
             data: [],
@@ -73,7 +73,7 @@ export default class ListUser extends Component {
             sortOrder: sorter.order,
             ...filters,
         });
-    }
+    };
 
     componentDidMount() {
         const pagination = { ...this.state.pagination };
@@ -86,7 +86,7 @@ export default class ListUser extends Component {
             jsonp: 'callback',
             crossDomain: true,
             success: function (response) {
-                console.log(response.showAdmin)
+                console.log(response.showAdmin);
                 if (response.showAdmin) {
                     let getPagesUrl = "http://api.susi.ai/aaa/getUsers.json?access_token=" + cookies.get('loggedIn')
                         + "&getUserCount=true";
@@ -116,7 +116,7 @@ export default class ListUser extends Component {
                 }
             }.bind(this),
             error: function (errorThrown) {
-                console.log("Not allowed to access this page!")
+                console.log("Not allowed to access this page!");
                 console.log(errorThrown)
             }
         });
@@ -128,7 +128,7 @@ export default class ListUser extends Component {
         let url;
         let page;
         if(params.page!==undefined){
-            console.log(params.page)
+            console.log(params.page);
             page = params.page;
         }
         else{
@@ -155,10 +155,10 @@ export default class ListUser extends Component {
                         lastLogin:data.lastLoginTime,
                         ipLastLogin:data.lastLoginIP,
                         userRole:data.userRole
-                    }
+                    };
                     users.push(user);
                     return 1
-                })
+                });
                 console.log(users);
                 this.setState({
                     data:users
@@ -171,7 +171,7 @@ export default class ListUser extends Component {
         // Read total count from server
         // pagination.total = data.totalCount;
 
-    }
+    };
 
     render() {
         return (

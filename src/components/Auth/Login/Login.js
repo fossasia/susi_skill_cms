@@ -22,11 +22,11 @@ class Login extends Component {
         // By default they update that single query parameter and maintain existing
         // values in the other parameters.
         onChangeToken: PropTypes.func,
-    }
+    };
 
     static defaultProps = {
         token: "null",
-    }
+    };
     constructor(props) {
         super(props);
         this.state = {
@@ -47,7 +47,7 @@ class Login extends Component {
         // const {
         //     token
         // } = this.props;
-        console.log(cookies.get('loggedIn'))
+        console.log(cookies.get('loggedIn'));
         if(cookies.get('loggedIn')) {
             this.props.history.push('/home', { open: false });
         }
@@ -100,7 +100,7 @@ class Login extends Component {
                 }.bind(this)
             });
         }
-    }
+    };
 
     handleChange = (event) => {
         let email;
@@ -144,7 +144,7 @@ class Login extends Component {
         }
 
         this.setState(state);
-    }
+    };
 
     handleOnSubmit = (email, loggedIn, showAdmin, time) => {
         let state = this.state;
@@ -161,7 +161,7 @@ class Login extends Component {
                 success: false
             });
         }
-    }
+    };
 
     handleOpen = () => {
         this.setState({ open: true });
@@ -195,7 +195,7 @@ class Login extends Component {
                 checked: false,
             });
         this.props.onForgotPwdLogin();
-    }
+    };
 
     render() {
         // const { token } = this.props;
@@ -204,10 +204,10 @@ class Login extends Component {
             'width': '100%',
             'padding': '10px',
             'textAlign': 'center'
-        }
+        };
         const fieldStyle={
             'width':'256px'
-        }
+        };
         return (
             <div>
 

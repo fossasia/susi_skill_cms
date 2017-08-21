@@ -100,6 +100,6 @@ const styles = {
         verticalAlign: 'middle',
         display: 'block'
     }
-}
+};
 
 export default styles;

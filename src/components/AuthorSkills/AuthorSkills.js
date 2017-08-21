@@ -22,12 +22,12 @@ const imageStyle = {
       width: '40px',
       verticalAlign: 'middle',
       border: 0
-}
+};
 const githubProfile = {
   height: 30,
   width: 30,
   verticalAlign: 'middle',
-}
+};
 
 export default class AuthorSkills extends Component {
 
@@ -46,7 +46,7 @@ export default class AuthorSkills extends Component {
 
 
     loadSkillCards = (author) => {
-      console.log(author)
+      console.log(author);
       let url = "http://api.susi.ai/cms/getSkillsByAuthor.json?author=" + author;
           $.ajax({
               url: url,
@@ -55,7 +55,7 @@ export default class AuthorSkills extends Component {
               crossDomain: true,
               success: function (data) {
                 let skillByAuthor = Object.keys(data);
-                skillByAuthor = skillByAuthor.slice(0,skillByAuthor.length-1)
+                skillByAuthor = skillByAuthor.slice(0,skillByAuthor.length-1);
                 skills = skillByAuthor.map((skill) => {
                   let parse = data[skill].split('/');
                   let name = parse[8].split('.')[0];
@@ -89,11 +89,11 @@ export default class AuthorSkills extends Component {
                       <TableRowColumn>{isoConv(parse[7])}</TableRowColumn>
                     </TableRow>
                   )
-                })
+                });
                 this.setState({skills: skills})
               }.bind(this)
           });
-    }
+    };
 
     render() {
 
@@ -106,11 +106,11 @@ export default class AuthorSkills extends Component {
             right: '10px',
             top: '10px',
             cursor:'pointer'
-        }
+        };
         const headingStyle ={
             fill: '#000',
             width: '100%'
-        }
+        };
         return (
             <div>
                 <Dialog

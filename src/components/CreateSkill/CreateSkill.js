@@ -113,7 +113,7 @@ export default class CreateSkill extends React.Component {
         this.setState({
             code: newCode,
         });
-    }
+    };
 
     handleExpertChange = (event) => {
         console.log(event.target.value);
@@ -153,12 +153,12 @@ export default class CreateSkill extends React.Component {
                 }
             });
         }
-    }
+    };
 
     handleLanguageChange = (event, index, value) => this.setState({languageValue: value,expertSelect:false});
     handleFontChange = (event, index, value) => this.setState({fontSizeCode: value});
     handleThemeChange = (event, index, value) => {this.setState({editorTheme: value});
-        console.log(this.state.editorTheme)}
+        console.log(this.state.editorTheme)};
 
     saveClick = () => {
 
@@ -179,7 +179,7 @@ export default class CreateSkill extends React.Component {
             });
             return 0;
         }
-        console.log(this.state.imageUrl)
+        console.log(this.state.imageUrl);
         if(!new RegExp(/images\/\w+\.\w+/g).test(self.state.imageUrl)){
             notification.open({
                 message: 'Error Processing your Request',
@@ -201,7 +201,7 @@ export default class CreateSkill extends React.Component {
             loading:true
         });
 
-        var form = new FormData();
+        let form = new FormData();
         form.append("model", "general");
         form.append("group", groups[this.state.groupValue].key);
         form.append("language", languages[this.state.languageValue].key);
@@ -209,7 +209,9 @@ export default class CreateSkill extends React.Component {
         form.append("image", this.state.file);
         form.append("content", this.state.code);
         form.append("image_name", this.state.imageUrl.replace("images/",""));
-        var settings = {
+        form.append("access_token", cookies.get('loggedIn'));
+
+        let settings = {
             "async": true,
             "crossDomain": true,
             "url": "http://api.susi.ai/cms/createSkill.json",
@@ -218,7 +220,7 @@ export default class CreateSkill extends React.Component {
             "contentType": false,
             "mimeType": "multipart/form-data",
             "data": form
-        }
+        };
 
         $.ajax(settings)
             .done(function (response) {
@@ -263,12 +265,12 @@ export default class CreateSkill extends React.Component {
                     icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
                 });
             });
-    }
+    };
 
 
     _onChange =(event)=> {
         // Assuming only image
-        var file = this.refs.file.files[0];
+        let file = this.refs.file.files[0];
         if (event.target.files && event.target.files[0]) {
             let reader = new FileReader();
             reader.onload = (e) => {
@@ -282,10 +284,10 @@ export default class CreateSkill extends React.Component {
         this.setState({
             file:file
 
-        })
+        });
         console.log(file) // Would see a path?
         // TODO: concat files for setState
-    }
+    };
 
     render() {
         const style = {
@@ -454,4 +456,4 @@ const styles = {
         width: '100%',
         opacity: 0,
     },
-}
+};

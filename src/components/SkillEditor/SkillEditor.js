@@ -67,7 +67,7 @@ export default class Container extends React.Component {
 
     }
     updateData(skillData) {
-        this.imgUrl = 'https://raw.githubusercontent.com/fossasia/susi_skill_data/master/models/general/' + this.state.groupValue + '/' + this.state.languageValue + '/' + skillData.image
+        this.imgUrl = 'https://raw.githubusercontent.com/fossasia/susi_skill_data/master/models/general/' + this.state.groupValue + '/' + this.state.languageValue + '/' + skillData.image;
         console.log('imgUrl - editor', this.imgUrl);
         this.setState({
             'image': this.imgUrl
@@ -119,7 +119,7 @@ export default class Container extends React.Component {
             languageValue: this.props.location.pathname.split('/')[4],
             expertValue: this.props.location.pathname.split('/')[2],
             imageUrl: this.state.image
-        })
+        });
 
         let baseUrl = 'http://api.susi.ai/cms/getSkillMetadata.json';
 
@@ -130,7 +130,7 @@ export default class Container extends React.Component {
 
         let url = baseUrl + '?model=' + modelValue + '&group=' + groupValue + '&language=' + languageValue + '&skill=' + expertValue;
 
-        console.log('metadata', url)
+        console.log('metadata', url);
         $.ajax({
             url: url,
             jsonpCallback: 'pd',
@@ -174,7 +174,7 @@ export default class Container extends React.Component {
         this.setState({
             code: newCode
         });
-    }
+    };
 
     handleModelChange = (event, index, value) => {
         this.setState({ modelValue: value });
@@ -192,7 +192,7 @@ export default class Container extends React.Component {
                 }
             });
         }
-    }
+    };
 
     handleExpertChange = (event) => {
         this.setState({
@@ -224,11 +224,11 @@ export default class Container extends React.Component {
                 }
             });
         }
-    }
+    };
 
     _onChange = (event) => {
         // Assuming only image
-        var file = this.refs.file.files[0];
+        let file = this.refs.file.files[0];
         if (event.target.files && event.target.files[0]) {
             let reader = new FileReader();
             reader.onload = (e) => {
@@ -244,7 +244,7 @@ export default class Container extends React.Component {
         this.setState({
             file: file
         });
-    }
+    };
 
 
     handleLanguageChange = (event, index, value) => this.setState({ languageValue: value });
@@ -254,7 +254,7 @@ export default class Container extends React.Component {
     saveClick = () => {
         this.setState({
             loading: true
-        })
+        });
 
         if (!cookies.get('loggedIn')) {
             notification.open({
@@ -267,7 +267,7 @@ export default class Container extends React.Component {
             });
             return 0;
         }
-        console.log(this.state)
+        console.log(this.state);
         if (!new RegExp(/images\/\w+\.\w+/g).test(self.state.imageUrl)) {
             notification.open({
                 message: 'Error Processing your Request',
@@ -302,7 +302,7 @@ export default class Container extends React.Component {
         }
         let file;
 
-        var form = new FormData();
+        let form = new FormData();
 
         form.append("OldModel", "general");
         form.append("OldGroup", this.state.oldGroupValue);
@@ -325,7 +325,7 @@ export default class Container extends React.Component {
             form.append("image", file);
         }
 
-        var settings = {
+        let settings = {
             "async": true,
             "crossDomain": true,
             "url": "http://api.susi.ai/cms/modifySkill.json",
@@ -334,9 +334,9 @@ export default class Container extends React.Component {
             "contentType": false,
             "mimeType": "multipart/form-data",
             "data": form
-        }
+        };
         console.log(settings);
-        for (var pair of form.entries()) {
+        for (let pair of form.entries()) {
             console.log(pair[0] + ', ' + pair[1]);
         }
         $.ajax(settings)
@@ -373,13 +373,13 @@ export default class Container extends React.Component {
                     icon: <Icon type="close-circle" style={{ color: '#f44336' }} />
                 })
             });
-    }
+    };
 
     render() {
         const style = {
             width: "100%",
             padding: "10px"
-        }
+        };
         return (
             <div>
                 <StaticAppBar {...this.props} />
@@ -542,5 +542,5 @@ const styles = {
         width: '100%',
         opacity: 0,
     },
-}
+};
 
