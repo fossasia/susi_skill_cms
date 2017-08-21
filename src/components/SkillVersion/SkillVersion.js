@@ -60,7 +60,7 @@ class SkillVersion extends Component {
             self.setCommitHistory(commitsData);
         }
     });
-  }
+  };
 
   setCommitHistory = (commitsData) => {
     console.log(commitsData);
@@ -91,7 +91,7 @@ class SkillVersion extends Component {
       });
       console.log(this.state);
     }
-  }
+  };
 
   onCheck = (event,isInputChecked) => {
     console.log(event.target.name);
@@ -140,7 +140,7 @@ class SkillVersion extends Component {
         checkBoxChecks: checkBoxStates,
       });
     }
-  }
+  };
 
   getCheckedCommits = () => {
     let commitsChecked = this.state.commitsChecked;
@@ -160,8 +160,8 @@ class SkillVersion extends Component {
       console.log(orderedCommits);
       return orderedCommits;
     }
-    return;
-  }
+
+  };
 
   getSkillAtCommitIDUrl = () => {
     let baseUrl = ' http://api.susi.ai/cms/getFileAtCommitID.json';
@@ -174,7 +174,7 @@ class SkillVersion extends Component {
                             '&commitID=';
     console.log(skillAtCommitIDUrl);
     return skillAtCommitIDUrl;
-  }
+  };
 
   render(){
 
@@ -187,7 +187,7 @@ class SkillVersion extends Component {
 
     const compareBtnStyle = {
       marginTop: '20px',
-    }
+    };
 
     let commitHistoryTableHeader =
       <TableRow>

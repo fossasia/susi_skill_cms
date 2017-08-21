@@ -47,11 +47,11 @@ export default class VisualEditor extends React.Component {
                         style={{width:"100%"}}
                     />
                 </CardText>
-            </Card>)
+            </Card>);
 
         this.setState({
             questions:tempQues
-        })
+        });
         console.log(tempQues)
     }
 
@@ -84,7 +84,7 @@ export default class VisualEditor extends React.Component {
         this.setState({
             questions: tempQues
         })
-    }
+    };
 
     loadmodels()
     {
@@ -120,7 +120,7 @@ export default class VisualEditor extends React.Component {
                 groups.push(<MenuItem value={i} key={data[i]} primaryText={`${data[i]}`}/>);
             }
         }
-    }
+    };
 
     handleGroupChange = (event, index, value) => {
         this.setState({groupValue: value});
@@ -138,7 +138,7 @@ export default class VisualEditor extends React.Component {
                 languages.push(<MenuItem value={i} key={data[i]} primaryText={`${data[i]}`}/>);
             }
         }
-    }
+    };
 
     handleLanguageChange = (event, index, value) => this.setState({languageValue: value});
 
@@ -184,7 +184,7 @@ export default class VisualEditor extends React.Component {
 
                 self.setState({
                     test: test
-                })
+                });
 
                 console.log(self.state.test);
 
@@ -193,7 +193,7 @@ export default class VisualEditor extends React.Component {
         });
 
 
-    }
+    };
 
     render() {
 
@@ -282,4 +282,4 @@ const styles = {
         margin: '20px auto 10px',
     },
 
-}
+};

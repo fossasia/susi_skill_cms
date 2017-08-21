@@ -18,7 +18,7 @@ const TabPane = Tabs.TabPane;
 class Admin extends Component {
 
     constructor(props) {
-        super(props)
+        super(props);
 
         this.state = {
             tabPosition: 'top',
@@ -36,7 +36,7 @@ class Admin extends Component {
             jsonp: 'callback',
             crossDomain: true,
             success: function (response) {
-                console.log(response.showAdmin)
+                console.log(response.showAdmin);
                 if (response.showAdmin !== true) {
                     this.setState({
                         showNotAdminDialog: true,
@@ -50,7 +50,7 @@ class Admin extends Component {
             error: function (errorThrown) {
                 this.setState({
                     showNotAdminDialog: false,
-                })
+                });
                 console.log(errorThrown)
             }.bind(this),
         });
@@ -59,7 +59,7 @@ class Admin extends Component {
     handleClose = () => {
         this.props.history.push('/');
         window.location.reload();
-    }
+    };
 
     render() {
 

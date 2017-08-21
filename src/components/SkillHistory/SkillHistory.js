@@ -99,7 +99,7 @@ class SkillHistory extends Component {
         skillName:metaData.skillName,
         skillMeta:metaData
       });
-    }
+    };
 
     render(){
       const style = {
@@ -219,6 +219,6 @@ const styles = {
         width: "100%",
         marginTop: "20px"
     },
-}
+};
 
 export default SkillHistory;

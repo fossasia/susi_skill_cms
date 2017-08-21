@@ -59,7 +59,7 @@ export default class BrowseExamples extends React.Component {
 
                 self.setState({
                     test: test
-                })
+                });
 
                 console.log(self.state.test);
 
@@ -76,7 +76,7 @@ export default class BrowseExamples extends React.Component {
         });
 
 
-    }
+    };
 
     loadmodels()
     {
@@ -114,7 +114,7 @@ export default class BrowseExamples extends React.Component {
                 }
             });
         }
-    }
+    };
 
     handleGroupChange = (event, index, value) => {
         this.setState({groupValue: value});
@@ -134,7 +134,7 @@ export default class BrowseExamples extends React.Component {
                 }
             });
         }
-    }
+    };
 
     handleLanguageChange = (event, index, value) => this.setState({languageValue: value});
 
@@ -185,7 +185,7 @@ export default class BrowseExamples extends React.Component {
 
                 self.setState({
                     test: test
-                })
+                });
 
                 console.log(self.state.test);
 
@@ -200,7 +200,7 @@ export default class BrowseExamples extends React.Component {
             }
 
         });
-    }
+    };
 
     render() {
 
@@ -286,4 +286,4 @@ const styles = {
         margin: '20px auto 10px',
     },
 
-}
+};

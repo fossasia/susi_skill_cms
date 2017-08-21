@@ -48,7 +48,7 @@ let TopRightMenuItems = (props) => (
                   containerElement={<Link to="/settings" />}
                   rightIcon={<Settings/>}/>
     </div>
-)
+);
 
 class StaticAppBar extends Component {
     constructor(props) {
@@ -69,7 +69,7 @@ class StaticAppBar extends Component {
         if (itemTranslate) {
             this.closeOptions();
         }
-    }
+    };
 
     componentDidMount() {
         window.addEventListener('scroll', this.handleScroll);
@@ -83,10 +83,10 @@ class StaticAppBar extends Component {
             crossDomain: true,
             success: function (newResponse) {
                 let ShowAdmin = newResponse.showAdmin;
-                cookies.set('showAdmin', ShowAdmin)
+                cookies.set('showAdmin', ShowAdmin);
                 this.setState({
                     showAdmin: ShowAdmin,
-                })
+                });
                 console.log(newResponse.showAdmin)
             }.bind(this),
             error: function (newErrorThrown) {
@@ -99,7 +99,7 @@ class StaticAppBar extends Component {
         var delta = 5;
         this.setState({
             showAdmin: cookies.get('showAdmin'),
-        })
+        });
         var navbarHeight = $('header').outerHeight();
         $(window).scroll(function (event) {
             didScroll = true;
@@ -138,7 +138,7 @@ class StaticAppBar extends Component {
             showOptions: true,
             anchorEl: event.currentTarget,
         });
-    }
+    };
 
     closeOptions = () => {
       if(this.state.showOptions){
@@ -146,7 +146,7 @@ class StaticAppBar extends Component {
             showOptions: false,
         });
       }
-    }
+    };
 
     handleLogin = () => {
         this.setState({
@@ -155,7 +155,7 @@ class StaticAppBar extends Component {
             showForgotPassword: false,
             showOptions: false,
         });
-    }
+    };
 
     handleSignUp = () => {
         this.setState({
@@ -164,7 +164,7 @@ class StaticAppBar extends Component {
             showForgotPassword: false,
             showOptions: false,
         });
-    }
+    };
 
     handleForgotPassword = () => {
         this.setState({
@@ -173,7 +173,7 @@ class StaticAppBar extends Component {
             showForgotPassword: true,
             showOptions: false,
         });
-    }
+    };
 
     handleClose = ()  => {
         this.setState({
@@ -182,7 +182,7 @@ class StaticAppBar extends Component {
             showSignUp: false,
             showForgotPassword: false,
         })
-    }
+    };
 
     render() {
 
@@ -195,12 +195,12 @@ class StaticAppBar extends Component {
             right: '10px',
             top: '10px',
             cursor:'pointer'
-        }
+        };
 
         const bodyStyle = {
             'padding': 0,
             textAlign: 'center'
-        }
+        };
 
         let TopRightMenu = (props) => (
             <div onScroll={this.handleScroll}>
@@ -247,7 +247,7 @@ class StaticAppBar extends Component {
                     </Popover>
                 </div>
             </div>
-        )
+        );
 
         return (
             <div>

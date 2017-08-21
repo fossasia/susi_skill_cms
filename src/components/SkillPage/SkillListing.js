@@ -65,7 +65,7 @@ export default class SkillListing extends React.Component {
                     urlCode = url + "&skill=" + this.name;
                 }
 
-                urlCode = urlCode.toString()
+                urlCode = urlCode.toString();
                 urlCode = urlCode.replace("getSkillList", "getSkill");
                 console.log(urlCode);
             }
@@ -110,9 +110,9 @@ export default class SkillListing extends React.Component {
         
                     console.log("Url meta:" + url);
         
-                    urlCode = url.toString()
+                    urlCode = url.toString();
                     urlCode = url.replace("getSkillMetadata", "getSkill");
-                    console.log(url)
+                    console.log(url);
                     let self = this;
                     $.ajax({
                         url: url,
@@ -161,7 +161,7 @@ export default class SkillListing extends React.Component {
         else {
             this.setState({
                 skill_name: skillData['skill_name']
-            })
+            });
             name = skillData['skill_name']
         }
 
@@ -176,7 +176,7 @@ export default class SkillListing extends React.Component {
             groupValue: "",
             languageValue: "",
             skillName: ""
-        }
+        };
         if (this.url !== undefined) {
             metaData.groupValue = this.groupValue;
             metaData.languageValue = this.languageValue;
@@ -190,22 +190,22 @@ export default class SkillListing extends React.Component {
             }
         }
         return metaData;
-    }
+    };
 
     openAuthorSkills = () => {
         this.refs.author.loadSkillCards(this.state.author);
         this.setState({ showAuthorSkills: true });
-    }
+    };
 
     closeAuthorSkills = () => {
         this.setState({ showAuthorSkills: false });
-    }
+    };
 
     render() {
 
         const authorStyle = {
             cursor: 'pointer'
-        }
+        };
 
         const styles = {
             home: {

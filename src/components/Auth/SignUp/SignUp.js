@@ -22,10 +22,10 @@ class SignUp extends Component {
         // By default they update that single query parameter and maintain existing
         // values in the other parameters.
         onChangeToken: PropTypes.func,
-    }
+    };
     static defaultProps = {
         token: "null",
-    }
+    };
     constructor(props) {
         super(props);
 
@@ -87,7 +87,7 @@ class SignUp extends Component {
                 msgOpen: false
             });
         }
-    }
+    };
 
     handleServeChange=(event)=>{
         if(this.state.emailError||
@@ -98,14 +98,14 @@ class SignUp extends Component {
         else{
             this.setState({validForm: true});
         }
-    }
+    };
 
     handleChange = (event) => {
         let email;
         let password;
         let confirmPassword;
         // let serverUrl;
-        let state = this.state
+        let state = this.state;
         if (event.target.name === 'email') {
             email = event.target.value.trim();
             let validEmail =
@@ -185,7 +185,7 @@ class SignUp extends Component {
         else{
             this.setState({validForm: true});
         }
-    }
+    };
 
     handleSubmit = (event) => {
         event.preventDefault();
@@ -221,7 +221,7 @@ class SignUp extends Component {
                 }.bind(this),
                 error: function(jqXHR, textStatus, errorThrown) {
                     let jsonValue =  jqXHR.status;
-                    let msg
+                    let msg;
                     if (jsonValue === 404) {
                       msg = 'Email already taken. Please try with another email.';
                     }
@@ -241,7 +241,7 @@ class SignUp extends Component {
             });
         }
 
-    }
+    };
 
     handleOpen = () => {
         this.setState(
@@ -271,13 +271,13 @@ class SignUp extends Component {
             'width': '100%',
             'textAlign': 'center',
             'padding': '10px'
-        }
+        };
         const fieldStyle={
             'width':'256px'
-        }
+        };
         const underlineFocusStyle= {
             color: '#4285f4'
-        }
+        };
 
         const PasswordClass=[`is-strength-${this.state.passwordScore}`];
 
@@ -366,6 +366,6 @@ SignUp.propTypes = {
     history: PropTypes.object,
     onRequestClose: PropTypes.func,
     onLoginSignUp: PropTypes.func,
-}
+};
 
 export default addUrlProps({ urlPropsQueryConfig })(SignUp);
