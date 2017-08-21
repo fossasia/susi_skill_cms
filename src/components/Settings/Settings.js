@@ -21,4 +21,4 @@ const styles = {
         textAlign: 'center',
         padding: "80px 30px 30px",
     }
-}
+};

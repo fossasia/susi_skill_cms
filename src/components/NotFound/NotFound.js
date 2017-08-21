@@ -21,4 +21,4 @@ const styles = {
         fontSize:'200px',
         padding: "100px 30px 30px",
     }
-}
+};

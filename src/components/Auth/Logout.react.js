@@ -32,8 +32,7 @@ class Logout extends Component {
 
     }
 
-};
-
+}
 Logout.propTypes = {
     history: PropTypes.object
 };

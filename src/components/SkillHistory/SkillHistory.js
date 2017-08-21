@@ -153,7 +153,7 @@ class SkillHistory extends Component {
       this.setState({
         commitData:commitData,
       });
-    }
+    };
 
     render(){
       const style = {
@@ -270,6 +270,6 @@ const styles = {
         width: "100%",
         marginTop: "20px"
     },
-}
+};
 
 export default SkillHistory;

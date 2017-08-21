@@ -6,6 +6,7 @@ import * as $ from "jquery";
 import Img from 'react-image';
 import CircleImage from "../CircleImage/CircleImage";
 import Close from 'material-ui/svg-icons/navigation/close';
+import './AuthorSkills.css';
 import {
   Table,
   TableBody,
@@ -22,12 +23,12 @@ const imageStyle = {
       width: '40px',
       verticalAlign: 'middle',
       border: 0
-}
+};
 const githubProfile = {
   height: 30,
   width: 30,
   verticalAlign: 'middle',
-}
+};
 
 export default class AuthorSkills extends Component {
 
@@ -46,7 +47,7 @@ export default class AuthorSkills extends Component {
 
 
     loadSkillCards = (author) => {
-      console.log(author)
+      console.log(author);
       let url = "http://api.susi.ai/cms/getSkillsByAuthor.json?author=" + author;
           $.ajax({
               url: url,
@@ -55,7 +56,7 @@ export default class AuthorSkills extends Component {
               crossDomain: true,
               success: function (data) {
                 let skillByAuthor = Object.keys(data);
-                skillByAuthor = skillByAuthor.slice(0,skillByAuthor.length-1)
+                skillByAuthor = skillByAuthor.slice(0,skillByAuthor.length-1);
                 skills = skillByAuthor.map((skill) => {
                   let parse = data[skill].split('/');
                   let name = parse[8].split('.')[0];
@@ -70,30 +71,39 @@ export default class AuthorSkills extends Component {
                     let image1 = image + '.png';
                     let image2 = image + '.jpg';
 
+                  let skillURL = 'http://skills.susi.ai/' + parse[6] + '/' + parse[8].split('.')[0] + '/' + parse[7];
+
                   return (
                     <TableRow>
                       <TableRowColumn>
                         <div>
-                          <Img
-                            style={imageStyle}
-                            src={[
-                              image1,
-                              image2
-                            ]}
-                            unloader={<CircleImage name={name} size="40"/>}
-                        />
+                          <a
+                            href={skillURL} >
+                            <Img
+                              style={imageStyle}
+                              src={[
+                                image1,
+                                image2
+                              ]}
+                              unloader={<CircleImage name={name} size="40"/>}
+                          />
+                        </a>
+                          <a
+                            href={skillURL}
+                            className="effect-underline" >
                           {name}
+                        </a>
                         </div>
                       </TableRowColumn>
                       <TableRowColumn>{parse[6]}</TableRowColumn>
                       <TableRowColumn>{isoConv(parse[7])}</TableRowColumn>
                     </TableRow>
                   )
-                })
+                });
                 this.setState({skills: skills})
               }.bind(this)
           });
-    }
+    };
 
     render() {
 
@@ -106,11 +116,11 @@ export default class AuthorSkills extends Component {
             right: '10px',
             top: '10px',
             cursor:'pointer'
-        }
+        };
         const headingStyle ={
             fill: '#000',
             width: '100%'
-        }
+        };
         return (
             <div>
                 <Dialog

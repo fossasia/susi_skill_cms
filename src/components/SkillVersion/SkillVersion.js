@@ -57,7 +57,7 @@ class SkillVersion extends Component {
             self.setCommitHistory(commitsData);
         }
     });
-  }
+  };
 
   setCommitHistory = (commitsData) => {
     console.log(commitsData);
@@ -86,7 +86,7 @@ class SkillVersion extends Component {
         checkBoxChecks: initCheckBoxStates,
       });
     }
-  }
+  };
 
   onCheck = (event,isInputChecked) => {
     var checkBoxID = parseInt(event.target.name,10);
@@ -134,7 +134,7 @@ class SkillVersion extends Component {
         checkBoxChecks: checkBoxStates,
       });
     }
-  }
+  };
 
   getCheckedCommits = () => {
     let commitsChecked = this.state.commitsChecked;
@@ -153,8 +153,8 @@ class SkillVersion extends Component {
       }
       return orderedCommits;
     }
-    return;
-  }
+
+  };
 
   render(){
 
@@ -167,7 +167,7 @@ class SkillVersion extends Component {
 
     const compareBtnStyle = {
       marginTop: '20px',
-    }
+    };
 
     let commitHistoryTableHeader =
       <TableRow>

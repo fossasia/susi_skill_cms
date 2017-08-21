@@ -97,13 +97,13 @@ class SkillRollBack extends Component {
         code: commitData[1].code,
         commitMessage: 'Reverting to Commit - '+commitData[1].commitID
       });
-    }
+    };
 
     updateCode = (newCode) => {
       this.setState({
         code: newCode,
       });
-    }
+    };
 
     handleCommitMessageChange = (event) => {
       this.setState({
@@ -179,7 +179,7 @@ class SkillRollBack extends Component {
           "contentType": false,
           "mimeType": "multipart/form-data",
           "data": form
-      }
+      };
 
       $.ajax(settings)
           .done(function (response) {
@@ -218,7 +218,7 @@ class SkillRollBack extends Component {
               icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
             });
           });
-    }
+    };
 
     render(){
       const style = {
@@ -340,6 +340,6 @@ const styles = {
         width: "100%",
         marginTop: "20px"
     },
-}
+};
 
 export default SkillRollBack;
