@@ -3,6 +3,5 @@ import SkillVersion from '../../../components/SkillVersion/SkillVersion';
 import { shallow } from 'enzyme';
 
  it('render SkillVersion without crashing',()=>{
-   shallow(<SkillVersion />);
+   shallow(<SkillVersion location={{"pathname": "/:category/:skill/versions/:lang"}} />);
  });
- 

@@ -161,12 +161,12 @@ export default class Container extends React.Component {
         const match = newValue.match(/^::image\s(.*)$/m);
         if (match !== null) {
             console.log(match[1]);
-            
+
             this.setState({
                 imageUrl: match[1],
                 codeChanged: true
             });
-        }        
+        }
         this.updateCode(newValue);
     }
 
@@ -546,4 +546,3 @@ const styles = {
         opacity: 0,
     },
 };
-
