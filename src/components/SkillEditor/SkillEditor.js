@@ -26,7 +26,7 @@ const fontsizes = [];
 const codeEditorThemes = [];
 const cookies = new Cookies();
 
-let self, url;
+let self;
 export default class Container extends React.Component {
 
     constructor(props) {
@@ -35,6 +35,7 @@ export default class Container extends React.Component {
             showImage: true,
             image: '',
             commitMessage: null,
+            skillUrl:null,
             modelValue: 'general',
             file: null,
             codeChanged: false,
@@ -128,7 +129,9 @@ export default class Container extends React.Component {
         let expertValue = this.props.location.pathname.split('/')[2];
 
         let url = baseUrl + '?model=' + modelValue + '&group=' + groupValue + '&language=' + languageValue + '&skill=' + expertValue;
-
+        this.setState({
+            skillUrl:url
+        })
         $.ajax({
             url: url,
             jsonpCallback: 'pd',
@@ -375,7 +378,7 @@ export default class Container extends React.Component {
                 <StaticAppBar {...this.props} />
                 <div style={styles.home}>
                     <Paper style={style} zDepth={1}>
-                        <div>Currently Editing : <h3>{url}</h3></div>
+                        <div>Currently Editing : <h3>{this.state.skillUrl}</h3></div>
                         <div style={styles.center}>
                             <div style={styles.dropdownDiv}>
                                 <SelectField
