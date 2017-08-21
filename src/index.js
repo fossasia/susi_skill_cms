@@ -37,13 +37,14 @@ class App extends React.Component {
                         <Route exact path="/admin" component={Admin}/>
                         <Route path="/listUser" component={ListUser}/>
                         <Route exact path="/visualEditor" component={VisualEditor}/>
-                        <Route path="/:category/:skill/:lang" component={SkillListing}/>
+                        <Route exact path="/:category/:skill/:lang" component={SkillListing}/>
                         <Route exact path="/settings" component={Settings}/>
                         <Route exact path="/logout" component={Logout} />
                         <Route exact path="/skillCreator" component={CreateSkill}/>
-                        <Route exact path="/versions" component={SkillVersion}/>
-                        <Route exact path="/skillHistory" component={SkillHistory}/>
-                        <Route exact path="/skillRollBack" component={SkillRollBack}/>
+                        <Route exact path="/:category/:skill/versions/:lang" component={SkillVersion}/>
+                        <Route exact path="/:category/:skill/version/:lang/:commit" component={SkillHistory}/>
+                        <Route exact path="/:category/:skill/compare/:lang/:oldid/:recentid" component={SkillHistory}/>
+                        <Route exact path="/:category/:skill/edit/:lang/:latestid/:revertid" component={SkillRollBack}/>
                         <Route exact path="/" component={BrowseSkill} />
                         <Route exact path="*" component={NotFound} />
                     </Switch>
