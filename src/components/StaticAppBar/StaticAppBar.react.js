@@ -72,6 +72,11 @@ class StaticAppBar extends Component {
     };
 
     componentDidMount() {
+        if(this.props.location.pathname!=='/'){    
+        
+            document.getElementById("appBar").classList.add('topAppBarFix');            
+        }
+
         window.addEventListener('scroll', this.handleScroll);
         let url;
         url = "http://api.susi.ai/aaa/showAdminService.json?access_token="+cookies.get('loggedIn');
@@ -254,11 +259,14 @@ class StaticAppBar extends Component {
                 <header className="nav-down" id="headerSection">
                     <AppBar
                         className="topAppBar"
+                        id="appBar"
                         title={<div style={{ float: 'left', marginTop: '-10px' }}><Link to="/" >
                             <img src={susiWhite} alt="susi-logo" className="siteTitle" /></Link></div>}
                         style={{
-                            backgroundColor: '#4285f4', height: '46px',
-                            boxShadow: 'none'
+                            backgroundColor: '#4285f4',
+                            height: '46px',
+                            boxShadow: 'none',
+                            margin:'0 auto',
                         }}
                         iconStyleRight={{marginTop: '-2px'}}
                         iconElementRight={<TopRightMenu />}
