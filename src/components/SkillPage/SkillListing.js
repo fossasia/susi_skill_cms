@@ -22,6 +22,7 @@ import {
 } from "material-ui";
 import CircleImage from "../CircleImage/CircleImage";
 import EditBtn from 'material-ui/svg-icons/editor/mode-edit';
+import VersionBtn from 'material-ui/svg-icons/action/history';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 
 const defaultNullSkillList = ['image', 'author', 'author_url', 'developer_privacy_policy', 'terms_of_use', 'dynamic_content', 'examples'];
@@ -242,11 +243,9 @@ export default class SkillListing extends React.Component {
                                 pathname: '/'+this.groupValue+ '/'+this.name+'/versions/'+this.languageValue,
                             }}>
                                 <div className="skillVersionBtn">
-                                    <RaisedButton
-                                        label="Versions"
-                                        backgroundColor="#4285f4"
-                                        labelColor="#fff"
-                                    />
+                                    <FloatingActionButton backgroundColor={"#4285f4"} >
+                                        <VersionBtn />
+                                    </FloatingActionButton>
                                 </div>
                             </Link>
                         </div>
