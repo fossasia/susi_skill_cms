@@ -156,6 +156,14 @@ export default class ListUser extends Component {
                         ipLastLogin:data.lastLoginIP,
                         userRole:data.userRole
                     };
+                  
+                    if(user.confirmed) {
+                        user.confirmed = "Activated"
+                    }
+                    else {
+                        user.confirmed = "Not Activated"
+                    }
+                  
                     users.push(user);
                     return 1
                 });
@@ -187,3 +195,4 @@ export default class ListUser extends Component {
         );
     }
 }
+    
