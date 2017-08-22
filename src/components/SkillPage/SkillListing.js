@@ -12,6 +12,7 @@ import 'brace/theme/textmate';
 import 'brace/theme/solarized_dark';
 import 'brace/theme/solarized_light';
 import 'brace/theme/terminal';
+import { Tooltip } from 'antd';
 import $ from "jquery";
 import Divider from 'material-ui/Divider';
 import './SkillListing.css';
@@ -233,18 +234,22 @@ export default class SkillListing extends React.Component {
                             oldImageUrl:oldImageValue, oldImageValue:imageValue }
                             }}>
                                 <div className="skillEditBtn">
+                                    <Tooltip placement="bottom" title="Edit Skill">
                                     <FloatingActionButton backgroundColor={"#4285f4"} >
                                         <EditBtn />
                                     </FloatingActionButton>
+                                    </Tooltip>
                                 </div>
                             </Link>
                             <Link to={{
                                 pathname: '/'+this.groupValue+ '/'+this.name+'/versions/'+this.languageValue,
                             }}>
                                 <div className="skillVersionBtn">
+                                    <Tooltip placement="bottom" title="Skill Versions">
                                     <FloatingActionButton backgroundColor={"#4285f4"} >
                                         <VersionBtn />
                                     </FloatingActionButton>
+                                    </Tooltip>
                                 </div>
                             </Link>
                         </div>
