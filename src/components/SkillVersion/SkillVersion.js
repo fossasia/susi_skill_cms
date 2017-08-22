@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import {
   Table,
@@ -10,10 +10,8 @@ import {
   TableRowColumn,
 } from 'material-ui/Table';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import {
-  RaisedButton,
-  Checkbox
-} from "material-ui";
+import { RaisedButton } from "material-ui";
+import { RadioButton } from 'material-ui/RadioButton';
 import $ from "jquery";
 
 class SkillVersion extends Component {
@@ -21,7 +19,6 @@ class SkillVersion extends Component {
       super(props);
       this.state = {
           commits: [],
-          commitsChecked: [],
           dataReceived: false,
           skillMeta: {
             modelValue: "general",
@@ -29,7 +26,10 @@ class SkillVersion extends Component {
             languageValue: this.props.location.pathname.split('/')[4],
             skillName: this.props.location.pathname.split('/')[2]
           },
-          checkBoxChecks:[],
+          leftChecks:[],
+          rightChecks:[],
+          currLeftChecked:null,
+          currRightChecked:null,
       };
       console.log(this.props);
   }
@@ -63,97 +63,74 @@ class SkillVersion extends Component {
     console.log(commitsData);
     if(commitsData.accepted){
       let commits = commitsData.commits ? commitsData.commits : [];
-      var initChecked = [];
-      var initCheckBoxStates = [];
+      var initLeftChecked = null;
+      var initRightChecked = null;
+      var initLeftCheckBoxStates = [];
+      var initRightCheckBoxStates = [];
       commits.forEach((commit,index) => {
         if(index === 0){
           commit.latest = true;
-          initCheckBoxStates.push(true);
-          initChecked.push(0);
+          initRightCheckBoxStates.push(true);
+          initLeftCheckBoxStates.push(false);
+          initRightChecked = 0;
         }
         else if(index === 1){
-          initCheckBoxStates.push(true);
-          initChecked.push(1);
+          initRightCheckBoxStates.push(false);
+          initLeftCheckBoxStates.push(true);
+          initLeftChecked = 1;
         }
         else {
-          initCheckBoxStates.push(false);
+          initRightCheckBoxStates.push(false);
+          initLeftCheckBoxStates.push(false);
         }
       });
       this.setState({
         commits:commits,
         dataReceived: true,
-        commitsChecked: initChecked,
-        checkBoxChecks: initCheckBoxStates,
+        leftChecks:initLeftCheckBoxStates,
+        rightChecks:initRightCheckBoxStates,
+        currLeftChecked:initLeftChecked,
+        currRightChecked:initRightChecked,
       });
     }
   };
 
-  onCheck = (event,isInputChecked) => {
-    var checkBoxID = parseInt(event.target.name,10);
-    let commitsChecked = this.state.commitsChecked;
-    let checkBoxStates = this.state.checkBoxChecks;
-    if(isInputChecked){
-      if(commitsChecked.length < 2){
-        checkBoxStates[checkBoxID] = true;
-        commitsChecked.push(event.target.name);
-        this.setState({
-          commitsChecked: commitsChecked,
-          checkBoxChecks: checkBoxStates
-        });
-      }
-      else {
-        var checkedID1 = parseInt(commitsChecked[0],10);
-        var checkedID2 = parseInt(commitsChecked[1],10);
-        var initCheckMin = Math.min(checkedID1, checkedID2);
-        var initCheckMax = Math.max(checkedID1, checkedID2);
-        checkBoxStates.fill(false);
-        if(checkBoxID > initCheckMax){
-          checkBoxStates[initCheckMin] = true;
-          checkBoxStates[checkBoxID] = true;
-          commitsChecked[0] = initCheckMin;
-          commitsChecked[1] = checkBoxID;
-        }
-        else{
-          checkBoxStates[checkBoxID] = true;
-          checkBoxStates[initCheckMax] = true;
-          commitsChecked[0] = checkBoxID;
-          commitsChecked[1] = initCheckMax;
-        }
-        this.setState({
-          commitsChecked: commitsChecked,
-          checkBoxChecks: checkBoxStates
-        });
+  onCheck = (event) => {
+    let side = event.target.name.split("-")[1];
+    let index = parseInt(event.target.name.split("-")[0],10);
+    var currLeft = this.state.currLeftChecked;
+    var currRight = this.state.currRightChecked;
+    var leftChecks = this.state.leftChecks;
+    var rightChecks = this.state.rightChecks;
+    if(side === 'right'){
+      if(!(index >= currLeft)){
+        rightChecks.fill(false);
+        rightChecks[index] = true;
+        currRight = index;
       }
     }
-    else{
-      var delIndex = commitsChecked.indexOf(checkBoxID);
-      commitsChecked.splice(delIndex,1);
-      checkBoxStates[checkBoxID] = false;
-      this.setState({
-        commitsChecked: commitsChecked,
-        checkBoxChecks: checkBoxStates,
-      });
+    else if(side === 'left'){
+      if(!(index <= currRight)){
+        leftChecks.fill(false);
+        leftChecks[index] = true;
+        currLeft = index;
+      }
     }
-  };
+    this.setState({
+      currLeftChecked: currLeft,
+      currRightChecked: currRight,
+      leftChecks: leftChecks,
+      rightChecks: rightChecks,
+    });
+  }
 
   getCheckedCommits = () => {
-    let commitsChecked = this.state.commitsChecked;
     let commits = this.state.commits;
-    if(commitsChecked.length === 2){
-      var commitIndex1 = parseInt(commitsChecked[0],10);
-      var commitIndex2 = parseInt(commitsChecked[1],10);
-      let commit1 = commits[commitIndex1];
-      let commit2 = commits[commitIndex2];
-      let orderedCommits = [commit1];
-      if(commitIndex2 > commitIndex1){
-        orderedCommits.unshift(commit2);
-      }
-      else{
-        orderedCommits.push(commit2);
-      }
-      return orderedCommits;
-    }
-
+    var currLeft = this.state.currLeftChecked;
+    var currRight = this.state.currRightChecked;
+    let commitOld = commits[currLeft];
+    let commitRecent = commits[currRight];
+    return [commitOld,commitRecent]
   };
 
   render(){
@@ -169,8 +146,15 @@ class SkillVersion extends Component {
       marginTop: '20px',
     };
 
+    var showCompareBtn = false;
+    if(this.state.currLeftChecked != null &&
+        this.state.currRightChecked != null){
+        showCompareBtn = true;
+    }
+
     let commitHistoryTableHeader =
       <TableRow>
+        <TableHeaderColumn style={{width:'20px'}}></TableHeaderColumn>
         <TableHeaderColumn style={{width:'20px'}}></TableHeaderColumn>
         <TableHeaderColumn>Commit Date</TableHeaderColumn>
         <TableHeaderColumn>Commit ID</TableHeaderColumn>
@@ -179,26 +163,48 @@ class SkillVersion extends Component {
 
     let commits = this.state.commits;
     let commitHistoryTableRows = commits.map((commit,index)=>{
-      let checkBoxStates = this.state.checkBoxChecks;
-      let checkBox = null;
-      if(checkBoxStates){
-        checkBox =  <Checkbox
-                      name={index.toString()}
-                      checked={checkBoxStates[index]}
-                      onCheck={this.onCheck}/>;
+      let leftChecks = this.state.leftChecks;
+      let rightChecks = this.state.rightChecks;
+      let leftRadioBtn = null;
+      let rightRadioBtn = null;
+      if(leftChecks && rightChecks){
+        leftRadioBtn =  <RadioButton
+                          name={index.toString()+"-left"}
+                          checked={leftChecks[index]}
+                          onCheck={this.onCheck}/>;
+        rightRadioBtn =  <RadioButton
+                          name={index.toString()+"-right"}
+                          checked={rightChecks[index]}
+                          onCheck={this.onCheck}/>;
       }
       else{
-        let defaultChecked = index < 2 ? true : false;
-        checkBox = <Checkbox
-          name={index.toString()}
-          checked={defaultChecked}
-          onCheck={this.onCheck}/>;
+        leftRadioBtn =  <RadioButton
+                          name={index.toString()+"-left"}
+                          checked={index===1}
+                          onCheck={this.onCheck}/>;
+        rightRadioBtn =  <RadioButton
+                          name={index.toString()+"-right"}
+                          checked={index===0}
+                          onCheck={this.onCheck}/>;
+      }
+      if(showCompareBtn){
+        var currLeft = this.state.currLeftChecked;
+        var currRight = this.state.currRightChecked;
+        if(index <= currRight){
+          leftRadioBtn=null;
+        }
+        if(index >= currLeft){
+          rightRadioBtn=null;
+        }
       }
 
       return(
         <TableRow key={index}>
           <TableRowColumn style={{width:'20px'}}>
-            {checkBox}
+            {leftRadioBtn}
+          </TableRowColumn>
+          <TableRowColumn style={{width:'20px'}}>
+            {rightRadioBtn}
           </TableRowColumn>
           <TableRowColumn>
           <Link to={{
@@ -252,7 +258,7 @@ class SkillVersion extends Component {
                 <div style={compareBtnStyle}>
                   {commitHistoryTable}
                 </div>
-                {(this.state.commitsChecked.length === 2) &&
+                {(showCompareBtn) &&
                 <Link to={{
                     pathname: '/'+this.state.skillMeta.groupValue+
                               '/'+this.state.skillMeta.skillName+
