@@ -18,7 +18,6 @@ import './SkillListing.css';
 import {
     FloatingActionButton,
     Paper,
-    RaisedButton,
 } from "material-ui";
 import CircleImage from "../CircleImage/CircleImage";
 import EditBtn from 'material-ui/svg-icons/editor/mode-edit';
