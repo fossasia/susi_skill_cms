@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import AceEditor from 'react-ace';
 import 'brace/mode/markdown';
 import 'brace/theme/github';
@@ -13,8 +14,8 @@ import 'brace/theme/solarized_dark';
 import 'brace/theme/solarized_light';
 import 'brace/theme/terminal';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
-import * as $ from "jquery";
-import {Paper, RaisedButton, TextField} from "material-ui";
+import * as $ from 'jquery';
+import {Paper, RaisedButton, TextField} from 'material-ui';
 import Diff from 'react-diff';
 import Cookies from 'universal-cookie';
 import Icon from 'antd/lib/icon';
@@ -27,12 +28,12 @@ class SkillRollBack extends Component {
         super(props);
         var parsePath = this.props.location.pathname.split('/');
         this.state = {
-            code:"::name <Skill_name>\n::author <author_name>\n::author_url <author_url>\n::description <description> \n::dynamic_content <Yes/No>\n::developer_privacy_policy <link>\n::image <image_url>\n::terms_of_use <link>\n\n\nUser query1|query2|quer3....\n!example:<The question that should be shown in public skill displays>\n!expect:<The answer expected for the above example>\nAnswer for the user query",
+            code:'::name <Skill_name>\n::author <author_name>\n::author_url <author_url>\n::description <description> \n::dynamic_content <Yes/No>\n::developer_privacy_policy <link>\n::image <image_url>\n::terms_of_use <link>\n\n\nUser query1|query2|quer3....\n!example:<The question that should be shown in public skill displays>\n!expect:<The answer expected for the above example>\nAnswer for the user query',
             fontSizeCode:14,
-            editorTheme:"github",
+            editorTheme:'github',
             url:'',
             skillMeta: {
-              modelValue: "general",
+              modelValue: 'general',
               groupValue: parsePath[1],
               languageValue: parsePath[4],
               skillName: parsePath[2]
@@ -117,7 +118,7 @@ class SkillRollBack extends Component {
           notification.open({
               message: 'Not logged In',
               description: 'Please login and then try to create/edit a skill',
-              icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
+              icon: <Icon type='close-circle' style={{ color: '#f44336' }} />,
           });
           return 0;
       }
@@ -128,7 +129,7 @@ class SkillRollBack extends Component {
         notification.open({
           message: 'Error Processing your Request',
           description: 'Please select a model, group, language and a skill and Try Again',
-          icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
+          icon: <Icon type='close-circle' style={{ color: '#f44336' }} />,
         });
         return 0;
       }
@@ -140,14 +141,14 @@ class SkillRollBack extends Component {
         notification.open({
           message: 'Error Processing your Request',
           description: 'Please check the image path and Try Again',
-          icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
+          icon: <Icon type='close-circle' style={{ color: '#f44336' }} />,
         });
         return 0;
       }
       oldImageName = oldImageName[1];
-      oldImageName = oldImageName.replace("images/","");
+      oldImageName = oldImageName.replace('images/','');
       newImageName = newImageName[1];
-      newImageName = newImageName.replace("images/","");
+      newImageName = newImageName.replace('images/','');
 
       let form = new FormData();
       form.append('OldModel',skillMetaData.modelValue);
@@ -171,14 +172,14 @@ class SkillRollBack extends Component {
       }
 
       var settings = {
-          "async": true,
-          "crossDomain": true,
-          "url": "http://api.susi.ai/cms/modifySkill.json",
-          "method": "POST",
-          "processData": false,
-          "contentType": false,
-          "mimeType": "multipart/form-data",
-          "data": form
+          'async': true,
+          'crossDomain': true,
+          'url': 'http://api.susi.ai/cms/modifySkill.json',
+          'method': 'POST',
+          'processData': false,
+          'contentType': false,
+          'mimeType': 'multipart/form-data',
+          'data': form
       };
 
       $.ajax(settings)
@@ -189,7 +190,7 @@ class SkillRollBack extends Component {
               notification.open({
                 message: 'Accepted',
                 description: 'Your Skill has been uploaded to the server',
-                icon: <Icon type="check-circle" style={{ color: '#00C853' }} />,
+                icon: <Icon type='check-circle' style={{ color: '#00C853' }} />,
               });
               this.props.history.push(
                 {
@@ -197,7 +198,7 @@ class SkillRollBack extends Component {
                             '/'+skillMetaData.skillName+
                             '/'+skillMetaData.languageValue,
                   state: {
-                      from_upload: true,
+                      fromUpload: true,
                       expertValue:  skillMetaData.skillName,
                       groupValue: skillMetaData.groupValue ,
                       languageValue: skillMetaData.languageValue,
@@ -207,7 +208,7 @@ class SkillRollBack extends Component {
               notification.open({
                 message: 'Error Processing your Request',
                 description: data.message,
-                icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
+                icon: <Icon type='close-circle' style={{ color: '#f44336' }} />,
               });
             }
           })
@@ -215,15 +216,15 @@ class SkillRollBack extends Component {
             notification.open({
               message: 'Error Processing your Request',
               description: 'Error in processing the request. Please try with some other skill',
-              icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
+              icon: <Icon type='close-circle' style={{ color: '#f44336' }} />,
             });
           });
     };
 
     render(){
       const style = {
-          width: "100%",
-          padding: "10px"
+          width: '100%',
+          padding: '10px'
       };
       let rightEditorWidth = '50%';
       if (window.matchMedia('only screen and (max-width: 768px)').matches){
@@ -233,7 +234,7 @@ class SkillRollBack extends Component {
         <div>
           <StaticAppBar {...this.props} />
           {this.state.commitData.length === 0 && (
-            <h1 className="skill_loading_container">Loading...</h1>
+            <h1 className='skill_loading_container'>Loading...</h1>
           )}
           <div style={styles.home}>
             {this.state.commitData.length === 2 && (<div style={{display:'block'}}>
@@ -245,15 +246,15 @@ class SkillRollBack extends Component {
                 <span><b>Latest Revision</b></span>
               <div style={styles.codeEditor}>
               <AceEditor
-                  mode="java"
+                  mode='java'
                   readOnly={true}
                   theme={this.state.editorTheme}
-                  width="100%"
+                  width='100%'
                   fontSize={this.state.fontSizeCode}
-                  height= "400px"
+                  height= '400px'
                   value={this.state.commitData[0].code}
                   showPrintMargin={false}
-                  name="skill_code_editor"
+                  name='skill_code_editor'
                   editorProps={{$blockScrolling: true}}
               />
               </div>
@@ -263,62 +264,62 @@ class SkillRollBack extends Component {
                 <span><b>Your Text</b></span>
               <div style={styles.codeEditor}>
               <AceEditor
-                  mode="java"
+                  mode='java'
                   readOnly={true}
                   theme={this.state.editorTheme}
                   width={rightEditorWidth}
                   fontSize={this.state.fontSizeCode}
-                  height= "400px"
+                  height= '400px'
                   value={this.state.commitData[1].code}
                   showPrintMargin={false}
-                  name="skill_code_editor"
+                  name='skill_code_editor'
                   editorProps={{$blockScrolling: true}}
               />
               </div>
               </div>
               <div>
-              <h1 className="title" style={{marginTop:'20px'}}>
+              <h1 className='title' style={{marginTop:'20px'}}>
                   Changes
               </h1>
-              {/*latest code should be inputB*/}
+              {/* latest code should be inputB */}
               <Diff
                 inputA={this.state.commitData[0].code}
                 inputB={this.state.commitData[1].code}
-                type="chars"
+                type='chars'
                 />
               </div>
               <div>
-              <h1 className="title" style={{marginTop:'20px'}}>
+              <h1 className='title' style={{marginTop:'20px'}}>
                   Edit
               </h1>
               <div style={styles.codeEditor}>
                 <AceEditor
-                    mode="java"
+                    mode='java'
                     theme={this.state.editorTheme}
-                    width="100%"
+                    width='100%'
                     fontSize={this.state.fontSizeCode}
-                    height= "400px"
+                    height= '400px'
                     value={this.state.code}
                     showPrintMargin={false}
-                    name="skill_code_editor"
+                    name='skill_code_editor'
                     onChange={this.updateCode}
                     editorProps={{$blockScrolling: true}}
                 />
               </div>
-              <div style={{display: "flex",alignItems:"center",textAlign:"center",justifyContent:"center", marginTop:10}}>
-                  <Paper style={{width:"100%",padding:10,display: "flex",alignItems:"center",textAlign:"center",justifyContent:"center"}} zDepth={1}>
+              <div style={{display: 'flex',alignItems:'center',textAlign:'center',justifyContent:'center', marginTop:10}}>
+                  <Paper style={{width:'100%',padding:10,display: 'flex',alignItems:'center',textAlign:'center',justifyContent:'center'}} zDepth={1}>
                     <TextField
-                        floatingLabelText="Commit message"
+                        floatingLabelText='Commit message'
                         floatingLabelFixed={true}
-                        hintText="Enter Commit Message"
-                        style={{width:"80%"}}
+                        hintText='Enter Commit Message'
+                        style={{width:'80%'}}
                         value={this.state.commitMessage}
                         onChange={this.handleCommitMessageChange}
                     />
                     <RaisedButton
-                      label="Save"
-                      backgroundColor="#4285f4"
-                      labelColor="#fff"
+                      label='Save'
+                      backgroundColor='#4285f4'
+                      labelColor='#fff'
                       style={{marginLeft:10}}
                       onTouchTap={this.handleRollBack} />
                   </Paper>
@@ -334,12 +335,17 @@ class SkillRollBack extends Component {
 const styles = {
     home: {
         width: '100%',
-        padding: "80px 30px 30px",
+        padding: '80px 30px 30px',
     },
     codeEditor:{
-        width: "100%",
-        marginTop: "20px"
+        width: '100%',
+        marginTop: '20px'
     },
+};
+
+SkillRollBack.propTypes = {
+  history: PropTypes.object,
+  location: PropTypes.object
 };
 
 export default SkillRollBack;

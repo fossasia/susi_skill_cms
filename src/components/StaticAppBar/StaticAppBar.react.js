@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import Cookies from 'universal-cookie';
 import Dialog from 'material-ui/Dialog';
-import Login from "../Auth/Login/Login";
-import SignUp from "../Auth/SignUp/SignUp";
+import Login from '../Auth/Login/Login';
+import SignUp from '../Auth/SignUp/SignUp';
 import List from 'material-ui/svg-icons/action/list';
-import ForgotPassword from "../Auth/ForgotPassword/ForgotPassword";
+import ForgotPassword from '../Auth/ForgotPassword/ForgotPassword';
 import Close from 'material-ui/svg-icons/navigation/close';
 import AppBar from 'material-ui/AppBar';
 import IconButton from 'material-ui/IconButton';
@@ -22,30 +23,30 @@ import { Link } from 'react-router-dom';
 import susiWhite from '../images/SUSIAI-white.png';
 import $ from 'jquery';
 import './StaticAppBar.css';
-// import ListUser from "../Admin/ListUser/ListUser";
+// import ListUser from '../Admin/ListUser/ListUser';
 
 const cookies = new Cookies();
 
 let TopRightMenuItems = (props) => (
     <div>
         <MenuItem
-            href="http://chat.susi.ai/overview"
+            href='http://chat.susi.ai/overview'
             rightIcon={<Info/>}>
             About
         </MenuItem>
         <MenuItem
-            href="http://chat.susi.ai/"
+            href='http://chat.susi.ai/'
             rightIcon={<Chat/>}>
             Chat
         </MenuItem>
         <MenuItem
-            href="http://skills.susi.ai/"
+            href='http://skills.susi.ai/'
             rightIcon={<SKillIcon/>}>
             Skills
         </MenuItem>
-        <MenuItem primaryText="Settings"
+        <MenuItem primaryText='Settings'
                   onTouchTap={this.handleClose}
-                  containerElement={<Link to="/settings" />}
+                  containerElement={<Link to='/settings' />}
                   rightIcon={<Settings/>}/>
     </div>
 );
@@ -72,14 +73,13 @@ class StaticAppBar extends Component {
     };
 
     componentDidMount() {
-        if(this.props.location.pathname!=='/'){    
-        
-            document.getElementById("appBar").classList.add('topAppBarFix');            
+        if(this.props.location.pathname!=='/'){
+            document.getElementById('appBar').classList.add('topAppBarFix');
         }
 
         window.addEventListener('scroll', this.handleScroll);
         let url;
-        url = "http://api.susi.ai/aaa/showAdminService.json?access_token="+cookies.get('loggedIn');
+        url = 'http://api.susi.ai/aaa/showAdminService.json?access_token='+cookies.get('loggedIn');
         $.ajax({
             url: url,
             dataType: 'jsonp',
@@ -126,7 +126,7 @@ class StaticAppBar extends Component {
             }
 
             // If they scrolled down and are past the navbar, add class .nav-up.
-            // This is necessary so you never see what is "behind" the navbar.
+            // This is necessary so you never see what is 'behind' the navbar.
             if (st > lastScrollTop && st > navbarHeight + 400) {
                 // Scroll Down
                 $('header').removeClass('nav-down').addClass('nav-up');
@@ -233,19 +233,19 @@ class StaticAppBar extends Component {
                         <TopRightMenuItems />
                         {
                              this.state.showAdmin === true ?
-                                (<MenuItem primaryText="Admin"
-                                           containerElement={<Link to="/admin" />}
+                                (<MenuItem primaryText='Admin'
+                                           containerElement={<Link to='/admin' />}
                                            rightIcon={<List />}/>) :
                                 (
-                                    console.log("Admin page allowed " + cookies.get('showAdmin'))
+                                    console.log('Admin page allowed ' + cookies.get('showAdmin'))
                                 )
 
                         }
                         {cookies.get('loggedIn') ?
-                            (<MenuItem primaryText="Logout"
-                                       containerElement={<Link to="/logout" />}
+                            (<MenuItem primaryText='Logout'
+                                       containerElement={<Link to='/logout' />}
                                        rightIcon={<Exit />}/>) :
-                            (<MenuItem primaryText="Login"
+                            (<MenuItem primaryText='Login'
                                        onTouchTap={this.handleLogin}
                                        rightIcon={<LoginIcon/>} />)
                         }
@@ -256,12 +256,12 @@ class StaticAppBar extends Component {
 
         return (
             <div>
-                <header className="nav-down" id="headerSection">
+                <header className='nav-down' id='headerSection'>
                     <AppBar
-                        className="topAppBar"
-                        id="appBar"
-                        title={<div style={{ float: 'left', marginTop: '-10px' }}><Link to="/" >
-                            <img src={susiWhite} alt="susi-logo" className="siteTitle" /></Link></div>}
+                        className='topAppBar'
+                        id='appBar'
+                        title={<div style={{ float: 'left', marginTop: '-10px' }}><Link to='/' >
+                            <img src={susiWhite} alt='susi-logo' className='siteTitle' /></Link></div>}
                         style={{
                             backgroundColor: '#4285f4',
                             height: '46px',
@@ -321,5 +321,9 @@ class StaticAppBar extends Component {
     }
 
 }
+
+StaticAppBar.propTypes = {
+  location: PropTypes.object
+};
 
 export default StaticAppBar;

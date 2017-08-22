@@ -5,4 +5,3 @@ import { shallow } from 'enzyme';
  it('render CreateSkill without crashing',()=>{
    shallow(<CreateSkill />);
  });
- 

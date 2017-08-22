@@ -30,8 +30,6 @@
       // Disallow using variables outside the blocks they are defined (especially
       // since only let and const are used, see "no-var").
       "block-scoped-var": 2,
-      // Require camel case names
-      "camelcase": 2,
       // Allow trailing commas for easy list extension.  Having them does not
       // impair readability, but also not required either.
       "comma-dangle": 0,
@@ -304,4 +302,3 @@
       "operator-linebreak": 0
     }
   }
-  

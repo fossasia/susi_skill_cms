@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import {Link} from 'react-router-dom';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import {
@@ -13,8 +14,8 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import {
   RaisedButton,
   Checkbox
-} from "material-ui";
-import $ from "jquery";
+} from 'material-ui';
+import $ from 'jquery';
 
 class SkillVersion extends Component {
   constructor(props) {
@@ -24,7 +25,7 @@ class SkillVersion extends Component {
           commitsChecked: [],
           dataReceived: false,
           skillMeta: {
-            modelValue: "general",
+            modelValue: 'general',
             groupValue: this.props.location.pathname.split('/')[1],
             languageValue: this.props.location.pathname.split('/')[4],
             skillName: this.props.location.pathname.split('/')[2]
@@ -188,7 +189,7 @@ class SkillVersion extends Component {
                       onCheck={this.onCheck}/>;
       }
       else{
-        let defaultChecked = index < 2 ? true : false;
+        let defaultChecked = index < 2 ;
         checkBox = <Checkbox
           name={index.toString()}
           checked={defaultChecked}
@@ -239,16 +240,20 @@ class SkillVersion extends Component {
         <StaticAppBar {...this.props} />
         {!this.state.dataReceived ?
           (
-            <h1 className="skill_loading_container">Loading...</h1>
+            <h1 className='skill_loading_container'>Loading...</h1>
           )
           :
           (
-            <div className="skill_listing_container" style={styles.home}>
-            <div className="margin-b-md margin-t-md skill">
-                <h1 className="title">
+            <div className='skill_listing_container' style={styles.home}>
+            <div className='margin-b-md margin-t-md skill'>
+                <h1 className='title'>
                     {this.state.skillMeta.skillName + ' : '}Revision History
                 </h1>
-                <p><span>For any version listed below, click on its date to view it.</span></p>
+                <p>
+                  <span>
+                    For any version listed below, click on its date to view it.
+                  </span>
+                </p>
                 <div style={compareBtnStyle}>
                   {commitHistoryTable}
                 </div>
@@ -261,9 +266,9 @@ class SkillVersion extends Component {
                               '/'+checkedCommits[1].commitID,
                 }}>
                   <RaisedButton
-                    label="Compare Selected Versions"
-                    backgroundColor="#4285f4"
-                    labelColor="#fff"
+                    label='Compare Selected Versions'
+                    backgroundColor='#4285f4'
+                    labelColor='#fff'
                     style={compareBtnStyle}
                   />
                 </Link>
@@ -276,5 +281,9 @@ class SkillVersion extends Component {
     );
   }
 }
+
+SkillVersion.propTypes = {
+  location: PropTypes.object
+};
 
 export default SkillVersion;
