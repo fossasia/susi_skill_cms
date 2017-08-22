@@ -12,7 +12,6 @@ import 'brace/theme/textmate';
 import 'brace/theme/solarized_dark';
 import 'brace/theme/solarized_light';
 import 'brace/theme/terminal';
-import { Tooltip } from 'antd';
 import $ from "jquery";
 import Divider from 'material-ui/Divider';
 import './SkillListing.css';
@@ -24,6 +23,7 @@ import CircleImage from "../CircleImage/CircleImage";
 import EditBtn from 'material-ui/svg-icons/editor/mode-edit';
 import VersionBtn from 'material-ui/svg-icons/action/history';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
+import ReactTooltip from 'react-tooltip'
 
 const defaultNullSkillList = ['image', 'author', 'author_url', 'developer_privacy_policy', 'terms_of_use', 'dynamic_content', 'examples'];
 let urlCode, name;
@@ -233,23 +233,23 @@ export default class SkillListing extends React.Component {
                                 oldLanguageValue:oldLanguageValue,
                             oldImageUrl:oldImageValue, oldImageValue:imageValue }
                             }}>
-                                <div className="skillEditBtn">
-                                    <Tooltip placement="bottom" title="Edit Skill">
-                                    <FloatingActionButton backgroundColor={"#4285f4"} >
+
+                                    <FloatingActionButton data-tip="Edit Skill" backgroundColor={"#4285f4"} >
+
                                         <EditBtn />
                                     </FloatingActionButton>
-                                    </Tooltip>
-                                </div>
+                                <ReactTooltip effect="solid" place="bottom" />
+
                             </Link>
                             <Link to={{
                                 pathname: '/'+this.groupValue+ '/'+this.name+'/versions/'+this.languageValue,
                             }}>
                                 <div className="skillVersionBtn">
-                                    <Tooltip placement="bottom" title="Skill Versions">
-                                    <FloatingActionButton backgroundColor={"#4285f4"} >
+                                    <FloatingActionButton data-tip="Skill Versions"  backgroundColor={"#4285f4"} >
                                         <VersionBtn />
                                     </FloatingActionButton>
-                                    </Tooltip>
+                                    <ReactTooltip  effect="solid" place="bottom"/>
+
                                 </div>
                             </Link>
                         </div>
