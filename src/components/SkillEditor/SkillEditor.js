@@ -378,7 +378,6 @@ export default class Container extends React.Component {
                 <StaticAppBar {...this.props} />
                 <div style={styles.home}>
                     <Paper style={style} zDepth={1}>
-                        <div>Currently Editing : <h3>{this.state.skillUrl}</h3></div>
                         <div style={styles.center}>
                             <div style={styles.dropdownDiv}>
                                 <SelectField
