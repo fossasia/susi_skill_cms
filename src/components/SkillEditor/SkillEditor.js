@@ -242,7 +242,7 @@ class SkillEditor extends Component {
 
     _onChange = (event) => {
         // Assuming only image
-        let file = this.refs.file.files[0];
+        let file = this.file.files[0];
         if (event.target.files && event.target.files[0]) {
             let reader = new FileReader();
             reader.onload = (e) => {
@@ -453,7 +453,7 @@ class SkillEditor extends Component {
                                         width: '100%',
                                         opacity: 0,
                                     }}
-                                        ref='file'
+                                        ref={(c) => { this.file = c; }}
                                         name='user[image]'
                                         multiple='false'
                                         onChange={this._onChange} />

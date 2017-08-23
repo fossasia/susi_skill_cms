@@ -41,6 +41,7 @@
   },
   "devDependencies": {
     "enzyme": "^2.9.1",
+    "eslint": "^4.5.0",
     "eslint-plugin-babel": "^4.1.1",
     "eslint-plugin-jsx": "0.0.2",
     "eslint-plugin-react": "^7.0.1",

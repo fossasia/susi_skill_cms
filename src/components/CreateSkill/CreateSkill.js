@@ -296,7 +296,7 @@ export default class CreateSkill extends React.Component {
 
     _onChange =(event)=> {
         // Assuming only image
-        let file = this.refs.file.files[0];
+        let file = this.file.files[0];
         if (event.target.files && event.target.files[0]) {
             let reader = new FileReader();
             reader.onload = (e) => {
@@ -309,7 +309,6 @@ export default class CreateSkill extends React.Component {
         }
         this.setState({
             file:file
-
         });
         console.log(file) // Would see a path?
         // TODO: concat files for setState
@@ -372,7 +371,7 @@ export default class CreateSkill extends React.Component {
                                         width: '100%',
                                         opacity: 0,
                                     }}
-                                           ref='file'
+                                           ref={(c) => { this.file = c; }}
                                            name='user[image]'
                                            multiple='false'
                                            onChange={this._onChange}/>

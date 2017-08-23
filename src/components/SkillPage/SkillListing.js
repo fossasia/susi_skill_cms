@@ -173,8 +173,10 @@ class SkillListing extends Component {
     };
 
     openAuthorSkills = () => {
-        this.refs.author.loadSkillCards(this.state.author);
+      if(this.author){
+        this.author.loadSkillCards(this.state.author);
         this.setState({ showAuthorSkills: true });
+      }
     };
 
     closeAuthorSkills = () => {
@@ -234,23 +236,19 @@ class SkillListing extends Component {
                                 oldLanguageValue:oldLanguageValue,
                             oldImageUrl:oldImageValue, oldImageValue:imageValue }
                             }}>
-
-                                    <FloatingActionButton data-tip="Edit Skill" backgroundColor={"#4285f4"} >
-
-                                        <EditBtn />
-                                    </FloatingActionButton>
-                                <ReactTooltip effect="solid" place="bottom" />
-
+                              <FloatingActionButton data-tip='Edit Skill' backgroundColor={'#4285f4'} >
+                                <EditBtn />
+                              </FloatingActionButton>
+                              <ReactTooltip effect='solid' place='bottom' />
                             </Link>
                             <Link to={{
                                 pathname: '/'+this.groupValue+ '/'+this.name+'/versions/'+this.languageValue,
                             }}>
-                                <div className="skillVersionBtn">
-                                    <FloatingActionButton data-tip="Skill Versions"  backgroundColor={"#4285f4"} >
+                                <div className='skillVersionBtn'>
+                                    <FloatingActionButton data-tip='Skill Versions'  backgroundColor={'#4285f4'} >
                                         <VersionBtn />
                                     </FloatingActionButton>
-                                    <ReactTooltip  effect="solid" place="bottom"/>
-
+                                    <ReactTooltip  effect='solid' place='bottom'/>
                                 </div>
                             </Link>
                         </div>
@@ -328,7 +326,7 @@ class SkillListing extends Component {
                 <div>{renderElement}</div>
                 <div>
                     <AuthorSkills
-                        ref='author'
+                        ref={(c) => { this.author = c; }}
                         open={this.state.showAuthorSkills}
                         close={this.closeAuthorSkills}
                         author={this.state.author}
