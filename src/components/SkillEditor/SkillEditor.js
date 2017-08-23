@@ -410,7 +410,6 @@ class SkillEditor extends Component {
                 <StaticAppBar {...this.props} />
                 <div style={styles.home}>
                     <Paper style={style} zDepth={1}>
-                        <div>Currently Editing : <h3>{this.state.skillUrl}</h3></div>
                         <div style={styles.center}>
                             <div style={styles.dropdownDiv}>
                                 <SelectField
@@ -492,6 +491,8 @@ class SkillEditor extends Component {
                             showPrintMargin={false}
                             name='skill_code_editor'
                             onChange={this.handleChange.bind(this)}
+                            scrollPastEnd={false}
+                            wrapEnabled={true}
                             editorProps={{ $blockScrolling: true }}
                         />
                     </div>

@@ -410,6 +410,8 @@ export default class CreateSkill extends React.Component {
                             showPrintMargin={false}
                             name='skill_code_editor'
                             onChange={this.onChange}
+                            scrollPastEnd={false}
+                            wrapEnabled={true}
                             editorProps={{$blockScrolling: true}}
                         />
                     </div>
