@@ -16,17 +16,24 @@ import $ from "jquery";
 import Divider from 'material-ui/Divider';
 import './SkillListing.css';
 import {
-    FloatingActionButton,
+    FloatingActionButton, LinearProgress,
     Paper,
 } from "material-ui";
 import CircleImage from "../CircleImage/CircleImage";
 import EditBtn from 'material-ui/svg-icons/editor/mode-edit';
+import DeletedBtn from 'material-ui/svg-icons/action/delete';
+
 import VersionBtn from 'material-ui/svg-icons/action/history';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import ReactTooltip from 'react-tooltip'
+import {red500} from "material-ui/styles/colors";
+import notification from 'antd/lib/notification';
+import Icon from "antd/es/icon/index";
+import Cookies from 'universal-cookie';
 
 const defaultNullSkillList = ['image', 'author', 'author_url', 'developer_privacy_policy', 'terms_of_use', 'dynamic_content', 'examples'];
 let urlCode, name;
+const cookies = new Cookies();
 
 export default class SkillListing extends React.Component {
 
@@ -50,7 +57,9 @@ export default class SkillListing extends React.Component {
             dataReceived: false,
             imgUrl: null,
             commits: [],
+            loading:false,
             commitsChecked: [],
+            showAdmin:true
         };
 
         let clickedSkill = this.props.location.pathname.split('/')[2];
@@ -74,6 +83,12 @@ export default class SkillListing extends React.Component {
 
 
     componentDidMount() {
+        // Check if admin is logged in or not
+        if(cookies.get('showAdmin')===true){
+            this.setState({
+                showAdmin:true
+            })
+        }
 
         if (this.url !== undefined) {
             let baseUrl = 'http://api.susi.ai/cms/getSkillMetadata.json';
@@ -97,6 +112,7 @@ export default class SkillListing extends React.Component {
                 }
             });
         }
+
         if(this.props.location.state!==undefined){
                 if (this.props.location.state.from_upload !== undefined) {
                     let baseUrl = 'http://api.susi.ai/cms/getSkillMetadata.json';
@@ -180,6 +196,48 @@ export default class SkillListing extends React.Component {
         this.setState({ showAuthorSkills: false });
     };
 
+    deleteSkill = () => {
+        this.setState({
+            loading:true
+        });
+        // console.log("http://127.0.0.1:4000/cms/deleteSkill.txt?skill="+this.name+"&group="+this.groupValue+"&language="+this.languageValue);
+        $.ajax({
+            url: "http://127.0.0.1:4000/cms/deleteSkill.json?skill="+this.name+"&group="+this.groupValue+"&language="+this.languageValue,
+            jsonpCallback: 'pa',
+            dataType: 'jsonp',
+            jsonp: 'callback',
+            crossDomain: true,
+            success: function (d) {
+                if(d.accepted===true) {
+                    notification.open({
+                        message: 'Deleted',
+                        description: 'This Skill has been deleted',
+                        icon: <Icon type="check-circle" style={{color: '#00C853'}}/>,
+                    });
+                    this.setState({
+                        loading: false
+                    });
+                    this.props.history.push({
+                        pathname: '/',
+                        state: {}
+                    });
+                }
+                else{
+                    notification.open({
+                        message: 'Failed',
+                        description: d.message,
+                        icon: <Icon type="check-circle" style={{color: red500}}/>,
+                    });
+                    this.props.history.push({
+                        pathname: '/',
+                        state: {}
+                    });
+                }
+            }.bind(this)
+
+        });
+    };
+
     render() {
 
         const authorStyle = {
@@ -217,8 +275,10 @@ export default class SkillListing extends React.Component {
 
             renderElement = <div>
                 <StaticAppBar {...this.props} />
+                {this.state.loading && <LinearProgress style={{marginTop:"48px"}} mode="indeterminate" color="#4285f4" />}
                 <div className="skill_listing_container" style={styles.home}>
-                        <div className="avatar">
+
+                    <div className="avatar">
                             {this.state.image == null ?
                                 <CircleImage name={this.state.skill_name.toUpperCase()} size="250" /> :
                                 <img className="avatar-img" alt="Thumbnail" src={this.state.imgUrl} />
@@ -252,7 +312,18 @@ export default class SkillListing extends React.Component {
 
                                 </div>
                             </Link>
+                            {this.state.showAdmin &&
+                            <div className="skillVersionBtn">
+                                <FloatingActionButton data-tip="Delete" onClick={this.deleteSkill}
+                                                      backgroundColor={red500}>
+                                    <DeletedBtn />
+                                </FloatingActionButton>
+                                <ReactTooltip effect="solid" place="bottom"/>
+
+                            </div>
+                            }
                         </div>
+
                         <div className="meta">
                             <h1 className="name">
                                 {/*{this.state.skill_name}*/}
