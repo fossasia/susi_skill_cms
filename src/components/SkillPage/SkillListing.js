@@ -59,7 +59,7 @@ export default class SkillListing extends React.Component {
             commits: [],
             loading:false,
             commitsChecked: [],
-            showAdmin:true
+            showAdmin:false
         };
 
         let clickedSkill = this.props.location.pathname.split('/')[2];
@@ -202,7 +202,7 @@ export default class SkillListing extends React.Component {
         });
         // console.log("http://127.0.0.1:4000/cms/deleteSkill.txt?skill="+this.name+"&group="+this.groupValue+"&language="+this.languageValue);
         $.ajax({
-            url: "http://127.0.0.1:4000/cms/deleteSkill.json?skill="+this.name+"&group="+this.groupValue+"&language="+this.languageValue,
+            url: "http://api.susi.ai/cms/deleteSkill.json?skill="+this.name+"&group="+this.groupValue+"&language="+this.languageValue,
             jsonpCallback: 'pa',
             dataType: 'jsonp',
             jsonp: 'callback',
