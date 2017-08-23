@@ -459,6 +459,8 @@ export default class Container extends React.Component {
                             showPrintMargin={false}
                             name="skill_code_editor"
                             onChange={this.handleChange.bind(this)}
+                            scrollPastEnd={false}
+                            wrapEnabled={true}
                             editorProps={{ $blockScrolling: true }}
                         />
                         {/*<Chatbox />*/}
