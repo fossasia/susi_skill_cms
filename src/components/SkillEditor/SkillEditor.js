@@ -143,7 +143,7 @@ export default class Container extends React.Component {
             }
         });
 
-        url = 'http://api.susi.ai/cms/getSkill.json?skill=' + this.props.location.pathname.split('/')[2];
+        url =  url.replace("getSkillMetadata", "getSkill");
 /*         skill_relative_path = this.props.location.pathname.split('/')[2];
  */        $.ajax({
             url: url,
@@ -152,6 +152,7 @@ export default class Container extends React.Component {
             jsonp: 'callback',
             crossDomain: true,
             success: function (data) {
+
                 self.updateCode(data.text)
             }
         });
