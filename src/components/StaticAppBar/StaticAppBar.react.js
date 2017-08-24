@@ -60,7 +60,7 @@ class StaticAppBar extends Component {
             showOptions: false,
             showAdmin: false,
             anchorEl: null,
-            leftGap: '0px'            
+            leftGap: '0px'
         }
     }
 
@@ -207,7 +207,7 @@ class StaticAppBar extends Component {
             cursor: 'pointer'
         };
         var leftGap = this.state.leftGap;
-        
+
         const bodyStyle = {
             'padding': 0,
             textAlign: 'center'
@@ -232,8 +232,8 @@ class StaticAppBar extends Component {
                         style={{ float: 'left', position: 'relative', marginTop: '46px', marginLeft: leftGap }}
                         open={this.state.showOptions}
                         anchorEl={this.state.anchorEl}
-                        anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
-                        targetOrigin={{ horizontal: 'left', vertical: 'top' }}
+                        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                        targetOrigin={{ horizontal: 'right', vertical: 'top' }}
                         onRequestClose={this.closeOptions}
                     >
                         <TopRightMenuItems />

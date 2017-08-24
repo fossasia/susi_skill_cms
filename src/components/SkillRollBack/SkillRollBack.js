@@ -254,6 +254,8 @@ class SkillRollBack extends Component {
                   value={this.state.commitData[0].code}
                   showPrintMargin={false}
                   name="skill_code_editor"
+                  scrollPastEnd={false}
+                  wrapEnabled={true}
                   editorProps={{$blockScrolling: true}}
               />
               </div>
@@ -272,6 +274,8 @@ class SkillRollBack extends Component {
                   value={this.state.commitData[1].code}
                   showPrintMargin={false}
                   name="skill_code_editor"
+                  scrollPastEnd={false}
+                  wrapEnabled={true}
                   editorProps={{$blockScrolling: true}}
               />
               </div>
@@ -302,6 +306,8 @@ class SkillRollBack extends Component {
                     showPrintMargin={false}
                     name="skill_code_editor"
                     onChange={this.updateCode}
+                    scrollPastEnd={false}
+                    wrapEnabled={true}
                     editorProps={{$blockScrolling: true}}
                 />
               </div>

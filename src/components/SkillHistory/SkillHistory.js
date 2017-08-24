@@ -190,6 +190,8 @@ class SkillHistory extends Component {
                 value={this.state.commitData[0].code}
                 showPrintMargin={false}
                 name="skill_code_editor"
+                scrollPastEnd={false}
+                wrapEnabled={true}
                 editorProps={{$blockScrolling: true}}
             />
             </div>
@@ -212,6 +214,8 @@ class SkillHistory extends Component {
                     value={this.state.commitData[0].code}
                     showPrintMargin={false}
                     name="skill_code_editor"
+                    scrollPastEnd={false}
+                    wrapEnabled={true}
                     editorProps={{$blockScrolling: true}}
                 />
                 </div>
@@ -239,6 +243,8 @@ class SkillHistory extends Component {
                     value={this.state.commitData[1].code}
                     showPrintMargin={false}
                     name="skill_code_editor"
+                    scrollPastEnd={false}
+                    wrapEnabled={true}
                     editorProps={{$blockScrolling: true}}
                 />
                 </div>
