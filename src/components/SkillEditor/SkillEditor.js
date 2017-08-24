@@ -42,6 +42,7 @@ export default class Container extends React.Component {
             groupValue: this.props.location.pathname.split('/')[1],
             oldGroupValue: this.props.location.pathname.split('/')[1],
             languageValue: this.props.location.pathname.split('/')[4],
+            oldLanguageValue:this.props.location.pathname.split('/')[4],
             expertValue: this.props.location.pathname.split('/')[2],
             oldExpertValue: this.props.location.pathname.split('/')[2],
             oldImageUrl: '',
@@ -153,12 +154,18 @@ export default class Container extends React.Component {
             crossDomain: true,
             success: function (data) {
                 self.updateCode(data.text)
-            }
+                const match = data.text.match(/^::image\s(.*)$/m);
+                if (match !== null) {
+                    this.setState({
+                        imageUrl: match[1],
+                        codeChanged: true
+                    });
+                }
+            }.bind(this)
         });
 
     }
     handleChange(newValue) {
-
         const match = newValue.match(/^::image\s(.*)$/m);
         if (match !== null) {
             this.setState({
@@ -173,6 +180,7 @@ export default class Container extends React.Component {
         this.setState({
             code: newCode
         });
+
     };
 
     handleModelChange = (event, index, value) => {
@@ -320,6 +328,7 @@ export default class Container extends React.Component {
             file = this.state.file;
             form.append("image", file);
         }
+        console.log(this.state)
 
         let settings = {
             "async": true,
@@ -333,7 +342,7 @@ export default class Container extends React.Component {
         };
         $.ajax(settings)
             .done(function (response) {
-                self.setState({
+                this.setState({
                     loading: false
                 });
                 let data = JSON.parse(response);
@@ -345,7 +354,7 @@ export default class Container extends React.Component {
                     });
                 }
                 else {
-                    self.setState({
+                    this.setState({
                         loading: false
                     });
                     notification.open({
@@ -354,7 +363,7 @@ export default class Container extends React.Component {
                         icon: <Icon type="close-circle" style={{ color: '#f44336' }} />
                     });
                 }
-            })
+            }.bind(this))
             .fail(function (jqXHR, textStatus) {
                 this.setState({
                     loading: false
