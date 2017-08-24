@@ -6,6 +6,7 @@ import { Paper, RaisedButton, TextField } from "material-ui";
 import AceEditor from 'react-ace';
 import Cookies from 'universal-cookie';
 import 'brace/mode/markdown';
+import isoConv from 'iso-language-converter';
 import 'brace/theme/github';
 import 'brace/theme/monokai';
 import 'brace/theme/tomorrow';
@@ -99,11 +100,19 @@ export default class Container extends React.Component {
                 jsonp: 'callback',
                 crossDomain: true,
                 success: function (data) {
+
                     data = data.languagesArray;
+                    this.setState({ languages: data });
+                    console.log(data);
                     for (let i = 0; i < data.length; i++) {
-                        languages.push(<MenuItem value={data[i]} key={data[i]} primaryText={`${data[i]}`} />);
+                        if (isoConv(data[i])) {
+                            languages.push(<MenuItem value={data[i]} key={data[i]} primaryText={isoConv(data[i])} />);
+                        }
+                        else {
+                            languages.push(<MenuItem value={data[i]} key={data[i]} primaryText={'Universal'} />);
+                        }
                     }
-                }
+                }.bind(this)
             });
         }
     }
@@ -207,7 +216,7 @@ export default class Container extends React.Component {
     };
 
     handleGroupChange = (event, index, value) => {
-        this.setState({ groupValue: value });
+        this.setState({ groupValue: value, groupSelect: false, languageSelect: false });
         if (languages.length === 0) {
             $.ajax({
                 url: "http://api.susi.ai/cms/getAllLanguages.json",
@@ -216,11 +225,19 @@ export default class Container extends React.Component {
                 jsonp: 'callback',
                 crossDomain: true,
                 success: function (data) {
+
                     data = data.languagesArray;
+                    this.setState({ languages: data });
+                    console.log(data);
                     for (let i = 0; i < data.length; i++) {
-                        languages.push(<MenuItem value={data[i]} key={data[i]} primaryText={`${data[i]}`} />);
+                        if (isoConv(data[i])) {
+                            languages.push(<MenuItem value={data[i]} key={data[i]} primaryText={isoConv(data[i])} />);
+                        }
+                        else {
+                            languages.push(<MenuItem value={data[i]} key={data[i]} primaryText={'Universal'} />);
+                        }
                     }
-                }
+                }.bind(this)
             });
         }
     };
@@ -391,7 +408,7 @@ export default class Container extends React.Component {
                                 </SelectField>
                                 <SelectField
                                     floatingLabelText="Language"
-                                    style={{ width: '90px', marginLeft: 10, marginRight: 10 }}
+                                    style={{ width: '125px', marginLeft: 10, marginRight: 10 }}
                                     value={this.state.languageValue}
                                     onChange={this.handleLanguageChange}
                                 >
