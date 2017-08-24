@@ -2,7 +2,7 @@ import React from 'react';
 import Icon from 'antd/lib/icon';
 import MenuItem from 'material-ui/MenuItem';
 import SelectField from 'material-ui/SelectField';
-import { Paper, RaisedButton, TextField } from "material-ui";
+import {Dialog, Paper, RaisedButton, TextField} from "material-ui";
 import AceEditor from 'react-ace';
 import Cookies from 'universal-cookie';
 import 'brace/mode/markdown';
@@ -20,6 +20,7 @@ import 'brace/theme/terminal';
 import * as $ from "jquery";
 import notification from 'antd/lib/notification';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
+import {red500} from "material-ui/styles/colors";
 const groups = [];
 const languages = [];
 const fontsizes = [];
@@ -42,6 +43,7 @@ export default class Container extends React.Component {
             groupValue: this.props.location.pathname.split('/')[1],
             oldGroupValue: this.props.location.pathname.split('/')[1],
             languageValue: this.props.location.pathname.split('/')[4],
+            oldLanguageValue:this.props.location.pathname.split('/')[4],
             expertValue: this.props.location.pathname.split('/')[2],
             oldExpertValue: this.props.location.pathname.split('/')[2],
             oldImageUrl: '',
@@ -49,7 +51,10 @@ export default class Container extends React.Component {
             image_name_changed: false,
             code: "::name <Skill_name>\n::author <author_name>\n::author_url <author_url>\n::description <description> \n::dynamic_content <Yes/No>\n::developer_privacy_policy <link>\n::image <image_url>\n::terms_of_use <link>\n\n\nUser query1|query2|quer3....\n!example:<The question that should be shown in public skill displays>\n!expect:<The answer expected for the above example>\nAnswer for the user query",
             fontSizeCode: 14,
-            editorTheme: "github"
+            editorTheme: "github",
+            showAdmin:false,
+            deleteDisabled:true,
+
         };
         let fonts = [
             14, 16, 18, 20, 24, 28, 32, 40
@@ -110,6 +115,12 @@ export default class Container extends React.Component {
 
 
     componentDidMount() {
+        // Check if admin is logged in or not
+        if(cookies.get('showAdmin')===true){
+           this.setState({
+                  showAdmin:true
+               })
+        }
         let self = this;
         self.loadgroups();
 
@@ -174,6 +185,23 @@ export default class Container extends React.Component {
         this.setState({
             code: newCode
         });
+    };
+
+
+    handleDeleteText = (event) => {
+        const name =  this.state.code.match(/^::name\s(.*)$/m);
+        console.log(name[1])
+        if(event.target.value===name[1]) {
+            this.setState({
+                deleteDisabled: false,
+            });
+        }
+        else{
+            this.setState({
+                deleteDisabled: true,
+            });
+
+        }
     };
 
     handleModelChange = (event, index, value) => {
@@ -248,6 +276,48 @@ export default class Container extends React.Component {
     handleLanguageChange = (event, index, value) => this.setState({ languageValue: value });
     handleFontChange = (event, index, value) => this.setState({ fontSizeCode: value });
     handleThemeChange = (event, index, value) => this.setState({ editorTheme: value });
+
+    deleteSkill = () => {
+        this.setState({
+            deleteDisabled:true
+        });
+        // console.log("http://127.0.0.1:4000/cms/deleteSkill.txt?skill="+this.name+"&group="+this.groupValue+"&language="+this.languageValue);
+        $.ajax({
+            url: "http://api.susi.ai/cms/deleteSkill.json?skill="+this.state.oldExpertValue+"&group="+this.state.oldGroupValue+"&language="+this.state.oldLanguageValue,
+            jsonpCallback: 'pa',
+            dataType: 'jsonp',
+            jsonp: 'callback',
+            crossDomain: true,
+            success: function (d) {
+                if(d.accepted===true) {
+                    notification.open({
+                        message: 'Deleted',
+                        description: 'This Skill has been deleted',
+                        icon: <Icon type="check-circle" style={{color: '#00C853'}}/>,
+                    });
+                    this.setState({
+                        loading: false
+                    });
+                    this.props.history.push({
+                        pathname: '/',
+                        state: {}
+                    });
+                }
+                else{
+                    notification.open({
+                        message: 'Failed',
+                        description: d.message,
+                        icon: <Icon type="check-circle" style={{color: red500}}/>,
+                    });
+                    this.props.history.push({
+                        pathname: '/',
+                        state: {}
+                    });
+                }
+            }.bind(this)
+
+        });
+    };
 
     saveClick = () => {
         this.setState({
@@ -332,6 +402,7 @@ export default class Container extends React.Component {
             "mimeType": "multipart/form-data",
             "data": form
         };
+
         $.ajax(settings)
             .done(function (response) {
                 self.setState({
@@ -367,7 +438,15 @@ export default class Container extends React.Component {
                 })
 
             }.bind(this));
+
     }
+    openDelete = () => {
+        this.setState({ showDeleteBox: true });
+    };
+
+    closeDelete = () => {
+        this.setState({ showDeleteBox: false });
+    };
 
     render() {
         const style = {
@@ -480,6 +559,42 @@ export default class Container extends React.Component {
                             <RaisedButton label={this.state.loading ? "Saving" : "Save"} disabled={this.state.loading} backgroundColor="#4285f4" labelColor="#fff" style={{ marginLeft: 10 }} onTouchTap={this.saveClick} />
                         </Paper>
                     </div>
+                    {this.state.showAdmin &&
+                    <Paper style={{
+                        width: "100%", border: "1px solid red", marginTop: 20,
+                        padding: "20px", display: "flex", justifyContent: "space-between"
+                    }} zDepth={1}>
+                        <div style={{margineft: "0px"}}>
+                            <strong><p>Delete this Skill</p></strong>
+                            Once you delete a skill, only admins can undo this action before 30 days of deletion. Please be certain.
+                        </div>
+                        <RaisedButton label="Delete" backgroundColor={red500} labelColor="#fff" style={{marginLeft: 10}}
+                                      onTouchTap={this.openDelete}/>
+                    </Paper>
+                    }
+                </div>
+                <div>
+                    <Dialog
+                        modal={false}
+                        open={this.state.showDeleteBox}
+                        autoScrollBodyContent={true}
+                        contentStyle={{width: '50%',minWidth: '300px'}}
+                        onRequestClose={this.closeDelete} >
+                        <div >
+                            <TextField
+                                floatingLabelText="Enter Skill Name"
+                                floatingLabelFixed={true}
+                                hintText="Skill Name"
+                                style={{ width: "80%" }}
+                                onChange={this.handleDeleteText}
+                            />
+                            <RaisedButton label="Delete" disabled={this.state.deleteDisabled} backgroundColor={red500} labelColor="#fff" style={{marginLeft: 10}}
+                            onTouchTap={this.deleteSkill}/>
+                        </div>
+                        <div>
+
+                        </div>
+                    </Dialog>
                 </div>
             </div>
         );
