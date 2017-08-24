@@ -154,16 +154,16 @@ class SkillEditor extends Component {
             }
         });
 
-        url = 'http://api.susi.ai/cms/getSkill.json?skill='
-            + this.props.location.pathname.split('/')[2];
-            /* skill_relative_path = this.props.location.pathname.split('/')[2]; */
-        $.ajax({
+        url =  url.replace('getSkillMetadata', 'getSkill');
+/*         skill_relative_path = this.props.location.pathname.split('/')[2];
+ */        $.ajax({
             url: url,
             jsonpCallback: 'pcc',
             dataType: 'jsonp',
             jsonp: 'callback',
             crossDomain: true,
             success: function (data) {
+
                 self.updateCode(data.text)
             }
         });
