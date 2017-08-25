@@ -4,6 +4,7 @@ import MenuItem from 'material-ui/MenuItem';
 import SelectField from 'material-ui/SelectField';
 import {Dialog, Paper, RaisedButton, TextField} from "material-ui";
 import AceEditor from 'react-ace';
+import {Link} from 'react-router-dom';
 import Cookies from 'universal-cookie';
 import 'brace/mode/markdown';
 import 'brace/theme/github';
@@ -40,12 +41,16 @@ export default class Container extends React.Component {
             modelValue: 'general',
             file: null,
             codeChanged: false,
+            showDeleteBox:false,
             groupValue: this.props.location.pathname.split('/')[1],
             oldGroupValue: this.props.location.pathname.split('/')[1],
             languageValue: this.props.location.pathname.split('/')[4],
             oldLanguageValue:this.props.location.pathname.split('/')[4],
             expertValue: this.props.location.pathname.split('/')[2],
             oldExpertValue: this.props.location.pathname.split('/')[2],
+            commitId:this.props.location.pathname.split('/')[5],
+            date:'',
+            author:'',
             oldImageUrl: '',
             imageUrl: '',
             image_name_changed: false,
@@ -125,6 +130,45 @@ export default class Container extends React.Component {
         self.loadgroups();
 
         self.loadlanguages();
+        if(this.state.commitId){
+             let baseUrl = 'http://api.susi.ai/cms/getFileAtCommitID.json';
+             let skillAtCommitIDUrl = baseUrl +'?model=' + this.state.modelValue +
+                                                             '&group=' + this.state.groupValue +
+                                                            '&language=' + this.state.languageValue +
+                                                             '&skill=' + this.state.expertValue +
+                                                             '&commitID='+this.state.commitId
+             $.ajax({
+                     url: skillAtCommitIDUrl,
+                     jsonpCallback: 'p',
+                     dataType: 'jsonp',
+                     jsonp: 'callback',
+                     crossDomain: true,
+                     success: function (data) {
+                         self.setState({
+                             code:data.file,
+                            author:data.author,
+                             date:data.commitDate
+                         })
+                         self.updateCode(data.file)
+                     }
+             });
+             baseUrl = 'http://api.susi.ai/cms/getSkillMetadata.json'
+             let url = baseUrl + '?model=' + this.state.modelValue + '&group=' + this.state.groupValue + '&language=' + this.state.languageValue + '&skill=' + this.state.expertValue;
+             this.setState({
+                 skillUrl:url
+             })
+             $.ajax({
+                 url: url,
+                 jsonpCallback: 'pd',
+                 dataType: 'jsonp',
+                 jsonp: 'callback',
+                 crossDomain: true,
+                 success: function (data) {
+                     self.updateData(data.skill_metadata)
+                 }
+             });
+             return 0;
+         }
         this.setState({
             groupValue: this.props.location.pathname.split('/')[1],
             languageValue: this.props.location.pathname.split('/')[4],
@@ -451,12 +495,24 @@ export default class Container extends React.Component {
     render() {
         const style = {
             width: "100%",
-            padding: "10px"
-        };
+            padding: "10px",
+            margin:'10px 0'
+        };                 
+        const bold ={
+             fontSize:"14px"
+        }
         return (
             <div>
                 <StaticAppBar {...this.props} />
                 <div style={styles.home}>
+                     {this.state.commitId ? 
+                    <Paper style={style} zDepth={1}>
+                            <div>You are currently editing an older version of the skill: <b style={bold}>{this.state.expertValue}</b><br/>
+                                <span>Author: <b style={bold}>{this.state.author}</b></span><br/>
+                                <span>commitID: <b>{this.state.commitId}</b></span><br/>
+                                <span>Revision as of <b>{this.state.date}</b></span>
+                            </div>
+                    </Paper>:''}
                     <Paper style={style} zDepth={1}>
                         <div style={styles.center}>
                             <div style={styles.dropdownDiv}>
@@ -557,6 +613,13 @@ export default class Container extends React.Component {
                                 onChange={this.handleCommitMessageChange}
                             />
                             <RaisedButton label={this.state.loading ? "Saving" : "Save"} disabled={this.state.loading} backgroundColor="#4285f4" labelColor="#fff" style={{ marginLeft: 10 }} onTouchTap={this.saveClick} />
+                            <Link to={{
+                                pathname: '/'+this.state.groupValue+
+                                          '/'+this.state.expertValue+
+                                          '/'+this.state.languageValue
+                            }}>
+                            <RaisedButton label="Cancel" backgroundColor="#4285f4" labelColor="#fff" style={{ marginLeft: 10 }}/>
+                            </Link>
                         </Paper>
                     </div>
                     {this.state.showAdmin &&

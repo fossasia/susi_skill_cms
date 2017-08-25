@@ -210,8 +210,8 @@ class SkillVersion extends Component {
           <Link to={{
               pathname: '/'+this.state.skillMeta.groupValue+
                         '/'+this.state.skillMeta.skillName+
-                        '/version/'+this.state.skillMeta.languageValue+
-                        '/'+commit.commitID,
+                        '/edit/'+this.state.skillMeta.languageValue+
+                        '/'+commit.commitID
           }}>
             <abbr title={commit.commitDate}>{commit.commitDate}</abbr>
           </Link>
