@@ -238,7 +238,8 @@ export default class CreateSkill extends React.Component {
                 let   data = JSON.parse(response);
                 console.log(response);
                 if(data.accepted===true){
-                    self.props.history.push({  pathname: '/skillPage',
+                    self.props.history.push({
+                            pathname: '/' + groups[self.state.groupValue].key  + '/' + self.state.expertValue.trim().replace(/\s/g,"_") + '/' +languages[self.state.languageValue].key,
                         state: {
                             from_upload: true,
                             expertValue:  self.state.expertValue,
