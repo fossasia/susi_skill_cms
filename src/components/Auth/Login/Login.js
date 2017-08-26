@@ -25,7 +25,7 @@ class Login extends Component {
     };
 
     static defaultProps = {
-        token: "null",
+        token: 'null',
     };
     constructor(props) {
         super(props);
@@ -59,7 +59,7 @@ class Login extends Component {
         var email = this.state.email.trim();
         var password = this.state.password.trim();
 
-        let BASE_URL ="http://api.susi.ai";
+        let BASE_URL ='http://api.susi.ai';
 
         if (!email || !password) { return this.state.isFilled; }
 
@@ -214,16 +214,16 @@ class Login extends Component {
                 <div>
 
                 </div>
-                <div className="loginForm">
+                <div className='loginForm'>
                     <Paper zDepth={0}style={styles}>
                         <h3>Login to SUSI</h3>
                         <form onSubmit={this.handleSubmit}>
                             <div>
-                                <TextField name="email"
+                                <TextField name='email'
                                            value={this.state.email}
                                            onChange={this.handleChange}
                                            errorText={this.emailErrorMessage}
-                                           floatingLabelText="Email" />
+                                           floatingLabelText='Email' />
                             </div>
                             <div>
                                 <PasswordField
@@ -239,14 +239,14 @@ class Login extends Component {
                             }}>{this.state.msg}</span>
                             <div>
                                 <RaisedButton
-                                    label="Login"
-                                    type="submit"
-                                    backgroundColor="#4285f4"
-                                    labelColor="#fff"
+                                    label='Login'
+                                    type='submit'
+                                    backgroundColor='#4285f4'
+                                    labelColor='#fff'
                                     disabled={!this.state.validForm}
                                     style={{margin:'15px 0 '}}/>
                             </div>
-                            <span className="forgotpwdlink"
+                            <span className='forgotpwdlink'
                                   onClick={this.handleForgotPassword}>
                               Forgot Password?
                             </span>
@@ -259,8 +259,8 @@ class Login extends Component {
                                 <RaisedButton
                                     label='SignUp'
                                     onTouchTap={this.handleSignUp}
-                                    backgroundColor="#4285f4"
-                                    labelColor="#fff"
+                                    backgroundColor='#4285f4'
+                                    labelColor='#fff'
                                     style={{margin:'15px 0 0 0'}}/>
                             </div>
                         </form>

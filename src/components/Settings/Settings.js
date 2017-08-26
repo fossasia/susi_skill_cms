@@ -19,6 +19,6 @@ const styles = {
         height: '90px',
         lineHeight:'90px',
         textAlign: 'center',
-        padding: "80px 30px 30px",
+        padding: '80px 30px 30px',
     }
 };

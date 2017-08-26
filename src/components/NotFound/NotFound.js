@@ -19,7 +19,7 @@ const styles = {
         lineHeight:'90px',
         textAlign: 'center',
         fontSize:'80px',
-        padding: "100px 30px 30px",
+        padding: '100px 30px 30px',
     },
     h2Style:{
         textAlign: 'center'

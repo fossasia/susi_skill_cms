@@ -3,5 +3,5 @@ import SkillEditor from '../../../components/SkillEditor/SkillEditor';
 import { shallow } from 'enzyme';
 
  it('render SkillEditor without crashing',()=>{
-   shallow(<SkillEditor location={{"pathname": "/:category/:skill/edit/:lang"}} />);
+   shallow(<SkillEditor location={{'pathname': '/:category/:skill/edit/:lang'}} />);
  });
