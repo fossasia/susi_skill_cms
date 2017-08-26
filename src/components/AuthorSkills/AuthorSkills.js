@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import github from '../images/github-logo.png';
-import isoConv from 'iso-language-converter';
+import ISO6391 from 'iso-639-1';
 import Dialog from 'material-ui/Dialog';
 import * as $ from "jquery";
 import Img from 'react-image';
@@ -96,7 +96,7 @@ export default class AuthorSkills extends Component {
                         </div>
                       </TableRowColumn>
                       <TableRowColumn>{parse[6]}</TableRowColumn>
-                      <TableRowColumn>{isoConv(parse[7])}</TableRowColumn>
+                      <TableRowColumn>{ISO6391.getNativeName(parse[7])}</TableRowColumn>
                     </TableRow>
                   )
                 });
