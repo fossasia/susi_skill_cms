@@ -1,9 +1,9 @@
 const styles = {
 
     center: {
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
         flexDirection: 'row',
         flexWrap: 'wrap'
     },
@@ -29,22 +29,22 @@ const styles = {
     feedback:{
         color:'#4285f4',
         fill:'#4285f4',
-        display: "flex",
+        display: 'flex',
     },
     description:{
         textAlign:'left',
         fontSize: '14px'
     },
     listStyle: {
-        width: "100%",
+        width: '100%',
     },
     container: {
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        flexDirection: "column",
-        width: "100%",
-        padding: "80px 30px 30px",
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'column',
+        width: '100%',
+        padding: '80px 30px 30px',
     },
     propContainer: {
         width: 100,
@@ -58,9 +58,9 @@ const styles = {
         width: 280,
         height: 250,
         minHeight:'200px',
-        margin:"10px",
+        margin:'10px',
         overflow:'hidden',
-        justifyContent: "center",
+        justifyContent: 'center',
         fontSize: '10px',
         textAlign: 'center',
         display: 'inline-block',
@@ -73,19 +73,19 @@ const styles = {
     scroll: {
         display: 'flex',
         flexWrap: 'nowrap',
-        width: "100%"
+        width: '100%'
     },
     gridList: {
         flexWrap: 'wrap',
-        flexDirection: "row",
-        margin:"10px",
-        textAlign:"center"
+        flexDirection: 'row',
+        margin:'10px',
+        textAlign:'center'
     },
     right: {
         display: 'flex',
-        alignItems:"center",
+        alignItems:'center',
         flexDirection: 'row',
-        padding: "8px",
+        padding: '8px',
         background: '#fff',
         height: '130px'
     },

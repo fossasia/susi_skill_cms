@@ -24,7 +24,7 @@ class SignUp extends Component {
         onChangeToken: PropTypes.func,
     };
     static defaultProps = {
-        token: "null",
+        token: 'null',
     };
     constructor(props) {
         super(props);
@@ -189,7 +189,7 @@ class SignUp extends Component {
 
     handleSubmit = (event) => {
         event.preventDefault();
-        let BASE_URL ="http://api.susi.ai";
+        let BASE_URL ='http://api.susi.ai';
 
         let signupEndPoint =
             BASE_URL+'/aaa/signup.json?signup=' + this.state.email +
@@ -282,31 +282,31 @@ class SignUp extends Component {
         const PasswordClass=[`is-strength-${this.state.passwordScore}`];
 
         return (
-            <div className="signUpForm">
+            <div className='signUpForm'>
                 <Paper zDepth={0} style={styles}>
                     <h3>Sign Up with SUSI</h3>
                     <form onSubmit={this.handleSubmit}>
                         <div>
                             <TextField
-                                name="email"
+                                name='email'
                                 value={this.state.email}
                                 onChange={this.handleChange}
                                 errorText={this.emailErrorMessage}
                                 underlineFocusStyle={underlineFocusStyle}
                                 floatingLabelFocusStyle={underlineFocusStyle}
-                                floatingLabelText="Email" />
+                                floatingLabelText='Email' />
                         </div>
                         <div className={PasswordClass.join(' ')}>
                             <PasswordField
-                                name="password"
+                                name='password'
                                 style={fieldStyle}
                                 value={this.state.passwordValue}
                                 onChange={this.handleChange}
                                 errorText={this.passwordErrorMessage}
                                 underlineFocusStyle={underlineFocusStyle}
                                 floatingLabelFocusStyle={underlineFocusStyle}
-                                floatingLabelText="Password" />
-                              <div className="ReactPasswordStrength-strength-bar" />
+                                floatingLabelText='Password' />
+                              <div className='ReactPasswordStrength-strength-bar' />
                               <div>
                                 <p>
                                   {this.state.passwordStrength}
@@ -315,22 +315,22 @@ class SignUp extends Component {
                         </div>
                         <div>
                             <PasswordField
-                                name="confirmPassword"
+                                name='confirmPassword'
                                 style={fieldStyle}
                                 value={this.state.confirmPasswordValue}
                                 onChange={this.handleChange}
                                 errorText={this.passwordConfirmErrorMessage}
                                 underlineFocusStyle={underlineFocusStyle}
                                 floatingLabelFocusStyle={underlineFocusStyle}
-                                floatingLabelText="Confirm Password" />
+                                floatingLabelText='Confirm Password' />
                         </div>
                         <div>
                             <RaisedButton
-                                label="Sign Up"
-                                type="submit"
+                                label='Sign Up'
+                                type='submit'
                                 disabled={!this.state.validForm}
-                                backgroundColor="#4285f4"
-                                labelColor="#fff"
+                                backgroundColor='#4285f4'
+                                labelColor='#fff'
                                 style={{margin:'15px 0 0 0 '}} />
                         </div>
                         <h4 style={{
@@ -343,8 +343,8 @@ class SignUp extends Component {
                             <RaisedButton
                                 label='Login'
                                 onTouchTap={this.handleOpen}
-                                backgroundColor="#4285f4"
-                                labelColor="#fff" />
+                                backgroundColor='#4285f4'
+                                labelColor='#fff' />
                         </div>
                     </form>
                 </Paper>

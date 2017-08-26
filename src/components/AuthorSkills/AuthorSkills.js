@@ -1,10 +1,11 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import github from '../images/github-logo.png';
 import ISO6391 from 'iso-639-1';
 import Dialog from 'material-ui/Dialog';
-import * as $ from "jquery";
+import * as $ from 'jquery';
 import Img from 'react-image';
-import CircleImage from "../CircleImage/CircleImage";
+import CircleImage from '../CircleImage/CircleImage';
 import Close from 'material-ui/svg-icons/navigation/close';
 import './AuthorSkills.css';
 import {
@@ -30,16 +31,16 @@ const githubProfile = {
   verticalAlign: 'middle',
 };
 
-export default class AuthorSkills extends Component {
+class AuthorSkills extends Component {
 
     constructor(props) {
         super(props);
 
         this.state = {
-            modelValue: "general",
+            modelValue: 'general',
             skillURL:null,
-            groupValue:"Knowledge",
-            languageValue:"en",
+            groupValue:'Knowledge',
+            languageValue:'en',
             skills: [],
             image: false
         };
@@ -48,7 +49,7 @@ export default class AuthorSkills extends Component {
 
     loadSkillCards = (author) => {
       console.log(author);
-      let url = "http://api.susi.ai/cms/getSkillsByAuthor.json?author=" + author;
+      let url = 'http://api.susi.ai/cms/getSkillsByAuthor.json?author=' + author;
           $.ajax({
               url: url,
               dataType: 'jsonp',
@@ -57,7 +58,7 @@ export default class AuthorSkills extends Component {
               success: function (data) {
                 let skillByAuthor = Object.keys(data);
                 skillByAuthor = skillByAuthor.slice(0,skillByAuthor.length-1);
-                skills = skillByAuthor.map((skill) => {
+                skills = skillByAuthor.map((skill,index) => {
                   let parse = data[skill].split('/');
                   let name = parse[8].split('.')[0];
                   name = name.charAt(0).toUpperCase() + name.slice(1);
@@ -74,7 +75,7 @@ export default class AuthorSkills extends Component {
                   let skillURL = 'http://skills.susi.ai/' + parse[6] + '/' + parse[8].split('.')[0] + '/' + parse[7];
 
                   return (
-                    <TableRow>
+                    <TableRow key={index}>
                       <TableRowColumn>
                         <div>
                           <a
@@ -85,12 +86,12 @@ export default class AuthorSkills extends Component {
                                 image1,
                                 image2
                               ]}
-                              unloader={<CircleImage name={name} size="40"/>}
+                              unloader={<CircleImage name={name} size='40'/>}
                           />
                         </a>
                           <a
                             href={skillURL}
-                            className="effect-underline" >
+                            className='effect-underline' >
                           {name}
                         </a>
                         </div>
@@ -130,7 +131,7 @@ export default class AuthorSkills extends Component {
                     contentStyle={{width: '50%',minWidth: '300px'}}
                     onRequestClose={this.props.close} >
                     <div style={headingStyle}>
-                        <h3>Skills by {this.props.author} <a href={this.props.author_url} ><img alt={'GitHub'} style={githubProfile} src={github}/></a></h3>
+                        <h3>Skills by {this.props.author} <a href={this.props.authorUrl} ><img alt={'GitHub'} style={githubProfile} src={github}/></a></h3>
                     </div>
                     <div>
                         <Table
@@ -162,3 +163,13 @@ export default class AuthorSkills extends Component {
             );
         }
 }
+
+AuthorSkills.propTypes = {
+  location: PropTypes.object,
+  open: PropTypes.bool,
+  close: PropTypes.func,
+  author: PropTypes.string,
+  authorUrl: PropTypes.string
+};
+
+export default AuthorSkills;

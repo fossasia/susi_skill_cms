@@ -5,4 +5,3 @@ import { shallow } from 'enzyme';
  it('render StaticAppBar without crashing',()=>{
    shallow(<StaticAppBar />);
  });
- 

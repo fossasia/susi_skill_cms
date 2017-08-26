@@ -5,4 +5,3 @@ import { shallow } from 'enzyme';
  it('render Logout without crashing',()=>{
    shallow(<Logout />);
  });
- 

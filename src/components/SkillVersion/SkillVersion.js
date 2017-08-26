@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import {Link} from 'react-router-dom';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import {
   Table,
@@ -10,9 +11,9 @@ import {
   TableRowColumn,
 } from 'material-ui/Table';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import { RaisedButton } from "material-ui";
+import { RaisedButton } from 'material-ui';
 import { RadioButton } from 'material-ui/RadioButton';
-import $ from "jquery";
+import $ from 'jquery';
 
 class SkillVersion extends Component {
   constructor(props) {
@@ -21,7 +22,7 @@ class SkillVersion extends Component {
           commits: [],
           dataReceived: false,
           skillMeta: {
-            modelValue: "general",
+            modelValue: 'general',
             groupValue: this.props.location.pathname.split('/')[1],
             languageValue: this.props.location.pathname.split('/')[4],
             skillName: this.props.location.pathname.split('/')[2]
@@ -96,8 +97,8 @@ class SkillVersion extends Component {
   };
 
   onCheck = (event) => {
-    let side = event.target.name.split("-")[1];
-    let index = parseInt(event.target.name.split("-")[0],10);
+    let side = event.target.name.split('-')[1];
+    let index = parseInt(event.target.name.split('-')[0],10);
     var currLeft = this.state.currLeftChecked;
     var currRight = this.state.currRightChecked;
     var leftChecks = this.state.leftChecks;
@@ -169,21 +170,21 @@ class SkillVersion extends Component {
       let rightRadioBtn = null;
       if(leftChecks && rightChecks){
         leftRadioBtn =  <RadioButton
-                          name={index.toString()+"-left"}
+                          name={index.toString()+'-left'}
                           checked={leftChecks[index]}
                           onCheck={this.onCheck}/>;
         rightRadioBtn =  <RadioButton
-                          name={index.toString()+"-right"}
+                          name={index.toString()+'-right'}
                           checked={rightChecks[index]}
                           onCheck={this.onCheck}/>;
       }
       else{
         leftRadioBtn =  <RadioButton
-                          name={index.toString()+"-left"}
+                          name={index.toString()+'-left'}
                           checked={index===1}
                           onCheck={this.onCheck}/>;
         rightRadioBtn =  <RadioButton
-                          name={index.toString()+"-right"}
+                          name={index.toString()+'-right'}
                           checked={index===0}
                           onCheck={this.onCheck}/>;
       }
@@ -245,16 +246,20 @@ class SkillVersion extends Component {
         <StaticAppBar {...this.props} />
         {!this.state.dataReceived ?
           (
-            <h1 className="skill_loading_container">Loading...</h1>
+            <h1 className='skill_loading_container'>Loading...</h1>
           )
           :
           (
-            <div className="skill_listing_container" style={styles.home}>
-            <div className="margin-b-md margin-t-md skill">
-                <h1 className="title">
+            <div className='skill_listing_container' style={styles.home}>
+            <div className='margin-b-md margin-t-md skill'>
+                <h1 className='title'>
                     {this.state.skillMeta.skillName + ' : '}Revision History
                 </h1>
-                <p><span>For any version listed below, click on its date to view it.</span></p>
+                <p>
+                  <span>
+                    For any version listed below, click on its date to view it.
+                  </span>
+                </p>
                 <div style={compareBtnStyle}>
                   {commitHistoryTable}
                 </div>
@@ -267,9 +272,9 @@ class SkillVersion extends Component {
                               '/'+checkedCommits[1].commitID,
                 }}>
                   <RaisedButton
-                    label="Compare Selected Versions"
-                    backgroundColor="#4285f4"
-                    labelColor="#fff"
+                    label='Compare Selected Versions'
+                    backgroundColor='#4285f4'
+                    labelColor='#fff'
                     style={compareBtnStyle}
                   />
                 </Link>
@@ -282,5 +287,9 @@ class SkillVersion extends Component {
     );
   }
 }
+
+SkillVersion.propTypes = {
+  location: PropTypes.object
+};
 
 export default SkillVersion;
