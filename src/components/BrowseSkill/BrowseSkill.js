@@ -43,7 +43,8 @@ export default class BrowseSkill extends React.Component {
 
     loadInitialCards = () => {
         let url;
-        url = 'http://api.susi.ai/cms/getSkillList.json';
+
+        url = "http://api.susi.ai/cms/getSkillList.json?applyFilter=true&filter_name=ascending&filter_type=lexicographical";
         let self = this;
         $.ajax({
             url: url,
@@ -52,10 +53,10 @@ export default class BrowseSkill extends React.Component {
             jsonp: 'callback',
             crossDomain: true,
             success: function (data) {
-                let skills = Object.keys(data.skills);
-                skills = skills.map((el, i) => {
-                    let skill = data.skills[el];
+                let skills = data.filteredData.map((skill,i)=>{
                     let skill_name, examples, image, description;
+                    let el = skill.skill_name.replace(/\s+/g, '_').toLowerCase();
+                    
                     if (skill.skill_name) {
                         skill_name = skill.skill_name;
                         skill_name = skill_name.charAt(0).toUpperCase()
@@ -125,7 +126,7 @@ export default class BrowseSkill extends React.Component {
                             </Card>
                         </Link>
                     )
-                });
+                })
 
                 self.setState({
                     skills: skills,
