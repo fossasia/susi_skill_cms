@@ -330,6 +330,7 @@ export default class BrowseSkill extends React.Component {
                                     color: '#4285f4'
 
                                 }}
+                                style={{ width: 300 }}
                             >
                                 {groups}
                             </SelectField>
@@ -369,9 +370,11 @@ export default class BrowseSkill extends React.Component {
                     </Paper>
 
                     <div style={{
-                        marginTop: '20px', marginBottom: '40px',
+                        marginTop: '20px',
+                        marginBottom: '40px',
                         textAlign: 'justify',
-                        fontSize: '0.1px', width: '100%'
+                        fontSize: '0.1px',
+                        width: '100%'
                     }}>
                         <div className='row' style={styles.scroll}  >
                             <div style={styles.gridList}>

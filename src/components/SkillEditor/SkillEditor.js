@@ -583,8 +583,10 @@ class SkillEditor extends Component {
                         <div style={styles.center}>
                             <div style={styles.dropdownDiv}>
                                 <SelectField
-                                    floatingLabelText='Category'
-                                    style={{ width: '160px', marginLeft: 10, marginRight: 10 }}
+                                    floatingLabelText="Category"
+                                    style={{ width: 300,
+                                      marginLeft: 10,
+                                      marginRight: 10 }}
                                     value={this.state.groupValue}
                                     onChange={this.handleGroupChange}
                                 >

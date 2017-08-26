@@ -337,8 +337,8 @@ export default class CreateSkill extends React.Component {
                         <div style={styles.center}>
                             <div style={styles.dropdownDiv}>
                                 <SelectField
-                                    floatingLabelText='Category'
-                                    style={{width:'160px',marginLeft:10,marginRight:10}}
+                                    floatingLabelText="Category"
+                                    style={{ width: 300,marginLeft:10,marginRight:10 }}
                                     value={this.state.groupValue}
                                     onChange={this.handleGroupChange}
                                 >
@@ -347,7 +347,7 @@ export default class CreateSkill extends React.Component {
                                 <SelectField
                                     floatingLabelText='Language'
                                     disabled={this.state.languageSelect}
-                                    style={{width:'125px',marginLeft:10,marginRight:10}}
+                                    style={{ width:'125px',marginLeft:10,marginRight:10 }}
                                     value={this.state.languageValue}
                                     onChange={this.handleLanguageChange}
                                 >
@@ -394,14 +394,14 @@ export default class CreateSkill extends React.Component {
                         <div style={styles.toolbar}>
                             <span style={styles.button}><Icon type='cloud-download' style={styles.icon}/>Download as text</span>
                             <span style={styles.button}>Size <SelectField
-                                style={{width:'60px'}}
+                                style={{ width:'60px' }}
                                 onChange={this.handleFontChange}
                             >
                             {fontsizes}
                         </SelectField></span>
 
                             <span style={styles.button}>Theme <SelectField
-                                style={{width:'150px'}}
+                                style={{ width:'150px' }}
                                 onChange={this.handleThemeChange}
                             >
                             {codeEditorThemes}
@@ -423,14 +423,22 @@ export default class CreateSkill extends React.Component {
                             editorProps={{$blockScrolling: true}}
                         />
                     </div>
-                    <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between',marginTop:10}}>
-                            <Paper style={{width:'100%',padding:10,display: 'flex',alignItems:'center',textAlign:'center',justifyContent:'center'}} zDepth={1}>
+                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between',marginTop:10 }}>
+                            <Paper
+                              style={{
+                                width: '100%',
+                                padding: 10,
+                                display: 'flex',
+                                alignItems: 'center',
+                                textAlign: 'center',
+                                justifyContent: 'center' }}
+                              zDepth={1}>
 
                                 <TextField
                                     floatingLabelText='Commit message'
                                     floatingLabelFixed={true}
-                                    hintText='Enter Commit Message'
-                                    style={{width:'80%'}}
+                                    hintText="Enter Commit Message"
+                                    style={{ width: '80%' }}
                                     onChange={this.handleCommitMessageChange}
                                 />
                                 <RaisedButton label='Save' backgroundColor='#4285f4' labelColor='#fff' style={{marginLeft:10}}  onTouchTap={this.saveClick} />
