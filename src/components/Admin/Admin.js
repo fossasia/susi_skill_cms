@@ -8,8 +8,8 @@ import FlatButton from 'material-ui/FlatButton';
 import PropTypes from 'prop-types';
 import Paper from 'material-ui/Paper';
 import Tabs from 'antd/lib/tabs';
-import ListUser from "./ListUser/ListUser";
-// import ListUser from "./ListUser/ListUser";
+import ListUser from './ListUser/ListUser';
+// import ListUser from './ListUser/ListUser';
 
 const cookies = new Cookies();
 
@@ -28,7 +28,7 @@ class Admin extends Component {
 
     componentDidMount() {
         let url;
-        url = "http://api.susi.ai/aaa/showAdminService.json?access_token=" + cookies.get('loggedIn');
+        url = 'http://api.susi.ai/aaa/showAdminService.json?access_token=' + cookies.get('loggedIn');
         $.ajax({
             url: url,
             dataType: 'jsonp',
@@ -65,7 +65,8 @@ class Admin extends Component {
 
         const actions = [
             <FlatButton
-                label="Ok"
+                key={1}
+                label='Ok'
                 primary={true}
                 onTouchTap={this.handleClose}
             />,
@@ -81,27 +82,27 @@ class Admin extends Component {
         return (
 
             <div>
-                <div className="heading">
+                <div className='heading'>
                     <StaticAppBar {...this.props}/>
-                    <h1 className="h1">SUSI.AI Admin Panel</h1>
+                    <h1 className='h1'>SUSI.AI Admin Panel</h1>
                 </div>
                 <div>
                     <Dialog
-                        title="Permission Denied"
+                        title='Permission Denied'
                         actions={actions}
                         modal={true}
                         open={this.state.showNotAdminDialog}>
                         You do not have permissions to access this page!! :(
                     </Dialog>
                 </div>
-                <div className="tabs">
+                <div className='tabs'>
                     <Paper style={tabStyle} zDepth={0}>
                         <Tabs tabPosition={this.state.tabPosition} animated={false}>
-                            <TabPane tab="Admin" key="1">Tab for Admin Content</TabPane>
-                            <TabPane tab="Users" key="2">
+                            <TabPane tab='Admin' key='1'>Tab for Admin Content</TabPane>
+                            <TabPane tab='Users' key='2'>
                                 <ListUser/>
                             </TabPane>
-                            <TabPane tab="Permissions" key="3">Permission Content Tab</TabPane>
+                            <TabPane tab='Permissions' key='3'>Permission Content Tab</TabPane>
                         </Tabs>
                     </Paper>
                 </div>

@@ -5,4 +5,3 @@ import { shallow } from 'enzyme';
  it('render SignUp without crashing',()=>{
    shallow(<SignUp />);
  });
- 
