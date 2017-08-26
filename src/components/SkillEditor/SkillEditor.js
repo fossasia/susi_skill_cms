@@ -121,7 +121,10 @@ class SkillEditor extends Component {
                     console.log(data);
                     for (let i = 0; i < data.length; i++) {
                         if (ISO6391.getNativeName(data[i])) {
-                            languages.push(<MenuItem value={data[i]} key={data[i]} primaryText={ISO6391.getNativeName(data[i])} />);
+                            languages.push(<MenuItem
+                                value={data[i]}
+                                key={data[i]}
+                                primaryText={ISO6391.getNativeName(data[i])} />);
                         }
                         else {
                             languages.push(<MenuItem  value={data[i]}
@@ -327,7 +330,10 @@ class SkillEditor extends Component {
                     console.log(data);
                     for (let i = 0; i < data.length; i++) {
                         if (ISO6391.getNativeName(data[i])) {
-                            languages.push(<MenuItem value={data[i]} key={data[i]} primaryText={ISO6391.getNativeName(data[i])} />);
+                            languages.push(<MenuItem
+                                value={data[i]}
+                                key={data[i]}
+                                primaryText={ISO6391.getNativeName(data[i])} />);
 
                         }
                         else {

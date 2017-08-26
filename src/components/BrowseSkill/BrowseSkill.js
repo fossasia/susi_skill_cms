@@ -1,9 +1,9 @@
 import React from 'react';
 import styles from './SkillStyle';
 import ISO6391 from 'iso-639-1';
-import MenuItem from "material-ui/MenuItem";
-import SelectField from "material-ui/SelectField";
-import { FloatingActionButton, Paper } from "material-ui";
+import MenuItem from 'material-ui/MenuItem';
+import SelectField from 'material-ui/SelectField';
+import { FloatingActionButton, Paper } from 'material-ui';
 import Add from 'material-ui/svg-icons/content/add';
 import ContentAdd from 'material-ui/svg-icons/navigation/arrow-forward';
 import { Card } from 'material-ui/Card';
@@ -174,7 +174,10 @@ export default class BrowseSkill extends React.Component {
                     this.setState({ languages: data });
                     for (let i = 0; i < data.length; i++) {
                         if (ISO6391.getNativeName(data[i])) {
-                            languages.push(<MenuItem value={data[i]} key={data[i]} primaryText={ISO6391.getNativeName(data[i])} />);
+                            languages.push(<MenuItem
+                                value={data[i]}
+                                key={data[i]}
+                                primaryText={ISO6391.getNativeName(data[i])} />);
                         }
                         else {
                             languages.push(<MenuItem value={data[i]}
