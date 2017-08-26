@@ -149,10 +149,12 @@ export default class BrowseSkill extends React.Component {
                 success: function (data) {
                     data = data.groups;
                     this.setState({ groups: data });
+                    data.sort();
                     for (let i = 0; i < data.length; i++) {
-                        groups.push(<MenuItem value={data[i]}
-                                              key={data[i]}
-                                              primaryText={`${data[i]}`} />);
+                        groups.push(<MenuItem
+                                        value={data[i]}
+                                        key={data[i]}
+                                        primaryText={`${data[i]}`} />);
                     }
                 }.bind(this)
             });

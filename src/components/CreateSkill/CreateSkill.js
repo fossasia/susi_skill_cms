@@ -104,13 +104,15 @@ export default class CreateSkill extends React.Component {
                 dataType: 'jsonp',
                 jsonp: 'callback',
                 crossDomain: true,
-                success: function (d) {
-                    console.log(d);
-                    d= d.groups;
-                    for (let i = 0; i < d.length; i++) {
-                        groups.push(<MenuItem value={i}
-                                              key={d[i]}
-                                              primaryText={`${d[i]}`}/>);
+                success: function (data) {
+                    data = data.groups;
+                    data.sort();
+                    for (let i = 0; i < data.length; i++) {
+                        groups.push(<MenuItem
+                                      value={i}
+                                      key={data[i]}
+                                      primaryText={`${data[i]}`}
+                                    />);
                     }
                 }
             });
