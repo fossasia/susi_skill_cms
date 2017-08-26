@@ -28,6 +28,7 @@ class App extends React.Component {
                 <MuiThemeProvider>
                     <Switch>
                         <Route exact path='/:category/:skill/edit/:lang' component={SkillEditor} />
+                        <Route exact path='/:category/:skill/edit/:lang/:commit' component={SkillEditor}/>
                         <Route exact path='/admin' component={Admin}/>
                         <Route path='/listUser' component={ListUser}/>
                         <Route exact path='/:category/:skill/:lang' component={SkillListing}/>
@@ -35,7 +36,6 @@ class App extends React.Component {
                         <Route exact path='/logout' component={Logout} />
                         <Route exact path='/skillCreator' component={CreateSkill}/>
                         <Route exact path='/:category/:skill/versions/:lang' component={SkillVersion}/>
-                        <Route exact path='/:category/:skill/version/:lang/:commit' component={SkillHistory}/>
                         <Route exact path='/:category/:skill/compare/:lang/:oldid/:recentid' component={SkillHistory}/>
                         <Route exact path='/:category/:skill/edit/:lang/:latestid/:revertid' component={SkillRollBack}/>
                         <Route exact path='/' component={BrowseSkill} />

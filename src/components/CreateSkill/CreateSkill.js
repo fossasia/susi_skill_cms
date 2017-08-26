@@ -2,6 +2,7 @@ import React from  'react';
 import Icon from 'antd/lib/icon';
 import MenuItem from 'material-ui/MenuItem';
 import SelectField from 'material-ui/SelectField';
+import isoConv from 'iso-language-converter';
 import {Paper, RaisedButton, TextField} from 'material-ui';
 import AceEditor from 'react-ace';
 import Cookies from 'universal-cookie';
@@ -72,6 +73,7 @@ export default class CreateSkill extends React.Component {
                                             primaryText={`${themes[i]}`}/>);
         }
     }
+
     onChange(newValue) {
         const match = newValue.match(/^::image\s(.*)$/m);
         const nameMatch = newValue.match(/^::name\s(.*)$/m);
@@ -93,8 +95,8 @@ export default class CreateSkill extends React.Component {
         }
         self.updateCode(newValue)
     }
-    loadgroups()
-    {
+
+    loadgroups() {
         if(groups.length===0) {
             $.ajax({
                 url: 'http://api.susi.ai/cms/getGroups.json',
@@ -141,12 +143,8 @@ export default class CreateSkill extends React.Component {
     };
 
     handleGroupChange = (event, index, value) => {
-        this.setState({
-          groupValue: value,
-          groupSelect:false,
-          languageSelect:false
-        });
-        if(languages.length===0) {
+        this.setState({ groupValue: value, groupSelect: false, languageSelect: false });
+        if (languages.length === 0) {
             $.ajax({
                 url: 'http://api.susi.ai/cms/getAllLanguages.json',
                 jsonpCallback: 'pc',
@@ -154,15 +152,23 @@ export default class CreateSkill extends React.Component {
                 jsonp: 'callback',
                 crossDomain: true,
                 success: function (data) {
+
+                    data = data.languagesArray
+                    this.setState({ languages: data });
                     console.log(data);
-                    data = data.languagesArray;
                     for (let i = 0; i < data.length; i++) {
-                        languages.push(<MenuItem value={i}
-                                                key={data[i]}
-                                                primaryText={`${data[i]}`}/>);
+                        if (isoConv(data[i])) {
+                            languages.push(<MenuItem  value={data[i]}
+                                                      key={data[i]}
+                                                      primaryText={isoConv(data[i])} />);
+                        }
+                        else {
+                            languages.push(<MenuItem  value={data[i]}
+                                                      key={data[i]}
+                                                      primaryText={'Universal'} />);
+                        }
                     }
-                    console.log('languages ', languages)
-                }
+                }.bind(this)
             });
         }
     };
@@ -256,7 +262,10 @@ export default class CreateSkill extends React.Component {
                 let   data = JSON.parse(response);
                 console.log(response);
                 if(data.accepted===true){
-                    self.props.history.push({  pathname: '/skillPage',
+                    self.props.history.push({
+                        pathname: '/' + groups[self.state.groupValue].key  +
+                                  '/' + self.state.expertValue.trim().replace(/\s/g,'_') +
+                                  '/' +languages[self.state.languageValue].key,
                         state: {
                             from_upload: true,
                             expertValue:  self.state.expertValue,
@@ -338,7 +347,7 @@ export default class CreateSkill extends React.Component {
                                 <SelectField
                                     floatingLabelText='Language'
                                     disabled={this.state.languageSelect}
-                                    style={{width:'90px',marginLeft:10,marginRight:10}}
+                                    style={{width:'125px',marginLeft:10,marginRight:10}}
                                     value={this.state.languageValue}
                                     onChange={this.handleLanguageChange}
                                 >

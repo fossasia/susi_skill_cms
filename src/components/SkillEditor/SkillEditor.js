@@ -3,10 +3,12 @@ import PropTypes from 'prop-types';
 import Icon from 'antd/lib/icon';
 import MenuItem from 'material-ui/MenuItem';
 import SelectField from 'material-ui/SelectField';
-import { Paper, RaisedButton, TextField } from 'material-ui';
+import {Dialog, Paper, RaisedButton, TextField} from 'material-ui';
 import AceEditor from 'react-ace';
+import {Link} from 'react-router-dom';
 import Cookies from 'universal-cookie';
 import 'brace/mode/markdown';
+import isoConv from 'iso-language-converter';
 import 'brace/theme/github';
 import 'brace/theme/monokai';
 import 'brace/theme/tomorrow';
@@ -21,6 +23,7 @@ import 'brace/theme/terminal';
 import * as $ from 'jquery';
 import notification from 'antd/lib/notification';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
+import {red500} from 'material-ui/styles/colors';
 const groups = [];
 const languages = [];
 const fontsizes = [];
@@ -40,17 +43,25 @@ class SkillEditor extends Component {
             modelValue: 'general',
             file: null,
             codeChanged: false,
+            showDeleteBox:false,
             groupValue: this.props.location.pathname.split('/')[1],
             oldGroupValue: this.props.location.pathname.split('/')[1],
             languageValue: this.props.location.pathname.split('/')[4],
+            oldLanguageValue:this.props.location.pathname.split('/')[4],
             expertValue: this.props.location.pathname.split('/')[2],
             oldExpertValue: this.props.location.pathname.split('/')[2],
+            commitId:this.props.location.pathname.split('/')[5],
+            date:'',
+            author:'',
             oldImageUrl: '',
             imageUrl: '',
             image_name_changed: false,
             code: '::name <Skill_name>\n::author <author_name>\n::author_url <author_url>\n::description <description> \n::dynamic_content <Yes/No>\n::developer_privacy_policy <link>\n::image <image_url>\n::terms_of_use <link>\n\n\nUser query1|query2|quer3....\n!example:<The question that should be shown in public skill displays>\n!expect:<The answer expected for the above example>\nAnswer for the user query',
             fontSizeCode: 14,
-            editorTheme: 'github'
+            editorTheme: 'github',
+            showAdmin:false,
+            deleteDisabled:true,
+
         };
         let fonts = [
             14, 16, 18, 20, 24, 28, 32, 40
@@ -104,23 +115,78 @@ class SkillEditor extends Component {
                 jsonp: 'callback',
                 crossDomain: true,
                 success: function (data) {
+
                     data = data.languagesArray;
+                    this.setState({ languages: data });
+                    console.log(data);
                     for (let i = 0; i < data.length; i++) {
-                        languages.push(<MenuItem value={data[i]}
-                                                 key={data[i]}
-                                                 primaryText={`${data[i]}`} />);
+                        if (isoConv(data[i])) {
+                            languages.push(<MenuItem  value={data[i]}
+                                                      key={data[i]}
+                                                      primaryText={isoConv(data[i])} />);
+                        }
+                        else {
+                            languages.push(<MenuItem  value={data[i]}
+                                                      key={data[i]}
+                                                      primaryText={'Universal'} />);
+                        }
                     }
-                }
+                }.bind(this)
             });
         }
     }
 
 
     componentDidMount() {
+        // Check if admin is logged in or not
+        if(cookies.get('showAdmin')===true){
+           this.setState({
+                  showAdmin:true
+               })
+        }
         self = this;
         self.loadgroups();
 
         self.loadlanguages();
+        if(this.state.commitId){
+             let baseUrl = 'http://api.susi.ai/cms/getFileAtCommitID.json';
+             let skillAtCommitIDUrl = baseUrl +'?model=' + this.state.modelValue +
+                                                             '&group=' + this.state.groupValue +
+                                                            '&language=' + this.state.languageValue +
+                                                             '&skill=' + this.state.expertValue +
+                                                             '&commitID='+this.state.commitId
+             $.ajax({
+                     url: skillAtCommitIDUrl,
+                     jsonpCallback: 'p',
+                     dataType: 'jsonp',
+                     jsonp: 'callback',
+                     crossDomain: true,
+                     success: function (data) {
+                         self.setState({
+                             code:data.file,
+                            author:data.author,
+                             date:data.commitDate
+                         })
+                         self.updateCode(data.file)
+                     }
+             });
+             baseUrl = 'http://api.susi.ai/cms/getSkillMetadata.json'
+             let url = baseUrl + '?model=' + this.state.modelValue + '&group=' + this.state.groupValue + '&language=' + this.state.languageValue + '&skill=' + this.state.expertValue;
+             this.setState({
+                 skillUrl:url
+             })
+             $.ajax({
+                 url: url,
+                 jsonpCallback: 'pd',
+                 dataType: 'jsonp',
+                 jsonp: 'callback',
+                 crossDomain: true,
+                 success: function (data) {
+                     self.updateData(data.skill_metadata)
+                 }
+             });
+             return 0;
+         }
         this.setState({
             groupValue: this.props.location.pathname.split('/')[1],
             languageValue: this.props.location.pathname.split('/')[4],
@@ -165,12 +231,18 @@ class SkillEditor extends Component {
             success: function (data) {
 
                 self.updateCode(data.text)
-            }
+                const match = data.text.match(/^::image\s(.*)$/m);
+                if (match !== null) {
+                    this.setState({
+                        imageUrl: match[1],
+                        codeChanged: true
+                    });
+                }
+            }.bind(this)
         });
 
     }
     handleChange(newValue) {
-
         const match = newValue.match(/^::image\s(.*)$/m);
         if (match !== null) {
             this.setState({
@@ -185,6 +257,24 @@ class SkillEditor extends Component {
         this.setState({
             code: newCode
         });
+
+    };
+
+
+    handleDeleteText = (event) => {
+        const name =  this.state.code.match(/^::name\s(.*)$/m);
+        console.log(name[1])
+        if(event.target.value===name[1]) {
+            this.setState({
+                deleteDisabled: false,
+            });
+        }
+        else{
+            this.setState({
+                deleteDisabled: true,
+            });
+
+        }
     };
 
     handleModelChange = (event, index, value) => {
@@ -220,7 +310,11 @@ class SkillEditor extends Component {
     };
 
     handleGroupChange = (event, index, value) => {
-        this.setState({ groupValue: value });
+        this.setState({
+          groupValue: value,
+          groupSelect: false,
+          languageSelect: false
+        });
         if (languages.length === 0) {
             $.ajax({
                 url: 'http://api.susi.ai/cms/getAllLanguages.json',
@@ -229,13 +323,23 @@ class SkillEditor extends Component {
                 jsonp: 'callback',
                 crossDomain: true,
                 success: function (data) {
+
                     data = data.languagesArray;
+                    this.setState({ languages: data });
+                    console.log(data);
                     for (let i = 0; i < data.length; i++) {
-                        languages.push(<MenuItem value={data[i]}
-                                                key={data[i]}
-                                                primaryText={`${data[i]}`} />);
+                        if (isoConv(data[i])) {
+                            languages.push(<MenuItem  value={data[i]}
+                                                      key={data[i]}
+                                                      primaryText={isoConv(data[i])} />);
+                        }
+                        else {
+                            languages.push(<MenuItem  value={data[i]}
+                                                      key={data[i]}
+                                                      primaryText={'Universal'} />);
+                        }
                     }
-                }
+                }.bind(this)
             });
         }
     };
@@ -277,6 +381,48 @@ class SkillEditor extends Component {
         editorTheme: value
       });
     }
+
+    deleteSkill = () => {
+        this.setState({
+            deleteDisabled:true
+        });
+        // console.log('http://127.0.0.1:4000/cms/deleteSkill.txt?skill='+this.name+'&group='+this.groupValue+'&language='+this.languageValue);
+        $.ajax({
+            url: 'http://api.susi.ai/cms/deleteSkill.json?skill='+this.state.oldExpertValue+'&group='+this.state.oldGroupValue+'&language='+this.state.oldLanguageValue,
+            jsonpCallback: 'pa',
+            dataType: 'jsonp',
+            jsonp: 'callback',
+            crossDomain: true,
+            success: function (d) {
+                if(d.accepted===true) {
+                    notification.open({
+                        message: 'Deleted',
+                        description: 'This Skill has been deleted',
+                        icon: <Icon type='check-circle' style={{color: '#00C853'}}/>,
+                    });
+                    this.setState({
+                        loading: false
+                    });
+                    this.props.history.push({
+                        pathname: '/',
+                        state: {}
+                    });
+                }
+                else{
+                    notification.open({
+                        message: 'Failed',
+                        description: d.message,
+                        icon: <Icon type='check-circle' style={{color: red500}}/>,
+                    });
+                    this.props.history.push({
+                        pathname: '/',
+                        state: {}
+                    });
+                }
+            }.bind(this)
+
+        });
+    };
 
     saveClick = () => {
         this.setState({
@@ -352,6 +498,7 @@ class SkillEditor extends Component {
             file = this.state.file;
             form.append('image', file);
         }
+        console.log(this.state)
 
         let settings = {
             'async': true,
@@ -363,9 +510,10 @@ class SkillEditor extends Component {
             'mimeType': 'multipart/form-data',
             'data': form
         };
+
         $.ajax(settings)
             .done(function (response) {
-                self.setState({
+                this.setState({
                     loading: false
                 });
                 let data = JSON.parse(response);
@@ -377,7 +525,7 @@ class SkillEditor extends Component {
                     });
                 }
                 else {
-                    self.setState({
+                    this.setState({
                         loading: false
                     });
                     notification.open({
@@ -386,7 +534,7 @@ class SkillEditor extends Component {
                         icon: <Icon type='close-circle' style={{ color: '#f44336' }} />
                     });
                 }
-            })
+            }.bind(this))
             .fail(function (jqXHR, textStatus) {
                 this.setState({
                     loading: false
@@ -398,17 +546,39 @@ class SkillEditor extends Component {
                 })
 
             }.bind(this));
+
     }
+    openDelete = () => {
+        this.setState({ showDeleteBox: true });
+    };
+
+    closeDelete = () => {
+        this.setState({ showDeleteBox: false });
+    };
 
     render() {
         const style = {
             width: '100%',
-            padding: '10px'
+            padding: '10px',
+            margin:'10px 0'
         };
+        const bold ={
+             fontSize:'14px'
+        }
         return (
             <div>
                 <StaticAppBar {...this.props} />
                 <div style={styles.home}>
+                     {this.state.commitId ?
+                    <Paper style={style} zDepth={1}>
+                      <div>
+                        {'You are currently editing an older version of the skill: '}
+                        <b style={bold}>{this.state.expertValue}</b><br/>
+                        <span>Author: <b style={bold}>{this.state.author}</b></span><br/>
+                        <span>commitID: <b>{this.state.commitId}</b></span><br/>
+                        <span>Revision as of <b>{this.state.date}</b></span>
+                    </div>
+                    </Paper>:''}
                     <Paper style={style} zDepth={1}>
                         <div style={styles.center}>
                             <div style={styles.dropdownDiv}>
@@ -422,7 +592,7 @@ class SkillEditor extends Component {
                                 </SelectField>
                                 <SelectField
                                     floatingLabelText='Language'
-                                    style={{ width: '90px', marginLeft: 10, marginRight: 10 }}
+                                    style={{ width: '125px', marginLeft: 10, marginRight: 10 }}
                                     value={this.state.languageValue}
                                     onChange={this.handleLanguageChange}
                                 >
@@ -435,7 +605,13 @@ class SkillEditor extends Component {
                                     value={this.state.expertValue}
                                     onChange={this.handleExpertChange}
                                 />
-                                {this.state.showImage && <img alt='preview' id='target' style={styles.image} src={this.state.image} />}
+                                {this.state.showImage &&
+                                  (<img alt='preview'
+                                        id='target'
+                                        style={styles.image}
+                                        src={this.state.image} />
+                                  )
+                                }
                                 <RaisedButton
                                     label='Choose an Image'
                                     labelPosition='before'
@@ -465,7 +641,11 @@ class SkillEditor extends Component {
                     <div style={styles.codeEditor}>
 
                         <div style={styles.toolbar}>
-                            <span style={styles.button}><Icon type='cloud-download' style={styles.icon} />Download as text</span>
+                            <span style={styles.button}>
+                              <Icon type='cloud-download'
+                                    style={styles.icon} />
+                              Download as text
+                            </span>
                             <span style={styles.button}>Size <SelectField
                                 style={{ width: '60px' }}
                                 onChange={this.handleFontChange}
@@ -497,9 +677,18 @@ class SkillEditor extends Component {
                         />
                     </div>
 
-                    <div style={{ display: 'flex', alignItems: 'center', textAlign: 'center', justifyContent: 'center', marginTop: 10 }}>
-                        <Paper style={{ width: '100%', padding: 10, display: 'flex', alignItems: 'center', textAlign: 'center', justifyContent: 'center' }} zDepth={1}>
-
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      textAlign: 'center',
+                      justifyContent: 'center',
+                      marginTop: 10 }}>
+                        <Paper style={{ width: '100%',
+                                        padding: 10,
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        textAlign: 'center',
+                                        justifyContent: 'center' }} zDepth={1}>
                             <TextField
                                 floatingLabelText='Commit message'
                                 floatingLabelFixed={true}
@@ -507,9 +696,65 @@ class SkillEditor extends Component {
                                 style={{ width: '80%' }}
                                 onChange={this.handleCommitMessageChange}
                             />
-                            <RaisedButton label={this.state.loading ? 'Saving' : 'Save'} disabled={this.state.loading} backgroundColor='#4285f4' labelColor='#fff' style={{ marginLeft: 10 }} onTouchTap={this.saveClick} />
+                            <RaisedButton label={this.state.loading ? 'Saving' : 'Save'}
+                                          disabled={this.state.loading}
+                                          backgroundColor='#4285f4'
+                                          labelColor='#fff'
+                                          style={{ marginLeft: 10 }}
+                                          onTouchTap={this.saveClick} />
+                            <Link to={{
+                                pathname: '/'+this.state.groupValue+
+                                          '/'+this.state.expertValue+
+                                          '/'+this.state.languageValue
+                            }}>
+                            <RaisedButton label='Cancel'
+                                          backgroundColor='#4285f4'
+                                          labelColor='#fff'
+                                          style={{ marginLeft: 10 }}/>
+                            </Link>
                         </Paper>
                     </div>
+                    {this.state.showAdmin &&
+                    <Paper style={{
+                        width: '100%', border: '1px solid red', marginTop: 20,
+                        padding: '20px', display: 'flex', justifyContent: 'space-between'
+                    }} zDepth={1}>
+                        <div style={{margineft: '0px'}}>
+                            <strong><p>Delete this Skill</p></strong>
+                            {'Once you delete a skill, only admins can'+
+                            'undo this action before 30 days of deletion. Please be certain.'}
+                        </div>
+                        <RaisedButton label='Delete'
+                                      backgroundColor={red500}
+                                      labelColor='#fff'
+                                      style={{marginLeft: 10}}
+                                      onTouchTap={this.openDelete}/>
+                    </Paper>
+                    }
+                </div>
+                <div>
+                    <Dialog
+                        modal={false}
+                        open={this.state.showDeleteBox}
+                        autoScrollBodyContent={true}
+                        contentStyle={{width: '50%',minWidth: '300px'}}
+                        onRequestClose={this.closeDelete} >
+                        <div >
+                            <TextField
+                                floatingLabelText='Enter Skill Name'
+                                floatingLabelFixed={true}
+                                hintText='Skill Name'
+                                style={{ width: '80%' }}
+                                onChange={this.handleDeleteText}
+                            />
+                            <RaisedButton label='Delete'
+                                          disabled={this.state.deleteDisabled}
+                                          backgroundColor={red500}
+                                          labelColor='#fff'
+                                          style={{marginLeft: 10}}
+                                          onTouchTap={this.deleteSkill}/>
+                        </div>
+                    </Dialog>
                 </div>
             </div>
         );
@@ -578,7 +823,8 @@ const styles = {
 };
 
 SkillEditor.propTypes = {
-  location: PropTypes.object
+  location: PropTypes.object,
+  history: PropTypes.object,
 };
 
 export default SkillEditor;

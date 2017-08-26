@@ -31,23 +31,23 @@ let TopRightMenuItems = (props) => (
     <div>
         <MenuItem
             href='http://chat.susi.ai/overview'
-            rightIcon={<Info/>}>
+            rightIcon={<Info />}>
             About
         </MenuItem>
         <MenuItem
             href='http://chat.susi.ai/'
-            rightIcon={<Chat/>}>
+            rightIcon={<Chat />}>
             Chat
         </MenuItem>
         <MenuItem
             href='http://skills.susi.ai/'
-            rightIcon={<SKillIcon/>}>
+            rightIcon={<SKillIcon />}>
             Skills
         </MenuItem>
         <MenuItem primaryText='Settings'
-                  onTouchTap={this.handleClose}
-                  containerElement={<Link to='/settings' />}
-                  rightIcon={<Settings/>}/>
+            onTouchTap={this.handleClose}
+            containerElement={<Link to='/settings' />}
+            rightIcon={<Settings />} />
     </div>
 );
 
@@ -61,6 +61,7 @@ class StaticAppBar extends Component {
             showOptions: false,
             showAdmin: false,
             anchorEl: null,
+            leftGap: '0px'
         }
     }
 
@@ -73,13 +74,14 @@ class StaticAppBar extends Component {
     };
 
     componentDidMount() {
-        if(this.props.location.pathname!=='/'){
+        if (this.props.location.pathname !== '/') {
+
             document.getElementById('appBar').classList.add('topAppBarFix');
         }
 
         window.addEventListener('scroll', this.handleScroll);
         let url;
-        url = 'http://api.susi.ai/aaa/showAdminService.json?access_token='+cookies.get('loggedIn');
+        url = 'http://api.susi.ai/aaa/showAdminService.json?access_token=' + cookies.get('loggedIn');
         $.ajax({
             url: url,
             dataType: 'jsonp',
@@ -139,18 +141,22 @@ class StaticAppBar extends Component {
     }
 
     showOptions = (event) => {
+        var p = $('#rightIconButton').width();
+        var screenWidth = $(window).width();
+        this.setState({ leftGap: ((screenWidth - p) / 2) + p - 130 })
+        event.preventDefault();
         this.setState({
             showOptions: true,
-            anchorEl: event.currentTarget,
-        });
+            anchorEl: event.currentTarget
+        })
     };
 
     closeOptions = () => {
-      if(this.state.showOptions){
-        this.setState({
-            showOptions: false,
-        });
-      }
+        if (this.state.showOptions) {
+            this.setState({
+                showOptions: false,
+            });
+        }
     };
 
     handleLogin = () => {
@@ -180,7 +186,7 @@ class StaticAppBar extends Component {
         });
     };
 
-    handleClose = ()  => {
+    handleClose = () => {
         this.setState({
             showOptions: false,
             showLogin: false,
@@ -191,7 +197,7 @@ class StaticAppBar extends Component {
 
     render() {
 
-        const closingStyle ={
+        const closingStyle = {
             position: 'absolute',
             zIndex: 1200,
             fill: '#444',
@@ -199,8 +205,9 @@ class StaticAppBar extends Component {
             height: '26px',
             right: '10px',
             top: '10px',
-            cursor:'pointer'
+            cursor: 'pointer'
         };
+        var leftGap = this.state.leftGap;
 
         const bodyStyle = {
             'padding': 0,
@@ -223,7 +230,7 @@ class StaticAppBar extends Component {
                     </IconMenu>
                     <Popover
                         {...props}
-                        style={{ float: 'right', position: 'relative', right: '0px', margin: '46px 20px 0 0' }}
+                        style={{ float: 'left', position: 'relative', marginTop: '46px', marginLeft: leftGap }}
                         open={this.state.showOptions}
                         anchorEl={this.state.anchorEl}
                         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
@@ -232,10 +239,10 @@ class StaticAppBar extends Component {
                     >
                         <TopRightMenuItems />
                         {
-                             this.state.showAdmin === true ?
+                            this.state.showAdmin === true ?
                                 (<MenuItem primaryText='Admin'
-                                           containerElement={<Link to='/admin' />}
-                                           rightIcon={<List />}/>) :
+                                    containerElement={<Link to='/admin' />}
+                                    rightIcon={<List />} />) :
                                 (
                                     console.log('Admin page allowed ' + cookies.get('showAdmin'))
                                 )
@@ -243,11 +250,11 @@ class StaticAppBar extends Component {
                         }
                         {cookies.get('loggedIn') ?
                             (<MenuItem primaryText='Logout'
-                                       containerElement={<Link to='/logout' />}
-                                       rightIcon={<Exit />}/>) :
+                                containerElement={<Link to='/logout' />}
+                                rightIcon={<Exit />} />) :
                             (<MenuItem primaryText='Login'
-                                       onTouchTap={this.handleLogin}
-                                       rightIcon={<LoginIcon/>} />)
+                                onTouchTap={this.handleLogin}
+                                rightIcon={<LoginIcon />} />)
                         }
                     </Popover>
                 </div>
@@ -260,15 +267,15 @@ class StaticAppBar extends Component {
                     <AppBar
                         className='topAppBar'
                         id='appBar'
-                        title={<div style={{ float: 'left', marginTop: '-10px' }}><Link to='/' >
+                        title={<div id='rightIconButton' ><Link to='/' style={{ float: 'left', marginTop: '-10px',height:'25px',width:'122px' }}>
                             <img src={susiWhite} alt='susi-logo' className='siteTitle' /></Link></div>}
                         style={{
                             backgroundColor: '#4285f4',
                             height: '46px',
                             boxShadow: 'none',
-                            margin:'0 auto',
+                            margin: '0 auto',
                         }}
-                        iconStyleRight={{marginTop: '-2px'}}
+                        iconStyleRight={{ marginTop: '-2px' }}
                         iconElementRight={<TopRightMenu />}
                     />
                 </header>
@@ -282,10 +289,10 @@ class StaticAppBar extends Component {
                     contentStyle={{ width: '35%', minWidth: '300px' }}
                 >
                     <Login {...this.props}
-                           onForgotPwdLogin={this.handleForgotPassword}
-                           onSignUpLogin={this.handleSignUp}/>
+                        onForgotPwdLogin={this.handleForgotPassword}
+                        onSignUpLogin={this.handleSignUp} />
                     <Close style={closingStyle}
-                           onTouchTap={this.handleClose} />
+                        onTouchTap={this.handleClose} />
                 </Dialog>
                 {/* SignUp */}
                 <Dialog
@@ -297,10 +304,10 @@ class StaticAppBar extends Component {
                     contentStyle={{ width: '35%', minWidth: '300px' }}
                 >
                     <SignUp {...this.props}
-                            onRequestClose={this.handleClose}
-                            onLoginSignUp={this.handleLogin} />
+                        onRequestClose={this.handleClose}
+                        onLoginSignUp={this.handleLogin} />
                     <Close style={closingStyle}
-                           onTouchTap={this.handleClose} />
+                        onTouchTap={this.handleClose} />
                 </Dialog>
                 {/* Forgot Password */}
                 <Dialog
@@ -312,9 +319,9 @@ class StaticAppBar extends Component {
                     onRequestClose={this.handleClose}
                 >
                     <ForgotPassword {...this.props}
-                                    onRequestClose={this.handleClose} />
+                        onRequestClose={this.handleClose} />
                     <Close style={closingStyle}
-                           onTouchTap={this.handleClose} />
+                        onTouchTap={this.handleClose} />
                 </Dialog>
             </div>
         );
