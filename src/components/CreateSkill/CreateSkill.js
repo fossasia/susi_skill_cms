@@ -313,7 +313,7 @@ export default class CreateSkill extends React.Component {
                             <div style={styles.dropdownDiv}>
                                 <SelectField
                                     floatingLabelText="Category"
-                                    style={{width:'160px',marginLeft:10,marginRight:10}}
+                                    style={{ width: 300,marginLeft:10,marginRight:10 }}
                                     value={this.state.groupValue}
                                     onChange={this.handleGroupChange}
                                 >
@@ -322,7 +322,7 @@ export default class CreateSkill extends React.Component {
                                 <SelectField
                                     floatingLabelText="Language"
                                     disabled={this.state.languageSelect}
-                                    style={{width:'125px',marginLeft:10,marginRight:10}}
+                                    style={{ width:'125px',marginLeft:10,marginRight:10 }}
                                     value={this.state.languageValue}
                                     onChange={this.handleLanguageChange}
                                 >
@@ -334,7 +334,7 @@ export default class CreateSkill extends React.Component {
                                     floatingLabelFixed={false}
                                     value={this.state.expertValue}
                                     hintText="Skill name"
-                                    style={{marginLeft:10,marginRight:10}}
+                                    style={{ marginLeft:10,marginRight:10 }}
                                     onChange={this.handleExpertChange}
                                 />
                                 { this.state.showImage &&  <img alt="preview" id="target" style={{width:60,height:60,borderRadius:"50%",marginRight:20,border: 0}}src={this.state.image}/> }
@@ -369,14 +369,14 @@ export default class CreateSkill extends React.Component {
                         <div style={styles.toolbar}>
                             <span style={styles.button}><Icon type="cloud-download" style={styles.icon}/>Download as text</span>
                             <span style={styles.button}>Size <SelectField
-                                style={{width:'60px'}}
+                                style={{ width:'60px' }}
                                 onChange={this.handleFontChange}
                             >
                             {fontsizes}
                         </SelectField></span>
 
                             <span style={styles.button}>Theme <SelectField
-                                style={{width:'150px'}}
+                                style={{ width:'150px' }}
                                 onChange={this.handleThemeChange}
                             >
                             {codeEditorThemes}
@@ -399,14 +399,22 @@ export default class CreateSkill extends React.Component {
                         />
                         {/*<Chatbox />*/}
                     </div>
-                    <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between',marginTop:10}}>
-                            <Paper style={{width:"100%",padding:10,display: "flex",alignItems:"center",textAlign:"center",justifyContent:"center"}} zDepth={1}>
+                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between',marginTop:10 }}>
+                            <Paper
+                              style={{
+                                width: '100%',
+                                padding: 10,
+                                display: 'flex',
+                                alignItems: 'center',
+                                textAlign: 'center',
+                                justifyContent: 'center' }}
+                              zDepth={1}>
 
                                 <TextField
                                     floatingLabelText="Commit message"
                                     floatingLabelFixed={true}
                                     hintText="Enter Commit Message"
-                                    style={{width:"80%"}}
+                                    style={{ width: '80%' }}
                                     onChange={this.handleCommitMessageChange}
                                 />
                                 <RaisedButton label="Save" backgroundColor="#4285f4" labelColor="#fff" style={{marginLeft:10}}  onTouchTap={this.saveClick} />
@@ -421,41 +429,41 @@ export default class CreateSkill extends React.Component {
 const styles = {
     home: {
         width: '100%',
-        padding: "80px 30px 30px",
+        padding: '80px 30px 30px',
     },
     center: {
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     codeEditor:{
-        width: "100%",
-        marginTop: "20px"
+        width: '100%',
+        marginTop: '20px'
     },
     dropdownDiv:{
-        display: "flex",
-        alignItems: "center",
-        flexWrap: "wrap"
+        display: 'flex',
+        alignItems: 'center',
+        flexWrap: 'wrap'
 
     },
     toolbar: {
-        width: "100%",
-        height: "50px",
-        background: "#fff",
-        borderBottom: "2px solid #eee",
-        display: "none",
-        alignItems: "stretch",
-        padding: "0 25px",
-        fontSize: "14px",
+        width: '100%',
+        height: '50p',
+        background: '#fff',
+        borderBottom: '2px solid #eee',
+        display: 'none',
+        alignItems: 'stretch',
+        padding: '0 25px',
+        fontSize: '14px',
     },
     button: {
-        display: "flex",
-        marginRight: "30px",
-        alignItems: "center",
-        cursor: "pointer"
+        display: 'flex',
+        marginRight: '30px',
+        alignItems: 'center',
+        cursor: 'pointer'
     },
     icon: {
-        marginRight: "5px"
+        marginRight: '5px'
     },
     customWidth: {
         width: 50,

@@ -522,7 +522,7 @@ export default class Container extends React.Component {
             width: "100%",
             padding: "10px",
             margin:'10px 0'
-        };                 
+        };
         const bold ={
              fontSize:"14px"
         }
@@ -530,7 +530,7 @@ export default class Container extends React.Component {
             <div>
                 <StaticAppBar {...this.props} />
                 <div style={styles.home}>
-                     {this.state.commitId ? 
+                     {this.state.commitId ?
                     <Paper style={style} zDepth={1}>
                             <div>You are currently editing an older version of the skill: <b style={bold}>{this.state.expertValue}</b><br/>
                                 <span>Author: <b style={bold}>{this.state.author}</b></span><br/>
@@ -543,7 +543,7 @@ export default class Container extends React.Component {
                             <div style={styles.dropdownDiv}>
                                 <SelectField
                                     floatingLabelText="Category"
-                                    style={{ width: '160px', marginLeft: 10, marginRight: 10 }}
+                                    style={{ width: 300, marginLeft: 10, marginRight: 10 }}
                                     value={this.state.groupValue}
                                     onChange={this.handleGroupChange}
                                 >

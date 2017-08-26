@@ -108,7 +108,7 @@ export default class BrowseSkill extends React.Component {
                                     {image ? <div style={styles.imageContainer}>
                                         <img alt={skill_name} src={image} style={styles.image} />
                                     </div> :
-                                        <CircleImage name={el} size="48" />}
+                                        <CircleImage name={el} size='48' />}
                                     <div style={styles.titleStyle}>"{examples}"</div>
                                 </div>
                                 <div style={styles.details}>
@@ -276,8 +276,8 @@ export default class BrowseSkill extends React.Component {
     render() {
 
         const style = {
-            width: "100%",
-            padding: "10px"
+            width: '100%',
+            padding: '10px'
         };
 
         return (
@@ -303,6 +303,7 @@ export default class BrowseSkill extends React.Component {
                                     color: '#4285f4'
 
                                 }}
+                                style={{ width: 300 }}
                             >
                                 {groups}
                             </SelectField>
@@ -342,9 +343,11 @@ export default class BrowseSkill extends React.Component {
                     </Paper>
 
                     <div style={{
-                        marginTop: "20px", marginBottom: "40px",
-                        textAlign: "justify",
-                        fontSize: "0.1px", width: "100%"
+                        marginTop: '20px',
+                        marginBottom: '40px',
+                        textAlign: 'justify',
+                        fontSize: '0.1px',
+                        width: '100%'
                     }}>
                         <div className="row" style={styles.scroll}  >
                             <div style={styles.gridList}>
