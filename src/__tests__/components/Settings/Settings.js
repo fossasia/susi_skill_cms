@@ -5,4 +5,3 @@ import { shallow } from 'enzyme';
  it('render NotFound without crashing',()=>{
    shallow(<Settings />);
  });
- 

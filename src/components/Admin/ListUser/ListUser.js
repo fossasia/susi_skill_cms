@@ -78,7 +78,7 @@ export default class ListUser extends Component {
     componentDidMount() {
         const pagination = { ...this.state.pagination };
         let url;
-        url = "http://api.susi.ai/aaa/showAdminService.json?access_token=" + cookies.get('loggedIn');
+        url = 'http://api.susi.ai/aaa/showAdminService.json?access_token=' + cookies.get('loggedIn');
         $.ajax({
             url: url,
             dataType: 'jsonp',
@@ -88,8 +88,8 @@ export default class ListUser extends Component {
             success: function (response) {
                 console.log(response.showAdmin);
                 if (response.showAdmin) {
-                    let getPagesUrl = "http://api.susi.ai/aaa/getUsers.json?access_token=" + cookies.get('loggedIn')
-                        + "&getUserCount=true";
+                    let getPagesUrl = 'http://api.susi.ai/aaa/getUsers.json?access_token=' + cookies.get('loggedIn')
+                        + '&getUserCount=true';
                     $.ajax({
                         url: getPagesUrl,
                         dataType: 'jsonp',
@@ -112,11 +112,11 @@ export default class ListUser extends Component {
                         }
                     });
                 } else {
-                    console.log("Not allowed to access this page!")
+                    console.log('Not allowed to access this page!')
                 }
             }.bind(this),
             error: function (errorThrown) {
-                console.log("Not allowed to access this page!");
+                console.log('Not allowed to access this page!');
                 console.log(errorThrown)
             }
         });
@@ -134,17 +134,17 @@ export default class ListUser extends Component {
         else{
             page =1;
         }
-        url = "http://api.susi.ai/aaa/getUsers.json?access_token=" + cookies.get('loggedIn')
-            + "&page="+page;
+        url = 'http://api.susi.ai/aaa/getUsers.json?access_token=' + cookies.get('loggedIn')
+            + '&page='+page;
         $.ajax({
             url: url,
             dataType: 'jsonp',
             jsonpCallback: 'pvsdu',
             jsonp: 'callback',
             crossDomain: true,
-            success: function (data) {
-                console.log(data.users);
-                let userList = data.users;
+            success: function (response) {
+                console.log(response.users);
+                let userList = response.users;
                 let users =[];
                 userList.map((data,i)=>{
                     let user = {
@@ -156,14 +156,14 @@ export default class ListUser extends Component {
                         ipLastLogin:data.lastLoginIP,
                         userRole:data.userRole
                     };
-                  
+
                     if(user.confirmed) {
-                        user.confirmed = "Activated"
+                        user.confirmed = 'Activated'
                     }
                     else {
-                        user.confirmed = "Not Activated"
+                        user.confirmed = 'Not Activated'
                     }
-                  
+
                     users.push(user);
                     return 1
                 });
@@ -183,7 +183,7 @@ export default class ListUser extends Component {
 
     render() {
         return (
-            <div className="table">
+            <div className='table'>
                 <Table columns={columns}
                        rowKey={record => record.registered}
                        dataSource={this.state.data}
@@ -195,4 +195,3 @@ export default class ListUser extends Component {
         );
     }
 }
-    

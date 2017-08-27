@@ -87,7 +87,7 @@ class ForgotPassword extends Component {
 		let email = this.state.email.trim();
 		let validEmail = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
 
-		let BASE_URL ="http://api.susi.ai";
+		let BASE_URL ='http://api.susi.ai';
 
 		if (email && validEmail) {
 			$.ajax({
@@ -161,14 +161,14 @@ class ForgotPassword extends Component {
 		};
 
 		return (
-			<div className="forgotPwdForm">
+			<div className='forgotPwdForm'>
 				<Paper zDepth={0} style={styles}>
 					<h3>Forgot Password?</h3>
 					<form onSubmit={this.handleSubmit}>
 						<div>
 							<TextField
-								name="email"
-								floatingLabelText="Email"
+								name='email'
+								floatingLabelText='Email'
 								errorText={this.emailErrorMessage}
 								value={this.state.email}
 								underlineFocusStyle={underlineFocusStyle}
@@ -177,10 +177,10 @@ class ForgotPassword extends Component {
 						</div>
 						<div>
 							<RaisedButton
-								type="submit"
-								label="Reset"
+								type='submit'
+								label='Reset'
 								backgroundColor='#4285f4'
-								labelColor="#fff"
+								labelColor='#fff'
 								style={{margin:'25px 0 0 0 '}}
 								disabled={!this.state.validForm} />
 						</div>
