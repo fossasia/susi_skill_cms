@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {Link} from 'react-router-dom'
+import {Link} from 'react-router-dom';
+import notification from 'antd/lib/notification';
+import Icon from 'antd/lib/icon';
 import AceEditor from 'react-ace';
 import 'brace/mode/markdown';
 import 'brace/theme/github';
@@ -83,6 +85,14 @@ class SkillHistory extends Component {
                 });
                 self.getCommitFiles();
               }
+          },
+          error: function(xhr, status, error) {
+            notification.open({
+              message: 'Error Processing your Request',
+              description: 'Failed to fetch data. Please Try Again',
+              icon: <Icon type='close-circle' style={{ color: '#f44336' }} />,
+            });
+            return 0;
           }
       });
     }
@@ -100,24 +110,7 @@ class SkillHistory extends Component {
     getCommitFiles = () => {
       let baseUrl = this.getSkillAtCommitIDUrl() ;
       let self = this;
-      if(this.state.commits.length === 1){
-        var url = baseUrl + self.state.commits[0];
-        console.log(url);
-        $.ajax({
-            url: url,
-            jsonpCallback: 'pc',
-            dataType: 'jsonp',
-            jsonp: 'callback',
-            crossDomain: true,
-            success: function (data) {
-                self.updateData([{
-                  code:data.file,
-                  commit:self.getCommitMeta(self.state.commits[0])
-                }])
-            }
-        });
-      }
-      else if (this.state.commits.length === 2) {
+      if (this.state.commits.length === 2) {
         var url1 = baseUrl + self.state.commits[0];
         console.log(url1);
         $.ajax({
@@ -143,8 +136,24 @@ class SkillHistory extends Component {
                       code:data2.file,
                       commit:self.getCommitMeta(self.state.commits[1])
                     }])
+                  },
+                  error: function(xhr, status, error) {
+                    notification.open({
+                      message: 'Error Processing your Request',
+                      description: 'Failed to fetch data. Please Try Again',
+                      icon: <Icon type='close-circle' style={{ color: '#f44336' }} />,
+                    });
+                    return 0;
                   }
               });
+            },
+            error: function(xhr, status, error) {
+              notification.open({
+                message: 'Error Processing your Request',
+                description: 'Failed to fetch data. Please Try Again',
+                icon: <Icon type='close-circle' style={{ color: '#f44336' }} />,
+              });
+              return 0;
             }
         });
       }
@@ -172,36 +181,7 @@ class SkillHistory extends Component {
             <h1 className='skill_loading_container'>Loading...</h1>
           )}
           <div style={styles.home}>
-          {this.state.commitData.length === 1 && (<div>
-            <Paper style={style} zDepth={1}>
-              <div>Currently Viewing :
-                <h3>{this.state.skillMeta.skillName}</h3>
-                <span>commitID: <b>{this.state.commitData[0].commit.commitID}</b>
-                </span><br/>
-                <span>
-                  {this.state.commitData[0].commit.latest && 'Latest '}
-                  Revision as of <b>{this.state.commitData[0].commit.commitDate}</b>
-                </span>
-              </div>
-            </Paper>
-            <div style={styles.codeEditor}>
-            <AceEditor
-                mode='java'
-                readOnly={true}
-                theme={this.state.editorTheme}
-                width='100%'
-                fontSize={this.state.fontSizeCode}
-                height= '400px'
-                value={this.state.commitData[0].code}
-                showPrintMargin={false}
-                name='skill_code_editor'
-                scrollPastEnd={false}
-                wrapEnabled={true}
-                editorProps={{$blockScrolling: true}}
-            />
-            </div>
-            </div>)}
-              {this.state.commitData.length === 2 && (<div style={{display:'block'}}>
+            {this.state.commitData.length === 2 && (<div style={{display:'block'}}>
               <Paper style={style} zDepth={1}>
                 <div>Currently Viewing : <h3>{this.state.skillMeta.skillName}</h3></div>
               </Paper>

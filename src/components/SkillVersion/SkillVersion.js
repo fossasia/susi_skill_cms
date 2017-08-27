@@ -13,6 +13,8 @@ import {
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import { RaisedButton } from 'material-ui';
 import { RadioButton } from 'material-ui/RadioButton';
+import notification from 'antd/lib/notification';
+import Icon from 'antd/lib/icon';
 import $ from 'jquery';
 
 class SkillVersion extends Component {
@@ -45,20 +47,28 @@ class SkillVersion extends Component {
         this.getCommitHistory(commitHistoryURL);
     }
 
-    getCommitHistory = (commitHistoryURL) => {
-        console.log(commitHistoryURL);
-        let self = this;
-        $.ajax({
-            url: commitHistoryURL,
-            jsonpCallback: 'pv',
-            dataType: 'jsonp',
-            jsonp: 'callback',
-            crossDomain: true,
-            success: function (commitsData) {
-                self.setCommitHistory(commitsData);
-            }
-        });
-    };
+  getCommitHistory = (commitHistoryURL) => {
+    console.log(commitHistoryURL);
+    let self = this;
+    $.ajax({
+        url: commitHistoryURL,
+        jsonpCallback: 'pv',
+        dataType: 'jsonp',
+        jsonp: 'callback',
+        crossDomain: true,
+        success: function (commitsData) {
+            self.setCommitHistory(commitsData);
+        },
+        error: function(xhr, status, error) {
+          notification.open({
+            message: 'Error Processing your Request',
+            description: 'Failed to fetch data. Please Try Again',
+            icon: <Icon type='close-circle' style={{ color: '#f44336' }} />,
+          });
+          return 0;
+        }
+    });
+  };
 
     setCommitHistory = (commitsData) => {
         console.log(commitsData);

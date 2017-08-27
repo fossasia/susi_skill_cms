@@ -8,9 +8,8 @@ node_js:
 script:
   - npm test
 
-deploy:
-  provider: script
-  script: "./deploy.sh"
+after_success:
+ - bash ./deploy.sh
 
 cache:
   directories:

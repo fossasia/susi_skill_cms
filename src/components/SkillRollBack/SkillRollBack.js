@@ -15,11 +15,12 @@ import 'brace/theme/solarized_light';
 import 'brace/theme/terminal';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import * as $ from 'jquery';
-import {Paper, RaisedButton, TextField} from 'material-ui';
+import {Paper} from 'material-ui';
 import Diff from 'react-diff';
 import Cookies from 'universal-cookie';
 import Icon from 'antd/lib/icon';
 import notification from 'antd/lib/notification';
+import SkillEditor from '../SkillEditor/SkillEditor';
 
 const cookies = new Cookies();
 
@@ -82,12 +83,32 @@ class SkillRollBack extends Component {
                   self.updateData([{
                     code:data1.file,
                     commitID:self.state.latestCommit,
+                    author:data1.author,
+                    date:data1.commitDate,
                   },{
                     code:data2.file,
                     commitID:self.state.revertingCommit,
+                    author:data2.author,
+                    date:data2.commitDate,
                   }])
+                },
+                error: function(xhr, status, error) {
+                  notification.open({
+                    message: 'Error Processing your Request',
+                    description: 'Failed to fetch data. Please Try Again',
+                    icon: <Icon type='close-circle' style={{ color: '#f44336' }} />,
+                  });
+                  return 0;
                 }
             });
+          },
+          error: function(xhr, status, error) {
+            notification.open({
+              message: 'Error Processing your Request',
+              description: 'Failed to fetch data. Please Try Again',
+              icon: <Icon type='close-circle' style={{ color: '#f44336' }} />,
+            });
+            return 0;
           }
       });
     }
@@ -226,6 +247,9 @@ class SkillRollBack extends Component {
           width: '100%',
           padding: '10px'
       };
+      const bold ={
+           fontSize:'14px'
+      }
       let rightEditorWidth = '50%';
       if (window.matchMedia('only screen and (max-width: 768px)').matches){
         rightEditorWidth = '100%';
@@ -236,14 +260,21 @@ class SkillRollBack extends Component {
           {this.state.commitData.length === 0 && (
             <h1 className='skill_loading_container'>Loading...</h1>
           )}
-          <div style={styles.home}>
-            {this.state.commitData.length === 2 && (<div style={{display:'block'}}>
+          {this.state.commitData.length === 2 && (<div style={{display:'block'}}>
+            <div style={styles.home}>
             <Paper style={style} zDepth={1}>
-              <div>Currently Viewing : <h3>{this.state.skillMeta.skillName}</h3></div>
+              {'You are currently editing an older version of the skill: '}
+              <b style={bold}>{this.state.skillMeta.skillName}</b><br/>
+              <span>Author: <b style={bold}>
+                              {this.state.commitData[1].author}
+                            </b>
+              </span><br/>
+              <span>commitID: <b>{this.state.commitData[1].commitID}</b></span><br/>
+              <span>Revision as of <b>{this.state.commitData[1].date}</b></span>
             </Paper>
               <div className='version-code-left'>
                 <span>commitID: <b>{this.state.commitData[0].commitID}</b></span><br/>
-                <span><b>Latest Revision</b></span>
+                <span><b style={bold}>Latest Revision</b></span>
               <div style={styles.codeEditor}>
               <AceEditor
                   mode='java'
@@ -263,7 +294,7 @@ class SkillRollBack extends Component {
               </div>
               <div className='version-code-right'>
                 <span>commitID: <b>{this.state.commitData[1].commitID}</b></span><br/>
-                <span><b>Your Text</b></span>
+                <span><b style={bold}>Your Text</b></span>
               <div style={styles.codeEditor}>
               <AceEditor
                   mode='java'
@@ -292,47 +323,21 @@ class SkillRollBack extends Component {
                 type='chars'
                 />
               </div>
-              <div>
               <h1 className='title' style={{marginTop:'20px'}}>
                   Edit
               </h1>
-              <div style={styles.codeEditor}>
-                <AceEditor
-                    mode='java'
-                    theme={this.state.editorTheme}
-                    width='100%'
-                    fontSize={this.state.fontSizeCode}
-                    height= '400px'
-                    value={this.state.code}
-                    showPrintMargin={false}
-                    name='skill_code_editor'
-                    onChange={this.updateCode}
-                    scrollPastEnd={false}
-                    wrapEnabled={true}
-                    editorProps={{$blockScrolling: true}}
-                />
               </div>
-              <div style={{display: 'flex',alignItems:'center',textAlign:'center',justifyContent:'center', marginTop:10}}>
-                  <Paper style={{width:'100%',padding:10,display: 'flex',alignItems:'center',textAlign:'center',justifyContent:'center'}} zDepth={1}>
-                    <TextField
-                        floatingLabelText='Commit message'
-                        floatingLabelFixed={true}
-                        hintText='Enter Commit Message'
-                        style={{width:'80%'}}
-                        value={this.state.commitMessage}
-                        onChange={this.handleCommitMessageChange}
-                    />
-                    <RaisedButton
-                      label='Save'
-                      backgroundColor='#4285f4'
-                      labelColor='#fff'
-                      style={{marginLeft:10}}
-                      onTouchTap={this.handleRollBack} />
-                  </Paper>
-              </div>
+              <div style={{marginTop:'-100px',width:'100%'}}>
+              <SkillEditor
+                  showTopBar={false}
+                  revertingCommit={this.state.revertingCommit}
+                  location={{'pathname': '/'+this.state.skillMeta.groupValue+
+                                         '/'+this.state.skillMeta.skillName+
+                                         '/edit'+
+                                         '/'+this.state.skillMeta.languageValue+
+                                         '/'+this.state.revertingCommit}}/>
               </div>
               </div>)}
-            </div>
         </div>
       );
     }

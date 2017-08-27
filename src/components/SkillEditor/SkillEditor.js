@@ -35,10 +35,17 @@ class SkillEditor extends Component {
 
     constructor(props) {
         super(props);
+        var commitMessage = '';
+        if(this.props.hasOwnProperty('revertingCommit')){
+          commitMessage = 'reverting to commit - '+this.props.revertingCommit;
+        }
+        else if (this.props.location.pathname.split('/')[5]) {
+          commitMessage = 'reverting to commit - '+this.props.location.pathname.split('/')[5];
+        }
         this.state = {
             showImage: true,
             image: '',
-            commitMessage: null,
+            commitMessage: commitMessage,
             skillUrl:null,
             modelValue: 'general',
             file: null,
@@ -570,12 +577,16 @@ class SkillEditor extends Component {
         const bold ={
              fontSize:'14px'
         }
+        var showTopBar = true;
+        if(this.props.hasOwnProperty('showTopBar')){
+          showTopBar = this.props.showTopBar;
+        }
         return (
             <div>
                 <StaticAppBar {...this.props} />
                 <div style={styles.home}>
-                     {this.state.commitId ?
-                    <Paper style={style} zDepth={1}>
+                     {(this.state.commitId && showTopBar) &&
+                    (<Paper style={style} zDepth={1}>
                       <div>
                         {'You are currently editing an older version of the skill: '}
                         <b style={bold}>{this.state.expertValue}</b><br/>
@@ -583,7 +594,7 @@ class SkillEditor extends Component {
                         <span>commitID: <b>{this.state.commitId}</b></span><br/>
                         <span>Revision as of <b>{this.state.date}</b></span>
                     </div>
-                    </Paper>:''}
+                    </Paper>)}
                     <Paper style={style} zDepth={1}>
                         <div style={styles.center}>
                             <div style={styles.dropdownDiv}>
@@ -701,6 +712,7 @@ class SkillEditor extends Component {
                                 floatingLabelFixed={true}
                                 hintText='Enter Commit Message'
                                 style={{ width: '80%' }}
+                                value={this.state.commitMessage}
                                 onChange={this.handleCommitMessageChange}
                             />
                             <RaisedButton label={this.state.loading ? 'Saving' : 'Save'}
@@ -832,6 +844,8 @@ const styles = {
 SkillEditor.propTypes = {
   location: PropTypes.object,
   history: PropTypes.object,
+  showTopBar: PropTypes.bool,
+  revertingCommit: PropTypes.string,
 };
 
 export default SkillEditor;
