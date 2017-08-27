@@ -95,12 +95,14 @@ class SkillEditor extends Component {
                 dataType: 'jsonp',
                 jsonp: 'callback',
                 crossDomain: true,
-                success: function (d) {
-                    d = d.groups;
-                    for (let i = 0; i < d.length; i++) {
-                        groups.push(<MenuItem value={d[i]}
-                                              key={d[i]}
-                                              primaryText={`${d[i]}`} />);
+                success: function (data) {
+                    data = data.groups;
+                    data.sort();
+                    for (let i = 0; i < data.length; i++) {
+                        groups.push(<MenuItem
+                                        value={data[i]}
+                                        key={data[i]}
+                                        primaryText={`${data[i]}`} />);
                     }
                 }
             });
