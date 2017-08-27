@@ -2,7 +2,7 @@ import React from  'react';
 import Icon from 'antd/lib/icon';
 import MenuItem from 'material-ui/MenuItem';
 import SelectField from 'material-ui/SelectField';
-import isoConv from 'iso-language-converter';
+import ISO6391 from 'iso-639-1';
 import {Paper, RaisedButton, TextField} from 'material-ui';
 import AceEditor from 'react-ace';
 import Cookies from 'universal-cookie';
@@ -157,10 +157,12 @@ export default class CreateSkill extends React.Component {
                     this.setState({ languages: data });
                     console.log(data);
                     for (let i = 0; i < data.length; i++) {
-                        if (isoConv(data[i])) {
-                            languages.push(<MenuItem  value={data[i]}
-                                                      key={data[i]}
-                                                      primaryText={isoConv(data[i])} />);
+
+                        if (ISO6391.getNativeName(data[i])) {
+                            languages.push(<MenuItem
+                                value={data[i]}
+                                key={data[i]}
+                                primaryText={ISO6391.getNativeName(data[i])} />);
                         }
                         else {
                             languages.push(<MenuItem  value={data[i]}
