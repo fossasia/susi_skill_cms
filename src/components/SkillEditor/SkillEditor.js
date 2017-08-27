@@ -8,7 +8,7 @@ import AceEditor from 'react-ace';
 import {Link} from 'react-router-dom';
 import Cookies from 'universal-cookie';
 import 'brace/mode/markdown';
-import isoConv from 'iso-language-converter';
+import ISO6391 from 'iso-639-1';
 import 'brace/theme/github';
 import 'brace/theme/monokai';
 import 'brace/theme/tomorrow';
@@ -102,12 +102,14 @@ class SkillEditor extends Component {
                 dataType: 'jsonp',
                 jsonp: 'callback',
                 crossDomain: true,
-                success: function (d) {
-                    d = d.groups;
-                    for (let i = 0; i < d.length; i++) {
-                        groups.push(<MenuItem value={d[i]}
-                                              key={d[i]}
-                                              primaryText={`${d[i]}`} />);
+                success: function (data) {
+                    data = data.groups;
+                    data.sort();
+                    for (let i = 0; i < data.length; i++) {
+                        groups.push(<MenuItem
+                                        value={data[i]}
+                                        key={data[i]}
+                                        primaryText={`${data[i]}`} />);
                     }
                 }
             });
@@ -127,10 +129,11 @@ class SkillEditor extends Component {
                     this.setState({ languages: data });
                     console.log(data);
                     for (let i = 0; i < data.length; i++) {
-                        if (isoConv(data[i])) {
-                            languages.push(<MenuItem  value={data[i]}
-                                                      key={data[i]}
-                                                      primaryText={isoConv(data[i])} />);
+                        if (ISO6391.getNativeName(data[i])) {
+                            languages.push(<MenuItem
+                                value={data[i]}
+                                key={data[i]}
+                                primaryText={ISO6391.getNativeName(data[i])} />);
                         }
                         else {
                             languages.push(<MenuItem  value={data[i]}
@@ -335,10 +338,12 @@ class SkillEditor extends Component {
                     this.setState({ languages: data });
                     console.log(data);
                     for (let i = 0; i < data.length; i++) {
-                        if (isoConv(data[i])) {
-                            languages.push(<MenuItem  value={data[i]}
-                                                      key={data[i]}
-                                                      primaryText={isoConv(data[i])} />);
+                        if (ISO6391.getNativeName(data[i])) {
+                            languages.push(<MenuItem
+                                value={data[i]}
+                                key={data[i]}
+                                primaryText={ISO6391.getNativeName(data[i])} />);
+
                         }
                         else {
                             languages.push(<MenuItem  value={data[i]}
