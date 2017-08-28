@@ -35,18 +35,21 @@ class SkillEditor extends Component {
 
     constructor(props) {
         super(props);
-        var commitMessage = '';
         if(this.props.hasOwnProperty('revertingCommit')){
-          commitMessage = 'reverting to commit - '+this.props.revertingCommit;
+            this.setState({
+                commitMessage : 'reverting to commit - '+this.props.revertingCommit,
+            });
         }
         else if (this.props.location.pathname.split('/')[5]) {
-          commitMessage = 'reverting to commit - '+this.props.location.pathname.split('/')[5];
+            this.setState({
+                commitMessage: 'reverting to commit - '+this.props.location.pathname.split('/')[5],
+            });
         }
         this.state = {
             showImage: true,
             image: '',
-            commitMessage: commitMessage,
             skillUrl:null,
+            commitMessage:null,
             modelValue: 'general',
             file: null,
             codeChanged: false,
@@ -441,6 +444,18 @@ class SkillEditor extends Component {
             loading: true
         });
 
+        if (this.state.commitMessage === null) {
+            notification.open({
+                message: 'Please add a commit message',
+                icon: <Icon type='close-circle' style={{ color: '#f44336' }} />,
+            });
+
+            this.setState({
+                loading: false
+            });
+            return 0;
+        }
+
         if (!cookies.get('loggedIn')) {
             notification.open({
                 message: 'Not logged In',
@@ -456,16 +471,6 @@ class SkillEditor extends Component {
             notification.open({
                 message: 'Error Processing your Request',
                 description: 'image must be in format of images/imageName.jpg',
-                icon: <Icon type='close-circle' style={{ color: '#f44336' }} />,
-            });
-            this.setState({
-                loading: false
-            });
-            return 0;
-        }
-        if (this.state.commitMessage === null) {
-            notification.open({
-                message: 'Please add a commit message',
                 icon: <Icon type='close-circle' style={{ color: '#f44336' }} />,
             });
             this.setState({
