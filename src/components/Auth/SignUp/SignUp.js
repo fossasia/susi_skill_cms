@@ -9,6 +9,7 @@ import Dialog from 'material-ui/Dialog';
 import PropTypes from 'prop-types';
 import { addUrlProps, UrlQueryParamTypes } from 'react-url-query';
 import zxcvbn from 'zxcvbn';
+import colors from '../../../Utils/colors';
 
 const urlPropsQueryConfig = {
     token: { type: UrlQueryParamTypes.string },
@@ -276,7 +277,7 @@ class SignUp extends Component {
             'width':'256px'
         };
         const underlineFocusStyle= {
-            color: '#4285f4'
+            color: colors.header
         };
 
         const PasswordClass=[`is-strength-${this.state.passwordScore}`];
@@ -329,7 +330,7 @@ class SignUp extends Component {
                                 label='Sign Up'
                                 type='submit'
                                 disabled={!this.state.validForm}
-                                backgroundColor='#4285f4'
+                                backgroundColor={colors.header}
                                 labelColor='#fff'
                                 style={{margin:'15px 0 0 0 '}} />
                         </div>
@@ -343,7 +344,7 @@ class SignUp extends Component {
                             <RaisedButton
                                 label='Login'
                                 onTouchTap={this.handleOpen}
-                                backgroundColor='#4285f4'
+                                backgroundColor={colors.header}
                                 labelColor='#fff' />
                         </div>
                     </form>

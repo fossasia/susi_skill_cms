@@ -327,10 +327,10 @@ export default class BrowseSkill extends React.Component {
                                     top: '100px'
                                 }}
                                 selectedMenuItemStyle={{
-                                    color: '#4285f4'
+                                    color: colors.header
                                 }}
                                 underlineFocusStyle={{
-                                    color: '#4285f4'
+                                    color: colors.header
 
                                 }}
                                 style={{ width: 300 }}
@@ -348,10 +348,10 @@ export default class BrowseSkill extends React.Component {
                                     top: '100px'
                                 }}
                                 selectedMenuItemStyle={{
-                                    color: '#4285f4'
+                                    color: colors.header
                                 }}
                                 underlineFocusStyle={{
-                                    color: '#4285f4'
+                                    color: colors.header
 
                                 }}
                             >

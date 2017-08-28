@@ -8,7 +8,9 @@ import $ from 'jquery';
 import PropTypes  from 'prop-types';
 import { addUrlProps, UrlQueryParamTypes } from 'react-url-query';
 import Cookies from 'universal-cookie';
+import colors from '../../../Utils/colors';
 const cookies = new Cookies();
+
 
 const urlPropsQueryConfig = {
     token: { type: UrlQueryParamTypes.string },
@@ -241,7 +243,7 @@ class Login extends Component {
                                 <RaisedButton
                                     label='Login'
                                     type='submit'
-                                    backgroundColor='#4285f4'
+                                    backgroundColor={colors.header}
                                     labelColor='#fff'
                                     disabled={!this.state.validForm}
                                     style={{margin:'15px 0 '}}/>
@@ -259,7 +261,7 @@ class Login extends Component {
                                 <RaisedButton
                                     label='SignUp'
                                     onTouchTap={this.handleSignUp}
-                                    backgroundColor='#4285f4'
+                                    backgroundColor={colors.header}
                                     labelColor='#fff'
                                     style={{margin:'15px 0 0 0'}}/>
                             </div>

@@ -25,7 +25,7 @@ import EditBtn from 'material-ui/svg-icons/editor/mode-edit';
 import VersionBtn from 'material-ui/svg-icons/action/history';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import ReactTooltip from 'react-tooltip';
-
+import colors from '../../Utils/colors';
 const defaultNullSkillList = ['image', 'author', 'author_url', 'developer_privacy_policy', 'terms_of_use', 'dynamic_content', 'examples'];
 let urlCode, name;
 
@@ -241,7 +241,7 @@ class SkillListing extends Component {
                                 oldImageUrl:oldImageValue, oldImageValue:imageValue }
                         }}>
 
-                            <FloatingActionButton data-tip='Edit Skill' backgroundColor={'#4285f4'} >
+                            <FloatingActionButton data-tip='Edit Skill' backgroundColor={colors.header} >
 
                                 <EditBtn />
                             </FloatingActionButton>
@@ -252,7 +252,7 @@ class SkillListing extends Component {
                             pathname: '/'+this.groupValue+ '/'+this.name+'/versions/'+this.languageValue,
                         }}>
                             <div className='skillVersionBtn'>
-                                <FloatingActionButton data-tip='Skill Versions'  backgroundColor={'#4285f4'} >
+                                <FloatingActionButton data-tip='Skill Versions'  backgroundColor={colors.header} >
                                     <VersionBtn />
                                 </FloatingActionButton>
                                 <ReactTooltip  effect='solid' place='bottom'/>

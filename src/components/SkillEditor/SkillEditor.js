@@ -24,6 +24,7 @@ import * as $ from 'jquery';
 import notification from 'antd/lib/notification';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import {red500} from 'material-ui/styles/colors';
+import colors from '../../Utils/colors';
 const groups = [];
 const languages = [];
 const fontsizes = [];
@@ -633,7 +634,7 @@ class SkillEditor extends Component {
                                 <RaisedButton
                                     label='Choose an Image'
                                     labelPosition='before'
-                                    backgroundColor='#4285f4'
+                                    backgroundColor={colors.header}
                                     containerElement='label'
                                     labelColor='#fff'
                                 >
@@ -717,7 +718,7 @@ class SkillEditor extends Component {
                             />
                             <RaisedButton label={this.state.loading ? 'Saving' : 'Save'}
                                           disabled={this.state.loading}
-                                          backgroundColor='#4285f4'
+                                          backgroundColor={colors.header}
                                           labelColor='#fff'
                                           style={{ marginLeft: 10 }}
                                           onTouchTap={this.saveClick} />
@@ -727,7 +728,7 @@ class SkillEditor extends Component {
                                           '/'+this.state.languageValue
                             }}>
                             <RaisedButton label='Cancel'
-                                          backgroundColor='#4285f4'
+                                          backgroundColor={colors.header}
                                           labelColor='#fff'
                                           style={{ marginLeft: 10 }}/>
                             </Link>
