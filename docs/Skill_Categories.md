@@ -33,7 +33,7 @@ This may contain static knowledge like scientific facts but may also contain kno
 Skills which helps user to stay informed for the latest trends and hottest styles.
 
 ## Movies and TV
-Skills provide information on most popular feature Films/TV Series, reviews, ratings, overview and more.
+Skills which provide information on most popular feature Films/TV Series, reviews, ratings, overview and more.
 
 ## Music and Audio
 These are skills to do a steering of on-device functions, like setting an alarm or playing the favourite song. 
