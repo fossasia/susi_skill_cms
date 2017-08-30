@@ -8,6 +8,7 @@ import Add from 'material-ui/svg-icons/content/add';
 import ContentAdd from 'material-ui/svg-icons/navigation/arrow-forward';
 import { Card } from 'material-ui/Card';
 import * as $ from 'jquery';
+import ReactTooltip from 'react-tooltip';
 import Link from 'react-router-dom/es/Link';
 import colors from '../../Utils/colors';
 import CircleImage from '../CircleImage/CircleImage';
@@ -363,14 +364,16 @@ export default class BrowseSkill extends React.Component {
                                 {languages}
                             </SelectField>
                             <div>
-                                <FloatingActionButton backgroundColor={colors.fabButton} className='select' onClick={this.buttonClick}>
+                                <FloatingActionButton data-tip='Search'
+                                    backgroundColor={colors.fabButton} className='select' onClick={this.buttonClick}>
                                     <ContentAdd />
                                 </FloatingActionButton>
                                 <Link to='/skillCreator'>
-                                    <FloatingActionButton
+                                    <FloatingActionButton data-tip='Create Skill'
                                         backgroundColor={colors.fabButton} className='select'>
                                         <Add />
                                     </FloatingActionButton>
+                                    <ReactTooltip  effect='solid' place='bottom'/>
                                 </Link>
                             </div>
                         </div>
