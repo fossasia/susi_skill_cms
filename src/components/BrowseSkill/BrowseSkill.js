@@ -364,7 +364,8 @@ export default class BrowseSkill extends React.Component {
                                 {languages}
                             </SelectField>
                             <div>
-                                <FloatingActionButton backgroundColor={colors.fabButton} className='select' onClick={this.buttonClick}>
+                                <FloatingActionButton data-tip='Search'
+                                    backgroundColor={colors.fabButton} className='select' onClick={this.buttonClick}>
                                     <ContentAdd />
                                 </FloatingActionButton>
                                 <Link to='/skillCreator'>
