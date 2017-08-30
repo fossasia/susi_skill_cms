@@ -17,6 +17,10 @@ import CreateSkill from './components/CreateSkill/CreateSkill';
 import SkillVersion from './components/SkillVersion/SkillVersion';
 import SkillHistory from './components/SkillHistory/SkillHistory';
 import SkillRollBack from './components/SkillRollBack/SkillRollBack';
+import setDefaults from './DefaultSettings';
+
+setDefaults();
+
 injectTapEventPlugin();
 
 class App extends React.Component {

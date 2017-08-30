@@ -17,6 +17,7 @@ import notification from 'antd/lib/notification';
 import Icon from 'antd/lib/icon';
 import $ from 'jquery';
 
+import colors from '../../Utils/colors';
 class SkillVersion extends Component {
     constructor(props) {
         super(props);
@@ -287,7 +288,7 @@ class SkillVersion extends Component {
                                 }}>
                                     <RaisedButton
                                         label='Compare Selected Versions'
-                                        backgroundColor='#4285f4'
+                                        backgroundColor={colors.header}
                                         labelColor='#fff'
                                         style={compareBtnStyle}
                                     />

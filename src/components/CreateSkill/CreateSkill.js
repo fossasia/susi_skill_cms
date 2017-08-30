@@ -22,6 +22,7 @@ import * as $ from 'jquery';
 import notification from 'antd/lib/notification';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import LinearProgress from 'material-ui/LinearProgress';
+import colors from '../../Utils/colors';
 const groups = [];
 const languages = [];
 const fontsizes =[];
@@ -370,7 +371,7 @@ export default class CreateSkill extends React.Component {
                                 <RaisedButton
                                     label='Choose an Image'
                                     labelPosition='before'
-                                    backgroundColor='#4285f4'
+                                    backgroundColor={colors.header}
                                     containerElement='label'
                                     labelColor='#fff'
                                 >
@@ -394,7 +395,7 @@ export default class CreateSkill extends React.Component {
                     </Paper>
 
                     <div style={styles.codeEditor}>
-                        {this.state.loading && <LinearProgress mode='indeterminate' color='#4285f4' />}
+                        {this.state.loading && <LinearProgress mode='indeterminate' color={colors.header} />}
                         <div style={styles.toolbar}>
                             <span style={styles.button}><Icon type='cloud-download' style={styles.icon}/>Download as text</span>
                             <span style={styles.button}>Size <SelectField
@@ -445,7 +446,7 @@ export default class CreateSkill extends React.Component {
                                     style={{ width: '80%' }}
                                     onChange={this.handleCommitMessageChange}
                                 />
-                                <RaisedButton label='Save' backgroundColor='#4285f4' labelColor='#fff' style={{marginLeft:10}}  onTouchTap={this.saveClick} />
+                                <RaisedButton label='Save' backgroundColor={colors.header} labelColor='#fff' style={{marginLeft:10}}  onTouchTap={this.saveClick} />
                             </Paper>
                     </div>
                 </div>

@@ -6,6 +6,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import Dialog from 'material-ui/Dialog';
 import './ForgotPassword.css';
 import $ from 'jquery';
+import colors from '../../../Utils/colors';
 import Close from 'material-ui/svg-icons/navigation/close';
 
 class ForgotPassword extends Component {
@@ -146,7 +147,7 @@ class ForgotPassword extends Component {
 		};
 
 		const underlineFocusStyle= {
-			color: '#4285f4',
+			color: colors.header,
 		};
 
 		const closingStyle ={
@@ -179,7 +180,7 @@ class ForgotPassword extends Component {
 							<RaisedButton
 								type='submit'
 								label='Reset'
-								backgroundColor='#4285f4'
+								backgroundColor={colors.header}
 								labelColor='#fff'
 								style={{margin:'25px 0 0 0 '}}
 								disabled={!this.state.validForm} />

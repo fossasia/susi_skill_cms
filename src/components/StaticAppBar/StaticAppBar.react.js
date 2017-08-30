@@ -21,6 +21,7 @@ import MenuItem from 'material-ui/MenuItem';
 import Settings from 'material-ui/svg-icons/action/settings';
 import { Link } from 'react-router-dom';
 import susiWhite from '../images/SUSIAI-white.png';
+import colors from '../../Utils/colors';
 import $ from 'jquery';
 import './StaticAppBar.css';
 // import ListUser from '../Admin/ListUser/ListUser';
@@ -213,7 +214,9 @@ class StaticAppBar extends Component {
             'padding': 0,
             textAlign: 'center'
         };
-
+        const headerStyle = {
+            'background': colors.header
+        };
         let TopRightMenu = (props) => (
             <div onScroll={this.handleScroll}>
                 <div>
@@ -263,14 +266,14 @@ class StaticAppBar extends Component {
 
         return (
             <div>
-                <header className='nav-down' id='headerSection'>
+                <header className='nav-down' style={headerStyle} id='headerSection'>
                     <AppBar
                         className='topAppBar'
                         id='appBar'
                         title={<div id='rightIconButton' ><Link to='/' style={{ float: 'left', marginTop: '-10px',height:'25px',width:'122px' }}>
                             <img src={susiWhite} alt='susi-logo' className='siteTitle' /></Link></div>}
                         style={{
-                            backgroundColor: '#4285f4',
+                            backgroundColor: colors.header,
                             height: '46px',
                             boxShadow: 'none',
                             margin: '0 auto',
