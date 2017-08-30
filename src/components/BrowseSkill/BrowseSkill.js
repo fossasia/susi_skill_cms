@@ -255,7 +255,12 @@ export default class BrowseSkill extends React.Component {
                         examples = null
                     }
                     if (skill.descriptions) {
-                        description = skill.descriptions;
+                        if (skill.descriptions.length > 120) {
+                            description = skill.descriptions.substring(0, 119) + '...';
+                        }
+                        else {
+                            description = skill.descriptions;
+                        }
                     }
                     else {
                         description = 'No description available'
