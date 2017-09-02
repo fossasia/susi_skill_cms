@@ -31,7 +31,8 @@ export default class BrowseSkill extends React.Component {
             groups: [],
             languages: [],
             groupSelect: true,
-            languageSelect: true
+            languageSelect: true,
+            skillsLoaded: false
         };
     }
 
@@ -130,7 +131,8 @@ export default class BrowseSkill extends React.Component {
 
                 self.setState({
                     skills: skills,
-                    skillURL: url
+                    skillURL: url,
+                    skillsLoaded: true
                 })
 
             }
@@ -226,6 +228,7 @@ export default class BrowseSkill extends React.Component {
             jsonp: 'callback',
             crossDomain: true,
             success: function (data) {
+              console.log(data)
                 let skills = Object.keys(data.skills);
                 skills = skills.map((el, i) => {
                     let skill = data.skills[el];
@@ -315,7 +318,19 @@ export default class BrowseSkill extends React.Component {
             width: '100%',
             padding: '10px'
         };
+        let skillDisplay;
 
+        if( !this.state.skills.length && this.state.skillsLoaded ) {
+            skillDisplay =
+            <div
+                style={{fontSize: 30}}>
+                No Skills found. Be the first one to
+                <Link to='/skillCreator'> create</Link> a skill in this category
+            </div>
+        }
+        else {
+            skillDisplay = this.state.skills
+        }
         return (
             <div>
                 <StaticAppBar {...this.props} />
@@ -389,7 +404,7 @@ export default class BrowseSkill extends React.Component {
                     }}>
                         <div className='row' style={styles.scroll}  >
                             <div style={styles.gridList}>
-                                {this.state.skills}
+                                {skillDisplay}
 
                             </div>
                         </div>
