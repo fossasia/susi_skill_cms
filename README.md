@@ -31,3 +31,7 @@ Our chat channel is on gitter here: https://gitter.im/fossasia/susi_server
 * **Step 4:** Run on http://localhost:3000 by running :```$ npm run start```
 * **Step 5:** Build locally by running : ```$ npm run build ```
 * **Step 6:** To deploy at a url use : ```$ npm run deploy ```
+
+### Learn the skill language
+
+Read [SUSI Skill language](./docs/Susi_Skill_Language_Tutorial.md) Learn how to add your own AI skills.
