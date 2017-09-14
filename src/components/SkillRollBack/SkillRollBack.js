@@ -48,7 +48,7 @@ class SkillRollBack extends Component {
     }
 
     getSkillAtCommitIDUrl = () => {
-      let baseUrl = ' http://api.susi.ai/cms/getFileAtCommitID.json';
+      let baseUrl = ' https://api.susi.ai/cms/getFileAtCommitID.json';
       let skillMetaData = this.state.skillMeta;
       let skillAtCommitIDUrl = baseUrl +
                               '?model=' + skillMetaData.modelValue +
@@ -195,7 +195,7 @@ class SkillRollBack extends Component {
       var settings = {
           'async': true,
           'crossDomain': true,
-          'url': 'http://api.susi.ai/cms/modifySkill.json',
+          'url': 'https://api.susi.ai/cms/modifySkill.json',
           'method': 'POST',
           'processData': false,
           'contentType': false,

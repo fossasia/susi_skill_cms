@@ -2,7 +2,7 @@
 
  With SUSI Skill CMS, one can easily browse SUSI Skills. The following SUSI Server endpoint is used to the display skills in a category.
 
-  >- [http://api.susi.ai/cms/getSkillList.json](http://api.susi.ai/cms/getSkillList.json)
+  >- [https://api.susi.ai/cms/getSkillList.json](https://api.susi.ai/cms/getSkillList.json)
 
 This endpoint accepts `POST` request with data supplied in the following parameters.
 

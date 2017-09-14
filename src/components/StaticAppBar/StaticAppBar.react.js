@@ -82,7 +82,7 @@ class StaticAppBar extends Component {
 
         window.addEventListener('scroll', this.handleScroll);
         let url;
-        url = 'http://api.susi.ai/aaa/showAdminService.json?access_token=' + cookies.get('loggedIn');
+        url = 'https://api.susi.ai/aaa/showAdminService.json?access_token=' + cookies.get('loggedIn');
         $.ajax({
             url: url,
             dataType: 'jsonp',

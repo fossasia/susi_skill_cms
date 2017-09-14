@@ -39,7 +39,7 @@ class SkillVersion extends Component {
     }
 
     componentDidMount(){
-        let commitHistoryBaseURL = 'http://api.susi.ai/cms/getSkillHistory.json';
+        let commitHistoryBaseURL = 'https://api.susi.ai/cms/getSkillHistory.json';
         let commitHistoryURL = commitHistoryBaseURL +
             '?model=' + this.state.skillMeta.modelValue +
             '&group=' + this.state.skillMeta.groupValue +

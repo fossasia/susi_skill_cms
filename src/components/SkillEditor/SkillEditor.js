@@ -101,7 +101,7 @@ class SkillEditor extends Component {
     loadgroups() {
         if (groups.length === 0) {
             $.ajax({
-                url: 'http://api.susi.ai/cms/getGroups.json',
+                url: 'https://api.susi.ai/cms/getGroups.json',
                 jsonpCallback: 'pa',
                 dataType: 'jsonp',
                 jsonp: 'callback',
@@ -122,7 +122,7 @@ class SkillEditor extends Component {
     loadlanguages() {
         if (languages.length === 0) {
             $.ajax({
-                url: 'http://api.susi.ai/cms/getAllLanguages.json',
+                url: 'https://api.susi.ai/cms/getAllLanguages.json',
                 jsonpCallback: 'pc',
                 dataType: 'jsonp',
                 jsonp: 'callback',
@@ -163,7 +163,7 @@ class SkillEditor extends Component {
 
         self.loadlanguages();
         if(this.state.commitId){
-             let baseUrl = 'http://api.susi.ai/cms/getFileAtCommitID.json';
+             let baseUrl = 'https://api.susi.ai/cms/getFileAtCommitID.json';
              let skillAtCommitIDUrl = baseUrl +'?model=' + this.state.modelValue +
                                                              '&group=' + this.state.groupValue +
                                                             '&language=' + this.state.languageValue +
@@ -184,7 +184,7 @@ class SkillEditor extends Component {
                          self.updateCode(data.file)
                      }
              });
-             baseUrl = 'http://api.susi.ai/cms/getSkillMetadata.json'
+             baseUrl = 'https://api.susi.ai/cms/getSkillMetadata.json'
              let url = baseUrl + '?model=' + this.state.modelValue + '&group=' + this.state.groupValue + '&language=' + this.state.languageValue + '&skill=' + this.state.expertValue;
              this.setState({
                  skillUrl:url
@@ -208,7 +208,7 @@ class SkillEditor extends Component {
             imageUrl: this.state.image
         });
 
-        let baseUrl = 'http://api.susi.ai/cms/getSkillMetadata.json';
+        let baseUrl = 'https://api.susi.ai/cms/getSkillMetadata.json';
 
         let modelValue = 'general';
         let groupValue = this.props.location.pathname.split('/')[1];
@@ -295,7 +295,7 @@ class SkillEditor extends Component {
         this.setState({ modelValue: value });
         if (groups.length === 0) {
             $.ajax({
-                url: 'http://api.susi.ai/aaa/getGroups.json',
+                url: 'https://api.susi.ai/aaa/getGroups.json',
                 jsonpCallback: 'pb',
                 dataType: 'jsonp',
                 jsonp: 'callback',
@@ -331,7 +331,7 @@ class SkillEditor extends Component {
         });
         if (languages.length === 0) {
             $.ajax({
-                url: 'http://api.susi.ai/cms/getAllLanguages.json',
+                url: 'https://api.susi.ai/cms/getAllLanguages.json',
                 jsonpCallback: 'pc',
                 dataType: 'jsonp',
                 jsonp: 'callback',
@@ -404,7 +404,7 @@ class SkillEditor extends Component {
         });
         // console.log('http://127.0.0.1:4000/cms/deleteSkill.txt?skill='+this.name+'&group='+this.groupValue+'&language='+this.languageValue);
         $.ajax({
-            url: 'http://api.susi.ai/cms/deleteSkill.json?skill='+this.state.oldExpertValue+'&group='+this.state.oldGroupValue+'&language='+this.state.oldLanguageValue,
+            url: 'https://api.susi.ai/cms/deleteSkill.json?skill='+this.state.oldExpertValue+'&group='+this.state.oldGroupValue+'&language='+this.state.oldLanguageValue,
             jsonpCallback: 'pa',
             dataType: 'jsonp',
             jsonp: 'callback',
@@ -521,7 +521,7 @@ class SkillEditor extends Component {
         let settings = {
             'async': true,
             'crossDomain': true,
-            'url': 'http://api.susi.ai/cms/modifySkill.json',
+            'url': 'https://api.susi.ai/cms/modifySkill.json',
             'method': 'POST',
             'processData': false,
             'contentType': false,

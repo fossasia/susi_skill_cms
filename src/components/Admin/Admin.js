@@ -28,7 +28,7 @@ class Admin extends Component {
 
     componentDidMount() {
         let url;
-        url = 'http://api.susi.ai/aaa/showAdminService.json?access_token=' + cookies.get('loggedIn');
+        url = 'https://api.susi.ai/aaa/showAdminService.json?access_token=' + cookies.get('loggedIn');
         $.ajax({
             url: url,
             dataType: 'jsonp',

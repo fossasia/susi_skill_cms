@@ -2,7 +2,7 @@
 
  With SUSI Skill CMS, one can easily modify SUSI Skills once the user is logged in. The following SUSI Server endpoint is used to the modify a skill.
 
-  >- [http://api.susi.ai/cms/modifySkill.json](http://api.susi.ai/cms/modifySkill.json)
+  >- [https://api.susi.ai/cms/modifySkill.json](https://api.susi.ai/cms/modifySkill.json)
 
 This endpoint accepts `POST` request with data supplied in the following parameters.
 

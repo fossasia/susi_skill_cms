@@ -61,7 +61,7 @@ class Login extends Component {
         var email = this.state.email.trim();
         var password = this.state.password.trim();
 
-        let BASE_URL ='http://api.susi.ai';
+        let BASE_URL ='https://api.susi.ai';
 
         if (!email || !password) { return this.state.isFilled; }
 

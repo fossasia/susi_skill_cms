@@ -78,7 +78,7 @@ export default class ListUser extends Component {
     componentDidMount() {
         const pagination = { ...this.state.pagination };
         let url;
-        url = 'http://api.susi.ai/aaa/showAdminService.json?access_token=' + cookies.get('loggedIn');
+        url = 'https://api.susi.ai/aaa/showAdminService.json?access_token=' + cookies.get('loggedIn');
         $.ajax({
             url: url,
             dataType: 'jsonp',
@@ -88,7 +88,7 @@ export default class ListUser extends Component {
             success: function (response) {
                 console.log(response.showAdmin);
                 if (response.showAdmin) {
-                    let getPagesUrl = 'http://api.susi.ai/aaa/getUsers.json?access_token=' + cookies.get('loggedIn')
+                    let getPagesUrl = 'https://api.susi.ai/aaa/getUsers.json?access_token=' + cookies.get('loggedIn')
                         + '&getUserCount=true';
                     $.ajax({
                         url: getPagesUrl,
@@ -134,7 +134,7 @@ export default class ListUser extends Component {
         else{
             page =1;
         }
-        url = 'http://api.susi.ai/aaa/getUsers.json?access_token=' + cookies.get('loggedIn')
+        url = 'https://api.susi.ai/aaa/getUsers.json?access_token=' + cookies.get('loggedIn')
             + '&page='+page;
         $.ajax({
             url: url,
