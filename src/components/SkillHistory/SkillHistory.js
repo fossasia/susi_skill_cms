@@ -49,7 +49,7 @@ class SkillHistory extends Component {
     }
 
     getSkillAtCommitIDUrl = () => {
-      let baseUrl = ' http://api.susi.ai/cms/getFileAtCommitID.json';
+      let baseUrl = ' https://api.susi.ai/cms/getFileAtCommitID.json';
       let skillMetaData = this.state.skillMeta;
       let skillAtCommitIDUrl = baseUrl +
                               '?model=' + skillMetaData.modelValue +
@@ -61,7 +61,7 @@ class SkillHistory extends Component {
     }
 
     componentDidMount(){
-      let commitHistoryBaseURL = 'http://api.susi.ai/cms/getSkillHistory.json';
+      let commitHistoryBaseURL = 'https://api.susi.ai/cms/getSkillHistory.json';
       let commitHistoryURL = commitHistoryBaseURL +
                             '?model=' + this.state.skillMeta.modelValue +
                             '&group=' + this.state.skillMeta.groupValue +

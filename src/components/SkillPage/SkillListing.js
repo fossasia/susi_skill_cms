@@ -56,7 +56,7 @@ class SkillListing extends Component {
 
         let clickedSkill = this.props.location.pathname.split('/')[2];
         this.name = clickedSkill;
-        this.url = 'http://api.susi.ai/cms/getSkillList.json';
+        this.url = 'https://api.susi.ai/cms/getSkillList.json';
         if (this.url !== undefined) {
             let url = this.url;
             this.name = clickedSkill;
@@ -77,7 +77,7 @@ class SkillListing extends Component {
     componentDidMount() {
 
         if (this.url !== undefined) {
-            let baseUrl = 'http://api.susi.ai/cms/getSkillMetadata.json';
+            let baseUrl = 'https://api.susi.ai/cms/getSkillMetadata.json';
             let url = this.url;
 
             let modelValue = 'general';
@@ -100,7 +100,7 @@ class SkillListing extends Component {
         }
         if(this.props.location.state!==undefined){
             if (this.props.location.state.from_upload !== undefined) {
-                let baseUrl = 'http://api.susi.ai/cms/getSkillMetadata.json';
+                let baseUrl = 'https://api.susi.ai/cms/getSkillMetadata.json';
                 let url;
 
                 let modelValue = 'general';

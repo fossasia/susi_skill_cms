@@ -25,13 +25,13 @@ With SUSI Skill CMS, users can browse through all the previous revisions of a sk
 ### API Calls Needed
 
   - Get the revision hitory of a skill
-  ```  http://api.susi.ai/cms/getSkillHistory.json?model=MODEL&group=GROUP&language=LANGUAGE&skill=SKILL_NAME
+  ```  https://api.susi.ai/cms/getSkillHistory.json?model=MODEL&group=GROUP&language=LANGUAGE&skill=SKILL_NAME
   ```
 
   - Get the content for a given commit
-  ```  http://api.susi.ai/cms/getSkillHistory.json?model=MODEL&group=GROUP&language=LANGUAGE&skill=SKILL_NAME&commitID=COMMIT_ID
+  ```  https://api.susi.ai/cms/getSkillHistory.json?model=MODEL&group=GROUP&language=LANGUAGE&skill=SKILL_NAME&commitID=COMMIT_ID
   ```
 
   - Edit content and push changes (via **POST** request)
-  ```  http://api.susi.ai/cms/modifySkill.json
+  ```  https://api.susi.ai/cms/modifySkill.json
   ```

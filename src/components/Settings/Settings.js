@@ -9,7 +9,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import { Paper } from 'material-ui';
 import colors from '../../Utils/colors';
 const cookies = new Cookies();
-let BASE_URL = 'http://api.susi.ai';
+let BASE_URL = 'https://api.susi.ai';
 
 class Settings extends React.Component {
 

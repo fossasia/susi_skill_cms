@@ -49,7 +49,7 @@ class AuthorSkills extends Component {
 
     loadSkillCards = (author) => {
       console.log(author);
-      let url = 'http://api.susi.ai/cms/getSkillsByAuthor.json?author=' + author;
+      let url = 'https://api.susi.ai/cms/getSkillsByAuthor.json?author=' + author;
           $.ajax({
               url: url,
               dataType: 'jsonp',

@@ -100,7 +100,7 @@ export default class CreateSkill extends React.Component {
     loadgroups() {
         if(groups.length===0) {
             $.ajax({
-                url: 'http://api.susi.ai/cms/getGroups.json',
+                url: 'https://api.susi.ai/cms/getGroups.json',
                 jsonpCallback: 'pa',
                 dataType: 'jsonp',
                 jsonp: 'callback',
@@ -149,7 +149,7 @@ export default class CreateSkill extends React.Component {
         this.setState({ groupValue: value, groupSelect: false, languageSelect: false });
         if (languages.length === 0) {
             $.ajax({
-                url: 'http://api.susi.ai/cms/getAllLanguages.json',
+                url: 'https://api.susi.ai/cms/getAllLanguages.json',
                 jsonpCallback: 'pc',
                 dataType: 'jsonp',
                 jsonp: 'callback',
@@ -251,7 +251,7 @@ export default class CreateSkill extends React.Component {
         let settings = {
             'async': true,
             'crossDomain': true,
-            'url': 'http://api.susi.ai/cms/createSkill.json',
+            'url': 'https://api.susi.ai/cms/createSkill.json',
             'method': 'POST',
             'processData': false,
             'contentType': false,

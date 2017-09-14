@@ -46,7 +46,7 @@ export default class BrowseSkill extends React.Component {
     loadInitialCards = () => {
         let url;
 
-        url = 'http://api.susi.ai/cms/getSkillList.json?applyFilter=true&filter_name=ascending&filter_type=lexicographical';
+        url = 'https://api.susi.ai/cms/getSkillList.json?applyFilter=true&filter_name=ascending&filter_type=lexicographical';
         let self = this;
         $.ajax({
             url: url,
@@ -144,7 +144,7 @@ export default class BrowseSkill extends React.Component {
         this.setState({ groupSelect: false, languageSelect: true });
         if (groups.length === 0) {
             $.ajax({
-                url: 'http://api.susi.ai/cms/getGroups.json',
+                url: 'https://api.susi.ai/cms/getGroups.json',
                 jsonpCallback: 'pb',
                 dataType: 'jsonp',
                 jsonp: 'callback',
@@ -168,7 +168,7 @@ export default class BrowseSkill extends React.Component {
         this.setState({ groupValue: value, groupSelect: false, languageSelect: false });
         if (languages.length === 0) {
             $.ajax({
-                url: 'http://api.susi.ai/cms/getAllLanguages.json',
+                url: 'https://api.susi.ai/cms/getAllLanguages.json',
                 jsonpCallback: 'pc',
                 dataType: 'jsonp',
                 jsonp: 'callback',
@@ -210,12 +210,12 @@ export default class BrowseSkill extends React.Component {
     buttonClick = () => {
         let url;
         if (languages.length > 0 && groups.length > 0) {
-            url = 'http://api.susi.ai/cms/getSkillList.json?model='
+            url = 'https://api.susi.ai/cms/getSkillList.json?model='
                   + this.state.modelValue + '&group=' + this.state.groupValue
                   + '&language=' + this.state.languageValue;
         }
         else {
-            url = 'http://api.susi.ai/cms/getSkillList.json'
+            url = 'https://api.susi.ai/cms/getSkillList.json'
         }
 
         console.log(url);

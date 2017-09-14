@@ -326,7 +326,7 @@ Here **"path": "$.query.text[0]"** will put **"a"** in $object$
 Susi Skills may return different types of actions. So far, the only action type we used is the `answer` action.
 The result of an `answer` action can be seen with
 ```
-curl http://api.susi.ai/susi/chat.json?q=hello
+curl https://api.susi.ai/susi/chat.json?q=hello
 ```
 and the result in something like
 ```
@@ -382,7 +382,7 @@ The table is defined with the type "table" and a columns object which provides a
 visible descriptive names that shall be rendered in the client's output.
 
 The client will see the following (similar!) JSON for a query like
-`http://api.susi.ai/susi/chat.json?q=stock+quotes`:
+`https://api.susi.ai/susi/chat.json?q=stock+quotes`:
 
 ```
 {
@@ -484,4 +484,4 @@ My name is Susi.
 ```
 
 Adding examples for each skill gives us an overview of what Susi can do.
-We can look at all example queries at http://api.susi.ai/cms/getExampleSkill.json
+We can look at all example queries at https://api.susi.ai/cms/getExampleSkill.json
