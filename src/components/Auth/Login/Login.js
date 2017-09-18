@@ -68,7 +68,7 @@ class Login extends Component {
         let validEmail = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
         let loginEndPoint =
             BASE_URL + '/aaa/login.json?type=access-token&login=' +
-            this.state.email + '&password=' + this.state.password;
+            this.state.email + '&password=' + encodeURIComponent(this.state.password);
 
         if (email && validEmail) {
             $.ajax({
@@ -76,6 +76,10 @@ class Login extends Component {
                 dataType: 'jsonp',
                 jsonpCallback: 'p',
                 jsonp: 'callback',
+                headers: {
+					 	'Accept': 'application/json, application/xml, text/play, text/html',
+					 	'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+					 },
                 crossDomain: true,
                 success: function (response) {
                     cookies.set('serverUrl', BASE_URL, { path: '/' });
