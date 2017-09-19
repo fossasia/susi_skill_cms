@@ -67,7 +67,7 @@ class StaticAppBar extends Component {
     }
 
     handleScroll = (event) => {
-        let scrollTop = event.srcElement.body.scrollTop,
+        let scrollTop = event.pageY || event.target.body.scrollTop,
             itemTranslate = scrollTop > 60;
         if (itemTranslate) {
             this.closeOptions();
