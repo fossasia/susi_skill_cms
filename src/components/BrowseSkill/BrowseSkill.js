@@ -57,6 +57,10 @@ export default class BrowseSkill extends React.Component {
             success: function (data) {
                 let skills = data.filteredData.map((skill,i)=>{
                     let skill_name, examples, image, description;
+                    if (skill.skill_name == null)
+                    {
+                        return 0;
+                    }
                     let el = skill.skill_name.replace(/\s+/g, '_').toLowerCase();
                     if (skill.skill_name) {
                         skill_name = skill.skill_name;
