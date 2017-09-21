@@ -179,7 +179,8 @@ export default class BrowseSkill extends React.Component {
                 crossDomain: true,
                 success: function (data) {
 
-                    data = data.languagesArray
+                    data = data.languagesArray;
+                    data.sort();
                     this.setState({ languages: data });
                     for (let i = 0; i < data.length; i++) {
                         if (ISO6391.getNativeName(data[i])) {
