@@ -5,7 +5,6 @@ import MenuItem from 'material-ui/MenuItem';
 import SelectField from 'material-ui/SelectField';
 import { FloatingActionButton, Paper } from 'material-ui';
 import Add from 'material-ui/svg-icons/content/add';
-import ContentAdd from 'material-ui/svg-icons/navigation/arrow-forward';
 import { Card } from 'material-ui/Card';
 import * as $ from 'jquery';
 import ReactTooltip from 'react-tooltip';
@@ -22,6 +21,7 @@ export default class BrowseSkill extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            cards: [],
             modelValue: 'general',
             skillURL: null,
             groupValue: 'Knowledge',
@@ -30,122 +30,45 @@ export default class BrowseSkill extends React.Component {
             skills: [],
             groups: [],
             languages: [],
-            groupSelect: true,
-            languageSelect: true,
+            groupSelect: false,
+            languageSelect: false,
             skillsLoaded: false
         };
     }
 
     componentDidMount() {
-        this.loadInitialCards();
-        this.handleModelChange();
-        this.handleGroupChange();
-        this.setState({ groupValue: 'Knowledge' });
+        this.loadLanguages();
+        this.loadGroups();
+        this.loadCards();
     }
 
-    loadInitialCards = () => {
-        let url;
-
-        url = 'https://api.susi.ai/cms/getSkillList.json?applyFilter=true&filter_name=ascending&filter_type=lexicographical';
-        let self = this;
-        $.ajax({
-            url: url,
-            jsonpCallback: 'pxcd',
-            dataType: 'jsonp',
-            jsonp: 'callback',
-            crossDomain: true,
-            success: function (data) {
-                let skills = data.filteredData.map((skill,i)=>{
-                    let skill_name, examples, image, description;
-                    if(skill.skill_name == null)
-                    {
-                        return 0;
-                    }
-                    let el = skill.skill_name.replace(/\s+/g, '_').toLowerCase();
-                    if (skill.skill_name) {
-                        skill_name = skill.skill_name;
-                        skill_name = skill_name.charAt(0).toUpperCase()
-                                    + skill_name.slice(1);
-                    }
-                    else {
-                        skill_name = 'Name not available';
-                    }
-                    if (skill.image) {
-                        image = 'https://raw.githubusercontent.com/fossasia/susi_skill_data/master/models/' + self.state.modelValue + '/' +
-                            self.state.groupValue + '/' + self.state.languageValue + '/' + skill.image;
-                    }
-                    else {
-                        image = ''
-                    }
-                    if (skill.examples) {
-                        examples = skill.examples;
-                        examples = examples[0];
-                    }
-                    else {
-                        examples = null
-                    }
-                    if (skill.descriptions) {
-                        if (skill.descriptions.length > 120) {
-                            description = skill.descriptions.substring(0, 119) + '...';
-                        }
-                        else {
-                            description = skill.descriptions;
-                        }
-                    }
-                    else {
-                        description = 'No description available'
-                    }
-
-                    return (
-                        <Link key={el}
-                            to={{
-                                pathname: '/' + self.state.groupValue + '/' + el + '/' + self.state.languageValue,
-                                state: {
-                                    url: url,
-                                    element: el,
-                                    name: el,
-                                    modelValue: self.state.modelValue,
-                                    groupValue: self.state.groupValue,
-                                    languageValue: self.state.languageValue,
-                                }
-                            }}>
-                            <Card style={styles.row} key={el}>
-                                <div style={styles.right} key={el}>
-                                    {image ?
-                                      (
-                                        <div style={styles.imageContainer}>
-                                          <img alt={skill_name}
-                                               src={image}
-                                               style={styles.image} />
-                                        </div>
-                                      )
-                                      :
-                                      (<CircleImage name={el} size='48' />)
-                                    }
-                                    <div style={styles.titleStyle}>{examples}</div>
-                                </div>
-                                <div style={styles.details}>
-                                    <h3 style={styles.name}>{skill_name}</h3>
-                                    <p style={styles.description}>{description}</p>
-                                </div>
-                            </Card>
-                        </Link>
-                    )
-                })
-
-                self.setState({
-                    skills: skills,
-                    skillURL: url,
-                    skillsLoaded: true
-                })
-
-            }
+    handleModelChange = (event, index) => {
+        this.setState({ groupSelect: false}, function() {
+        this.loadCards();
         });
     };
 
+    handleGroupChange = (event, index, value) => {
+        this.setState({groupValue: value}, function () {
+        console.log(this.state);
+        this.loadCards();
+        });
+    };
 
-    handleModelChange = (event, index) => {
-        this.setState({ groupSelect: false, languageSelect: true });
+    handleLanguageChange = (event, index, value) => {
+      this.setState({languageValue: value}, function () {
+        console.log(this.state);
+        this.loadCards();
+        });
+    };
+
+    handleToggle = (event, toggled) => {
+        this.setState({
+            [event.target.name]: toggled,
+        });
+    };
+
+    loadGroups = () => {
         if (groups.length === 0) {
             $.ajax({
                 url: 'https://api.susi.ai/cms/getGroups.json',
@@ -166,10 +89,10 @@ export default class BrowseSkill extends React.Component {
                 }.bind(this)
             });
         }
+
     };
 
-    handleGroupChange = (event, index, value) => {
-        this.setState({ groupValue: value, groupSelect: false, languageSelect: false });
+    loadLanguages = () =>{
         if (languages.length === 0) {
             $.ajax({
                 url: 'https://api.susi.ai/cms/getAllLanguages.json',
@@ -178,7 +101,6 @@ export default class BrowseSkill extends React.Component {
                 jsonp: 'callback',
                 crossDomain: true,
                 success: function (data) {
-
                     data = data.languagesArray;
                     data.sort();
                     this.setState({ languages: data });
@@ -195,26 +117,16 @@ export default class BrowseSkill extends React.Component {
                                                     primaryText={'Universal'} />);
                         }
                     }
+
                 }.bind(this)
             });
         }
+
     };
 
-    handleLanguageChange = (event, index, value) => {
-      this.setState({
-        languageValue: value
-      });
-    }
-
-    handleToggle = (event, toggled) => {
-        this.setState({
-            [event.target.name]: toggled,
-        });
-    };
-
-    buttonClick = () => {
+    loadCards = () => {
         let url;
-        if (languages.length > 0 && groups.length > 0) {
+        if (this.state.languages.length > 0 && this.state.groups.length > 0) {
             url = 'https://api.susi.ai/cms/getSkillList.json?model='
                   + this.state.modelValue + '&group=' + this.state.groupValue
                   + '&language=' + this.state.languageValue;
@@ -223,9 +135,8 @@ export default class BrowseSkill extends React.Component {
             url = 'https://api.susi.ai/cms/getSkillList.json'
         }
 
-        console.log(url);
-
         let self = this;
+        let cards=[];
         $.ajax({
             url: url,
             jsonpCallback: 'pxcd',
@@ -274,7 +185,7 @@ export default class BrowseSkill extends React.Component {
                     else {
                         description = 'No description available'
                     }
-                    return (
+                    cards.push(
                         <Link key={el}
                             to={{
                                 pathname: '/' + self.state.groupValue
@@ -296,7 +207,7 @@ export default class BrowseSkill extends React.Component {
                                              src={image}
                                              style={styles.image} />
                                     </div> :
-                                        <CircleImage name={el} size='48' />}
+                                        <CircleImage name={el} size='48'/>}
                                     <div style={styles.titleStyle}>{examples}</div>
                                 </div>
                                 <div style={styles.details}>
@@ -305,12 +216,14 @@ export default class BrowseSkill extends React.Component {
                                 </div>
                             </Card>
                         </Link>
-                    )
+                    );
                 });
 
                 self.setState({
                     skills: skills,
-                    skillURL: url
+                    cards: cards,
+                    skillURL: url,
+                    skillsLoaded: true,
                 });
                 console.log(self.state)
             }
@@ -334,7 +247,7 @@ export default class BrowseSkill extends React.Component {
             </div>
         }
         else {
-            skillDisplay = this.state.skills
+            skillDisplay = this.state.cards
         }
         return (
             <div>
@@ -381,20 +294,16 @@ export default class BrowseSkill extends React.Component {
 
                                 }}
                             >
-                                {languages}
+                            {languages}
                             </SelectField>
                             <div>
-                                <FloatingActionButton data-tip='Search'
-                                    backgroundColor={colors.fabButton} className='select' onClick={this.buttonClick}>
-                                    <ContentAdd />
+                            <Link to='/skillCreator'>
+                                <FloatingActionButton data-tip='Create Skill'
+                                    backgroundColor={colors.fabButton} className='select'>
+                                    <Add />
                                 </FloatingActionButton>
-                                <Link to='/skillCreator'>
-                                    <FloatingActionButton data-tip='Create Skill'
-                                        backgroundColor={colors.fabButton} className='select'>
-                                        <Add />
-                                    </FloatingActionButton>
-                                    <ReactTooltip  effect='solid' place='bottom'/>
-                                </Link>
+                                <ReactTooltip  effect='solid' place='bottom'/>
+                            </Link>
                             </div>
                         </div>
 
@@ -410,7 +319,6 @@ export default class BrowseSkill extends React.Component {
                         <div className='row' style={styles.scroll}  >
                             <div style={styles.gridList}>
                                 {skillDisplay}
-
                             </div>
                         </div>
                     </div>
