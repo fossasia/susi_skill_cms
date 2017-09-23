@@ -541,6 +541,11 @@ class SkillEditor extends Component {
                         description: 'Your Skill has been uploaded to the server',
                         icon: <Icon type='check-circle' style={{ color: '#00C853' }} />
                     });
+                    setTimeout(() => {
+                    this.props.history.push('/'+this.state.groupValue+
+                                          '/'+this.state.expertValue+
+                                          '/'+this.state.languageValue);
+                     }, 1000);
                 }
                 else {
                     this.setState({
