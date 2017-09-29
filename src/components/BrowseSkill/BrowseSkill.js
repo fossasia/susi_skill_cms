@@ -32,7 +32,8 @@ export default class BrowseSkill extends React.Component {
             languages: [],
             groupSelect: false,
             languageSelect: false,
-            skillsLoaded: false
+            skillsLoaded: false,
+            filter:'&applyFilter=true&filter_name=ascending&filter_type=lexicographical'
         };
     }
 
@@ -41,6 +42,12 @@ export default class BrowseSkill extends React.Component {
         this.loadGroups();
         this.loadCards();
     }
+
+    handleFilterChange = (event, index, value) => {
+        this.setState({ filter: value}, function() {
+        this.loadCards();
+        });
+    };
 
     handleModelChange = (event, index) => {
         this.setState({ groupSelect: false}, function() {
@@ -129,10 +136,11 @@ export default class BrowseSkill extends React.Component {
         if (this.state.languages.length > 0 && this.state.groups.length > 0) {
             url = 'https://api.susi.ai/cms/getSkillList.json?model='
                   + this.state.modelValue + '&group=' + this.state.groupValue
-                  + '&language=' + this.state.languageValue;
+                  + '&language=' + this.state.languageValue+ this.state.filter;
+                  console.log(url);
         }
         else {
-            url = 'https://api.susi.ai/cms/getSkillList.json'
+            url = 'https://api.susi.ai/cms/getSkillList.json?applyFilter=true&filter_name=ascending&filter_type=lexicographical'
         }
 
         let self = this;
@@ -145,9 +153,9 @@ export default class BrowseSkill extends React.Component {
             crossDomain: true,
             success: function (data) {
               console.log(data)
-                let skills = Object.keys(data.skills);
+                let skills = Object.keys(data.filteredData);
                 skills = skills.map((el, i) => {
-                    let skill = data.skills[el];
+                    let skill = data.filteredData[el];
                     let skill_name, examples, image, description;
                     if (skill.skill_name) {
                         skill_name = skill.skill_name;
@@ -189,7 +197,7 @@ export default class BrowseSkill extends React.Component {
                         <Link key={el}
                             to={{
                                 pathname: '/' + self.state.groupValue
-                                          + '/' + el
+                                          + '/' + skill_name.toLowerCase().replace(/ /g, '_')
                                           + '/' + self.state.languageValue,
                                 state: {
                                     url: url,
@@ -295,6 +303,32 @@ export default class BrowseSkill extends React.Component {
                                 }}
                             >
                             {languages}
+                            </SelectField>
+                            <SelectField
+                                floatingLabelText='Filter'
+                                value={this.state.filter}
+                                floatingLabelFixed={false}
+                                onChange={this.handleFilterChange}
+                                className='select'
+                                listStyle={{
+                                    top: '100px'
+                                }}
+                                selectedMenuItemStyle={{
+                                    color: colors.header
+                                }}
+                                underlineFocusStyle={{
+                                    color: colors.header
+
+                                }}
+                            >
+                            <MenuItem
+                            value={'&applyFilter=true&filter_name=ascending&filter_type=lexicographical'}
+                            key={'&applyFilter=true&filter_name=ascending&filter_type=lexicographical'}
+                            primaryText={'A-Z'} />
+                           <MenuItem
+                            value={'&applyFilter=true&filter_name=descending&filter_type=lexicographical'}
+                            key={'&applyFilter=true&filter_name=descending&filter_type=lexicographical'}
+                            primaryText={'Z-A'} />
                             </SelectField>
                             <div>
                             <Link to='/skillCreator'>
