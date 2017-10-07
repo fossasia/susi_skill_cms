@@ -9,6 +9,7 @@ import PropTypes from 'prop-types';
 import Paper from 'material-ui/Paper';
 import Tabs from 'antd/lib/tabs';
 import ListUser from './ListUser/ListUser';
+import urls from '../../Utils/urls';
 // import ListUser from './ListUser/ListUser';
 
 const cookies = new Cookies();
@@ -28,7 +29,7 @@ class Admin extends Component {
 
     componentDidMount() {
         let url;
-        url = 'https://api.susi.ai/aaa/showAdminService.json?access_token=' + cookies.get('loggedIn');
+        url = urls.API_URL + '/aaa/showAdminService.json?access_token=' + cookies.get('loggedIn');
         $.ajax({
             url: url,
             dataType: 'jsonp',

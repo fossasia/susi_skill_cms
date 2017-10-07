@@ -7,6 +7,7 @@ import Dialog from 'material-ui/Dialog';
 import './ForgotPassword.css';
 import $ from 'jquery';
 import colors from '../../../Utils/colors';
+import urls from '../../../Utils/urls';
 import Close from 'material-ui/svg-icons/navigation/close';
 
 class ForgotPassword extends Component {
@@ -88,7 +89,7 @@ class ForgotPassword extends Component {
 		let email = this.state.email.trim();
 		let validEmail = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
 
-		let BASE_URL ='https://api.susi.ai';
+		let BASE_URL =urls.API_URL;
 
 		if (email && validEmail) {
 			$.ajax({

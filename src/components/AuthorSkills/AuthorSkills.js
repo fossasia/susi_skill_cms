@@ -8,6 +8,7 @@ import Img from 'react-image';
 import CircleImage from '../CircleImage/CircleImage';
 import Close from 'material-ui/svg-icons/navigation/close';
 import './AuthorSkills.css';
+import urls from '../../Utils/urls';
 import {
   Table,
   TableBody,
@@ -49,7 +50,7 @@ class AuthorSkills extends Component {
 
     loadSkillCards = (author) => {
       console.log(author);
-      let url = 'https://api.susi.ai/cms/getSkillsByAuthor.json?author=' + author;
+      let url = urls.API_URL + '/cms/getSkillsByAuthor.json?author=' + author;
           $.ajax({
               url: url,
               dataType: 'jsonp',

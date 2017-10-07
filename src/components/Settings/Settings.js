@@ -8,8 +8,9 @@ import PropTypes from 'prop-types';
 import RaisedButton from 'material-ui/RaisedButton';
 import { Paper } from 'material-ui';
 import colors from '../../Utils/colors';
+import urls from '../../Utils/urls'
 const cookies = new Cookies();
-let BASE_URL = 'https://api.susi.ai';
+let BASE_URL = urls.API_URL;
 
 class Settings extends React.Component {
 

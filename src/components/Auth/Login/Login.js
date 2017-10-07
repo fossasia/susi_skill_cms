@@ -9,6 +9,7 @@ import PropTypes  from 'prop-types';
 import { addUrlProps, UrlQueryParamTypes } from 'react-url-query';
 import Cookies from 'universal-cookie';
 import colors from '../../../Utils/colors';
+import urls from '../../../Utils/urls';
 const cookies = new Cookies();
 
 
@@ -61,7 +62,7 @@ class Login extends Component {
         var email = this.state.email.trim();
         var password = this.state.password.trim();
 
-        let BASE_URL ='https://api.susi.ai';
+        let BASE_URL =urls.API_URL;
 
         if (!email || !password) { return this.state.isFilled; }
 

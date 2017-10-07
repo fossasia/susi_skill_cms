@@ -13,6 +13,7 @@ import colors from '../../Utils/colors';
 import CircleImage from '../CircleImage/CircleImage';
 import './BrowseSkill.css';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
+import urls from '../../Utils/urls';
 const groups = [];
 const languages = [];
 
@@ -78,7 +79,7 @@ export default class BrowseSkill extends React.Component {
     loadGroups = () => {
         if (groups.length === 0) {
             $.ajax({
-                url: 'https://api.susi.ai/cms/getGroups.json',
+                url: urls.API_URL + '/cms/getGroups.json',
                 jsonpCallback: 'pb',
                 dataType: 'jsonp',
                 jsonp: 'callback',
@@ -102,7 +103,7 @@ export default class BrowseSkill extends React.Component {
     loadLanguages = () =>{
         if (languages.length === 0) {
             $.ajax({
-                url: 'https://api.susi.ai/cms/getAllLanguages.json',
+                url: urls.API_URL + '/cms/getAllLanguages.json',
                 jsonpCallback: 'pc',
                 dataType: 'jsonp',
                 jsonp: 'callback',
@@ -134,13 +135,13 @@ export default class BrowseSkill extends React.Component {
     loadCards = () => {
         let url;
         if (this.state.languages.length > 0 && this.state.groups.length > 0) {
-            url = 'https://api.susi.ai/cms/getSkillList.json?model='
+            url = urls.API_URL + '/cms/getSkillList.json?model='
                   + this.state.modelValue + '&group=' + this.state.groupValue
                   + '&language=' + this.state.languageValue+ this.state.filter;
                   console.log(url);
         }
         else {
-            url = 'https://api.susi.ai/cms/getSkillList.json?applyFilter=true&filter_name=ascending&filter_type=lexicographical'
+            url = urls.API_URL + '/cms/getSkillList.json?applyFilter=true&filter_name=ascending&filter_type=lexicographical'
         }
 
         let self = this;

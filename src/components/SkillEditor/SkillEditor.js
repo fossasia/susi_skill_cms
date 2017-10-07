@@ -25,6 +25,7 @@ import notification from 'antd/lib/notification';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import {red500} from 'material-ui/styles/colors';
 import colors from '../../Utils/colors';
+import urls from '../../Utils/urls';
 const groups = [];
 const languages = [];
 const fontsizes = [];
@@ -101,7 +102,7 @@ class SkillEditor extends Component {
     loadgroups() {
         if (groups.length === 0) {
             $.ajax({
-                url: 'https://api.susi.ai/cms/getGroups.json',
+                url: urls.API_URL + '/cms/getGroups.json',
                 jsonpCallback: 'pa',
                 dataType: 'jsonp',
                 jsonp: 'callback',
@@ -122,7 +123,7 @@ class SkillEditor extends Component {
     loadlanguages() {
         if (languages.length === 0) {
             $.ajax({
-                url: 'https://api.susi.ai/cms/getAllLanguages.json',
+                url: urls.API_URL + '/cms/getAllLanguages.json',
                 jsonpCallback: 'pc',
                 dataType: 'jsonp',
                 jsonp: 'callback',
@@ -163,7 +164,7 @@ class SkillEditor extends Component {
 
         self.loadlanguages();
         if(this.state.commitId){
-             let baseUrl = 'https://api.susi.ai/cms/getFileAtCommitID.json';
+             let baseUrl = urls.API_URL + '/cms/getFileAtCommitID.json';
              let skillAtCommitIDUrl = baseUrl +'?model=' + this.state.modelValue +
                                                              '&group=' + this.state.groupValue +
                                                             '&language=' + this.state.languageValue +
@@ -184,7 +185,7 @@ class SkillEditor extends Component {
                          self.updateCode(data.file)
                      }
              });
-             baseUrl = 'https://api.susi.ai/cms/getSkillMetadata.json'
+             baseUrl = urls.API_URL + '/cms/getSkillMetadata.json'
              let url = baseUrl + '?model=' + this.state.modelValue + '&group=' + this.state.groupValue + '&language=' + this.state.languageValue + '&skill=' + this.state.expertValue;
              this.setState({
                  skillUrl:url
@@ -208,7 +209,7 @@ class SkillEditor extends Component {
             imageUrl: this.state.image
         });
 
-        let baseUrl = 'https://api.susi.ai/cms/getSkillMetadata.json';
+        let baseUrl = urls.API_URL + '/cms/getSkillMetadata.json';
 
         let modelValue = 'general';
         let groupValue = this.props.location.pathname.split('/')[1];
@@ -295,7 +296,7 @@ class SkillEditor extends Component {
         this.setState({ modelValue: value });
         if (groups.length === 0) {
             $.ajax({
-                url: 'https://api.susi.ai/aaa/getGroups.json',
+                url: urls.API_URL + '/aaa/getGroups.json',
                 jsonpCallback: 'pb',
                 dataType: 'jsonp',
                 jsonp: 'callback',
@@ -331,7 +332,7 @@ class SkillEditor extends Component {
         });
         if (languages.length === 0) {
             $.ajax({
-                url: 'https://api.susi.ai/cms/getAllLanguages.json',
+                url: urls.API_URL + '/cms/getAllLanguages.json',
                 jsonpCallback: 'pc',
                 dataType: 'jsonp',
                 jsonp: 'callback',
@@ -404,7 +405,7 @@ class SkillEditor extends Component {
         });
         // console.log('http://127.0.0.1:4000/cms/deleteSkill.txt?skill='+this.name+'&group='+this.groupValue+'&language='+this.languageValue);
         $.ajax({
-            url: 'https://api.susi.ai/cms/deleteSkill.json?skill='+this.state.oldExpertValue+'&group='+this.state.oldGroupValue+'&language='+this.state.oldLanguageValue,
+            url: urls.API_URL + '/cms/deleteSkill.json?skill='+this.state.oldExpertValue+'&group='+this.state.oldGroupValue+'&language='+this.state.oldLanguageValue,
             jsonpCallback: 'pa',
             dataType: 'jsonp',
             jsonp: 'callback',
@@ -521,7 +522,7 @@ class SkillEditor extends Component {
         let settings = {
             'async': true,
             'crossDomain': true,
-            'url': 'https://api.susi.ai/cms/modifySkill.json',
+            'url': urls.API_URL + '/cms/modifySkill.json',
             'method': 'POST',
             'processData': false,
             'contentType': false,

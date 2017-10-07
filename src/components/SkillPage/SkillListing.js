@@ -26,6 +26,7 @@ import VersionBtn from 'material-ui/svg-icons/action/history';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import ReactTooltip from 'react-tooltip';
 import colors from '../../Utils/colors';
+import urls from '../../Utils/urls';
 const defaultNullSkillList = ['image', 'author', 'author_url', 'developer_privacy_policy', 'terms_of_use', 'dynamic_content', 'examples'];
 let urlCode, name;
 
@@ -56,7 +57,7 @@ class SkillListing extends Component {
 
         let clickedSkill = this.props.location.pathname.split('/')[2];
         this.name = clickedSkill;
-        this.url = 'https://api.susi.ai/cms/getSkillList.json';
+        this.url = urls.API_URL + '/cms/getSkillList.json';
         if (this.url !== undefined) {
             let url = this.url;
             this.name = clickedSkill;
@@ -77,7 +78,7 @@ class SkillListing extends Component {
     componentDidMount() {
 
         if (this.url !== undefined) {
-            let baseUrl = 'https://api.susi.ai/cms/getSkillMetadata.json';
+            let baseUrl = urls.API_URL + '/cms/getSkillMetadata.json';
             let url = this.url;
 
             let modelValue = 'general';
@@ -100,7 +101,7 @@ class SkillListing extends Component {
         }
         if(this.props.location.state!==undefined){
             if (this.props.location.state.from_upload !== undefined) {
-                let baseUrl = 'https://api.susi.ai/cms/getSkillMetadata.json';
+                let baseUrl = urls.API_URL + '/cms/getSkillMetadata.json';
                 let url;
 
                 let modelValue = 'general';
