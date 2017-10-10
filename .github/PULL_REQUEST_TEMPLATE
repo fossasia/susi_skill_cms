@@ -1,11 +1,7 @@
-Into the commit message, please add a short info about the changes you make in this PR.
-
-Into the description add: Fixes issue #[Add issue number here. If you do not solve the issue entirely, please change the message e.g. "First steps for issues #IssueNumber]
-
-Also add: 
+Fixes issue #[Add issue number here. If you do not solve the issue entirely, please change the message e.g. "First steps for issues #IssueNumber]
 
 Changes: [Add here what changes were made in this issue and if possible provide links.]
 
-Link to deployment for testing:
+Surge Deployment Link: [Add here the link where you changes can be seen]
 
-Screenshots for the change: 
+Screenshots for the change:
