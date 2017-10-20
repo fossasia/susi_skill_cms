@@ -3,11 +3,9 @@ import styles from './SkillStyle';
 import ISO6391 from 'iso-639-1';
 import MenuItem from 'material-ui/MenuItem';
 import SelectField from 'material-ui/SelectField';
-import { FloatingActionButton, Paper } from 'material-ui';
-import Add from 'material-ui/svg-icons/content/add';
+import { RaisedButton, Drawer, List, ListItem } from 'material-ui';
 import { Card } from 'material-ui/Card';
 import * as $ from 'jquery';
-import ReactTooltip from 'react-tooltip';
 import Link from 'react-router-dom/es/Link';
 import colors from '../../Utils/colors';
 import CircleImage from '../CircleImage/CircleImage';
@@ -55,10 +53,10 @@ export default class BrowseSkill extends React.Component {
         });
     };
 
-    handleGroupChange = (event, index, value) => {
+    handleGroupChange = (value) => {
         this.setState({groupValue: value}, function () {
-        console.log(this.state);
-        this.loadCards();
+            console.log(this.state);
+            this.loadCards();
         });
     };
 
@@ -239,11 +237,6 @@ export default class BrowseSkill extends React.Component {
     };
 
     render() {
-
-        const style = {
-            width: '100%',
-            padding: '10px'
-        };
         let skillDisplay;
 
         if( !this.state.skills.length && this.state.skillsLoaded ) {
@@ -261,90 +254,87 @@ export default class BrowseSkill extends React.Component {
             <div>
                 <StaticAppBar {...this.props} />
                 <div style={styles.container}>
-                    <Paper style={style} zDepth={1}>
-                        <div style={styles.center}>
-                            <SelectField
-                                disabled={this.state.groupSelect}
-                                floatingLabelText='Category'
-                                value={this.state.groupValue}
-                                floatingLabelFixed={false}
-                                onChange={this.handleGroupChange}
-                                className='select'
-                                listStyle={{
-                                    top: '100px'
-                                }}
-                                selectedMenuItemStyle={{
-                                    color: colors.header
-                                }}
-                                underlineFocusStyle={{
-                                    color: colors.header
+                    <Drawer zDepth={1} containerStyle={styles.sideBar}>
+                        <RaisedButton
+                            backgroundColor={colors.fabButton}
+                            fullWidth={true}
+                            href={'/skillCreator'}
+                            label={'Create Skill'}
+                            labelStyle={styles.createSkillButton}
+                            style={{ marginBottom: '24px' }}
+                        />
+                        <h2 style={styles.sideBarHeading}>Preferences</h2>
+                        <SelectField
+                            disabled={this.state.languageSelect}
+                            floatingLabelText='Language'
+                            value={this.state.languageValue}
+                            floatingLabelFixed={false}
+                            onChange={this.handleLanguageChange}
+                            listStyle={{
+                                top: '100px'
+                            }}
+                            selectedMenuItemStyle={{
+                                color: colors.header
+                            }}
+                            style={styles.sideBarItem}
+                            underlineFocusStyle={{
+                                color: colors.header
 
-                                }}
-                                style={{ width: 300 }}
-                            >
-                                {groups}
-                            </SelectField>
-                            <SelectField
-                                disabled={this.state.languageSelect}
-                                floatingLabelText='Language'
-                                value={this.state.languageValue}
-                                floatingLabelFixed={false}
-                                onChange={this.handleLanguageChange}
-                                className='select'
-                                listStyle={{
-                                    top: '100px'
-                                }}
-                                selectedMenuItemStyle={{
-                                    color: colors.header
-                                }}
-                                underlineFocusStyle={{
-                                    color: colors.header
+                            }}
+                        >
+                        {languages}
+                        </SelectField>
+                        <SelectField
+                            floatingLabelText='Filter'
+                            value={this.state.filter}
+                            floatingLabelFixed={false}
+                            onChange={this.handleFilterChange}
+                            listStyle={{
+                                top: '100px'
+                            }}
+                            style={styles.sideBarItem}
+                            selectedMenuItemStyle={{
+                                color: colors.header
+                            }}
+                            underlineFocusStyle={{
+                                color: colors.header
 
-                                }}
-                            >
-                            {languages}
-                            </SelectField>
-                            <SelectField
-                                floatingLabelText='Filter'
-                                value={this.state.filter}
-                                floatingLabelFixed={false}
-                                onChange={this.handleFilterChange}
-                                className='select'
-                                listStyle={{
-                                    top: '100px'
-                                }}
-                                selectedMenuItemStyle={{
-                                    color: colors.header
-                                }}
-                                underlineFocusStyle={{
-                                    color: colors.header
-
-                                }}
-                            >
+                            }}
+                        >
                             <MenuItem
-                            value={'&applyFilter=true&filter_name=ascending&filter_type=lexicographical'}
-                            key={'&applyFilter=true&filter_name=ascending&filter_type=lexicographical'}
-                            primaryText={'A-Z'} />
-                           <MenuItem
-                            value={'&applyFilter=true&filter_name=descending&filter_type=lexicographical'}
-                            key={'&applyFilter=true&filter_name=descending&filter_type=lexicographical'}
-                            primaryText={'Z-A'} />
-                            </SelectField>
-                            <div>
-                            <Link to='/skillCreator'>
-                                <FloatingActionButton data-tip='Create Skill'
-                                    backgroundColor={colors.fabButton} className='select'>
-                                    <Add />
-                                </FloatingActionButton>
-                                <ReactTooltip  effect='solid' place='bottom'/>
-                            </Link>
-                            </div>
-                        </div>
-
-                    </Paper>
+                                value={'&applyFilter=true&filter_name=ascending&filter_type=lexicographical'}
+                                key={'&applyFilter=true&filter_name=ascending&filter_type=lexicographical'}
+                                primaryText={'A-Z'} />
+                            <MenuItem
+                                value={'&applyFilter=true&filter_name=descending&filter_type=lexicographical'}
+                                key={'&applyFilter=true&filter_name=descending&filter_type=lexicographical'}
+                                primaryText={'Z-A'} />
+                        </SelectField>
+                        <h2 style={styles.sideBarHeading}>Show results for</h2>
+                        <List>
+                            {groups.map(({ key }) => {
+                                let liStyle = { padding: '12px 6px' };
+                                const selected = key === this.state.groupValue;
+                                if (selected) {
+                                    liStyle.color = colors.header;
+                                }
+                                return (
+                                    <ListItem
+                                        disabled={this.state.groupSelect || selected}
+                                        key={key}
+                                        value={key}
+                                        primaryText={key}
+                                        onClick={() => {
+                                            !selected && this.handleGroupChange(key)
+                                        }}
+                                        innerDivStyle={liStyle}
+                                    />
+                                );
+                            })}
+                        </List>
+                    </Drawer>
 
                     <div style={{
-                        marginTop: '20px',
                         marginBottom: '40px',
                         textAlign: 'justify',
                         fontSize: '0.1px',
