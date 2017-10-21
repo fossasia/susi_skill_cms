@@ -21,6 +21,7 @@ import Cookies from 'universal-cookie';
 import Icon from 'antd/lib/icon';
 import notification from 'antd/lib/notification';
 import SkillEditor from '../SkillEditor/SkillEditor';
+import urls from '../../Utils/urls';
 
 const cookies = new Cookies();
 
@@ -195,7 +196,7 @@ class SkillRollBack extends Component {
       var settings = {
           'async': true,
           'crossDomain': true,
-          'url': 'https://api.susi.ai/cms/modifySkill.json',
+          'url': urls.API_URL + '/cms/modifySkill.json',
           'method': 'POST',
           'processData': false,
           'contentType': false,

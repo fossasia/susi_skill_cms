@@ -22,6 +22,7 @@ import Settings from 'material-ui/svg-icons/action/settings';
 import { Link } from 'react-router-dom';
 import susiWhite from '../images/SUSIAI-white.png';
 import colors from '../../Utils/colors';
+import urls from '../../Utils/colors';
 import $ from 'jquery';
 import './StaticAppBar.css';
 // import ListUser from '../Admin/ListUser/ListUser';
@@ -82,7 +83,7 @@ class StaticAppBar extends Component {
 
         window.addEventListener('scroll', this.handleScroll);
         let url;
-        url = 'https://api.susi.ai/aaa/showAdminService.json?access_token=' + cookies.get('loggedIn');
+        url = urls.API_URL + '/aaa/showAdminService.json?access_token=' + cookies.get('loggedIn');
         $.ajax({
             url: url,
             dataType: 'jsonp',

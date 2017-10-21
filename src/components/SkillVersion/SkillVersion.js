@@ -18,6 +18,7 @@ import Icon from 'antd/lib/icon';
 import $ from 'jquery';
 
 import colors from '../../Utils/colors';
+import urls from '../../Utils/urls';
 class SkillVersion extends Component {
     constructor(props) {
         super(props);
@@ -39,7 +40,7 @@ class SkillVersion extends Component {
     }
 
     componentDidMount(){
-        let commitHistoryBaseURL = 'https://api.susi.ai/cms/getSkillHistory.json';
+        let commitHistoryBaseURL = urls.API_URL + '/cms/getSkillHistory.json';
         let commitHistoryURL = commitHistoryBaseURL +
             '?model=' + this.state.skillMeta.modelValue +
             '&group=' + this.state.skillMeta.groupValue +

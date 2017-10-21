@@ -21,6 +21,7 @@ import * as $ from 'jquery';
 import { Paper } from 'material-ui';
 import Diff from 'react-diff';
 import './SkillHistory.css';
+import urls from '../../Utils/urls';
 
 class SkillHistory extends Component {
     constructor(props) {
@@ -61,7 +62,7 @@ class SkillHistory extends Component {
     }
 
     componentDidMount(){
-      let commitHistoryBaseURL = 'https://api.susi.ai/cms/getSkillHistory.json';
+      let commitHistoryBaseURL = urls.API_URL + '/cms/getSkillHistory.json';
       let commitHistoryURL = commitHistoryBaseURL +
                             '?model=' + this.state.skillMeta.modelValue +
                             '&group=' + this.state.skillMeta.groupValue +

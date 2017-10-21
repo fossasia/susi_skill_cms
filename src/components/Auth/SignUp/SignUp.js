@@ -10,6 +10,7 @@ import PropTypes from 'prop-types';
 import { addUrlProps, UrlQueryParamTypes } from 'react-url-query';
 import zxcvbn from 'zxcvbn';
 import colors from '../../../Utils/colors';
+import urls from '../../../Utils/urls';
 
 const urlPropsQueryConfig = {
     token: { type: UrlQueryParamTypes.string },
@@ -190,7 +191,7 @@ class SignUp extends Component {
 
     handleSubmit = (event) => {
         event.preventDefault();
-        let BASE_URL ='https://api.susi.ai';
+        let BASE_URL =urls.API_URL;
 
         let signupEndPoint =
             BASE_URL+'/aaa/signup.json?signup=' + this.state.email +
