@@ -42,9 +42,9 @@ const styles = {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        flexDirection: 'column',
+        flexDirection: 'row',
         width: '100%',
-        padding: '80px 30px 30px',
+        padding: '80px 30px 30px 340px',
     },
     propContainer: {
         width: 100,
@@ -99,7 +99,27 @@ const styles = {
         marginLeft: '15px',
         verticalAlign: 'middle',
         display: 'block'
-    }
+    },
+    sideBar: {
+        position: 'fixed',
+        width: '300px',
+        left: '24px',
+        padding: '80px 16px 32px',
+        zIndex: '1',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'flex-start',
+    },
+    sideBarItem: {
+        width: '100%',
+    },
+    sideBarHeading: {
+        margin: '8px 0 0',
+    },
+    createSkillButton: {
+        color: '#fff',
+        textTransform: 'uppercase',
+    },
 };
 
 export default styles;
