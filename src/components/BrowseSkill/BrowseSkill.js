@@ -11,7 +11,6 @@ import ReactTooltip from 'react-tooltip';
 import Link from 'react-router-dom/es/Link';
 import colors from '../../Utils/colors';
 import CircleImage from '../CircleImage/CircleImage';
-import './BrowseSkill.css';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import urls from '../../Utils/urls';
 const groups = [];
@@ -270,7 +269,7 @@ export default class BrowseSkill extends React.Component {
                                 value={this.state.groupValue}
                                 floatingLabelFixed={false}
                                 onChange={this.handleGroupChange}
-                                className='select'
+                                style={styles.selection}
                                 listStyle={{
                                     top: '100px'
                                 }}
@@ -279,9 +278,7 @@ export default class BrowseSkill extends React.Component {
                                 }}
                                 underlineFocusStyle={{
                                     color: colors.header
-
                                 }}
-                                style={{ width: 300 }}
                             >
                                 {groups}
                             </SelectField>
@@ -291,7 +288,7 @@ export default class BrowseSkill extends React.Component {
                                 value={this.state.languageValue}
                                 floatingLabelFixed={false}
                                 onChange={this.handleLanguageChange}
-                                className='select'
+                                style={styles.select}
                                 listStyle={{
                                     top: '100px'
                                 }}
@@ -300,7 +297,6 @@ export default class BrowseSkill extends React.Component {
                                 }}
                                 underlineFocusStyle={{
                                     color: colors.header
-
                                 }}
                             >
                             {languages}
@@ -319,26 +315,26 @@ export default class BrowseSkill extends React.Component {
                                 }}
                                 underlineFocusStyle={{
                                     color: colors.header
-
                                 }}
                             >
                             <MenuItem
                             value={'&applyFilter=true&filter_name=ascending&filter_type=lexicographical'}
                             key={'&applyFilter=true&filter_name=ascending&filter_type=lexicographical'}
                             primaryText={'A-Z'} />
-                           <MenuItem
+                            <MenuItem
                             value={'&applyFilter=true&filter_name=descending&filter_type=lexicographical'}
                             key={'&applyFilter=true&filter_name=descending&filter_type=lexicographical'}
                             primaryText={'Z-A'} />
                             </SelectField>
                             <div>
-                            <Link to='/skillCreator'>
-                                <FloatingActionButton data-tip='Create Skill'
-                                    backgroundColor={colors.fabButton} className='select'>
-                                    <Add />
-                                </FloatingActionButton>
-                                <ReactTooltip  effect='solid' place='bottom'/>
-                            </Link>
+                                <Link to='/skillCreator'>
+                                    <FloatingActionButton data-tip='Create Skill'
+                                        backgroundColor={colors.fabButton}
+                                        style={styles.select}>
+                                        <Add />
+                                    </FloatingActionButton>
+                                    <ReactTooltip  effect='solid' place='bottom'/>
+                                </Link>
                             </div>
                         </div>
 
