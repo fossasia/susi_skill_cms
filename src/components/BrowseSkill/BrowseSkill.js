@@ -155,6 +155,7 @@ export default class BrowseSkill extends React.Component {
             success: function (data) {
               console.log(data)
                 let skills = Object.keys(data.filteredData);
+                // eslint-disable-next-line
                 skills = skills.map((el, i) => {
                     let skill = data.filteredData[el];
                     let skill_name, examples, image, description;
