@@ -89,6 +89,13 @@ const styles = {
         background: '#fff',
         height: '130px'
     },
+    select: {
+        margin: '0px 10px'
+    },
+    selection: {
+        margin: '0px 10px',
+        width: '300px'
+    },
     titleStyle:{
         textAlign: 'left',
         fontStyle: 'italic',
