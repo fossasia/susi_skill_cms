@@ -20,7 +20,8 @@ const styles = {
         margin: '4px 0'
     },
     details:{
-        paddingLeft:'10px'
+        paddingLeft:'10px',
+        height:'100px'
     },
     image:{
         maxWidth: '100%',
@@ -56,7 +57,7 @@ const styles = {
     },
     row: {
         width: 280,
-        height: 250,
+        height: 270,
         minHeight:'200px',
         margin:'10px',
         overflow:'hidden',
@@ -106,6 +107,32 @@ const styles = {
         marginLeft: '15px',
         verticalAlign: 'middle',
         display: 'block'
+    },
+    rating: {
+        positive: 'relative',
+        marginRight: '10px',
+        float: 'right'
+    },
+    positive: {
+        fontSize: '16px',
+        color: '#4CAF50',
+    },
+    negative: {
+        fontSize: '16px',
+        color: '#F44336',
+        marginLeft: '10px'
+    },
+    like: {
+        width: '20px',
+        height: '20px',
+        paddingTop: '4px',
+        color: '#4CAF50'
+    },
+    dislike: {
+        width: '20px',
+        height: '20px',
+        paddingTop: '4px',
+        color: '#F44336'
     }
 };
 
