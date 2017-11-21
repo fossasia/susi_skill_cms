@@ -321,7 +321,7 @@ export default class BrowseSkill extends React.Component {
                             {languages}
                             </SelectField>
                             <SelectField
-                                floatingLabelText='Filter'
+                                floatingLabelText='Sort by'
                                 value={this.state.filter}
                                 floatingLabelFixed={false}
                                 onChange={this.handleFilterChange}
@@ -339,11 +339,11 @@ export default class BrowseSkill extends React.Component {
                             <MenuItem
                             value={'&applyFilter=true&filter_name=ascending&filter_type=lexicographical'}
                             key={'&applyFilter=true&filter_name=ascending&filter_type=lexicographical'}
-                            primaryText={'A-Z'} />
+                            primaryText={'A-Z'} label={'Name'} />
                             <MenuItem
                             value={'&applyFilter=true&filter_name=descending&filter_type=lexicographical'}
                             key={'&applyFilter=true&filter_name=descending&filter_type=lexicographical'}
-                            primaryText={'Z-A'} />
+                            primaryText={'Z-A'} label={'Name'} />
                             </SelectField>
                             <div>
                                 <Link to='/skillCreator'>
