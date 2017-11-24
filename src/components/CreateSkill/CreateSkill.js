@@ -79,21 +79,20 @@ export default class CreateSkill extends React.Component {
     onChange(newValue) {
         const match = newValue.match(/^::image\s(.*)$/m);
         const nameMatch = newValue.match(/^::name\s(.*)$/m);
-        console.log(nameMatch);
+
         if(nameMatch) {
             self.setState({
                 expertValue: nameMatch[1]
             });
-            console.log(self.state.expertValue)
+
         }
 
         if(match!==null) {
-            console.log(match[1]);
 
             self.setState({
                 imageUrl: match[1]
             });
-            console.log(new RegExp(/images\/\w+\.\w+/g).test(self.state.imageUrl));
+
         }
         self.updateCode(newValue)
     }
@@ -109,9 +108,10 @@ export default class CreateSkill extends React.Component {
                 success: function (data) {
                     data = data.groups;
                     data.sort();
+
                     for (let i = 0; i < data.length; i++) {
                         groups.push(<MenuItem
-                                      value={i}
+                                      value={data[i]}
                                       key={data[i]}
                                       primaryText={`${data[i]}`}
                                     />);
@@ -128,7 +128,7 @@ export default class CreateSkill extends React.Component {
     };
 
     handleExpertChange = (event) => {
-        console.log(event.target.value);
+
         const expertValue = event.target.value;
         const code = this.state.code.replace(/^::name\s(.*)$/m, `::name ${expertValue}`);
         this.setState({
@@ -139,7 +139,7 @@ export default class CreateSkill extends React.Component {
     };
 
     handleCommitMessageChange = (event) => {
-        console.log(event.target.value);
+
         this.setState({
             commitMessage: event.target.value,
         });
@@ -217,8 +217,8 @@ export default class CreateSkill extends React.Component {
             });
             return 0;
         }
-        console.log(this.state.imageUrl);
-        if(!new RegExp(/images\/\w+\.\w+/g).test(self.state.imageUrl)){
+
+        if(!new RegExp(/.+\.\w+/g).test(self.state.imageUrl)){
             notification.open({
                 message: 'Error Processing your Request',
                 description: 'image must be in format of images/imageName.jpg',
@@ -241,8 +241,8 @@ export default class CreateSkill extends React.Component {
 
         let form = new FormData();
         form.append('model', 'general');
-        form.append('group', groups[this.state.groupValue].key);
-        form.append('language', languages[this.state.languageValue].key);
+        form.append('group', this.state.groupValue);
+        form.append('language', this.state.languageValue);
         form.append('skill', this.state.expertValue.trim().replace(/\s/g,'_'));
         form.append('image', this.state.file);
         form.append('content', this.state.code);
@@ -260,23 +260,32 @@ export default class CreateSkill extends React.Component {
             'data': form
         };
 
+        /*
+        Uncomment to check the form values
+        console.log(this.state.groupValue);
+        console.log(this.state.languageValue);
+        console.log(this.state.expertValue.trim().replace(/\s/g,'_'));
+        console.log(this.state.file);
+        console.log(this.state.code);
+        console.log(this.state.imageUrl.replace('images/',''));
+        */
+
         $.ajax(settings)
             .done(function (response) {
                 self.setState({
                     loading:false
                 });
                 let   data = JSON.parse(response);
-                console.log(response);
                 if(data.accepted===true){
                     self.props.history.push({
-                        pathname: '/' + groups[self.state.groupValue].key  +
+                        pathname: '/' + self.state.groupValue  +
                                   '/' + self.state.expertValue.trim().replace(/\s/g,'_') +
-                                  '/' +languages[self.state.languageValue].key,
+                                  '/' + self.state.languageValue,
                         state: {
                             from_upload: true,
                             expertValue:  self.state.expertValue,
-                            groupValue: groups[self.state.groupValue].key ,
-                            languageValue: languages[self.state.languageValue].key,
+                            groupValue: self.state.groupValue ,
+                            languageValue: self.state.languageValue,
                         }});
 
                     notification.open({
@@ -325,8 +334,17 @@ export default class CreateSkill extends React.Component {
         this.setState({
             file:file
         });
-        console.log(file) // Would see a path?
-        // TODO: concat files for setState
+        // console.log(file) // Would see a path?
+        let imgUrl = file.name ;
+        this.setState({
+            imageUrl:imgUrl
+        });
+        // console.log(this.state.imageUrl);
+        const pattern = /^::image\s(.*)$/m ;
+        const code = this.state.code.replace(pattern,`::image images/${imgUrl}`);
+        this.setState({
+            code
+        });
     };
 
     render() {
