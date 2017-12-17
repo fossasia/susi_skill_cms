@@ -34,4 +34,4 @@ Our chat channel is on gitter here: https://gitter.im/fossasia/susi_server
 
 ### Learn the skill language
 
-Read [SUSI Skill language](./docs/Susi_Skill_Language_Tutorial.md) Learn how to add your own AI skills.
+Read [SUSI Skill language](./docs/Skill_Tutorial.md) Learn how to add your own AI skills.
