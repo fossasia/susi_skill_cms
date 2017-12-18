@@ -59,8 +59,8 @@ class Settings extends React.Component {
         }
     }
     componentDidMount(){
-        let state = this.state;
-        let url = BASE_URL+'/aaa/listUserSettings.json?'
+        var state = this.state;
+        var url = BASE_URL+'/aaa/listUserSettings.json?'
             +'access_token='+cookies.get('loggedIn');
         // For Anonymous Users
         if(cookies.get('loggedIn')===null||
@@ -82,7 +82,13 @@ class Settings extends React.Component {
                     jsonp: 'callback',
                     crossDomain: true,
                     success: function (data) {
-                        state.theme = data.settings.theme;
+                        if(!data.settings){
+                            debugger;
+                            state.theme = "light";
+                        }
+                        else{
+                            state.theme = data.settings.theme;
+                        }
                         this.setState(state);
                     }.bind(this)
             });
