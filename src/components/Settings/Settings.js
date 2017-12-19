@@ -59,8 +59,8 @@ class Settings extends React.Component {
         }
     }
     componentDidMount(){
-        var state = this.state;
-        var url = BASE_URL+'/aaa/listUserSettings.json?'
+        let state = this.state;
+        let url = BASE_URL+'/aaa/listUserSettings.json?'
             +'access_token='+cookies.get('loggedIn');
         // For Anonymous Users
         if(cookies.get('loggedIn')===null||
@@ -84,7 +84,7 @@ class Settings extends React.Component {
                     success: function (data) {
                         if(!data.settings){
                             debugger;
-                            state.theme = "light";
+                            state.theme = 'light';
                         }
                         else{
                             state.theme = data.settings.theme;
