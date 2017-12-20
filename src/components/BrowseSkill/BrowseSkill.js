@@ -336,14 +336,14 @@ export default class BrowseSkill extends React.Component {
                                     color: colors.header
                                 }}
                             >
-                            <MenuItem
-                            value={'&applyFilter=true&filter_name=ascending&filter_type=lexicographical'}
-                            key={'&applyFilter=true&filter_name=ascending&filter_type=lexicographical'}
-                            primaryText={'A-Z'} label={'Name'} />
-                            <MenuItem
-                            value={'&applyFilter=true&filter_name=descending&filter_type=lexicographical'}
-                            key={'&applyFilter=true&filter_name=descending&filter_type=lexicographical'}
-                            primaryText={'Z-A'} label={'Name'} />
+                                <MenuItem
+                                value={'&applyFilter=true&filter_name=ascending&filter_type=lexicographical'}
+                                key={'&applyFilter=true&filter_name=ascending&filter_type=lexicographical'}
+                                primaryText={'A-Z'} label={'Name (A-Z)'} />
+                                <MenuItem
+                                value={'&applyFilter=true&filter_name=descending&filter_type=lexicographical'}
+                                key={'&applyFilter=true&filter_name=descending&filter_type=lexicographical'}
+                                primaryText={'Z-A'} label={'Name (Z-A)'} />
                             </SelectField>
                             <div>
                                 <Link to='/skillCreator'>
