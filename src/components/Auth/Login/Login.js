@@ -78,9 +78,9 @@ class Login extends Component {
                 jsonpCallback: 'p',
                 jsonp: 'callback',
                 headers: {
-					 	'Accept': 'application/json, application/xml, text/play, text/html',
-					 	'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
-					 },
+                        'Accept': 'application/json, application/xml, text/play, text/html',
+                        'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+                     },
                 crossDomain: true,
                 success: function (response) {
                     cookies.set('serverUrl', BASE_URL, { path: '/' });
@@ -95,7 +95,7 @@ class Login extends Component {
                     state.time = time;
                     this.setState(state);
                     this.handleOnSubmit(email, accessToken, time);
-                    let msg = 'You are loggedin';
+                    let msg = 'You are logged in';
                     state.msg = msg;
                     this.setState(state);
                 }.bind(this),
@@ -262,7 +262,7 @@ class Login extends Component {
                                 margin: '7px 0'
                             }}>OR</h4>
                             <div>
-                                <h4>If you do not have an account, Please SignUp</h4>
+                                <h4>If you do not have an account, please sign up</h4>
                                 <RaisedButton
                                     label='SignUp'
                                     onTouchTap={this.handleSignUp}
