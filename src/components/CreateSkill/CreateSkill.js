@@ -200,15 +200,6 @@ export default class CreateSkill extends React.Component {
 
     saveClick = () => {
 
-
-        if(!cookies.get('loggedIn')) {
-            notification.open({
-                message: 'Not logged In',
-                description: 'Please login and then try to create/edit a skill',
-                icon: <Icon type='close-circle' style={{ color: '#f44336' }} />,
-            });
-            return 0;
-        }
         if(groups.length===0||languages.length===0||this.state.expertValue===null){
             notification.open({
                 message: 'Error Processing your Request',
@@ -347,11 +338,121 @@ export default class CreateSkill extends React.Component {
         });
     };
 
-    render() {
+    render() {        
         const style = {
             width: '100%',
             padding: '10px'
         };
+        if(!cookies.get('loggedIn')) {
+            const titleStyle = {
+                textAlign:'center',
+                fontWeight:'bold',
+                width: '100%',
+                marginBottom: '30px',
+                fontSize: '20px',
+                marginTop: '20px'
+            }
+            return (
+                <div>
+                <StaticAppBar {...this.props} />
+                <div style={styles.home}>
+
+                    <p style={titleStyle}>YOU DO NOT HAVE PERMISSION TO EDIT THIS PAGE, SINCE YOU AREN'T LOGGED IN.</p>
+                    <Paper style={style} zDepth={1}>
+                        <div style={styles.center}>
+                            <div style={styles.dropdownDiv}>
+                                <SelectField
+                                    floatingLabelText="Category"
+                                    style={{ width: 300,marginLeft:10,marginRight:10 }}
+                                    value={this.state.groupValue}
+                                    onChange={this.handleGroupChange}
+                                >
+                                    {groups}
+                                </SelectField>
+                                <SelectField
+                                    floatingLabelText='Language'
+                                    disabled={this.state.languageSelect}
+                                    style={{ width:'125px',marginLeft:10,marginRight:10 }}
+                                    value={this.state.languageValue}
+                                    onChange={this.handleLanguageChange}
+                                >
+                                    {languages}
+                                </SelectField>
+                                <TextField
+                                    disabled={this.state.expertSelect}
+                                    floatingLabelText='Skill name'
+                                    floatingLabelFixed={false}
+                                    value={this.state.expertValue}
+                                    hintText='Skill name'
+                                    style={{marginLeft:10,marginRight:10}}
+                                    onChange={this.handleExpertChange}
+                                />
+                                { this.state.showImage &&  <img alt='preview' id='target' style={{width:60,height:60,borderRadius:'50%',marginRight:20,border: 0}}src={this.state.image}/> }
+                                <RaisedButton
+                                    label='Choose an Image'
+                                    labelPosition='before'
+                                    backgroundColor={colors.header}
+                                    containerElement='label'
+                                    labelColor='#fff'
+                                >
+                                    <input type='file' style={{
+                                        cursor: 'pointer',
+                                        position: 'absolute',
+                                        top: 0,
+                                        bottom: 0,
+                                        right: 0,
+                                        left: 0,
+                                        width: '100%',
+                                        opacity: 0,
+                                    }}
+                                           ref={(c) => { this.file = c; }}
+                                           name='user[image]'
+                                           multiple='false'
+                                           onChange={this._onChange}/>
+                                </RaisedButton>
+                            </div>
+                        </div>
+                    </Paper>
+
+                    <div style={styles.codeEditor}>
+                        {this.state.loading && <LinearProgress mode='indeterminate' color={colors.header} />}
+                        <div style={styles.toolbar}>
+                            <span style={styles.button}><Icon type='cloud-download' style={styles.icon}/>Download as text</span>
+                            <span style={styles.button}>Size <SelectField
+                                style={{ width:'60px' }}
+                                onChange={this.handleFontChange}
+                            >
+                            {fontsizes}
+                        </SelectField></span>
+
+                            <span style={styles.button}>Theme <SelectField
+                                style={{ width:'150px' }}
+                                onChange={this.handleThemeChange}
+                            >
+                            {codeEditorThemes}
+                        </SelectField></span>
+
+                        </div>
+                        <AceEditor
+                            mode='java'
+                            theme={this.state.editorTheme}
+                            width='100%'
+                            fontSize={this.state.fontSizeCode}
+                            height= '400px'
+                            value={this.state.code}
+                            showPrintMargin={false}
+                            name='skill_code_editor'
+                            readOnly={true}
+                            onChange={this.onChange}
+                            scrollPastEnd={false}
+                            wrapEnabled={true}
+                            editorProps={{$blockScrolling: true}}
+                        />
+                    </div>
+                </div>
+            </div>
+            );
+        }
         return (
             <div>
                 <StaticAppBar {...this.props} />
