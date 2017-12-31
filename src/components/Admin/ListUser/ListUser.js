@@ -3,6 +3,7 @@ import './ListUser.css';
 import $ from 'jquery';
 import Cookies from 'universal-cookie'
 import Table from 'antd/lib/table';
+import urls from '../../../Utils/urls.js'
 
 const cookies = new Cookies();
 
@@ -78,7 +79,7 @@ export default class ListUser extends Component {
     componentDidMount() {
         const pagination = { ...this.state.pagination };
         let url;
-        url = 'https://api.susi.ai/aaa/showAdminService.json?access_token=' + cookies.get('loggedIn');
+        url = `${urls.API_URL}/aaa/showAdminService.json?access_token=` + cookies.get('loggedIn');
         $.ajax({
             url: url,
             dataType: 'jsonp',
@@ -88,7 +89,7 @@ export default class ListUser extends Component {
             success: function (response) {
                 console.log(response.showAdmin);
                 if (response.showAdmin) {
-                    let getPagesUrl = 'https://api.susi.ai/aaa/getUsers.json?access_token=' + cookies.get('loggedIn')
+                    let getPagesUrl = `${urls.API_URL}/aaa/getUsers.json?access_token=` + cookies.get('loggedIn')
                         + '&getUserCount=true';
                     $.ajax({
                         url: getPagesUrl,
@@ -134,7 +135,7 @@ export default class ListUser extends Component {
         else{
             page =1;
         }
-        url = 'https://api.susi.ai/aaa/getUsers.json?access_token=' + cookies.get('loggedIn')
+        url = urls.API_URL + '/aaa/getUsers.json?access_token=' + cookies.get('loggedIn')
             + '&page='+page;
         $.ajax({
             url: url,
