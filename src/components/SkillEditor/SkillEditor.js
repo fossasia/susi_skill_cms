@@ -593,6 +593,61 @@ class SkillEditor extends Component {
         if(this.props.hasOwnProperty('showTopBar')){
           showTopBar = this.props.showTopBar;
         }
+        if(!cookies.get('loggedIn')){
+            return (
+                <div>
+                    <StaticAppBar {...this.props} />
+                    <div style={styles.home}>
+                        <p style={styles.titleStyle}>
+                            YOU DO NOT HAVE PERMISSION TO EDIT THIS PAGE,
+                            SINCE YOU ARE NOT LOGGED IN.
+                        </p>
+                        <p style={styles.description}>
+                            The code is shown below in a read only mode.
+                        </p>
+                        <div style={styles.codeEditor}>
+
+                            <div style={styles.toolbar}>
+                                <span style={styles.button}>
+                                  <Icon type='cloud-download'
+                                        style={styles.icon} />
+                                  Download as text
+                                </span>
+                                <span style={styles.button}>Size <SelectField
+                                    style={{ width: '60px' }}
+                                    onChange={this.handleFontChange}
+                                >
+                                    {fontsizes}
+                                </SelectField></span>
+
+                                <span style={styles.button}>Theme <SelectField
+                                    style={{ width: '150px' }}
+                                    onChange={this.handleThemeChange}
+                                >
+                                    {codeEditorThemes}
+                                </SelectField></span>
+
+                            </div>
+                            <AceEditor
+                                mode='java'
+                                theme={this.state.editorTheme}
+                                width='100%'
+                                fontSize={this.state.fontSizeCode}
+                                height='400px'
+                                value={this.state.code}
+                                showPrintMargin={false}
+                                name='skill_code_editor'
+                                onChange={this.handleChange.bind(this)}
+                                scrollPastEnd={false}
+                                readOnly={true}
+                                wrapEnabled={true}
+                                editorProps={{ $blockScrolling: true }}
+                            />
+                        </div>
+                    </div>
+                </div>
+            );
+        }
         return (
             <div>
                 <StaticAppBar {...this.props} />
@@ -802,9 +857,21 @@ const styles = {
         alignItems: 'center',
         justifyContent: 'center',
     },
+    titleStyle: {
+        textAlign:'center',
+        fontWeight:'bold',
+        marginBottom: '30px',
+        fontSize: '20px',
+        marginTop: '20px'
+    },
+    description: {
+        textAlign:'center',
+        fontSize: '15px',
+        marginTop: '30px'
+    },
     codeEditor: {
         width: '100%',
-        marginTop: '20px'
+        marginTop: '50px'
     },
     dropdownDiv: {
         display: 'flex',

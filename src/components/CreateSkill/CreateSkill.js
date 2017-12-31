@@ -352,6 +352,19 @@ export default class CreateSkill extends React.Component {
             width: '100%',
             padding: '10px'
         };
+        if(!cookies.get('loggedIn'))
+        {
+            return (
+                <div>
+                    <StaticAppBar {...this.props} />
+                    <div>
+                        <p style={styles.loggedInError}>
+                            Please login to create a skill.
+                        </p>
+                    </div>
+                </div>
+            );
+        }
         return (
             <div>
                 <StaticAppBar {...this.props} />
@@ -503,6 +516,14 @@ const styles = {
         alignItems: 'stretch',
         padding: '0 25px',
         fontSize: '14px',
+    },
+    loggedInError: {
+        textAlign:'center',
+        textTransform:'uppercase',
+        fontWeight:'bold',
+        marginBottom: '100px',
+        fontSize: '50px',
+        marginTop: '300px'
     },
     button: {
         display: 'flex',
