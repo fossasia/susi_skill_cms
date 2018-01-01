@@ -32,6 +32,11 @@ Our chat channel is on gitter here: https://gitter.im/fossasia/susi_server
 * **Step 5:** Build locally by running : ```$ npm run build ```
 * **Step 6:** To deploy at a url use : ```$ npm run deploy ```
 
+### For deploying with [Surge](https://surge.sh/):
+
+Surge will automatically generate deployment link whenever a pull request passes Travis CI. 
+
+
 ### Learn the skill language
 
 Read [SUSI Skill language](./docs/Skill_Tutorial.md) Learn how to add your own AI skills.
