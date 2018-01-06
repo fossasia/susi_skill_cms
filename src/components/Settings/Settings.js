@@ -122,7 +122,6 @@ class Settings extends React.Component {
            'lineHeight': '56px'
         }
         var changed = this.checkThemeChange();
-        console.log(this.state.theme, this.state.initialTheme);
         return(
             <div>
               <StaticAppBar {...this.props} />
