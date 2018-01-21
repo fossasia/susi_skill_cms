@@ -17,7 +17,8 @@ class Settings extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            theme: 'light'
+            theme: 'light',
+            initialTheme: 'light'
         }
     }
     handleSelectChange= (event, index, value) => {
@@ -27,9 +28,17 @@ class Settings extends React.Component {
         this.props.history.push('/');
         window.location.reload();
     }
+    checkThemeChange = () => {
+        let changed = true;
+        if(this.state.initialTheme===this.state.theme) {
+            changed = false;
+        }
+        return changed;
+    }
     handleSubmit = () => {
         let vals = {
-            theme:this.state.theme
+            theme:this.state.theme,
+            initialTheme: this.state.theme
         }
 
         if(cookies.get('loggedIn')===null||
@@ -43,7 +52,8 @@ class Settings extends React.Component {
         else{
         // Send settings to server
         let url = BASE_URL+'/aaa/changeUserSettings.json?'
-          +'&access_token='+cookies.get('loggedIn')+'&count=1&key1=theme&value1='+this.state.theme
+          +'&access_token='+cookies.get('loggedIn')+'&count=2&key1=theme&value1='+this.state.theme
+          +'&key2=initialTheme&value2='+this.state.theme
         $.ajax({
                 url: url,
                 jsonpCallback: 'pa',
@@ -69,7 +79,8 @@ class Settings extends React.Component {
             if(settings!==undefined&&settings.hasOwnProperty('LocalStorage')){
               // Check if the settings are set in the cookie
                 this.setState({
-                    theme: settings.theme
+                    theme: settings.theme,
+                    initialTheme: settings.theme
                 });
             }
         }
@@ -110,6 +121,7 @@ class Settings extends React.Component {
             'marginBottom':'0px',
            'lineHeight': '56px'
         }
+        var changed = this.checkThemeChange();
         return(
             <div>
               <StaticAppBar {...this.props} />
@@ -130,6 +142,7 @@ class Settings extends React.Component {
               <RaisedButton
                 label='Save'
                 backgroundColor={colors.header}
+                disabled={!changed}
                 labelColor='#fff'
                 onClick={this.handleSubmit}
               />
