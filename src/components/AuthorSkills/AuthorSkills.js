@@ -27,9 +27,10 @@ const imageStyle = {
       border: 0
 };
 const githubProfile = {
-  height: 30,
-  width: 30,
+  height: 50,
+  width: 50,
   verticalAlign: 'middle',
+  borderRadius:100,
 };
 
 class AuthorSkills extends Component {
@@ -123,6 +124,19 @@ class AuthorSkills extends Component {
             fill: '#000',
             width: '100%'
         };
+      //  console.log(this.props.authorUrl);
+        let auhtorGitHubUrl=this.props.authorUrl;
+        let Username='';
+        let githubUsername='';
+        let githubGravatar='';
+        if (auhtorGitHubUrl) {
+          Username=auhtorGitHubUrl.split('/');
+          githubUsername=Username[3];
+          githubGravatar='https://avatars.githubusercontent.com/'+githubUsername+'?size=50';
+        }
+        else {
+          githubGravatar=github;
+        }
         return (
             <div>
                 <Dialog
@@ -132,7 +146,7 @@ class AuthorSkills extends Component {
                     contentStyle={{width: '50%',minWidth: '300px'}}
                     onRequestClose={this.props.close} >
                     <div style={headingStyle}>
-                        <h3>Skills by {this.props.author} <a href={this.props.authorUrl} ><img alt={'GitHub'} style={githubProfile} src={github}/></a></h3>
+                        <h3>Skills by {this.props.author} <a href={this.props.authorUrl} ><img alt={'GitHub'} style={githubProfile} src={githubGravatar}/></a></h3>
                     </div>
                     <div>
                         <Table
