@@ -109,7 +109,7 @@ class Settings extends React.Component {
     render() {
         const style = {
           width: '100%',
-          padding: '20px',
+          padding: '30px',
           textAlign: 'center',
           marginTop:'20px'
         };
@@ -138,7 +138,7 @@ class Settings extends React.Component {
                 <MenuItem value={'dark'} primaryText='Dark'  />
               </DropDownMenu>
               </div>
-              <br/>
+              <br/><br/>
               <RaisedButton
                 label='Save'
                 backgroundColor={colors.header}
