@@ -170,11 +170,20 @@ export default class BrowseSkill extends React.Component {
                         skill_name = 'Name not available';
                     }
                     if (skill.image) {
-                        image = 'https://raw.githubusercontent.com/fossasia/susi_skill_data/master/models/'
-                        + self.state.modelValue
-                        + '/' +self.state.groupValue
-                        + '/' + self.state.languageValue
-                        + '/' + skill.image;
+                        if(self.state.groupValue === 'Knowledge'){
+                            let img = skill.image;
+                            img = img.replace('images/', '');
+                            image = 'https://raw.githubusercontent.com/fossasia/susi_skill_data/master/models/'
+                            + self.state.modelValue
+                            + '/' +self.state.groupValue
+                            + '/id/images/language.png/' + img;
+                        } else {
+                            image = 'https://raw.githubusercontent.com/fossasia/susi_skill_data/master/models/'
+                            + self.state.modelValue
+                            + '/' +self.state.groupValue
+                            + '/' + self.state.languageValue
+                            + '/' + skill.image;
+                        }
                     }
                     else {
                         image = ''
