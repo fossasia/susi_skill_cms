@@ -137,10 +137,17 @@ class SkillListing extends Component {
     };
 
     updateData = (skillData) => {
-
-        this.setState({
-            imgUrl: 'https://raw.githubusercontent.com/fossasia/susi_skill_data/master/models/general/' + this.groupValue + '/' + this.languageValue + '/' + skillData.image
-        });
+        if(this.groupValue === 'Knowledge'){
+            let img = skillData.image;
+            img = img.replace('images/','');
+            this.setState({
+                imgUrl: 'https://raw.githubusercontent.com/fossasia/susi_skill_data/master/models/general/' + this.groupValue + '/id/images/language.png/' + img
+            });
+        } else {
+            this.setState({
+                imgUrl: 'https://raw.githubusercontent.com/fossasia/susi_skill_data/master/models/general/' + this.groupValue + '/' + this.languageValue + '/' + skillData.image
+            });
+        }
 
         defaultNullSkillList.forEach((data) => {
             this.setState({
