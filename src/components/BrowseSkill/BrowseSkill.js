@@ -279,7 +279,7 @@ export default class BrowseSkill extends React.Component {
         return (
             <div>
                 <StaticAppBar {...this.props} />
-                <div style={styles.container}>
+                <a name = "top"><div style={styles.container}>
                     <Paper style={style} zDepth={1}>
                         <div style={styles.center}>
                             <SelectField
@@ -373,7 +373,9 @@ export default class BrowseSkill extends React.Component {
                         </div>
                     </div>
                 </div>
-            </div>
+            </a>
+		<a href = "#top"><center>Back to top</center></a>
+	</div>
         );
     }
 }
