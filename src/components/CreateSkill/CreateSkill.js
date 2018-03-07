@@ -479,6 +479,7 @@ export default class CreateSkill extends React.Component {
                                     onChange={this.handleCommitMessageChange}
                                 />
                                 <RaisedButton label='Save' backgroundColor={colors.header} labelColor='#fff' style={{marginLeft:10}}  onTouchTap={this.saveClick} />
+				<a href="http://skills.susi.ai/"><RaisedButton label='Cancel' backgroundColor={colors.header} labelColor='#fff' style={{marginLeft:10}} /></a>
                             </Paper>
                     </div>
                 </div>
