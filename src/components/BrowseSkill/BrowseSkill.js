@@ -339,11 +339,11 @@ export default class BrowseSkill extends React.Component {
                             <MenuItem
                             value={'&applyFilter=true&filter_name=ascending&filter_type=lexicographical'}
                             key={'&applyFilter=true&filter_name=ascending&filter_type=lexicographical'}
-                            primaryText={'A-Z'} label={'Name'} />
+                            primaryText={'A-Z'} label={'A-Z'} />
                             <MenuItem
                             value={'&applyFilter=true&filter_name=descending&filter_type=lexicographical'}
                             key={'&applyFilter=true&filter_name=descending&filter_type=lexicographical'}
-                            primaryText={'Z-A'} label={'Name'} />
+                            primaryText={'Z-A'} label={'Z-A'} />
                             </SelectField>
                             <div>
                                 <Link to='/skillCreator'>
