@@ -1,27 +1,27 @@
 # Susi Skill Development Tutorial
 
-Do you want your own AI Skills for Susi? It's surprisingly easy to add more Skills to Susi.
+Do you want your own AI Skills for SUSI? It's surprisingly easy to add more Skills to SUSI.
 
 ## Getting Started
 
-It's easy, DON'T PANIC. You don't need to be a software developer to enhance Susi.
+It's easy, DON'T PANIC. You don't need to be a software developer to enhance SUSI.
 
 ### What you have to do
 
-We have a Susi Skill development environment based on an Etherpad. Are you unaware what an Etherpad is? It is a blank web page where you can just put in your text and everyone can collaborate.
+We have a SUSI Skill development environment based on an Etherpad. Are you unaware what an Etherpad is? It is a blank web page where you can just put in your text and everyone can collaborate.
 
 * open http://dream.susi.ai
 * name a dream (just pick a name for your tests in lower case letters)
 * the etherpad is filled with a welcome message, just delete the content completely
 
-ATTENTION: the Susi Dream zone is a TEMPORARY zone. We may clean up that place at any time. It is only for testing your new Susi Skills
-If you want your new Susi Skills to be permanent, send us a pull request, see [submitting_skills_to_git.md](submitting_skills_to_git.md) for a tutorial.
+ATTENTION: the Susi Dream zone is a TEMPORARY zone. We may clean up that place at any time. It is only for testing your new SUSI Skills
+If you want your new SUSI Skills to be permanent, send us a pull request, see [submitting_skills_to_git.md](submitting_skills_to_git.md) for a tutorial.
 
 ### Preparation to start testing
 
-To test the Susi Skills you are editing, you require the Susi Android Application (see: https://github.com/fossasia/susi_android ) or you can also test them online at http://susi.ai/chat
+To test the SUSI Skills you are editing, you require the Susi Android Application (see: https://github.com/fossasia/susi_android ) or you can also test them online at http://susi.ai/chat
 
-Within the Susi chat dialog, enter
+Within the SUSI chat dialog, enter
 
 ```
 dream <testname>
@@ -31,7 +31,7 @@ where `<testname>` is the name of the etherpad you just entered in http://dream.
 
 Now all Skills you enter in the dream zone are available instantly in your chat! That's easy, is it?
 
-To stop testing your new Susi Skills, write `stop dreaming`.
+To stop testing your new SUSI Skills, write `stop dreaming`.
 
 ### Skill Format
 ```
@@ -69,27 +69,27 @@ Therefore, we can access every expert with the 4-tuple
 
 In you dream test zone (the etherpad) write:
 ```
-# susi Skill tutorial playground
+# SUSI Skill tutorial playground
 roses are red
-susi is a hack
+SUSI is a hack
 ```
-This defines one simple intent: to answer on "roses are red" the phrase "susi is a hack". The other lines mean:
+This defines one simple intent: to answer on "roses are red" the phrase "SUSI is a hack". The other lines mean:
 * all lines starting with `#` are comment lines and are ignored.
 * all other text lines define Skills. Skills are separated by empty lines. Comment and section declaration modifiers also count as empty lines and separate Skills.
 
 Now you can test the new intent:
-* send the following query to Susi: "roses are red"
-* Susi will answer with "susi is a hack".
+* send the following query to SUSI: "roses are red"
+* SUSI will answer with "SUSI is a hack".
 The Skill file is just a text file where two lines which are not separated by an empty line represent a conversation pattern.
 You can actually add a third line to your file:
 ```
-# susi tutorial playground
+# SUSI tutorial playground
 ::prior
 roses are red
 susi is a hack
 skynet is back
 ```
-With that file, Susi would respond on "roses are red" the answer "susi is a hack" and on the query "susi is a hack" it would respond "skynet is back". Try it!
+With that file, SUSI would respond on "roses are red" the answer "SUSI is a hack" and on the query "SUSI is a hack" it would respond "skynet is back". Try it!
 
 ### Tutorial Level 1: Random Answers
 Skills without a deterministic behavior will create less predictable results.
@@ -102,7 +102,7 @@ Potatoes|Vegetables|Fish
 ```
 
 ### Tutorial Level 2: Query Alternatives
-Maybe you want that Susi responds to several different queries with the same answer. This can be
+Maybe you want that SUSI responds to several different queries with the same answer. This can be
 done very easy with Alternatives in the query line:
 ```
 Bonjour|Buenos días|Ciao
@@ -192,7 +192,7 @@ How do I feel?
 You are $_mood$.
 ```
 
-In this example, Susi remembers your mood and can tell you about it. The actual word which was used to describe the mood was never printed to the user before because using the `^^` symbols it got quoted and became invisible.
+In this example, SUSI remembers your mood and can tell you about it. The actual word which was used to describe the mood was never printed to the user before because using the `^^` symbols it got quoted and became invisible.
 
 ### Tutorial Level 8: Conditions for Answers
 
@@ -213,7 +213,7 @@ Shall I *?
 
 ### Tutorial Level 9: Rules used as Functions/Templates (Basic Self-Reflection)
 
-Susi can call itself during an answer preparation. This can be used to create rules which are designed
+SUSI can call itself during an answer preparation. This can be used to create rules which are designed
 to be called in such a self-call. For example:
 
 ```
@@ -228,11 +228,11 @@ What is your favorite color?
 ?$_mycolour$:My favorite colour is $_mycolour$!:I like `function colour`>_mycolour!
 ```
 
-Here, the colour is randomly generated with the `function colour` call, but only if Susi has not done that yet. If Susi just generated a colour in the answer, that answer will be stored in the variable `_mycolour`. But if that variable already existed, it will be used to make the answer without the `function colour`.
+Here, the colour is randomly generated with the `function colour` call, but only if SUSI has not done that yet. If SUSI just generated a colour in the answer, that answer will be stored in the variable `_mycolour`. But if that variable already existed, it will be used to make the answer without the `function colour`.
 
 ### Tutorial Level 10: Embed Javascript into an intent
 
-If you are able to compute whatever you want to inside a rule, there are billions of possibilities of what you can do with Susi Skills.
+If you are able to compute whatever you want to inside a rule, there are billions of possibilities of what you can do with SUSI Skills.
 Embedding Javascript is extremely easy, for example:
 
 ```
@@ -257,7 +257,7 @@ eol
 
 Important parts of an AI implementation is, to be able to access big data, many different data sources and to steer
 services outside of the body of the AI. To do so, it must be possible to call an external API.
-Such a service is called a 'console service' in Susi:
+Such a service is called a 'console service' in SUSI:
 
 ```
 tweet about *
@@ -270,13 +270,13 @@ eol
 ```
 
 This will call the loklak search API and gets back a big list of tweets from the given query in $1$. That list is somewhere inside the
-answer json of the API call, and we must tell Susi where it can find that list. This hint is given in the attribute 'path' which has
+answer json of the API call, and we must tell SUSI where it can find that list. This hint is given in the attribute 'path' which has
 the syntax of a JSONPath. Here, the statuses object contains a list of objects, which contain always the same attribute keys.
 One of these attributes has the name 'text' and that attribute is selected with the $text$ pattern.
 Note that the bang definition part until the eol line must be given in JSON.
 
 #### Test Cases for Values of "path"
-1. Json Format :- 
+1. JSON Format :- 
 ```
 {
   "test" : {"text":"abc"}
@@ -323,7 +323,7 @@ Here **"path": "$.query.text[0]"** will put **"a"** in $object$
 
 ### Tutorial Level 12: More Action Types
 
-Susi Skills may return different types of actions. So far, the only action type we used is the `answer` action.
+SUSI Skills may return different types of actions. So far, the only action type we used is the `answer` action.
 The result of an `answer` action can be seen with
 ```
 curl http://api.susi.ai/susi/chat.json?q=hello
@@ -355,7 +355,7 @@ The following action types are available:
 * websearch
 * map
 
-Clients which render Susi action results must render _all_ actions in the order as they are provided.
+Clients which render SUSI action results must render _all_ actions in the order as they are provided.
 
 #### Table actions:
 
@@ -450,7 +450,7 @@ Using Susis variables and if rules can be used to create experts which are able 
 
 ### Tutorial Level 14: Expert Systems with Backtracking
 
-Backtracking is the ability of a program to revert a already made setting and take an alternative option. If we consider this behaviour at different states of a computation, then this produces a tree-like parameter graph, which is called a decision tree. Susi's data structures are made in such a way, that result tables are an element of 'thinking'. Such result tables are 'bags' for backtracking options. We will learn how to use that principle to create loops which are useful for problem-solving.
+Backtracking is the ability of a program to revert a already made setting and take an alternative option. If we consider this behaviour at different states of a computation, then this produces a tree-like parameter graph, which is called a decision tree. SUSI's data structures are made in such a way, that result tables are an element of 'thinking'. Such result tables are 'bags' for backtracking options. We will learn how to use that principle to create loops which are useful for problem-solving.
 
 (to be implemented)
 
@@ -460,15 +460,15 @@ We are able to set variable content and read them in skills. But we must also be
 
 (to be implemented)
 
-### Tutorial Level 15: Skills which create Skills
+### Tutorial Level 16: Skills which create Skills
 
 It is a core principle of intelligent systems to be able to learn and enhance themselves. We want to create intents which are able to create new intents.
 
 (to be implemented)
 
-### Tutorial Level 16: Inter-Susi Instance Dialog
+### Tutorial Level 17: Inter-SUSI Instance Dialog
 
-Susi runs in user instances: every chat user of a Susi instance is an individual instance. Instances may be customized i.e. if the user calls Susi to dream with a test skill. Therefore different Susi instances behave differently. It should be possible that two different Susi instances have different 'opinions' and that two instances start a dialog with each other to find a consensus.
+Susi runs in user instances: every chat user of a SUSI instance is an individual instance. Instances may be customized i.e. if the user calls Susi to dream with a test skill. Therefore different SUSI instances behave differently. It should be possible that two different SUSI instances have different 'opinions' and that two instances start a dialog with each other to find a consensus.
 We will learn here how to connect those instances to each other so they can talk.
 
 (to be implemented)
@@ -480,8 +480,8 @@ Every skill can be given an example query using the bang-notion which always sta
 ```
 what is your name ? | What's your name ? | Who are you ?| what should i call you ? | do you have a name 
 !example:what is your name?
-My name is Susi.
+My name is SUSI.
 ```
 
-Adding examples for each skill gives us an overview of what Susi can do.
+Adding examples for each skill gives us an overview of what SUSI can do.
 We can look at all example queries at http://api.susi.ai/cms/getExampleSkill.json
