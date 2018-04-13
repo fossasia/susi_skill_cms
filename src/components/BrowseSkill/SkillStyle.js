@@ -97,6 +97,9 @@ const styles = {
         margin: '0px 10px',
         width: '300px'
     },
+    newSkillBtn: {
+        padding: '10px 0px 10px 10px'
+    },
     titleStyle:{
         textAlign: 'left',
         fontStyle: 'italic',

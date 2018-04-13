@@ -307,7 +307,7 @@ export default class BrowseSkill extends React.Component {
                                 value={this.state.languageValue}
                                 floatingLabelFixed={false}
                                 onChange={this.handleLanguageChange}
-                                style={styles.select}
+                                style={styles.selection}
                                 listStyle={{
                                     top: '100px'
                                 }}
@@ -325,6 +325,7 @@ export default class BrowseSkill extends React.Component {
                                 value={this.state.filter}
                                 floatingLabelFixed={false}
                                 onChange={this.handleFilterChange}
+                                style={styles.selection}
                                 className='select'
                                 listStyle={{
                                     top: '100px'
@@ -345,7 +346,8 @@ export default class BrowseSkill extends React.Component {
                                 key={'&applyFilter=true&filter_name=descending&filter_type=lexicographical'}
                                 primaryText={'Z-A'} label={'Name (Z-A)'} />
                             </SelectField>
-                            <div>
+
+                            <div style={styles.newSkillBtn}>
                                 <Link to='/skillCreator'>
                                     <FloatingActionButton data-tip='Create Skill'
                                         backgroundColor={colors.fabButton}
