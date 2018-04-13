@@ -15,9 +15,9 @@ import colors from '../../Utils/colors';
 import CircleImage from '../CircleImage/CircleImage';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import urls from '../../Utils/urls';
+import Footer from '../Footer/Footer.react';
 const groups = [];
 const languages = [];
-
 export default class BrowseSkill extends React.Component {
 
     constructor(props) {
@@ -372,6 +372,7 @@ export default class BrowseSkill extends React.Component {
                             </div>
                         </div>
                     </div>
+		<Footer />
                 </div>
             </a>
 		<a href = "#top"><center>Back to top</center></a>
