@@ -61,47 +61,49 @@ class AuthorSkills extends Component {
                 let skillByAuthor = Object.keys(data);
                 skillByAuthor = skillByAuthor.slice(0,skillByAuthor.length-1);
                 skills = skillByAuthor.map((skill,index) => {
-                  let parse = data[skill].split('/');
-                  let name = parse[8].split('.')[0];
-                  name = name.charAt(0).toUpperCase() + name.slice(1);
-                  if(name.split('_').length > 1){
-                    let temp = name.split('_');
-                    name = temp[0]+ ' '+ temp[1];
-                  }
+                	if (skill==index) {
+	                  let parse = data[skill].split('/');
+	                  let name = parse[6].split('.')[0];
+	                  name = name.charAt(0).toUpperCase() + name.slice(1);
+	                  if(name.split('_').length > 1){
+	                    let temp = name.split('_');
+	                    name = temp[0]+ ' '+ temp[1];
+	                  }
 
-                  let image = 'https://raw.githubusercontent.com/fossasia/susi_skill_data/master/models/general/'+
-                    parse[6]+'/'+parse[7]+'/images/'+parse[8].split('.')[0];
-                    let image1 = image + '.png';
-                    let image2 = image + '.jpg';
+	                  let image = 'https://raw.githubusercontent.com/fossasia/susi_skill_data/master/models/general/'+
+	                    parse[4]+'/'+parse[5]+'/images/'+parse[6].split('.')[0];
+	                    let image1 = image + '.png';
+	                    let image2 = image + '.jpg';
 
-                  let skillURL = 'http://skills.susi.ai/' + parse[6] + '/' + parse[8].split('.')[0] + '/' + parse[7];
+	                  let skillURL = 'http://skills.susi.ai/' + parse[4] + '/' + parse[6].split('.')[0] + '/' + parse[5];
 
-                  return (
-                    <TableRow key={index}>
-                      <TableRowColumn>
-                        <div>
-                          <a
-                            href={skillURL} >
-                            <Img
-                              style={imageStyle}
-                              src={[
-                                image1,
-                                image2
-                              ]}
-                              unloader={<CircleImage name={name} size='40'/>}
-                          />
-                        </a>
-                          <a
-                            href={skillURL}
-                            className='effect-underline' >
-                          {name}
-                        </a>
-                        </div>
-                      </TableRowColumn>
-                      <TableRowColumn>{parse[6]}</TableRowColumn>
-                      <TableRowColumn>{ISO6391.getNativeName(parse[7])}</TableRowColumn>
-                    </TableRow>
-                  )
+	                  return (
+	                    <TableRow key={index}>
+	                      <TableRowColumn>
+	                        <div>
+	                          <a
+	                            href={skillURL} >
+	                            <Img
+	                              style={imageStyle}
+	                              src={[
+	                                image1,
+	                                image2
+	                              ]}
+	                              unloader={<CircleImage name={name} size='40'/>}
+	                          />
+	                        </a>
+	                          <a
+	                            href={skillURL}
+	                            className='effect-underline' >
+	                          {name}
+	                        </a>
+	                        </div>
+	                      </TableRowColumn>
+	                      <TableRowColumn>{parse[4]}</TableRowColumn>
+	                      <TableRowColumn>{ISO6391.getNativeName(parse[5])}</TableRowColumn>
+	                    </TableRow>
+	                  )
+              		}
                 });
                 this.setState({skills: skills})
               }.bind(this)
