@@ -203,7 +203,8 @@ export default class BrowseSkill extends React.Component {
                     }
 
                     cards.push(
-                        <Link key={el}
+                            <Card style={styles.row} key={el}>
+                            <Link key={el}
                             to={{
                                 pathname: '/' + self.state.groupValue
                                           + '/' + skill_name.toLowerCase().replace(/ /g, '_')
@@ -217,7 +218,6 @@ export default class BrowseSkill extends React.Component {
                                     languageValue: self.state.languageValue,
                                 }
                             }}>
-                            <Card style={styles.row} key={el}>
                                 <div style={styles.right} key={el}>
                                     {image ? <div style={styles.imageContainer}>
                                         <img alt={skill_name}
@@ -231,6 +231,7 @@ export default class BrowseSkill extends React.Component {
                                     <h3 style={styles.name}>{skill_name}</h3>
                                     <p style={styles.description}>{description}</p>
                                 </div>
+                                </Link>
                                 <div style={styles.rating}>
                                     <span style={styles.positive}>
                                         <Like style={styles.like} />
@@ -242,7 +243,6 @@ export default class BrowseSkill extends React.Component {
                                     </span>
                                 </div>
                             </Card>
-                        </Link>
                     );
                 });
 
