@@ -39,12 +39,12 @@ class SkillEditor extends Component {
         super(props);
         if(this.props.hasOwnProperty('revertingCommit')){
             this.setState({
-                commitMessage : 'reverting to commit - '+this.props.revertingCommit,
+                commitMessage : 'Reverting to commit - '+this.props.revertingCommit,
             });
         }
         else if (this.props.location.pathname.split('/')[5]) {
             this.setState({
-                commitMessage: 'reverting to commit - '+this.props.location.pathname.split('/')[5],
+                commitMessage: 'Reverting to commit - '+this.props.location.pathname.split('/')[5],
             });
         }
         this.state = {
@@ -445,7 +445,7 @@ class SkillEditor extends Component {
         this.setState({
             loading: true
         });
-
+        // Check whether the User has entered a Commit Message or not
         if (this.state.commitMessage === null) {
             notification.open({
                 message: 'Please add a commit message',
@@ -458,10 +458,11 @@ class SkillEditor extends Component {
             return 0;
         }
 
+        // Detect whether the User is in a logged in state
         if (!cookies.get('loggedIn')) {
             notification.open({
-                message: 'Not logged In',
-                description: 'Please login and then try to create/edit a skill',
+                message: 'Not logged in',
+                description: 'Please login and then try to create/edit a Skill',
                 icon: <Icon type='close-circle' style={{ color: '#f44336' }} />,
             });
             this.setState({
@@ -469,10 +470,12 @@ class SkillEditor extends Component {
             });
             return 0;
         }
+        // Check whether the image uploaded by the User
+        // matches the format of the Skill image to be stored
         if (!new RegExp(/images\/\w+\.\w+/g).test(this.state.imageUrl)) {
             notification.open({
-                message: 'Error Processing your Request',
-                description: 'image must be in format of images/imageName.jpg',
+                message: 'Error processing your request',
+                description: 'Image path must be in format of images/imageName.jpg',
                 icon: <Icon type='close-circle' style={{ color: '#f44336' }} />,
             });
             this.setState({
@@ -480,6 +483,9 @@ class SkillEditor extends Component {
             });
             return 0;
         }
+        // Check whether the request needs to be sent or not,
+        // depending on whether all the new values are same
+        // as the old values or not.
         if (this.state.oldGroupValue === this.state.groupValue &&
           this.state.oldExpertValue === this.state.expertValue &&
           this.state.oldLanguageValue === this.state.languageValue &&
@@ -495,8 +501,10 @@ class SkillEditor extends Component {
         }
         let file;
 
+        // Create a form object
         let form = new FormData();
 
+        // Append the following fields from the Skill component
         form.append('OldModel', 'general');
         form.append('OldGroup', this.state.oldGroupValue);
         form.append('OldLanguage', this.state.oldLanguageValue);
@@ -514,7 +522,7 @@ class SkillEditor extends Component {
         form.append('access_token', cookies.get('loggedIn'));
 
         if (this.state.image_name_changed) {
-            file = this.state.file;
+            file = this.state.file; // append file to image
             form.append('image', file);
         }
         console.log(this.state)
@@ -530,6 +538,9 @@ class SkillEditor extends Component {
             'data': form
         };
 
+        // Send a POST request to the server and
+        // show the notification to the user accordingly,
+        // whether the changes to the Skill Data have been updated or not
         $.ajax(settings)
             .done(function (response) {
                 this.setState({
@@ -553,7 +564,7 @@ class SkillEditor extends Component {
                         loading: false
                     });
                     notification.open({
-                        message: 'Error Processing your Request',
+                        message: 'Error processing your request',
                         description: String(data.message),
                         icon: <Icon type='close-circle' style={{ color: '#f44336' }} />
                     });
@@ -564,7 +575,7 @@ class SkillEditor extends Component {
                     loading: false
                 });
                 notification.open({
-                    message: 'Error Processing your Request',
+                    message: 'Error processing your request',
                     description: String(textStatus),
                     icon: <Icon type='close-circle' style={{ color: '#f44336' }} />
                 })
@@ -655,7 +666,7 @@ class SkillEditor extends Component {
                      {(this.state.commitId && showTopBar) &&
                     (<Paper style={style} zDepth={1}>
                       <div>
-                        {'You are currently editing an older version of the skill: '}
+                        {'You are currently editing an older version of the Skill: '}
                         <b style={bold}>{this.state.expertValue}</b><br/>
                         <span>Author: <b style={bold}>{this.state.author}</b></span><br/>
                         <span>commitID: <b>{this.state.commitId}</b></span><br/>
