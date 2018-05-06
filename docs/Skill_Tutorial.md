@@ -15,7 +15,7 @@ We have a SUSI Skill development environment based on an Etherpad. Are you unawa
 * the etherpad is filled with a welcome message, just delete the content completely
 
 ATTENTION: the Susi Dream zone is a TEMPORARY zone. We may clean up that place at any time. It is only for testing your new SUSI Skills
-If you want your new SUSI Skills to be permanent, send us a pull request, see [submitting_skills_to_git.md](submitting_skills_to_git.md) for a tutorial.
+If you want your new SUSI Skills to be permanent, send us a pull request [here](https://github.com/fossasia/susi_skill_data).
 
 ### Preparation to start testing
 
