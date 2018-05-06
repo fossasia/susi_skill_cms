@@ -114,11 +114,11 @@ export default class BrowseSkill extends React.Component {
                     data.sort();
                     this.setState({ languages: data });
                     for (let i = 0; i < data.length; i++) {
-                        if (ISO6391.getNativeName(data[i])) {
+                        if (ISO6391.getName(data[i])) {
                             languages.push(<MenuItem
                                 value={data[i]}
                                 key={data[i]}
-                                primaryText={ISO6391.getNativeName(data[i])} />);
+                                primaryText={ISO6391.getName(data[i])} />);
                         }
                         else {
                             languages.push(<MenuItem value={data[i]}
