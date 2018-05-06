@@ -50,7 +50,7 @@ class AuthorSkills extends Component {
 
 
     loadSkillCards = (author) => {
-      console.log(author);
+      // console.log(author);
       let url = urls.API_URL + '/cms/getSkillsByAuthor.json?author=' + author;
           $.ajax({
               url: url,
@@ -124,7 +124,7 @@ class AuthorSkills extends Component {
             fill: '#000',
             width: '100%'
         };
-      //  console.log(this.props.authorUrl);
+        // console.log(this.props.authorUrl);
         let auhtorGitHubUrl=this.props.authorUrl;
         let Username='';
         let githubUsername='';

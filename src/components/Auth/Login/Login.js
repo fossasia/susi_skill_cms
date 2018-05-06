@@ -50,7 +50,7 @@ class Login extends Component {
         // const {
         //     token
         // } = this.props;
-        console.log(cookies.get('loggedIn'));
+        // console.log(cookies.get('loggedIn'));
         if(cookies.get('loggedIn')) {
             this.props.history.push('/home', { open: false });
         }
@@ -84,7 +84,7 @@ class Login extends Component {
                 crossDomain: true,
                 success: function (response) {
                     cookies.set('serverUrl', BASE_URL, { path: '/' });
-                    console.log(cookies.get('serverUrl'));
+                    // console.log(cookies.get('serverUrl'));
                     let accessToken = response.access_token;
                     let state = this.state;
                     let time = response.valid_seconds;

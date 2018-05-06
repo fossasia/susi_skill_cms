@@ -70,7 +70,7 @@ class SkillListing extends Component {
 
             urlCode = urlCode.toString();
             urlCode = urlCode.replace('getSkillList', 'getSkill');
-            console.log(urlCode);
+            // console.log(urlCode);
         }
     }
 
@@ -86,7 +86,7 @@ class SkillListing extends Component {
             this.languageValue = this.props.location.pathname.split('/')[3];
             url = baseUrl + '?model=' + modelValue + '&group=' + this.groupValue + '&language=' + this.languageValue + '&skill=' + this.name;
 
-            console.log('Url:' + url);
+            // console.log('Url:' + url);
             let self = this;
             $.ajax({
                 url: url,
@@ -115,11 +115,11 @@ class SkillListing extends Component {
                       '&language=' + languageValue +
                       '&skill=' + expertValue;
 
-                console.log('Url meta:' + url);
+                // console.log('Url meta:' + url);
 
                 urlCode = url.toString();
                 urlCode = url.replace('getSkillMetadata', 'getSkill');
-                console.log(url);
+                // console.log(url);
                 let self = this;
                 $.ajax({
                     url: url,
@@ -152,7 +152,7 @@ class SkillListing extends Component {
             this.setState({
                 descriptions: 'No Description Provided'
             });
-            console.log('From Description');
+            // console.log('From Description');
         }
         else {
             this.setState({
@@ -278,7 +278,7 @@ class SkillListing extends Component {
                         </h4>
                         <div className='avatar-meta margin-b-md'>
                             <div className='examples'>
-                                {console.log(this.state)}
+                                {/* console.log(this.state) */}
 
                                 {typeof this.state.examples === 'undefined' ||
                                 this.state.examples === null ||

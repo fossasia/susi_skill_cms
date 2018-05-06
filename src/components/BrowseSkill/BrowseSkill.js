@@ -59,14 +59,14 @@ export default class BrowseSkill extends React.Component {
 
     handleGroupChange = (event, index, value) => {
         this.setState({groupValue: value}, function () {
-        console.log(this.state);
+        // console.log(this.state);
         this.loadCards();
         });
     };
 
     handleLanguageChange = (event, index, value) => {
       this.setState({languageValue: value}, function () {
-        console.log(this.state);
+        // console.log(this.state);
         this.loadCards();
         });
     };
@@ -139,7 +139,7 @@ export default class BrowseSkill extends React.Component {
             url = urls.API_URL + '/cms/getSkillList.json?model='
                   + this.state.modelValue + '&group=' + this.state.groupValue
                   + '&language=' + this.state.languageValue+ this.state.filter;
-                  console.log(url);
+                  // console.log(url);
         }
         else {
             url = urls.API_URL + '/cms/getSkillList.json?applyFilter=true&filter_name=ascending&filter_type=lexicographical'
@@ -154,7 +154,7 @@ export default class BrowseSkill extends React.Component {
             jsonp: 'callback',
             crossDomain: true,
             success: function (data) {
-              console.log(data)
+              // console.log(data)
                 let skills = Object.keys(data.filteredData);
                 // eslint-disable-next-line
                 skills = skills.map((el, i) => {
@@ -252,7 +252,7 @@ export default class BrowseSkill extends React.Component {
                     skillURL: url,
                     skillsLoaded: true,
                 });
-                console.log(self.state)
+                // console.log(self.state)
             }
         });
     };

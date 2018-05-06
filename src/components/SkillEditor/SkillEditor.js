@@ -132,7 +132,7 @@ class SkillEditor extends Component {
 
                     data = data.languagesArray;
                     this.setState({ languages: data });
-                    console.log(data);
+                    // console.log(data);
                     for (let i = 0; i < data.length; i++) {
                         if (ISO6391.getNativeName(data[i])) {
                             languages.push(<MenuItem
@@ -278,7 +278,7 @@ class SkillEditor extends Component {
 
     handleDeleteText = (event) => {
         const name =  this.state.code.match(/^::name\s(.*)$/m);
-        console.log(name[1])
+        // console.log(name[1])
         if(event.target.value===name[1]) {
             this.setState({
                 deleteDisabled: false,
@@ -341,7 +341,7 @@ class SkillEditor extends Component {
 
                     data = data.languagesArray;
                     this.setState({ languages: data });
-                    console.log(data);
+                    // console.log(data);
                     for (let i = 0; i < data.length; i++) {
                         if (ISO6391.getNativeName(data[i])) {
                             languages.push(<MenuItem
@@ -517,7 +517,7 @@ class SkillEditor extends Component {
             file = this.state.file;
             form.append('image', file);
         }
-        console.log(this.state)
+        // console.log(this.state)
 
         let settings = {
             'async': true,

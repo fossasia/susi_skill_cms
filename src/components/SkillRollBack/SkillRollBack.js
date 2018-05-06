@@ -45,7 +45,7 @@ class SkillRollBack extends Component {
             commitData: [],
             commitMessage:'',
         };
-        console.log(this.props)
+        // console.log(this.props)
     }
 
     getSkillAtCommitIDUrl = () => {
@@ -64,7 +64,7 @@ class SkillRollBack extends Component {
       let baseUrl = this.getSkillAtCommitIDUrl() ;
       let self = this;
       var url1 = baseUrl + self.state.latestCommit;
-      console.log(url1);
+      // console.log(url1);
       $.ajax({
           url: url1,
           jsonpCallback: 'pc',
@@ -73,7 +73,7 @@ class SkillRollBack extends Component {
           crossDomain: true,
           success: function (data1) {
             var url2 = baseUrl + self.state.revertingCommit;
-            console.log(url2);
+            // console.log(url2);
             $.ajax({
                 url: url2,
                 jsonpCallback: 'pd',
@@ -189,9 +189,9 @@ class SkillRollBack extends Component {
       form.append('new_image_name',newImageName);
       form.append('access_token',cookies.get('loggedIn'));
 
-      for(var pair of form.entries()) {
-        console.log(pair[0]+ ', '+ pair[1]);
-      }
+      /* for(var pair of form.entries()) {
+         console.log(pair[0]+ ', '+ pair[1]);
+      } */
 
       var settings = {
           'async': true,
@@ -207,7 +207,7 @@ class SkillRollBack extends Component {
       $.ajax(settings)
           .done(function (response) {
             let data = JSON.parse(response);
-            console.log(response);
+            // console.log(response);
             if(data.accepted===true){
               notification.open({
                 message: 'Accepted',
