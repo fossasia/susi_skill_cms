@@ -137,9 +137,12 @@ class SkillListing extends Component {
     };
 
     updateData = (skillData) => {
-
+        let imgUrl = `https://raw.githubusercontent.com/fossasia/susi_skill_data/master/models/general/${this.groupValue}/${this.languageValue}/${skillData.image}`;
+        if (!skillData.image) {
+            imgUrl = 'https://pbs.twimg.com/profile_images/904617517489979392/6Hff65Th.jpg';
+        }
         this.setState({
-            imgUrl: 'https://raw.githubusercontent.com/fossasia/susi_skill_data/master/models/general/' + this.groupValue + '/' + this.languageValue + '/' + skillData.image
+            imgUrl
         });
 
         defaultNullSkillList.forEach((data) => {
@@ -243,7 +246,6 @@ class SkillListing extends Component {
                         }}>
 
                             <FloatingActionButton data-tip='Edit Skill' backgroundColor={colors.header} >
-
                                 <EditBtn />
                             </FloatingActionButton>
                             <ReactTooltip effect='solid' place='bottom' />
