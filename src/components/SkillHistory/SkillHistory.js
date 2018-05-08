@@ -46,7 +46,7 @@ class SkillHistory extends Component {
             commitData: [],
             allCommitsData: [],
         };
-        console.log(this.props)
+        // console.log(this.props)
     }
 
     getSkillAtCommitIDUrl = () => {
@@ -113,7 +113,7 @@ class SkillHistory extends Component {
       let self = this;
       if (this.state.commits.length === 2) {
         var url1 = baseUrl + self.state.commits[0];
-        console.log(url1);
+        // console.log(url1);
         $.ajax({
             url: url1,
             jsonpCallback: 'pc',
@@ -122,7 +122,7 @@ class SkillHistory extends Component {
             crossDomain: true,
             success: function (data1) {
               var url2 = baseUrl + self.state.commits[1];
-              console.log(url2);
+              // console.log(url2);
               $.ajax({
                   url: url2,
                   jsonpCallback: 'pd',

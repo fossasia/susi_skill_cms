@@ -37,7 +37,7 @@ class Admin extends Component {
             jsonp: 'callback',
             crossDomain: true,
             success: function (response) {
-                console.log(response.showAdmin);
+                // console.log(response.showAdmin);
                 if (response.showAdmin !== true) {
                     this.setState({
                         showNotAdminDialog: true,

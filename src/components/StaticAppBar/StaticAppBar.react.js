@@ -96,7 +96,7 @@ class StaticAppBar extends Component {
                 this.setState({
                     showAdmin: ShowAdmin,
                 });
-                console.log(newResponse.showAdmin)
+                // console.log(newResponse.showAdmin)
             }.bind(this),
             error: function (newErrorThrown) {
                 console.log(newErrorThrown)

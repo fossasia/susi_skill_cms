@@ -36,7 +36,7 @@ class SkillVersion extends Component {
             currLeftChecked:null,
             currRightChecked:null,
         };
-        console.log(this.props);
+        // console.log(this.props);
     }
 
     componentDidMount(){
@@ -50,7 +50,7 @@ class SkillVersion extends Component {
     }
 
   getCommitHistory = (commitHistoryURL) => {
-    console.log(commitHistoryURL);
+    // console.log(commitHistoryURL);
     let self = this;
     $.ajax({
         url: commitHistoryURL,
@@ -73,7 +73,7 @@ class SkillVersion extends Component {
   };
 
     setCommitHistory = (commitsData) => {
-        console.log(commitsData);
+        // console.log(commitsData);
         if(commitsData.accepted){
             let commits = commitsData.commits ? commitsData.commits : [];
             var initLeftChecked = null;
