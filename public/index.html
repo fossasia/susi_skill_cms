@@ -24,11 +24,21 @@
     -->
     <title>SUSI Skill CMS</title>
   </head>
+
   <body>
+    <div class="loader"></div>
     <noscript>
       You need to enable JavaScript to run this app.
     </noscript>
     <div id="root" style="height: 100%"></div>
 
   </body>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.2/modernizr.js"></script>
+  <script type="text/javascript">
+    $(window).load(function() {
+    $(".loader").fadeOut("slow");
+});
+  </script>
+
 </html>
