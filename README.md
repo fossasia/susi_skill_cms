@@ -34,6 +34,8 @@ Our chat channel is on gitter here: https://gitter.im/fossasia/susi_server
 
 ### For deploying with [Surge](https://surge.sh/):
 
+Surge will automatically generate deployment link whenever a pull request passes Travis CI. 
+
 * **Step 1:** Install Surge:```$ npm install -g surge```
 * **Step 2:** Then cd into that cloned folder of susi_skill_cms .
 * **Step 3:** Run the App build:```$ npm run build```
