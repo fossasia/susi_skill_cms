@@ -22,6 +22,8 @@ import { Paper } from 'material-ui';
 import Diff from 'react-diff';
 import './SkillHistory.css';
 import urls from '../../Utils/urls';
+import { RaisedButton } from 'material-ui';
+import colors from '../../Utils/colors';
 
 class SkillHistory extends Component {
     constructor(props) {
@@ -171,6 +173,12 @@ class SkillHistory extends Component {
           width: '100%',
           padding: '10px'
       };
+	const compareBtnStyle = {
+            margin: '20px',
+		position:'absolute',
+		right:'12',
+		top:'70'
+        };
       let rightEditorWidth = '50%';
       if (window.matchMedia('only screen and (max-width: 768px)').matches){
         rightEditorWidth = '100%';
@@ -184,7 +192,13 @@ class SkillHistory extends Component {
           <div style={styles.home}>
             {this.state.commitData.length === 2 && (<div style={{display:'block'}}>
               <Paper style={style} zDepth={1}>
-                <div>Currently Viewing : <h3>{this.state.skillMeta.skillName}</h3></div>
+                <div><div>Currently Viewing : <a href="../../../en"><RaisedButton
+					label='Back'
+                                        backgroundColor={colors.header}
+                                        labelColor='#fff'
+                                        style={compareBtnStyle}
+                                    /></a></div><h3>{this.state.skillMeta.skillName}</h3>
+					</div>
               </Paper>
                 <div className='version-code-left'>
                   <span>

@@ -156,7 +156,7 @@ class SkillVersion extends Component {
         };
 
         const compareBtnStyle = {
-            marginTop: '20px',
+            margin: '20px',
         };
 
         var showCompareBtn = false;
@@ -294,7 +294,12 @@ class SkillVersion extends Component {
                                         style={compareBtnStyle}
                                     />
                                 </Link>
-                                }
+                                }<a href="../en"><RaisedButton
+					label='Back'
+                                        backgroundColor={colors.header}
+                                        labelColor='#fff'
+                                        style={compareBtnStyle}
+                                    /></a>
                             </div>
                         </div>
                     )
