@@ -93,8 +93,11 @@ class SkillEditor extends Component {
 
     }
     updateData(skillData) {
-        this.imgUrl = 'https://raw.githubusercontent.com/fossasia/susi_skill_data/master/models/general/' + this.state.groupValue + '/' + this.state.languageValue + '/' + skillData.image
-
+        if(skillData.image) {
+            this.imgUrl = `https://raw.githubusercontent.com/fossasia/susi_skill_data/master/models/general/${this.state.groupValue}/${this.state.languageValue}/${skillData.image}`
+        } else {
+            this.imgUrl = 'https://pbs.twimg.com/profile_images/904617517489979392/6Hff65Th.jpg';
+        }
         this.setState({
             'image': this.imgUrl
         });
