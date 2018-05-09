@@ -156,7 +156,7 @@ class SkillListing extends Component {
             descriptions
         });
 
-        let skill_name = skillData.skill_name === null ? 'No Name Given' : skillData.skill_name;    
+        let skill_name = skillData.skill_name === null ? 'No Name Given' : skillData.skill_name;
         this.setState({
             skill_name
         });
@@ -299,7 +299,8 @@ class SkillListing extends Component {
                             {this.state.dynamic_content ?
                                 <li>The Skill Contains content Dynamic Content
                                     that is updated real-time based on inputs
-                                    from the User.</li> : <li>Skill details are not available yet.</li>}
+                                    from the User.</li> :
+                                <li>Skill details are not available yet.</li>}
 
                             {this.state.terms_of_use == null ? '' :
                               (<li><a href={this.state.terms_of_use}
