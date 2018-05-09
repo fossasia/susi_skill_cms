@@ -60,8 +60,10 @@ class AuthorSkills extends Component {
               success: function (data) {
                 let skillByAuthor = Object.keys(data);
                 skillByAuthor = skillByAuthor.slice(0,skillByAuthor.length-1);
+                // eslint-disable-next-line
                 skills = skillByAuthor.map((skill,index) => {
-                	if (skill==index) {
+                	// eslint-disable-next-line
+                  if (skill == index) {
 	                  let parse = data[skill].split('/');
 	                  let name = parse[6].split('.')[0];
 	                  name = name.charAt(0).toUpperCase() + name.slice(1);
