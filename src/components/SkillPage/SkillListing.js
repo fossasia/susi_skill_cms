@@ -151,30 +151,16 @@ class SkillListing extends Component {
             })
         });
 
-        if (skillData.descriptions === null) {
-            this.setState({
-                descriptions: 'No Description Provided'
-            });
-            // console.log('From Description');
-        }
-        else {
-            this.setState({
-                descriptions: skillData.descriptions
-            })
-        }
+        let descriptions = skillData.descriptions === null ? 'No Description Provided' : skillData.descriptions;
+        this.setState({
+            descriptions
+        });
 
-        if (skillData.skill_name === null) {
-            this.setState({
-                skill_name: 'No Name Given'
-            });
-        }
-        else {
-            this.setState({
-                skill_name: skillData.skill_name
-            });
-            name = skillData.skill_name
-        }
-
+        let skill_name = skillData.skill_name === null ? 'No Name Given' : skillData.skill_name;
+        this.setState({
+            skill_name
+        });
+        name = skill_name;
         this.setState({
             dataReceived: true
         });
@@ -215,8 +201,7 @@ class SkillListing extends Component {
             }
         };
         let renderElement = null;
-        /*         let oldModelValue = 'general';
-         */        let oldGroupValue = this.props.location.pathname.split('/')[1];
+        let oldGroupValue = this.props.location.pathname.split('/')[1];
         let oldLanguageValue = this.props.location.pathname.split('/')[3];
         let oldImageValue = this.state.imgUrl;
         let imageValue = this.state.image;
@@ -280,8 +265,6 @@ class SkillListing extends Component {
                         </h4>
                         <div className='avatar-meta margin-b-md'>
                             <div className='examples'>
-                                {/* console.log(this.state) */}
-
                                 {typeof this.state.examples === 'undefined' ||
                                 this.state.examples === null ||
                                 typeof this.state.examples[Object.keys(this.state.examples)[0]] === 'undefined' ? '' :
@@ -316,7 +299,8 @@ class SkillListing extends Component {
                             {this.state.dynamic_content ?
                                 <li>The Skill Contains content Dynamic Content
                                     that is updated real-time based on inputs
-                                    from the User.</li> : ''}
+                                    from the User.</li> :
+                                <li>Skill details are not available yet.</li>}
 
                             {this.state.terms_of_use == null ? '' :
                               (<li><a href={this.state.terms_of_use}
