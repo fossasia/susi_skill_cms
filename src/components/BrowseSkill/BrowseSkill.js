@@ -91,9 +91,9 @@ export default class BrowseSkill extends React.Component {
                     data.sort();
                     for (let i = 0; i < data.length; i++) {
                         groups.push(<MenuItem
-                                        value={data[i]}
-                                        key={data[i]}
-                                        primaryText={`${data[i]}`} />);
+                            value={data[i]}
+                            key={data[i]}
+                            primaryText={`${data[i]}`} />);
                     }
                 }.bind(this)
             });
@@ -122,8 +122,8 @@ export default class BrowseSkill extends React.Component {
                         }
                         else {
                             languages.push(<MenuItem value={data[i]}
-                                                    key={data[i]}
-                                                    primaryText={'Universal'} />);
+                            key={data[i]}
+                            primaryText={'Universal'} />);
                         }
                     }
 
@@ -374,7 +374,7 @@ export default class BrowseSkill extends React.Component {
                             </div>
                         </div>
                     </div>
-		<Footer />
+		        <Footer />
                 </div>
             </a>
 		<a href = "#top"><center>Back to top</center></a>
