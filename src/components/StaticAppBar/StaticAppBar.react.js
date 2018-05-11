@@ -41,11 +41,12 @@ let TopRightMenuItems = (props) => (
             rightIcon={<Chat />}>
             Chat
         </MenuItem>
-        <MenuItem
-            href='http://skills.susi.ai/'
-            rightIcon={<SKillIcon />}>
-            Skills
-        </MenuItem>
+        <Link to = "/">
+          <MenuItem
+              rightIcon={<SKillIcon />}>
+              Skills
+          </MenuItem>
+        </Link>
         <MenuItem primaryText='Settings'
             onTouchTap={this.handleClose}
             containerElement={<Link to='/settings' />}
