@@ -235,7 +235,7 @@ class Login extends Component {
                             <div>
                                 <PasswordField
                                     name='password'
-                                    style={fieldStyle}
+                                    style={fieldStyle, {marginBottom:"20px"}}
                                     value={this.state.password}
                                     onChange={this.handleChange}
                                     errorText={this.passwordErrorMessage}
