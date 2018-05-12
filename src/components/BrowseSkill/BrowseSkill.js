@@ -35,7 +35,8 @@ export default class BrowseSkill extends React.Component {
             groupSelect: false,
             languageSelect: false,
             skillsLoaded: false,
-            filter:'&applyFilter=true&filter_name=ascending&filter_type=lexicographical'
+            filter:'&applyFilter=true&filter_name=ascending&filter_type=lexicographical',
+            customBackgroundColor: localStorage.getItem('backgroundColor')
         };
     }
 
@@ -366,7 +367,8 @@ export default class BrowseSkill extends React.Component {
                         marginBottom: '40px',
                         textAlign: 'justify',
                         fontSize: '0.1px',
-                        width: '100%'
+                        width: '100%',
+                        backgroundColor: `${this.state.customBackgroundColor}`
                     }}>
                         <div className='row' style={styles.scroll}  >
                             <div style={styles.gridList}>
