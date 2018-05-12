@@ -213,7 +213,8 @@ class Login extends Component {
             'textAlign': 'center'
         };
         const fieldStyle={
-            'width':'256px'
+            'width':'256px',
+            'marginBottom':'20px'
         };
         return (
             <div>
@@ -235,7 +236,7 @@ class Login extends Component {
                             <div>
                                 <PasswordField
                                     name='password'
-                                    style={fieldStyle, {marginBottom:'20px'}}
+                                    style={fieldStyle}
                                     value={this.state.password}
                                     onChange={this.handleChange}
                                     errorText={this.passwordErrorMessage}
