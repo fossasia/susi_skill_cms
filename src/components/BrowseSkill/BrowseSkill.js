@@ -16,6 +16,7 @@ import CircleImage from '../CircleImage/CircleImage';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import urls from '../../Utils/urls';
 import Footer from '../Footer/Footer.react';
+import SearchBar from 'material-ui-search-bar'
 const groups = [];
 const languages = [];
 export default class BrowseSkill extends React.Component {
@@ -35,7 +36,8 @@ export default class BrowseSkill extends React.Component {
             groupSelect: false,
             languageSelect: false,
             skillsLoaded: false,
-            filter:'&applyFilter=true&filter_name=ascending&filter_type=lexicographical'
+            filter:'&applyFilter=true&filter_name=ascending&filter_type=lexicographical',
+            searchQuery:''
         };
     }
 
@@ -66,6 +68,14 @@ export default class BrowseSkill extends React.Component {
 
     handleLanguageChange = (event, index, value) => {
       this.setState({languageValue: value}, function () {
+        // console.log(this.state);
+        this.loadCards();
+        });
+    };
+
+    handleSearch = (value) => {
+        console.log(value);
+      this.setState({searchQuery: value}, function () {
         // console.log(this.state);
         this.loadCards();
         });
@@ -155,6 +165,41 @@ export default class BrowseSkill extends React.Component {
             crossDomain: true,
             success: function (data) {
               // console.log(data)
+
+                if (self.state.searchQuery.length > 0) {
+                  data.filteredData = data.filteredData.filter(function(i) {
+                    let result=false;
+                    if (i.skill_name) {
+                        result =  i.skill_name.toLowerCase().match( self.state.searchQuery.toLowerCase() );
+                        if (result) {
+                            return result;
+                        }
+                    }
+                    if (i.descriptions) {
+                        result =  i.descriptions.toLowerCase().match( self.state.searchQuery.toLowerCase() );
+                        if (result) {
+                            return result;
+                        }
+                    }
+                    if (i.author) {
+                        result =  i.author.toLowerCase().match( self.state.searchQuery.toLowerCase() );
+                        if (result) {
+                            return result;
+                        }
+                    }
+                    if (i.examples && i.examples.length>0) {
+                        i.examples.map((el,i)=>{
+                          result =  el.toLowerCase().match( self.state.searchQuery.toLowerCase() );
+                          if (result) {
+                              return result;
+                          }  
+                        })
+                    }
+                    
+                    return result;
+                  });
+                }
+
                 let skills = Object.keys(data.filteredData);
                 // eslint-disable-next-line
                 skills = skills.map((el, i) => {
@@ -357,9 +402,19 @@ export default class BrowseSkill extends React.Component {
                                     <ReactTooltip  effect='solid' place='bottom'/>
                                 </Link>
                             </div>
+
                         </div>
 
                     </Paper>
+
+                   <SearchBar
+                        onChange={this.handleSearch}
+                        style={{
+                          marginTop:'25px',
+                          width: '50%'
+                        }}
+                        value={this.state.searchQuery}
+                      />
 
                     <div style={{
                         marginTop: '20px',
