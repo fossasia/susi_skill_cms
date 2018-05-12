@@ -9,6 +9,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import { Paper } from 'material-ui';
 import colors from '../../Utils/colors';
 import urls from '../../Utils/urls'
+import { Link } from 'react-router-dom'
 const cookies = new Cookies();
 let BASE_URL = urls.API_URL;
 
@@ -145,7 +146,16 @@ class Settings extends React.Component {
                 disabled={!changed}
                 labelColor='#fff'
                 onClick={this.handleSubmit}
+                style={{margin: '16px'}}
               />
+              <Link to = "/">
+                <RaisedButton
+                  label='Back'
+                  backgroundColor={colors.header}
+                  labelColor='#fff'
+                  style={{margin: '16px'}}
+                />
+              </Link>
               </Paper>
               </div>
             </div>
