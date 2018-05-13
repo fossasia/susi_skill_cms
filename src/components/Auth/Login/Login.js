@@ -213,7 +213,8 @@ class Login extends Component {
             'textAlign': 'center'
         };
         const fieldStyle={
-            'width':'256px'
+            'width':'256px',
+            'marginBottom':'20px'
         };
         return (
             <div>
