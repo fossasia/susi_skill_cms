@@ -122,8 +122,8 @@ export default class BrowseSkill extends React.Component {
                         }
                         else {
                             languages.push(<MenuItem value={data[i]}
-                                                    key={data[i]}
-                                                    primaryText={'Universal'} />);
+                                key={data[i]}
+                                primaryText={'Universal'} />);
                         }
                     }
 
@@ -139,7 +139,6 @@ export default class BrowseSkill extends React.Component {
             url = urls.API_URL + '/cms/getSkillList.json?model='
                   + this.state.modelValue + '&group=' + this.state.groupValue
                   + '&language=' + this.state.languageValue+ this.state.filter;
-                  // console.log(url);
         }
         else {
             url = urls.API_URL + '/cms/getSkillList.json?applyFilter=true&filter_name=ascending&filter_type=lexicographical'
