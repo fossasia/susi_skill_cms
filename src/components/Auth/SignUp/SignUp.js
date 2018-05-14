@@ -11,9 +11,15 @@ import { addUrlProps, UrlQueryParamTypes } from 'react-url-query';
 import zxcvbn from 'zxcvbn';
 import colors from '../../../Utils/colors';
 import urls from '../../../Utils/urls';
+import CommunicationEmail from 'material-ui/svg-icons/communication/email';
+import ActionLock from 'material-ui/svg-icons/action/lock'
 
 const urlPropsQueryConfig = {
     token: { type: UrlQueryParamTypes.string },
+};
+
+const iconStyles = {
+    marginRight: 10,
 };
 
 class SignUp extends Component {
@@ -30,7 +36,6 @@ class SignUp extends Component {
     };
     constructor(props) {
         super(props);
-
         this.state = {
             email: '',
             isEmail: false,
@@ -242,7 +247,6 @@ class SignUp extends Component {
                 }.bind(this)
             });
         }
-
     };
 
     handleOpen = () => {
@@ -274,10 +278,12 @@ class SignUp extends Component {
             'textAlign': 'center',
             'padding': '10px'
         };
-        const fieldStyle={
+
+        const fieldStyle = {
             'width':'256px'
         };
-        const underlineFocusStyle= {
+
+        const underlineFocusStyle = {
             color: colors.header
         };
 
@@ -289,6 +295,7 @@ class SignUp extends Component {
                     <h3>Sign Up with SUSI</h3>
                     <form onSubmit={this.handleSubmit}>
                         <div>
+                          <CommunicationEmail style={iconStyles} />
                             <TextField
                                 name='email'
                                 value={this.state.email}
@@ -299,6 +306,7 @@ class SignUp extends Component {
                                 floatingLabelText='Email' />
                         </div>
                         <div className={PasswordClass.join(' ')}>
+                          <ActionLock style={iconStyles} />
                             <PasswordField
                                 name='password'
                                 style={fieldStyle}
@@ -316,6 +324,7 @@ class SignUp extends Component {
                               </div>
                         </div>
                         <div>
+                          <ActionLock style={iconStyles} />
                             <PasswordField
                                 name='confirmPassword'
                                 style={fieldStyle}
@@ -351,13 +360,15 @@ class SignUp extends Component {
                     </form>
                 </Paper>
                 {this.state.msg && (
-                    <div><Dialog
+                    <div>
+                      <Dialog
                         modal={false}
                         open={this.state.msgOpen}
                         onRequestClose={this.handleClose}
-                    >
+                        >
                         {this.state.msg}
-                    </Dialog></div>
+                      </Dialog>
+                    </div>
                 )}
             </div>
         );
