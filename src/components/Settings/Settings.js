@@ -6,9 +6,10 @@ import * as $ from 'jquery';
 import Cookies from 'universal-cookie';
 import PropTypes from 'prop-types';
 import RaisedButton from 'material-ui/RaisedButton';
-import { Paper } from 'material-ui';
+import { Paper , FlatButton , Dialog} from 'material-ui';
 import colors from '../../Utils/colors';
-import urls from '../../Utils/urls'
+import urls from '../../Utils/urls';
+import Colors from './../CustomThemes/colors';
 const cookies = new Cookies();
 let BASE_URL = urls.API_URL;
 
@@ -18,7 +19,8 @@ class Settings extends React.Component {
         super(props);
         this.state = {
             theme: 'light',
-            initialTheme: 'light'
+            initialTheme: 'light',
+            open: false
         }
     }
     handleSelectChange= (event, index, value) => {
@@ -106,6 +108,19 @@ class Settings extends React.Component {
         }
     }
 
+    handleOpen = () => {
+        this.setState({open: true});
+      };
+
+      handleClose = () => {
+        this.setState({open: false});
+      };
+
+    handleCloseReset = () => {
+        this.setState({open: false});
+        localStorage.setItem('backgroundColor', '');
+    };
+
     render() {
         const style = {
           width: '100%',
@@ -113,6 +128,20 @@ class Settings extends React.Component {
           textAlign: 'center',
           marginTop:'20px'
         };
+        const actions = [
+            <FlatButton
+              label="Reset"
+              primary={true}
+              onClick={this.handleCloseReset}
+              key="1"
+            />,
+            <FlatButton
+              label="Apply"
+              primary={true}
+              onClick={this.handleClose}
+              key="2"
+            />,
+          ];
         const flex= {
             'display':'inline-flex',
             'textAlign':'center'
@@ -120,7 +149,7 @@ class Settings extends React.Component {
         const head ={
             'marginBottom':'0px',
            'lineHeight': '56px'
-        }
+        };
         var changed = this.checkThemeChange();
         return(
             <div>
@@ -146,6 +175,22 @@ class Settings extends React.Component {
                 labelColor='#fff'
                 onClick={this.handleSubmit}
               />
+              <h3 style={head}>OR</h3>
+              <div>
+              <div>
+                <RaisedButton label="Custom Themes" onClick={this.handleOpen} />
+                <Dialog
+                title="Custom Themes"
+                actions={actions}
+                modal={false}
+                open={this.state.open}
+                onRequestClose={this.handleClose}
+                >
+              <h3 style={{colors:'black'}}>Background Color</h3>
+              <Colors name="backgroundColor" />
+                </Dialog>
+                </div>
+             </div>
               </Paper>
               </div>
             </div>
