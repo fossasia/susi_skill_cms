@@ -21,6 +21,7 @@ import {
     Paper,
 } from 'material-ui';
 import CircleImage from '../CircleImage/CircleImage';
+import { FaThumbsOUp, FaThumbsODown } from 'react-icons/lib/fa/'
 import EditBtn from 'material-ui/svg-icons/editor/mode-edit';
 import VersionBtn from 'material-ui/svg-icons/action/history';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
@@ -36,7 +37,6 @@ class SkillListing extends Component {
         super(props);
 
         this.state = {
-            skill_data: {},
             fontSizeCode: 14,
             editorTheme: 'github',
             image: '',
@@ -48,6 +48,8 @@ class SkillListing extends Component {
             examples: '',
             descriptions: '',
             skill_name: '',
+            positive_rating: 0,
+            negative_rating: 0,
             showAuthorSkills: false,
             dataReceived: false,
             imgUrl: null,
@@ -86,7 +88,7 @@ class SkillListing extends Component {
             this.languageValue = this.props.location.pathname.split('/')[3];
             url = baseUrl + '?model=' + modelValue + '&group=' + this.groupValue + '&language=' + this.languageValue + '&skill=' + this.name;
 
-            // console.log('Url:' + url);
+            console.log('Url:' + url);
             let self = this;
             $.ajax({
                 url: url,
@@ -161,6 +163,14 @@ class SkillListing extends Component {
             skill_name
         });
         name = skill_name;
+        if(skillData.skill_rating) {
+            let positive_rating = skillData.skill_rating.positive;
+            let negative_rating = skillData.skill_rating.negative;
+            this.setState({
+                positive_rating,
+                negative_rating
+            });
+        }
         this.setState({
             dataReceived: true
         });
@@ -219,6 +229,16 @@ class SkillListing extends Component {
                             <CircleImage name={this.state.skill_name.toUpperCase()} size='250' /> :
                             <img className='avatar-img' alt='Thumbnail' src={this.state.imgUrl} />
                         }
+                        <div className="rating">
+                            <div className="positive">
+                                <FaThumbsOUp />
+                                {this.state.positive_rating}
+                            </div>
+                            <div className="negative">
+                                <FaThumbsODown />
+                                {this.state.negative_rating}
+                            </div>
+                        </div>
                     </div>
                     <div className='linkButtons'>
                         <Link to={{
