@@ -5,8 +5,7 @@ import MenuItem from 'material-ui/MenuItem';
 import * as $ from 'jquery';
 import Cookies from 'universal-cookie';
 import PropTypes from 'prop-types';
-import RaisedButton from 'material-ui/RaisedButton';
-import { Paper } from 'material-ui';
+import { Paper, TextField, RaisedButton} from 'material-ui';
 import colors from '../../Utils/colors';
 import urls from '../../Utils/urls'
 const cookies = new Cookies();
@@ -105,6 +104,28 @@ class Settings extends React.Component {
             });
         }
     }
+    changeBack = () => {
+        let backgroundImage = document.getElementById('backgroundImgUrl').value;
+            if(cookies.get('loggedIn')===null||cookies.get('undefined')){
+                if(backgroundImage){
+                localStorage.setItem('anonymousImage',backgroundImage);
+                }
+                else{
+                    localStorage.setItem('anonymousImage','');
+                }
+            }
+            else {
+                /* eslint-disable */
+                if(backgroundImage) {
+                    localStorage.setItem('loggedImage', backgroundImage);
+                }
+                else {
+                    localStorage.setItem('loggedImage','');
+                }
+                /* eslint-enable */
+            }
+
+    }
 
     render() {
         const style = {
@@ -146,6 +167,20 @@ class Settings extends React.Component {
                 labelColor='#fff'
                 onClick={this.handleSubmit}
               />
+            <br/>
+            <h3 style={head}>Background Image</h3>
+              <TextField
+                hintText='Image Url'
+                fullWidth={true}
+                id='backgroundImgUrl'
+                />
+                <RaisedButton
+                label="Change Background"
+                onClick={this.changeBack}
+                backgroundColor={colors.header}
+                labelColor='#fff'
+                />
+                <br/>
               </Paper>
               </div>
             </div>

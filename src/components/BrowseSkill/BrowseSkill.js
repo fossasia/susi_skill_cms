@@ -35,8 +35,20 @@ export default class BrowseSkill extends React.Component {
             groupSelect: false,
             languageSelect: false,
             skillsLoaded: false,
-            filter:'&applyFilter=true&filter_name=ascending&filter_type=lexicographical'
+            filter:'&applyFilter=true&filter_name=ascending&filter_type=lexicographical',
+            backUrl:''
         };
+
+        if(localStorage.getItem('anonymousImage')){
+            this.setState({'backUrl':localStorage.getItem('anonymousImage')});
+        }
+        else if(localStorage.getItem('loggedImage')) {
+            this.setState({'backUrl':localStorage.getItem('loggedImage')});
+        }
+        else{
+            this.setState({'backUrl':''});
+        }
+
     }
 
     componentDidMount() {
@@ -366,7 +378,10 @@ export default class BrowseSkill extends React.Component {
                         marginBottom: '40px',
                         textAlign: 'justify',
                         fontSize: '0.1px',
-                        width: '100%'
+                        width: '100%',
+                        backgroundImage : `url(${this.state.backUrl})`,
+                        backgroundRepeat : 'no-repeat',
+                        backgroundSize: 'cover'
                     }}>
                         <div className='row' style={styles.scroll}  >
                             <div style={styles.gridList}>
