@@ -88,7 +88,7 @@ class SkillListing extends Component {
             this.languageValue = this.props.location.pathname.split('/')[3];
             url = baseUrl + '?model=' + modelValue + '&group=' + this.groupValue + '&language=' + this.languageValue + '&skill=' + this.name;
 
-            console.log('Url:' + url);
+            // console.log('Url:' + url);
             let self = this;
             $.ajax({
                 url: url,
