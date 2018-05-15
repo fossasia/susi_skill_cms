@@ -18,7 +18,7 @@ class Footer extends Component {
             <ul className='alignLeft'>
               <li><a href='https://chat.susi.ai/overview'>Overview</a></li>
               <li><a href='https://chat.susi.ai/blog'>Blog</a></li>
-              <li><a href='https://github.com/fossasia?utf8=%E2%9C%93&q=susi'>Code</a></li>
+              <li><a href='https://github.com/fossasia/susi_skill_cms'>Code</a></li>
             </ul>
             <ul className='alignRight'>
               <li><a href='https://chat.susi.ai/privacy'>Privacy</a></li>
