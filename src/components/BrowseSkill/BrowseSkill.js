@@ -170,32 +170,35 @@ export default class BrowseSkill extends React.Component {
                   data.filteredData = data.filteredData.filter(function(i) {
                     let result=false;
                     if (i.skill_name) {
-                        result =  i.skill_name.toLowerCase().match( self.state.searchQuery.toLowerCase() );
+                        result =  i.skill_name.toLowerCase()
+                            .match( self.state.searchQuery.toLowerCase() );
                         if (result) {
                             return result;
                         }
                     }
                     if (i.descriptions) {
-                        result =  i.descriptions.toLowerCase().match( self.state.searchQuery.toLowerCase() );
+                        result =  i.descriptions.toLowerCase()
+                            .match( self.state.searchQuery.toLowerCase() );
                         if (result) {
                             return result;
                         }
                     }
                     if (i.author) {
-                        result =  i.author.toLowerCase().match( self.state.searchQuery.toLowerCase() );
+                        result =  i.author.toLowerCase()
+                            .match( self.state.searchQuery.toLowerCase() );
                         if (result) {
                             return result;
                         }
                     }
                     if (i.examples && i.examples.length>0) {
-                        i.examples.map((el,i)=>{
-                          result =  el.toLowerCase().match( self.state.searchQuery.toLowerCase() );
+                        i.examples.map((el,j)=>{
+                          result =  el.toLowerCase()
+                            .match( self.state.searchQuery.toLowerCase() );
                           if (result) {
                               return result;
-                          }  
+                          }
                         })
                     }
-                    
                     return result;
                   });
                 }
@@ -429,11 +432,11 @@ export default class BrowseSkill extends React.Component {
                             </div>
                         </div>
                     </div>
-		<Footer />
+        <Footer />
                 </div>
             </a>
-		<a href = "#top"><center>Back to top</center></a>
-	</div>
+        <a href = "#top"><center>Back to top</center></a>
+    </div>
         );
     }
 }
