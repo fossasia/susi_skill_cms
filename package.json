@@ -21,6 +21,7 @@
     "match-media": "^0.2.0",
     "material-ui": "^0.18.3",
     "material-ui-password-field": "latest",
+    "material-ui-search-bar": "^0.4.1",
     "prop-types": "latest",
     "react": "^15.6.1",
     "react-ace": "^5.1.0",
