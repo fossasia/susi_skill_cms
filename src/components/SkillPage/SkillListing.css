@@ -129,3 +129,30 @@ abbr[title] {
       min-height: 0px;
   }
 }
+
+.ratings-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.rating-bar-chart {
+    flex: 3;
+}
+
+.ratings-section div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.average {
+  display: flex;
+  flex-direction: column;
+}
+
+.total-rating {
+  display: flex;
+  flex-direction: column;
+}

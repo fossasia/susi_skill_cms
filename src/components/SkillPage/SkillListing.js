@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom'
 import AuthorSkills from '../AuthorSkills/AuthorSkills'
+import {BarChart, Cell, LabelList, Bar, XAxis, YAxis, Tooltip} from 'recharts';
+import Ratings from 'react-ratings-declarative';
 import 'brace/mode/markdown';
 import 'brace/theme/github';
 import 'brace/theme/monokai';
@@ -28,6 +30,7 @@ import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import ReactTooltip from 'react-tooltip';
 import colors from '../../Utils/colors';
 import urls from '../../Utils/urls';
+
 const defaultNullSkillList = ['image', 'author', 'author_url', 'developer_privacy_policy', 'terms_of_use', 'dynamic_content', 'examples'];
 let urlCode, name;
 
@@ -56,7 +59,9 @@ class SkillListing extends Component {
             dataReceived: false,
             imgUrl: null,
             commits: [],
-            commitsChecked: []
+            commitsChecked: [],
+            avg_rating: '',
+            skill_ratings: []
         };
 
         let clickedSkill = this.props.location.pathname.split('/')[2];
@@ -81,15 +86,17 @@ class SkillListing extends Component {
 
     componentDidMount() {
 
-        if (this.url !== undefined) {
+        if(this.url !== undefined) {
+
             let baseUrl = urls.API_URL + '/cms/getSkillMetadata.json';
+            let skillRatingUrl = `${urls.API_URL}/cms/getSkillRating.json`
             let url = this.url;
 
             let modelValue = 'general';
             this.groupValue = this.props.location.pathname.split('/')[1];
             this.languageValue = this.props.location.pathname.split('/')[3];
             url = baseUrl + '?model=' + modelValue + '&group=' + this.groupValue + '&language=' + this.languageValue + '&skill=' + this.name;
-
+            skillRatingUrl = skillRatingUrl + '?model=' + modelValue + '&group=' + this.groupValue + '&language=' + this.languageValue + '&skill=' + this.name;
             // console.log('Url:' + url);
             let self = this;
             $.ajax({
@@ -100,6 +107,20 @@ class SkillListing extends Component {
                 crossDomain: true,
                 success: function (data) {
                     self.updateData(data.skill_metadata)
+                }
+            });
+            // Fetch ratings for the visited skill
+            $.ajax({
+                url: skillRatingUrl,
+                jsonpCallback: 'pc',
+                dataType: 'jsonp',
+                jsonp: 'callback',
+                crossDomain: true,
+                success: function (data) {
+                    self.saveSkillRatings(data.skill_rating)
+                },
+                error: function(e) {
+                    console.log(e);
                 }
             });
         }
@@ -139,6 +160,19 @@ class SkillListing extends Component {
         }
 
     };
+
+    saveSkillRatings = (skill_ratings) => {
+        // Sample data
+        const ratings_data = [{name: '5 ⭐', value: skill_ratings.five_star || 0},
+              {name: '4 ⭐', value: skill_ratings.four_star || 0},
+              {name: '3 ⭐', value: skill_ratings.three_star || 0},
+              {name: '2 ⭐', value: skill_ratings.two_star || 0},
+              {name: '1 ⭐', value: skill_ratings.one_star || 0}];
+        this.setState({
+            skill_ratings: ratings_data,
+            avg_rating: skill_ratings.avg_star
+        })
+    }
 
     updateData = (skillData) => {
         let imgUrl = `https://raw.githubusercontent.com/fossasia/susi_skill_data/master/models/general/${this.groupValue}/${this.languageValue}/${skillData.image}`;
@@ -374,6 +408,61 @@ class SkillListing extends Component {
                                 {` ${this.parseDate(this.state.last_modified_time)}`}
                         </div>
 
+                    </div>
+                     <div className='desc margin-b-md margin-t-md'>
+                        <h1 className='title'>
+                            Ratings
+                        </h1>
+                        <div className="ratings-section">
+                            <div className="average">
+                                Average Rating
+                                <div>
+                                    {this.state.avg_star ? this.state.avg_star : 0}
+                                </div>
+                                <Ratings
+                                    rating={this.state.avg_star || 0}
+                                    widgetDimensions="20px"
+                                    widgetSpacings="5px"
+                                  >
+                                    <Ratings.Widget />
+                                    <Ratings.Widget />
+                                    <Ratings.Widget />
+                                    <Ratings.Widget />
+                                    <Ratings.Widget />
+                                </Ratings>
+                            </div>
+                            <div className="rating-bar-chart">
+                                <BarChart layout='vertical' width={400} height={250} data={this.state.skill_ratings}>
+                                    <XAxis type="number" padding={{right: 20}} />
+                                    <YAxis dataKey="name" type="category"/>
+                                    <Tooltip
+                                        wrapperStyle={{height: '60px'}}
+                                    />
+                                    <Bar name="Skill Rating" dataKey="value" fill="#8884d8">
+                                        <LabelList dataKey="value" position="right" />
+                                        {
+                                            this.state.skill_ratings
+                                                .map((entry, index) =>
+                                                    <Cell key={index} fill={
+                                                        ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#FF2323'][index % 5]
+                                                    }/>)
+                                        }
+                                    </Bar>
+                                </BarChart>
+                            </div>
+                            <div className="total-rating">
+                                Total Ratings
+                                <div>
+                                    {
+                                        (this.state.skill_ratings.one_star || 0) +
+                                        (this.state.skill_ratings.two_star || 0) +
+                                        (this.state.skill_ratings.three_star || 0) +
+                                        (this.state.skill_ratings.four_star || 0) +
+                                        (this.state.skill_ratings.five_star || 0)
+                                    }
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
