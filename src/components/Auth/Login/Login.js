@@ -10,11 +10,17 @@ import { addUrlProps, UrlQueryParamTypes } from 'react-url-query';
 import Cookies from 'universal-cookie';
 import colors from '../../../Utils/colors';
 import urls from '../../../Utils/urls';
+import CommunicationEmail from 'material-ui/svg-icons/communication/email';
+import ActionLock from 'material-ui/svg-icons/action/lock'
 const cookies = new Cookies();
 
 
 const urlPropsQueryConfig = {
     token: { type: UrlQueryParamTypes.string },
+};
+
+const iconStyles = {
+    marginRight: 10,
 };
 
 class Login extends Component {
@@ -227,6 +233,7 @@ class Login extends Component {
                         <h3>Login to SUSI</h3>
                         <form onSubmit={this.handleSubmit}>
                             <div>
+                              <CommunicationEmail style={iconStyles} />
                                 <TextField name='email'
                                            value={this.state.email}
                                            onChange={this.handleChange}
@@ -234,6 +241,7 @@ class Login extends Component {
                                            floatingLabelText='Email' />
                             </div>
                             <div>
+                              <ActionLock style={iconStyles} />
                                 <PasswordField
                                     name='password'
                                     style={fieldStyle}
