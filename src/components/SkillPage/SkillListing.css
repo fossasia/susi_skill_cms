@@ -19,6 +19,21 @@ abbr[title] {
     float: left;
 }
 
+.avatar .rating {
+  font-size: 20px;
+  display: flex;
+  justify-content: space-around;
+}
+
+.avatar .rating div {
+  transition: all 0.3s;
+  margin: 10px;
+}
+
+.avatar .rating div:hover {
+  transform: scale(1.2);
+}
+
 .examples{
   display: flex;
   flex-wrap: wrap;
@@ -85,6 +100,11 @@ abbr[title] {
 .avatar-img {
     height:200px;
     width:auto;
+}
+
+.skill {
+  display: flex;
+  flex-direction: column;
 }
 
 @media only screen and (min-width: 0px) and (max-width: 768px){

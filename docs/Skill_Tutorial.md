@@ -160,9 +160,9 @@ I * like * beer
 You then should have one $2$>_beerbrand!
 ```
 
-Now Susi knows your most favorite beer brand, it is stored inside the variable `_beerbrand`. Note that the variable starts with a leading '_'. That has a special meaning: variables without a leading '_' are only valid while Susi is thinking about
+Now Susi knows your most favorite beer brand, it is stored inside the variable `_beerbrand`. Note that the variable starts with a leading '\_'. That has a special meaning: variables without a leading '\_' are only valid while Susi is thinking about
 a phrase, not after the response has computed. Susi will not remember a variable if
-that variable was set in a past conversation and has not a leading '_'.
+that variable was set in a past conversation and has not a leading '\_'.
 
 You can now use that variable in another rule:
 ```
