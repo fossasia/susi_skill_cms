@@ -221,6 +221,14 @@ class StaticAppBar extends Component {
         let TopRightMenu = (props) => (
             <div onScroll={this.handleScroll}>
                 <div>
+                    {cookies.get('loggedIn') ?
+                        (<label
+                            style={{color: 'white', fontSize: '16px', verticalAlign:'super'}}>
+                            {cookies.get('emailId')}
+                            </label>) :
+                        (<label>
+                            </label>)
+                    }
                     <IconMenu
                         {...props}
                         iconButtonElement={
