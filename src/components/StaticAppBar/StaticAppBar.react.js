@@ -41,11 +41,12 @@ let TopRightMenuItems = (props) => (
             rightIcon={<Chat />}>
             Chat
         </MenuItem>
-        <MenuItem
-            href='http://skills.susi.ai/'
-            rightIcon={<SKillIcon />}>
-            Skills
-        </MenuItem>
+        <Link to = "/">
+          <MenuItem
+              rightIcon={<SKillIcon />}>
+              Skills
+          </MenuItem>
+        </Link>
         <MenuItem primaryText='Settings'
             onTouchTap={this.handleClose}
             containerElement={<Link to='/settings' />}
@@ -221,6 +222,14 @@ class StaticAppBar extends Component {
         let TopRightMenu = (props) => (
             <div onScroll={this.handleScroll}>
                 <div>
+                    {cookies.get('loggedIn') ?
+                        (<label
+                            style={{color: 'white', fontSize: '16px', verticalAlign:'super'}}>
+                            {cookies.get('emailId')}
+                            </label>) :
+                        (<label>
+                            </label>)
+                    }
                     <IconMenu
                         {...props}
                         iconButtonElement={

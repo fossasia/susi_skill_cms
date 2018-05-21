@@ -21,6 +21,7 @@ import {
     Paper,
 } from 'material-ui';
 import CircleImage from '../CircleImage/CircleImage';
+import { FaThumbsOUp, FaThumbsODown } from 'react-icons/lib/fa/'
 import EditBtn from 'material-ui/svg-icons/editor/mode-edit';
 import VersionBtn from 'material-ui/svg-icons/action/history';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
@@ -36,7 +37,6 @@ class SkillListing extends Component {
         super(props);
 
         this.state = {
-            skill_data: {},
             fontSizeCode: 14,
             editorTheme: 'github',
             image: '',
@@ -48,11 +48,15 @@ class SkillListing extends Component {
             examples: '',
             descriptions: '',
             skill_name: '',
+            positive_rating: 0,
+            negative_rating: 0,
+            last_modified_time: '',
+            last_access_time: '',
             showAuthorSkills: false,
             dataReceived: false,
             imgUrl: null,
             commits: [],
-            commitsChecked: [],
+            commitsChecked: []
         };
 
         let clickedSkill = this.props.location.pathname.split('/')[2];
@@ -161,6 +165,18 @@ class SkillListing extends Component {
             skill_name
         });
         name = skill_name;
+        if(skillData.skill_rating) {
+            let positive_rating = skillData.skill_rating.positive;
+            let negative_rating = skillData.skill_rating.negative;
+            this.setState({
+                positive_rating,
+                negative_rating
+            });
+        }
+        this.setState({
+            last_modified_time: skillData['lastModifiedTime: '],
+            last_access_time: skillData['lastAccessTime: ']
+        })
         this.setState({
             dataReceived: true
         });
@@ -176,6 +192,31 @@ class SkillListing extends Component {
     closeAuthorSkills = () => {
         this.setState({ showAuthorSkills: false });
     };
+
+    parseDate = dtstr => {
+        // replace anything but numbers by spaces
+        dtstr = dtstr.replace(/\D/g,' ');
+        // trim any hanging white space
+        dtstr = dtstr.replace(/\s+$/,'');
+        // split on space
+        var dtcomps = dtstr.split(' ');
+        // not all ISO 8601 dates can convert, as is
+        // unless month and date specified, invalid
+        if (dtcomps.length < 3) {
+            return 'Invalid date';
+        }
+        // if time not provided, set to zero
+        if (dtcomps.length < 4) {
+            dtcomps[3] = 0;
+            dtcomps[4] = 0;
+            dtcomps[5] = 0;
+        }
+        // modify month between 1 based ISO 8601 and zero based Date
+        dtcomps[1]--;
+        const convdt = new
+        Date(Date.UTC(dtcomps[0],dtcomps[1],dtcomps[2],dtcomps[3],dtcomps[4],dtcomps[5]));
+        return convdt.toUTCString();
+    }
 
     render() {
 
@@ -219,6 +260,16 @@ class SkillListing extends Component {
                             <CircleImage name={this.state.skill_name.toUpperCase()} size='250' /> :
                             <img className='avatar-img' alt='Thumbnail' src={this.state.imgUrl} />
                         }
+                        <div className="rating">
+                            <div className="positive">
+                                <FaThumbsOUp />
+                                {this.state.positive_rating}
+                            </div>
+                            <div className="negative">
+                                <FaThumbsODown />
+                                {this.state.negative_rating}
+                            </div>
+                        </div>
                     </div>
                     <div className='linkButtons'>
                         <Link to={{
@@ -259,8 +310,8 @@ class SkillListing extends Component {
                         </h1>
                         <h4>
                             author: <span style={authorStyle}
-                                          onClick={this.openAuthorSkills}>
-                                          {this.state.author}
+                                      onClick={this.openAuthorSkills}>
+                                      {this.state.author}
                                     </span>
                         </h4>
                         <div className='avatar-meta margin-b-md'>
@@ -295,23 +346,34 @@ class SkillListing extends Component {
                         <h1 className='title'>
                             Skill Details
                         </h1>
-                        <ul>
-                            {this.state.dynamic_content ?
-                                <li>The Skill Contains content Dynamic Content
-                                    that is updated real-time based on inputs
-                                    from the User.</li> :
-                                <li>Skill details are not available yet.</li>}
+                        <div>
+                            <ul>
+                                {this.state.dynamic_content ?
+                                    <li>The Skill Contains content Dynamic Content
+                                        that is updated real-time based on inputs
+                                        from the User.</li> :
+                                    <li>Skill details are not available yet.</li>}
 
-                            {this.state.terms_of_use == null ? '' :
-                              (<li><a href={this.state.terms_of_use}
-                                      target='_blank'
-                                      rel='noopener noreferrer'>Term & Condition</a></li>)}
+                                {this.state.terms_of_use == null ? '' :
+                                  (<li><a href={this.state.terms_of_use}
+                                          target='_blank'
+                                          rel='noopener noreferrer'>Term & Condition</a></li>)}
 
-                            {this.state.terms_of_use == null ? '' :
-                              (<li><a href={this.state.developer_privacy_policy}
-                                      target='_blank'
-                                      rel='noopener noreferrer'>Developer Privacy Policy</a></li>)}
-                        </ul>
+                                {this.state.terms_of_use == null ? '' :
+                                  (<li><a href={this.state.developer_privacy_policy}
+                                          target='_blank'
+                                          rel='noopener noreferrer'>Developer Privacy Policy</a></li>)}
+                            </ul>
+                        </div>
+                        <div>
+                            Last accessed at -
+                                {` ${this.parseDate(this.state.last_access_time)}`}
+                        </div>
+                        <div>
+                            Last modified at -
+                                {` ${this.parseDate(this.state.last_modified_time)}`}
+                        </div>
+
                     </div>
                 </div>
             </div>
