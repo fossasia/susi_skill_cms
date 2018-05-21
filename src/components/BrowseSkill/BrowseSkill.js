@@ -111,7 +111,7 @@ export default class BrowseSkill extends React.Component {
 
     };
 
-    loadLanguages = () =>{
+    loadLanguages = () => {
         if (languages.length === 0) {
             $.ajax({
                 url: urls.API_URL + '/cms/getAllLanguages.json',
@@ -132,8 +132,8 @@ export default class BrowseSkill extends React.Component {
                         }
                         else {
                             languages.push(<MenuItem value={data[i]}
-                                                    key={data[i]}
-                                                    primaryText={'Universal'} />);
+                                key={data[i]}
+                                primaryText={'Universal'} />);
                         }
                     }
 
@@ -327,7 +327,7 @@ export default class BrowseSkill extends React.Component {
         return (
             <div>
                 <StaticAppBar {...this.props} />
-                <a name = "top"><div style={styles.container}>
+                <div style={styles.container}>
                     <Paper style={style} zDepth={1}>
                         <div style={styles.center}>
                             <SelectField
@@ -432,9 +432,8 @@ export default class BrowseSkill extends React.Component {
                             </div>
                         </div>
                     </div>
-        <Footer />
+                <Footer />
                 </div>
-            </a>
         <a href = "#top"><center>Back to top</center></a>
     </div>
         );
