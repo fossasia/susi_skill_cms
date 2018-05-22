@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Route} from 'react-router-dom';
 import NotFound from './components/NotFound/NotFound';
 import Admin from './components/Admin/Admin'
 import Settings from './components/Settings/Settings';
+import ChatbotPlugin from './components/ChatbotPlugin/ChatbotPlugin';
 import Switch from 'react-router-dom/es/Switch';
 import BrowseSkill from './components/BrowseSkill/BrowseSkill';
 import injectTapEventPlugin from 'react-tap-event-plugin';
@@ -37,6 +38,7 @@ class App extends React.Component {
                         <Route path='/listUser' component={ListUser}/>
                         <Route exact path='/:category/:skill/:lang' component={SkillListing}/>
                         <Route exact path='/settings' component={Settings}/>
+                        <Route exact path='/chatbot' component={ChatbotPlugin}/>
                         <Route exact path='/logout' component={Logout} />
                         <Route exact path='/skillCreator' component={CreateSkill}/>
                         <Route exact path='/:category/:skill/versions/:lang' component={SkillVersion}/>

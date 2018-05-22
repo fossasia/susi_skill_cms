@@ -13,6 +13,7 @@ import IconMenu from 'material-ui/IconMenu';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import Popover from 'material-ui/Popover';
 import Exit from 'material-ui/svg-icons/action/exit-to-app';
+import Extension from 'material-ui/svg-icons/action/extension';
 import LoginIcon from 'material-ui/svg-icons/action/account-circle';
 import Info from 'material-ui/svg-icons/action/info';
 import Chat from 'material-ui/svg-icons/communication/chat';
@@ -145,7 +146,7 @@ class StaticAppBar extends Component {
     showOptions = (event) => {
         var p = $('#rightIconButton').width();
         var screenWidth = $(window).width();
-        this.setState({ leftGap: ((screenWidth - p) / 2) + p - 130 })
+        this.setState({ leftGap: ((screenWidth - p) / 2) + p - (cookies.get('loggedIn')?170:130) })
         event.preventDefault();
         this.setState({
             showOptions: true,
@@ -251,6 +252,12 @@ class StaticAppBar extends Component {
                                     console.log('Admin page allowed ' + cookies.get('showAdmin'))
                                 )
 
+                        }
+                        {cookies.get('loggedIn') ?
+                            (<MenuItem primaryText='Chatbot Plugin'
+                                containerElement={<Link to='/chatbot' />}
+                                rightIcon={<Extension />} />) :
+                            null
                         }
                         {cookies.get('loggedIn') ?
                             (<MenuItem primaryText='Logout'
