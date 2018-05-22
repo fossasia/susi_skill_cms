@@ -197,6 +197,7 @@ export default class BrowseSkill extends React.Component {
                           if (result) {
                               return result;
                           }
+                          return null;
                         })
                     }
                     return result;
