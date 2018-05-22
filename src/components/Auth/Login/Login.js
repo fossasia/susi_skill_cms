@@ -47,10 +47,6 @@ class Login extends Component {
     }
 
     componentDidMount() {
-        // const {
-        //     token
-        // } = this.props;
-        // console.log(cookies.get('loggedIn'));
         if(cookies.get('loggedIn')) {
             this.props.history.push('/home', { open: false });
         }
@@ -218,20 +214,16 @@ class Login extends Component {
         };
         return (
             <div>
-
-                <div>
-
-                </div>
                 <div className='loginForm'>
                     <Paper zDepth={0}style={styles}>
                         <h3>Login to SUSI</h3>
                         <form onSubmit={this.handleSubmit}>
                             <div>
                                 <TextField name='email'
-                                           value={this.state.email}
-                                           onChange={this.handleChange}
-                                           errorText={this.emailErrorMessage}
-                                           floatingLabelText='Email' />
+                                   value={this.state.email}
+                                   onChange={this.handleChange}
+                                   errorText={this.emailErrorMessage}
+                                   floatingLabelText='Email' />
                             </div>
                             <div>
                                 <PasswordField
