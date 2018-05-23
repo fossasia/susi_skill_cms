@@ -99,6 +99,11 @@ export default class BrowseSkill extends React.Component {
                     data = data.groups;
                     this.setState({ groups: data });
                     data.sort();
+                    groups.push(<MenuItem
+                                    value="All"
+                                    key="All"
+                                    primaryText="All" />);
+
                     for (let i = 0; i < data.length; i++) {
                         groups.push(<MenuItem
                             value={data[i]}
@@ -221,7 +226,7 @@ export default class BrowseSkill extends React.Component {
                     if (skill.image) {
                         image = 'https://raw.githubusercontent.com/fossasia/susi_skill_data/master/models/'
                         + self.state.modelValue
-                        + '/' +self.state.groupValue
+                        + '/' +skill.group
                         + '/' + self.state.languageValue
                         + '/' + skill.image;
                     }
