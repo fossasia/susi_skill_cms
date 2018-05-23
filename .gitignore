@@ -30,3 +30,6 @@ yarn-error.log*
 .idea
 .idea/workspace.xml
 package-lock.json
+
+# Deploy keys should never be committed
+deploy_key
