@@ -129,3 +129,26 @@ abbr[title] {
       min-height: 0px;
   }
 }
+
+.ratings-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    margin: 20px;
+    padding: 20px;
+}
+
+.ratings-section div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.title {
+  padding : 10px 0 0 10px;
+}
+
+.subTitle {
+  padding : 10px 0 0 10px;
+}
