@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom'
 import AuthorSkills from '../AuthorSkills/AuthorSkills'
+import Ratings from 'react-ratings-declarative';
+import Cookies from 'universal-cookie';
 import 'brace/mode/markdown';
 import 'brace/theme/github';
 import 'brace/theme/monokai';
@@ -28,6 +30,8 @@ import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import ReactTooltip from 'react-tooltip';
 import colors from '../../Utils/colors';
 import urls from '../../Utils/urls';
+const cookies = new Cookies();
+
 const defaultNullSkillList = ['image', 'author', 'author_url', 'developer_privacy_policy', 'terms_of_use', 'dynamic_content', 'examples'];
 let urlCode, name;
 
@@ -56,7 +60,9 @@ class SkillListing extends Component {
             dataReceived: false,
             imgUrl: null,
             commits: [],
-            commitsChecked: []
+            commitsChecked: [],
+            skill_ratings: [],
+            rating : 0
         };
 
         let clickedSkill = this.props.location.pathname.split('/')[2];
@@ -81,15 +87,17 @@ class SkillListing extends Component {
 
     componentDidMount() {
 
-        if (this.url !== undefined) {
+        if(this.url !== undefined) {
+
             let baseUrl = urls.API_URL + '/cms/getSkillMetadata.json';
+            let skillRatingUrl = `${urls.API_URL}/cms/getSkillRating.json`
             let url = this.url;
 
             let modelValue = 'general';
             this.groupValue = this.props.location.pathname.split('/')[1];
             this.languageValue = this.props.location.pathname.split('/')[3];
             url = baseUrl + '?model=' + modelValue + '&group=' + this.groupValue + '&language=' + this.languageValue + '&skill=' + this.name;
-
+            skillRatingUrl = skillRatingUrl + '?model=' + modelValue + '&group=' + this.groupValue + '&language=' + this.languageValue + '&skill=' + this.name;
             // console.log('Url:' + url);
             let self = this;
             $.ajax({
@@ -100,6 +108,20 @@ class SkillListing extends Component {
                 crossDomain: true,
                 success: function (data) {
                     self.updateData(data.skill_metadata)
+                }
+            });
+            // Fetch ratings for the visited skill
+            $.ajax({
+                url: skillRatingUrl,
+                jsonpCallback: 'pc',
+                dataType: 'jsonp',
+                jsonp: 'callback',
+                crossDomain: true,
+                success: function (data) {
+                    self.saveSkillRatings(data.skill_rating)
+                },
+                error: function(e) {
+                    console.log(e);
                 }
             });
         }
@@ -140,6 +162,18 @@ class SkillListing extends Component {
 
     };
 
+    saveSkillRatings = (skill_ratings) => {
+        // Sample data
+        const data = [{name: '5 ⭐', value:20},
+              {name: '4 ⭐', value:14},
+              {name: '3 *', value:16},
+              {name: '2 ⭐', value:8},
+              {name: '1 ⭐', value:6}];
+        this.setState({
+            skill_ratings: data
+        })
+    }
+
     updateData = (skillData) => {
         let imgUrl = `https://raw.githubusercontent.com/fossasia/susi_skill_data/master/models/general/${this.groupValue}/${this.languageValue}/${skillData.image}`;
         if (!skillData.image) {
@@ -179,6 +213,52 @@ class SkillListing extends Component {
         })
         this.setState({
             dataReceived: true
+        });
+    };
+
+
+    changeRating = (newRating) => {
+
+        let baseUrl = urls.API_URL + 'cms/fiveStarRateSkill.json';
+        let skillRatingUrl = `${urls.API_URL}/cms/getSkillRating.json`
+
+        let modelValue = 'general';
+        this.groupValue = this.props.location.pathname.split('/')[1];
+        this.languageValue = this.props.location.pathname.split('/')[3];
+        skillRatingUrl = skillRatingUrl + '?model=' + modelValue + '&group=' + this.groupValue + '&language=' + this.languageValue + '&skill=' + this.name;
+        let changeRatingUrl = baseUrl + '?model=' + modelValue + '&group=' + this.groupValue + '&language=' + this.languageValue + '&skill=' + this.name + '&rating=' + newRating;
+        // console.log('Url:' + url);
+        let self = this;
+        $.ajax({
+            url: changeRatingUrl,
+            jsonpCallback: 'pc',
+            dataType: 'jsonp',
+            jsonp: 'callback',
+            crossDomain: true,
+            success: function (data) {
+                console.log('Ratings accepted');
+            },
+            error: function(e) {
+                console.log(e);
+            }
+        });
+
+         this.setState({
+            rating: newRating
+        });
+        // Fetch ratings for the visited skill
+        $.ajax({
+            url: skillRatingUrl,
+            jsonpCallback: 'pc',
+            dataType: 'jsonp',
+            jsonp: 'callback',
+            crossDomain: true,
+            success: function (data) {
+                self.saveSkillRatings(data.skill_rating)
+            },
+            error: function(e) {
+                console.log(e);
+            }
         });
     };
 
@@ -375,6 +455,36 @@ class SkillListing extends Component {
                         </div>
 
                     </div>
+                    <Paper className="margin-b-md margin-t-md">
+                        <h1 className='title'>
+                            Ratings
+                        </h1>
+                        {
+                            cookies.get('loggedIn') ?
+                            <div>
+                                <div className='subTitle'> Rate your experience with {this.name} on SUSI.AI </div>
+                                <div className="ratings-section">
+                                    <div>
+                                        <Ratings
+                                            rating={this.state.rating}
+                                            widgetRatedColors="#ffbb28"
+                                            widgetHoverColors="#ffbb28"
+                                            widgetDimensions="30px"
+                                            changeRating={this.changeRating}
+                                          >
+                                            <Ratings.Widget />
+                                            <Ratings.Widget />
+                                            <Ratings.Widget />
+                                            <Ratings.Widget />
+                                            <Ratings.Widget />
+                                        </Ratings>
+                                    </div>
+                                </div>
+                            </div>
+                            :
+                            null
+                        }
+                    </Paper>
                 </div>
             </div>
         }
