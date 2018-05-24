@@ -24,7 +24,6 @@ import {
     Paper,
 } from 'material-ui';
 import CircleImage from '../CircleImage/CircleImage';
-import { FaThumbsOUp, FaThumbsODown } from 'react-icons/lib/fa/'
 import EditBtn from 'material-ui/svg-icons/editor/mode-edit';
 import VersionBtn from 'material-ui/svg-icons/action/history';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
@@ -203,14 +202,6 @@ class SkillListing extends Component {
             skill_name
         });
         name = skill_name;
-        if(skillData.skill_rating) {
-            let positive_rating = skillData.skill_rating.positive;
-            let negative_rating = skillData.skill_rating.negative;
-            this.setState({
-                positive_rating,
-                negative_rating
-            });
-        }
         this.setState({
             last_modified_time: skillData['lastModifiedTime: '],
             last_access_time: skillData['lastAccessTime: ']
@@ -344,16 +335,6 @@ class SkillListing extends Component {
                             <CircleImage name={this.state.skill_name.toUpperCase()} size='250' /> :
                             <img className='avatar-img' alt='Thumbnail' src={this.state.imgUrl} />
                         }
-                        <div className="rating">
-                            <div className="positive">
-                                <FaThumbsOUp />
-                                {this.state.positive_rating}
-                            </div>
-                            <div className="negative">
-                                <FaThumbsODown />
-                                {this.state.negative_rating}
-                            </div>
-                        </div>
                     </div>
                     <div className='linkButtons'>
                         <Link to={{
@@ -457,63 +438,8 @@ class SkillListing extends Component {
                             Last modified at -
                                 {` ${this.parseDate(this.state.last_modified_time)}`}
                         </div>
+                    </div>
 
-                    </div>
-                     <div className='desc margin-b-md margin-t-md'>
-                        <h1 className='title'>
-                            Ratings
-                        </h1>
-                        <div className="ratings-section">
-                            <div className="average">
-                                Average Rating
-                                <div>
-                                    {this.state.avg_star ? this.state.avg_star : 0}
-                                </div>
-                                <Ratings
-                                    rating={this.state.avg_star || 0}
-                                    widgetDimensions="20px"
-                                    widgetSpacings="5px"
-                                  >
-                                    <Ratings.Widget />
-                                    <Ratings.Widget />
-                                    <Ratings.Widget />
-                                    <Ratings.Widget />
-                                    <Ratings.Widget />
-                                </Ratings>
-                            </div>
-                            <div className="rating-bar-chart">
-                                <BarChart layout='vertical' width={400} height={250} data={this.state.skill_ratings}>
-                                    <XAxis type="number" padding={{right: 20}} />
-                                    <YAxis dataKey="name" type="category"/>
-                                    <Tooltip
-                                        wrapperStyle={{height: '60px'}}
-                                    />
-                                    <Bar name="Skill Rating" dataKey="value" fill="#8884d8">
-                                        <LabelList dataKey="value" position="right" />
-                                        {
-                                            this.state.skill_ratings
-                                                .map((entry, index) =>
-                                                    <Cell key={index} fill={
-                                                        ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#FF2323'][index % 5]
-                                                    }/>)
-                                        }
-                                    </Bar>
-                                </BarChart>
-                            </div>
-                            <div className="total-rating">
-                                Total Ratings
-                                <div>
-                                    {
-                                        (this.state.skill_ratings.one_star || 0) +
-                                        (this.state.skill_ratings.two_star || 0) +
-                                        (this.state.skill_ratings.three_star || 0) +
-                                        (this.state.skill_ratings.four_star || 0) +
-                                        (this.state.skill_ratings.five_star || 0)
-                                    }
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                     <Paper className="margin-b-md margin-t-md">
                         <h1 className='title'>
                             Ratings
@@ -543,6 +469,39 @@ class SkillListing extends Component {
                             :
                             null
                         }
+                        <div className="ratings-section">
+                            <div className="average">
+                                Average Rating
+                                <div className="large-text">
+                                    {this.state.avg_star ? this.state.avg_star : 0}
+                                </div>
+                            </div>
+                            <div className="rating-bar-chart">
+                                <BarChart layout='vertical' width={400} height={250} data={this.state.skill_ratings}>
+                                    <XAxis type="number" padding={{right: 20}} />
+                                    <YAxis dataKey="name" type="category"/>
+                                    <Tooltip
+                                        wrapperStyle={{height: '60px'}}
+                                    />
+                                    <Bar name="Skill Rating" dataKey="value" fill="#8884d8">
+                                        <LabelList dataKey="value" position="right" />
+                                        {
+                                            this.state.skill_ratings
+                                                .map((entry, index) =>
+                                                    <Cell key={index} fill={
+                                                        ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#FF2323'][index % 5]
+                                                    }/>)
+                                        }
+                                    </Bar>
+                                </BarChart>
+                            </div>
+                            <div className="total-rating">
+                                Total Ratings
+                                <div className="large-text">
+                                    { this.state.skill_ratings.total_star || 0 }
+                                </div>
+                            </div>
+                        </div>
                     </Paper>
                 </div>
             </div>

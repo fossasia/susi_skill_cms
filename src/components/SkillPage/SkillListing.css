@@ -152,16 +152,22 @@ abbr[title] {
 .average {
   display: flex;
   flex-direction: column;
+  margin-left: 40px;
 }
 
 .total-rating {
   display: flex;
   flex-direction: column;
+  margin-right: 40px;
 }
 .title {
-  padding : 10px 0 0 10px;
+  padding : 20px 0 0 20px;
 }
 
 .subTitle {
-  padding : 10px 0 0 10px;
+  padding : 20px 0 0 20px;
+}
+
+.large-text {
+  font-size: 48px;
 }
