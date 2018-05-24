@@ -135,6 +135,10 @@ abbr[title] {
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
+}
+
+.rating-bar-chart {
+    flex: 3;
     margin: 20px;
     padding: 20px;
 }
@@ -145,6 +149,15 @@ abbr[title] {
   align-items: center;
 }
 
+.average {
+  display: flex;
+  flex-direction: column;
+}
+
+.total-rating {
+  display: flex;
+  flex-direction: column;
+}
 .title {
   padding : 10px 0 0 10px;
 }
