@@ -48,10 +48,6 @@ let TopRightMenuItems = (props) => (
               Skills
           </MenuItem>
         </Link>
-        <MenuItem primaryText='Settings'
-            onTouchTap={this.handleClose}
-            containerElement={<Link to='/settings' />}
-            rightIcon={<Settings />} />
     </div>
 );
 
@@ -263,11 +259,15 @@ class StaticAppBar extends Component {
 
                         }
                         {cookies.get('loggedIn') ?
-                            (<MenuItem primaryText='Chatbot Plugin'
-                                containerElement={<Link to='/chatbot' />}
+                            (<MenuItem primaryText='Botbuilder'
+                                containerElement={<Link to='/botbuilder' />}
                                 rightIcon={<Extension />} />) :
                             null
                         }
+                        <MenuItem primaryText='Settings'
+                            onTouchTap={this.handleClose}
+                            containerElement={<Link to='/settings' />}
+                            rightIcon={<Settings />} />
                         {cookies.get('loggedIn') ?
                             (<MenuItem primaryText='Logout'
                                 containerElement={<Link to='/logout' />}
