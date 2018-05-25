@@ -244,7 +244,7 @@ class StaticAppBar extends Component {
                     </IconMenu>
                     <Popover
                         {...props}
-                        style={{ float: 'left', position: 'relative', marginTop: '46px', marginLeft: leftGap }}
+                        style={{ float: 'right', position: 'relative', marginTop: '46px', marginLeft: leftGap }}
                         open={this.state.showOptions}
                         anchorEl={this.state.anchorEl}
                         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
