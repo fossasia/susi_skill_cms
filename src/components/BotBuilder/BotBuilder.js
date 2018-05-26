@@ -3,9 +3,9 @@ import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import RaisedButton from 'material-ui/RaisedButton';
 import { Paper } from 'material-ui';
 import colors from '../../Utils/colors';
-import './ChatbotPlugin.css';
+import './BotBuilder.css';
 
-class ChatbotPlugin extends React.Component {
+class BotBuilder extends React.Component {
 
     constructor(props){
         super(props);
@@ -66,7 +66,7 @@ const styles = {
     }
 };
 
-ChatbotPlugin.propTypes = {
+BotBuilder.propTypes = {
 };
 
-export default ChatbotPlugin;
+export default BotBuilder;
