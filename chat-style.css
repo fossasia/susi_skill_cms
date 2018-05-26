@@ -106,9 +106,17 @@ display: none;
   position: absolute;
   right: 5px;
   margin-top: -60px;
-  color: #868686;
+  color: #0080c0;
   font-size: 18px;
   cursor: pointer;
+  background-color: #ffffff;
+  border-radius: 50%;
+  padding: 2px;
+  opacity: 0.9;
+}
+
+.susi-bot-wrap .close:hover {
+  opacity: 1;
 }
 
 .susi-bot-wrap .bot_profile {
@@ -132,9 +140,9 @@ display: none;
 .susi-bot-wrap .chatForm {
   position: absolute;
   bottom: -65px;
-	right: 0;
-	margin-bottom: 0;
-	width: 400px;
+  right: 0;
+  margin-bottom: 0;
+  width: 400px;
   display: none;
 }
 
