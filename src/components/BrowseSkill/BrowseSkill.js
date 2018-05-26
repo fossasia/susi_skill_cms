@@ -5,8 +5,6 @@ import MenuItem from 'material-ui/MenuItem';
 import SelectField from 'material-ui/SelectField';
 import { FloatingActionButton, Paper } from 'material-ui';
 import Add from 'material-ui/svg-icons/content/add';
-import Like from 'material-ui/svg-icons/action/thumb-up';
-import Dislike from 'material-ui/svg-icons/action/thumb-down';
 import { Card } from 'material-ui/Card';
 import * as $ from 'jquery';
 import ReactTooltip from 'react-tooltip';
@@ -16,7 +14,8 @@ import CircleImage from '../CircleImage/CircleImage';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import urls from '../../Utils/urls';
 import Footer from '../Footer/Footer.react';
-import SearchBar from 'material-ui-search-bar'
+import SearchBar from 'material-ui-search-bar';
+import Ratings from 'react-ratings-declarative';
 const groups = [];
 const languages = [];
 export default class BrowseSkill extends React.Component {
@@ -222,7 +221,7 @@ export default class BrowseSkill extends React.Component {
                 skills = skills.map((el, i) => {
                     let skill = data.filteredData[el];
                     let skill_name, examples, image, description;
-                    let positive_rating = 0, negative_rating = 0;
+                    let average_rating = 0, total_rating = 0;
                     if (skill.skill_name) {
                         skill_name = skill.skill_name;
                         skill_name = skill_name.charAt(0).toUpperCase()
@@ -260,8 +259,8 @@ export default class BrowseSkill extends React.Component {
                         description = 'No description available'
                     }
                     if (skill.skill_rating) {
-                        positive_rating = skill.skill_rating.positive;
-                        negative_rating = skill.skill_rating.negative;
+                        average_rating = skill.skill_rating.avg_star;
+                        total_rating = skill.skill_rating.avg_star;
                     }
 
                     cards.push(
@@ -287,7 +286,9 @@ export default class BrowseSkill extends React.Component {
                                              style={styles.image} />
                                     </div> :
                                         <CircleImage name={el} size='48'/>}
-                                    <div style={styles.titleStyle}>{examples}</div>
+                                    <div style={styles.titleStyle}>
+                                        &quot;{examples}&quot;
+                                    </div>
                                 </div>
                                 <div style={styles.details}>
                                     <h3 style={styles.name}>{skill_name}</h3>
@@ -295,13 +296,20 @@ export default class BrowseSkill extends React.Component {
                                 </div>
                                 </Link>
                                 <div style={styles.rating}>
-                                    <span style={styles.positive}>
-                                        <Like style={styles.like} />
-                                        {positive_rating}
-                                    </span>
-                                    <span style={styles.negative}>
-                                        <Dislike style={styles.dislike} />
-                                        {negative_rating}
+                                    <Ratings
+                                        rating={average_rating || 0}
+                                        widgetRatedColors="#ffbb28"
+                                        widgetDimensions="20px"
+                                        widgetSpacings="0px"
+                                    >
+                                        <Ratings.Widget />
+                                        <Ratings.Widget />
+                                        <Ratings.Widget />
+                                        <Ratings.Widget />
+                                        <Ratings.Widget />
+                                    </Ratings>
+                                    <span style={styles.totalRating}>
+                                        {total_rating || 0}
                                     </span>
                                 </div>
                             </Card>

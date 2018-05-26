@@ -109,33 +109,18 @@ const styles = {
         width: '138px',
         marginLeft: '15px',
         verticalAlign: 'middle',
-        display: 'block'
+        display: 'block',
+        color: 'black'
     },
     rating: {
         positive: 'relative',
-        marginRight: '10px',
-        float: 'right'
+        marginLeft: '10px',
+        float: 'left',
     },
-    positive: {
-        fontSize: '16px',
-        color: '#4CAF50',
-    },
-    negative: {
-        fontSize: '16px',
-        color: '#F44336',
-        marginLeft: '10px'
-    },
-    like: {
-        width: '20px',
-        height: '20px',
-        paddingTop: '4px',
-        color: '#4CAF50'
-    },
-    dislike: {
-        width: '20px',
-        height: '20px',
-        paddingTop: '4px',
-        color: '#F44336'
+    totalRating : {
+        fontSize : '12px',
+        paddingLeft : '5px',
+        color : '#108ee9'
     }
 };
 
