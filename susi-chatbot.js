@@ -1,10 +1,16 @@
-var susi_skills_deployed_url = "https://skills.susi.ai";
-//appending css
+var susi_skills_deployed_url = "https://skills.susi.ai/";
+//Appending CSS
 var headTag = document.getElementsByTagName("head")[0];
 var link  = document.createElement('link');
 link.rel  = 'stylesheet';
 link.type = 'text/css';
-link.href = susi_skills_deployed_url+'/chat-style.css';
+link.href = susi_skills_deployed_url+'chat-style.css';
+link.media = 'all';
+headTag.appendChild(link);
+link = document.createElement('link');
+link.rel  = 'stylesheet';
+link.type = 'text/css';
+link.href = susi_skills_deployed_url+'chatbox-style.min.css';
 link.media = 'all';
 headTag.appendChild(link);
 
@@ -19,143 +25,168 @@ if(typeof jQuery=='undefined') {
 }
 
 function enableBot(){
-    $(document).ready(function() {
-        var baseUrl = "https://api.susi.ai/susi/chat.json?q=";
+	$(document).ready(function() {
 
-        // Dynamic html bot content(Widget style)
-        var bot = '<div class="susi-bot-wrap">'+
-        '<div class="chatCont" id="chatCont">'+
-        '<div class="bot_profile">'+
-        '<img src="'+susi_skills_deployed_url+'/susi.svg" class="bot_p_img">'+
-        '<div class="close">'+
-        '<i class="fa fa-times" aria-hidden="true"></i>'+
-        '</div>'+
-        '</div><!--bot_profile end-->'+
-        '<div id="result_div" class="resultDiv"></div>'+
-        '<div class="chatForm" id="chat-div">'+
-        '<div class="spinner">'+
-        '<div class="bounce1"></div>'+
-        '<div class="bounce2"></div>'+
-        '<div class="bounce3"></div>'+
-        '</div>'+
-        '<input type="text" id="chat-input" autocomplete="off" placeholder="Type a message..."'+ 'class="bot-txt"/>'+
-        '</div>'+
-        '</div><!--chatCont end-->'+
+		var baseUrl = "https://api.susi.ai/susi/chat.json?q=";
+		
+		// Add dynamic html bot content(Widget style)
+		var mybot = '<div id="susi-frame-container" class="susi-frame-container-active" style="display: none;">'+
+			'<div id="susi-frame-wrap">'+
+			'<div id="susi">'+
+			    '<div id="susi-container" class="susi-container susi-reset">'+
+			        '<div id="susi-chatbox" class="susi-chatbox">'+
+			            '<div id="susi-conversation" class="susi-conversation susi-sheet susi-sheet-active susi-active">'+
+			                '<div class="susi-sheet-content">'+
+			                    '<div class="susi-sheet-content-container">'+
+			                        '<div class="susi-conversation-parts-container">'+
+			                            '<div id="susi-message" class="susi-conversation-parts">'+
+			                            '</div>'+
+			                        '</div>'+
+			                    '</div>'+
+			                '</div>'+
+			                '<div class="susi-composer-container">'+
+			                    '<div id="susi-composer" class="susi-composer ">'+
+			                        '<div class="susi-composer-textarea-container">'+
+			                            '<div class="susi-composer-textarea" id="chat-input">'+ '<pre class="susi-send-button">'+'</pre>'+
+			                                '<textarea id="txMessage" placeholder="Type an answer" rows="1">'+'</textarea>'+
+			                            '</div>'+
+			                        '</div>'+
+			                    '</div>'+
+			                '</div>'+
+			            '</div>'+
+			        '</div>'+
+			    '</div>'+
+			'</div>'+
+		'</div>'+
+	'</div>'
+			+'</div>'+
+			'<div id="susi-launcher-close" title="Close" style="display: none;">'+'</div>'+
+		'</div>'+
+		'<div id="susi-launcher-container" class="susi-flex-center susi-avatar-launcher susi-launcher-enabled">'+
+			'<div id="susi-avatar-text">'+'Hey there'+'</div>'+
+			'<div id="susi-launcher" class="susi-launcher susi-flex-center susi-launcher-active" style="background-color: rgb(91, 75, 159);">'+
+				'<div id="susi-launcher-button" class="susi-launcher-button" style="background-image: url('+ susi_skills_deployed_url + 'avatar.jpg' +');">'+'</div>'+
+			'</div>'+
+		'</div>';
 
-        '<div class="profile_div">'+
-        '<div class="row">'+
-        '<div class="col-hgt">'+
-        '<img src="'+susi_skills_deployed_url+'/susi.svg" class="img-circle img-profile">'+
-        '</div><!--col-hgt end-->'+
-        '<div class="col-hgt">'+
-        '<div class="chat-txt">'+
-        'Chat with us now!'+
-        '</div>'+
-        '</div><!--col-hgt end-->'+
-        '</div><!--row end-->'+
-        '</div><!--profile_div end-->'+
-        '</div>';
-        $("body").append(bot);
+		$("body").html(mybot);
 
-        // Toggle chatbot
-        $('.profile_div').click(function() {
-            $('.profile_div').toggle();
-            $('.chatCont').toggle();
-            $('.bot_profile').toggle();
-            $('.chatForm').toggle();
-            document.getElementById('chat-input').focus();
-        });
+		// Toggle chatbot 
+		$('#susi-launcher').click(function() {
+			$('.susi-frame-container-active').toggle();
+			$('#susi-avatar-text').toggle();
+			$('#susi-launcher-close').toggle();
+			document.getElementById('chat-input').focus();
+		});
 
-        $('.close').click(function() {
-            $('.profile_div').toggle();
-            $('.chatCont').toggle();
-            $('.bot_profile').toggle();
-            $('.chatForm').toggle();
-        });
+		$('#susi-launcher-close').click(function() {
+			$('.susi-frame-container-active').toggle();
+			$('#susi-avatar-text').toggle();
+			$('#susi-launcher-close').toggle();
+		});
 
-        // on input/text enter
-        $('#chat-input').on('keyup keypress', function(e) {
-            var keyCode = e.keyCode || e.which;
-            var text = $("#chat-input").val();
-            if (keyCode === 13) {
-                if(text == "" ||  $.trim(text) == '') {
-                    e.preventDefault();
-                    return false;
-                } else {
-                    $("#chat-input").blur();
-                    setUserResponse(text);
-                    send(text);
-                    e.preventDefault();
-                    return false;
-                }
-            }
-        });
+		// on input/text enter
+		$('#txMessage').on('keyup keypress', function(e) {
+			var keyCode = e.keyCode || e.which;
+			var text = $("#txMessage").val();
+			if (keyCode === 13) {
+				if(text == "" ||  $.trim(text) == '') {
+					e.preventDefault();
+					return false;
+				} else {
+					$("#chat-input").blur();
+					setUserResponse(text);
+					send(text);
+					e.preventDefault();
+					return false;
+				}
+			}
+		});
+		$('.susi-send-button').click(function(){
+			var text = $("#txMessage").val();
+			$("#chat-input").blur();
+			setUserResponse(text);
+			send(text);
+		});
 
-
-        // Send request to API.AI
-        function send(text) {
-            $.ajax({
-                type: "GET",
-                url: baseUrl+text,
-                contentType: "application/json",
-                dataType: "json",
-                success: function(data) {
-                    main(data);
-                },
-                error: function(e) {
-                    console.log (e);
-                }
-            });
-        }
-
-
-        // Main function
-        function main(data) {
-            var ans;
-            if(data.answers[0])
-                ans = data.answers[0].actions[0].expression;
-            else
-                ans = "Sorry, I could not understand what you just said."
-
-            setBotResponse(ans);
-        }
-
-
-        // Set bot response in result_div
-        function setBotResponse(val) {
-            setTimeout(function(){
-                val = val.replace(new RegExp('\r?\n','g'), '<br />');
-                var BotResponse = '<p class="botResult">'+val+'</p><div class="clearfix"></div>';
-                $(BotResponse).appendTo('#result_div');
-                scrollToBottomOfResults();
-                hideSpinner();
-            }, 100);
-        }
+		// Send request to SUSI API
+		function send(text) {
+			$.ajax({
+				type: "GET",
+				url: baseUrl+text,
+				contentType: "application/json",
+				dataType: "json",
+				success: function(data) {
+					main(data);
+				},
+				error: function(e) {
+					console.log(e);
+				}
+			});
+		}
 
 
-        // Set user response in result_div
-        function setUserResponse(val) {
-            var UserResponse = '<p class="userEnteredText">'+val+'</p><div class="clearfix"></div>';
-            $(UserResponse).appendTo('#result_div');
-            $("#chat-input").val('');
-            scrollToBottomOfResults();
-            showSpinner();
-        }
+		// Main function 
+		function main(data) {
+			var ans;
+			if(data.answers[0])
+				ans = data.answers[0].actions[0].expression;
+			else
+				ans = "Sorry, I could not understand what you just said."
+			
+			setBotResponse(ans);
+		}
 
 
-        // Scroll to the bottom of the results div
-        function scrollToBottomOfResults() {
-            var terminalResultsDiv = document.getElementById('result_div');
-            terminalResultsDiv.scrollTop = terminalResultsDiv.scrollHeight;
-        }
+		// Set bot response 
+		function setBotResponse(val) {
+			setTimeout(function(){
+				val = val.replace(new RegExp('\r?\n','g'), '<br />');
+				var BotResponse = '<div class="susi-conversation-part susi-conversation-part-grouped-first">'+
+		'<div style="background-image: url('+ susi_skills_deployed_url + 'avatar.jpg' + ')" class="susi-comment-avatar susi-theme-bg">'+
+			
+		'</div>'+
+		'<div class=" susi-comment susi-comment-by-susi ">'+
+			'<div class="susi-comment-body-container">'+
+				'<div class="susi-comment-body ">'+
+					'<div class="susi-comment-content">'+
+						'<div class="susi-question-label">'+
+							'<div>'+val+'</div>'+
+						'</div>'+
+					'</div>'+
+				'</div>'+
+			'</div>'+
+		'</div>'+
+	'</div>';
+				$(BotResponse).appendTo('.susi-conversation-parts');
+				scrollToBottomOfResults();
+			}, 100);
+		}
 
 
-        // ASCII Spinner
-        function showSpinner() {
-            $('.spinner').show();
-        }
-        function hideSpinner() {
-            $('.spinner').hide();
-        }
-    });
+		// Set user response
+		function setUserResponse(val) {
+			var UserResponse = '<div class="susi-conversation-part susi-conversation-part-grouped-first">'+
+		'<div class=" susi-comment susi-comment-by-user ">'+
+			'<div class="susi-comment-body-container">'+
+				'<div class="susi-comment-body ">'+
+					'<div class="susi-comment-content">'+
+						val+
+					'</div>'+
+				'</div>'+
+			'</div>'+
+		'</div>'+
+	'</div>';
+			$(UserResponse).appendTo('.susi-conversation-parts');
+			scrollToBottomOfResults();
+			$("#txMessage").val('');
+		}
+
+		// Scroll to the bottom
+		function scrollToBottomOfResults() {
+			var textsDiv = document.querySelector('.susi-sheet-content');
+			textsDiv.scrollTop = textsDiv.scrollHeight;
+		}
+
+	});
 }
