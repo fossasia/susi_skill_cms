@@ -1,332 +1,348 @@
-@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800|Satisfy);
-
-
-/* General */
-.susi-bot-wrap * {
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
+.susi-body-noscroll {
+    position: fixed;
+    overflow: hidden;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0
 }
 
-
-.bot-txt {
-  display: block;
-  width: 100%;
-  height: 34px;
-  padding: 6px 12px;
-  font-size: 14px;
-  outline: none;
-  font-family: 'Open Sans', sans-serif;
-}
-
-.fa {
-    display: inline-block;
-    font: normal normal normal 14px/1 FontAwesome;
-    font-size: inherit;
-    text-rendering: auto;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
-.fa-remove:before, .fa-close:before, .fa-times:before {
-    content: "\f00d";
-}
-/* General end*/
-
-
-/* Demo */
-.hd1 {
-  margin-top: 15vh;
-  font-size: 50px;
-  font-weight: 100;
-}
-
-.powered {
-  font-size: 17px;
-  margin-top: 20px;
-}
-
-.powered img {
-  width: 110px;
-  position: relative;
-  top: 8px;
-}
-
-.footer {
-  margin-top: 50px;
-  position: absolute;
-  bottom: 40px;
-  width: auto;
-  left: 0;
-  right: 0;
-  margin: 0 auto;
-}
-
-.foo-txt {
-  font-size: 15px;
-  font-weight: 400;
-  font-family: 'Satisfy', cursive;
-  text-shadow: none;
-  color: #272727;
-}
-
-.fa-heart {
-  color: #fb2323;
-}
-/* Demo end */
-
-
-
-/* .susi-bot-wrap */
-.susi-bot-wrap.center .chatCont,
-.susi-bot-wrap.center .profile_div {
-  left: 0;
-  right: 0;
-  margin: 0 auto;
-}
-
-.susi-bot-wrap.left .chatCont,
-.susi-bot-wrap.left .profile_div {
-  left: 0;
-}
-
-.susi-bot-wrap .chatCont {
-  position: fixed;
-  width: 400px;
-  height: 400px;
-  border: 1px solid #dcdcdc;
-  bottom: 65px;
-  right: 0;
-  background: #efe7dd url("https://skills.susi.ai/chat-background.png") repeat;
-  border-top-left-radius: 3px;
-  z-index: 10000;
-display: none;
-}
-
-.susi-bot-wrap .close {
-  position: absolute;
-  right: 5px;
-  margin-top: -60px;
-  color: #0080c0;
-  font-size: 18px;
-  cursor: pointer;
-  background-color: #ffffff;
-  border-radius: 50%;
-  padding: 2px;
-  opacity: 0.9;
-}
-
-.susi-bot-wrap .close:hover {
-  opacity: 1;
-}
-
-.susi-bot-wrap .bot_profile {
-  position: absolute;
-  right: 0;
-  margin-top: -45px;
-  text-align: center;
-  width: 400px;
-  display: none;
-  z-index: 1000;
-}
-
-.susi-bot-wrap .bot_p_img {
-  width: 80px;
-  border-radius: 25%;
-  padding: 3px;
-  background: #fff;
-  box-shadow: 0 0px 1px 0 rgba(0,0,0,0.16), 0 0px 10px 0 rgba(0,0,0,0.12);
-}
-
-.susi-bot-wrap .chatForm {
-  position: absolute;
-  bottom: -65px;
-  right: 0;
-  margin-bottom: 0;
-  width: 400px;
-  display: none;
-}
-
-.susi-bot-wrap .bot-txt,
-.susi-bot-wrap .bot-txt:focus {
-  box-shadow: none;
-  border-radius: 0;
-  height: 66px;
-  border: 0;
-  border-top: 1px solid #dcdcdc;
-  border-left: 1px solid #dcdcdc;
-}
-
-.susi-bot-wrap .resultDiv .botResult {
-  background: #fff;
-  color: #000;
-  border-radius: 3px;
-  padding: 12px;
-  font-size: 14px;
-  font-weight: 400;
-  width: 400px;
-  float: left;
-  box-shadow: 0 0px 1px 0 rgba(0,0,0,0.16),0 0px 10px 0 rgba(0,0,0,0.12);
-  border-top-left-radius: 0;
-  margin-bottom: 10px;
-  margin-top: 5px;
-  width: 100%;
-  position: relative;
-}
-
-.susi-bot-wrap .resultDiv .botResult:before {
-  content: "";
-  position: absolute;
-  width: 0;
-  height: 0;
-  border-top: 0px solid rgba(0, 0, 0, 0);
-  border-bottom: 15px solid rgba(0, 0, 0, 0);
-  border-right: 15px solid #fff;
-  left: -15px;
-  margin-top: -12px;
-}
-
-.susi-bot-wrap .resultDiv .userEnteredText {
-  background: rgb(66, 133, 244);
-  float: right;
-  color: #ffffff;
-  border-radius: 3px;
-  padding: 12px;
-  font-size: 15px;
-  font-weight: 400;
-  width: 400px;
-  box-shadow: 0 0px 1px 0 rgba(0,0,0,0.16),0 0px 10px 0 rgba(0,0,0,0.12);
-  border-top-right-radius: 0;
-  position: relative;
-  left: -6px;
-  margin-bottom: 10px;
-  margin-top: 5px;
-  width: 100%;
-  word-wrap: break-word;
-}
-
-.susi-bot-wrap .resultDiv .userEnteredText:before {
-  content: "";
-  width: 0;
-  height: 0;
-  border-top: 0px solid rgba(0, 0, 0, 0);
-  border-bottom: 15px solid rgba(0, 0, 0, 0);
-  border-left: 15px solid rgb(66, 133, 244);
-  position: absolute;
-  right: -15px;
-  margin-top: -12px;
-}
-
-.susi-bot-wrap .profile_div {
-  position: fixed;
-  bottom: 0;
-  right: 10px;
-  width: 240px;
-  cursor: pointer;
-}
-
-.susi-bot-wrap .img-profile {
-  width: 65px;
-  box-shadow: 0 0px 1px 0 rgba(0,0,0,0.16), 0 0px 10px 0 rgba(0,0,0,0.12);
-  background: white;
-}
-
-.susi-bot-wrap .col-hgt {
-  height: 100px;
-  display: flex;
-  align-items: center;
-  float: left;
-  margin-right: 10px;
-}
-
-.susi-bot-wrap .chat-txt {
-  box-shadow: 0 0px 1px 0 rgba(0,0,0,0.16),0 0px 10px 0 rgba(0,0,0,0.12);
-  padding: 15px 15px;
-  border-radius: 50px;
-}
-
-/* Spinner start */
-.susi-bot-wrap .spinner {
-  background: rgb(66, 133, 244);
-  width: 70px;
-  text-align: center;
-  display: none;
-  border-radius: 4px;
-  position: relative;
-  top: -7px;
-  left: 19px;
-  padding: 7px 10px;
-  border-top-left-radius: 0;
-}
-
-.susi-bot-wrap .spinner:before {
-  content: "";
-  position: absolute;
-  width: 0;
-  height: 0;
-  border-top: 0px solid rgba(0, 0, 0, 0);
-  border-bottom: 15px solid rgba(0, 0, 0, 0);
-  border-right: 15px solid rgb(66, 133, 244);
-  left: -15px;
-  margin-top: -7px;
-}
-
-.susi-bot-wrap .spinner > div {
-  width: 10px;
-  height: 10px;
-  background-color: #fff;
-  border-radius: 100%;
-  display: inline-block;
-  -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
-  animation: sk-bouncedelay 1.4s infinite ease-in-out both;
-  margin-right: 5px;
-}
-
-.susi-bot-wrap .spinner .bounce1 {
-  -webkit-animation-delay: -0.32s;
-  animation-delay: -0.32s;
-}
-
-.susi-bot-wrap .spinner .bounce2 {
-  -webkit-animation-delay: -0.16s;
-  animation-delay: -0.16s;
-}
-
-@-webkit-keyframes sk-bouncedelay {
-  0%, 80%, 100% { -webkit-transform: scale(0) }
-  40% { -webkit-transform: scale(1.0) }
-}
-
-@keyframes sk-bouncedelay {
-  0%, 80%, 100% {
-    -webkit-transform: scale(0);
-    transform: scale(0);
-  } 40% {
-    -webkit-transform: scale(1.0);
-    transform: scale(1.0);
-  }
-}
-/* Spinner End */
-
-.resultDiv {
-  padding: 35px 20px 30px 20px;
-  overflow-y: auto;
-  height: 100%;
-}
-
-
-@media screen and (max-width: 500px) {
-  .susi-bot-wrap .resultDiv .userEnteredText,
-  .susi-bot-wrap .resultDiv .botResult,
-  .susi-bot-wrap .suggestion {
-    width: 90%;
-    margin-bottom: 20px;
-  }
-  .susi-bot-wrap .chatCont,
-  .susi-bot-wrap .chatForm {
+#susi-frame-container {
+    z-index: 2147483000;
+    overflow: auto;
+    display: none;
+    position: fixed;
+    bottom: 85px;
+    right: 20px;
+    max-height: 610px;
+    min-height: 280px;
+    margin: 0;
     width: 100%;
-  }
-  .susi-bot-wrap .chatCont {
-    height: 70%;
-  }
+    height: 100%;
+    border-radius: 8px;
+    box-shadow: 0 5px 40px rgba(0, 0, 0, .16);
 }
-/* .susi-bot-wrap end */
+
+#susi-frame-wrap {
+    display: block;
+    position: relative;
+    border: none;
+    background-repeat: no-repeat;
+    background-color: #fff;
+    height: 100%;
+    width: 100%;
+    background-position: 150px 200px
+}
+
+.susi-send-button {
+    margin: 0;
+    font-family: Open Sans,sans-serif;
+}
+
+#susi-frame-tint {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    background: #000;
+    background: hsla(0, 0%, 100%, .45);
+    z-index: 1004;
+    display: none;
+    left: 0
+}
+
+#susi-frame-container.susi-frame-container-active.susi-frame-center {
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    width: 500px
+}
+
+#susi-launcher-container.susi-launcher-center {
+    bottom: 50%;
+    right: 0;
+}
+
+#susi-launcher-container.susi-launcher-center .susi-launcher {
+    border-radius: 8px 0 0 8px
+}
+
+#susi-launcher-container.susi-launcher-center.susi-avatar-launcher #susi-launcher {
+    border-radius: 50% 0 0 50%
+}
+
+#susi-frame-container.susi-frame-container-active.susi-frame-left {
+    left: 20px;
+    right: auto
+}
+
+#susi-launcher-container.susi-launcher-left {
+    left: 20px;
+    right: auto;
+    flex-direction: row-reverse
+}
+
+#susi-frame-container.susi-frame-container-active {
+    display: block;
+    height: 70%;
+    width: 350px;
+    -webkit-backface-visibility: hidden;
+    -webkit-transform-style: preserve-3d;
+    -webkit-transform: translateZ(0);
+    -webkit-animation: moveFromBottomFade .3s ease both;
+    animation: moveFromBottomFade .3s ease both
+}
+
+@media only screen and (max-device-width:667px),
+screen and (max-width:450px) {
+    #susi-frame-container.susi-frame-container-active {
+        width: 100%;
+        height: 100%;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        border-radius: 0;
+        max-height: none
+    }
+}
+
+@-webkit-keyframes moveFromBottomFade {
+    0% {
+        opacity: .2;
+        -webkit-transform: translateY(5%)
+    }
+}
+
+@keyframes moveFromBottomFade {
+    0% {
+        opacity: .2;
+        -webkit-transform: translateY(5%);
+        transform: translateY(5%)
+    }
+}
+
+#susi-launcher-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    direction: ltr;
+    z-index: 2147482999
+}
+
+#susi-launcher-container .susi-launcher {
+    font-family: Open Sans, sans-serif;
+    height: 42px;
+    visibility: hidden;
+    -webkit-transform: translateZ(0);
+    border-radius: 5em;
+    cursor: pointer;
+    padding: 0 20px;
+    transition: transform .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+
+#susi-launcher-container .susi-launcher:hover {
+    box-shadow: 0 4px 42px 0 rgba(0, 0, 0, .25);
+}
+
+#susi-launcher-container.susi-launcher-enabled #susi-launcher {
+    visibility: visible;
+    transform: translateY(150px);
+    animation: launcher-frame-appear .25s ease forwards
+}
+
+@-webkit-keyframes launcher-frame-appear {
+    0% {
+        opacity: 0;
+        -webkit-transform: scale(.5);
+        transform: scale(.5)
+    }
+    to {
+        opacity: 1;
+        -webkit-transform: scale(1);
+        transform: scale(1)
+    }
+}
+
+@keyframes launcher-frame-appear {
+    0% {
+        opacity: 0;
+        -webkit-transform: scale(.5);
+        transform: scale(.5)
+    }
+    to {
+        opacity: 1;
+        -webkit-transform: scale(1);
+        transform: scale(1)
+    }
+}
+
+.susi-flex-center {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    align-items: center;
+    justify-content: center
+}
+
+#susi-launcher-container .susi-launcher-button,
+#susi-offline-container .susi-launcher-button {
+    right: 0;
+    width: 18px;
+    height: 18px;
+    margin: 2px 2px 2px 0;
+    background-position: 50%;
+    background-repeat: no-repeat
+}
+
+#susi-launcher-container #susi-launcher-text {
+    color: #fff;
+    font-weight: 400;
+    margin-left: 4px;
+    margin-right: 4px;
+    font-size: 18px;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none
+}
+
+@media only screen and (max-device-width:667px),
+screen and (max-width:450px) {
+    #susi-launcher-container #susi-launcher-text {
+        display: none
+    }
+    #susi-launcher-container .susi-launcher {
+        width: 60px;
+        height: 60px;
+        padding: 0
+    }
+    #susi-launcher-container .susi-launcher-button {
+        width: 30px;
+        height: 30px
+    }
+}
+
+#susi-launcher-container.susi-launcher-enabled .susi-launcher-button {
+    background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAxOC4wLjAsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4KCjxzdmcKICAgeG1sbnM6ZGM9Imh0dHA6Ly9wdXJsLm9yZy9kYy9lbGVtZW50cy8xLjEvIgogICB4bWxuczpjYz0iaHR0cDovL2NyZWF0aXZlY29tbW9ucy5vcmcvbnMjIgogICB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiCiAgIHhtbG5zOnN2Zz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciCiAgIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIKICAgeG1sbnM6c29kaXBvZGk9Imh0dHA6Ly9zb2RpcG9kaS5zb3VyY2Vmb3JnZS5uZXQvRFREL3NvZGlwb2RpLTAuZHRkIgogICB4bWxuczppbmtzY2FwZT0iaHR0cDovL3d3dy5pbmtzY2FwZS5vcmcvbmFtZXNwYWNlcy9pbmtzY2FwZSIKICAgdmVyc2lvbj0iMS4xIgogICBpZD0iTGF5ZXJfMSIKICAgeD0iMHB4IgogICB5PSIwcHgiCiAgIHZpZXdCb3g9IjAgMCA0OSA0OSIKICAgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgNDkgNDkiCiAgIHhtbDpzcGFjZT0icHJlc2VydmUiCiAgIGlua3NjYXBlOnZlcnNpb249IjAuOTEgcjEzNzI1IgogICBzb2RpcG9kaTpkb2NuYW1lPSJvcGVuLnN2ZyI+PG1ldGFkYXRhCiAgICAgaWQ9Im1ldGFkYXRhMzQ2MSI+PHJkZjpSREY+PGNjOldvcmsKICAgICAgICAgcmRmOmFib3V0PSIiPjxkYzpmb3JtYXQ+aW1hZ2Uvc3ZnK3htbDwvZGM6Zm9ybWF0PjxkYzp0eXBlCiAgICAgICAgICAgcmRmOnJlc291cmNlPSJodHRwOi8vcHVybC5vcmcvZGMvZGNtaXR5cGUvU3RpbGxJbWFnZSIgLz48L2NjOldvcms+PC9yZGY6UkRGPjwvbWV0YWRhdGE+PGRlZnMKICAgICBpZD0iZGVmczM0NTkiIC8+PHNvZGlwb2RpOm5hbWVkdmlldwogICAgIHBhZ2Vjb2xvcj0iI2ZmZmZmZiIKICAgICBib3JkZXJjb2xvcj0iIzY2NjY2NiIKICAgICBib3JkZXJvcGFjaXR5PSIxIgogICAgIG9iamVjdHRvbGVyYW5jZT0iMTAiCiAgICAgZ3JpZHRvbGVyYW5jZT0iMTAiCiAgICAgZ3VpZGV0b2xlcmFuY2U9IjEwIgogICAgIGlua3NjYXBlOnBhZ2VvcGFjaXR5PSIwIgogICAgIGlua3NjYXBlOnBhZ2VzaGFkb3c9IjIiCiAgICAgaW5rc2NhcGU6d2luZG93LXdpZHRoPSIxMzk0IgogICAgIGlua3NjYXBlOndpbmRvdy1oZWlnaHQ9IjgzNiIKICAgICBpZD0ibmFtZWR2aWV3MzQ1NyIKICAgICBzaG93Z3JpZD0iZmFsc2UiCiAgICAgaW5rc2NhcGU6em9vbT0iMTguNzMxMTE0IgogICAgIGlua3NjYXBlOmN4PSIxNS42MzI3OTEiCiAgICAgaW5rc2NhcGU6Y3k9IjYuMzYzNTg5OCIKICAgICBpbmtzY2FwZTp3aW5kb3cteD0iMCIKICAgICBpbmtzY2FwZTp3aW5kb3cteT0iMCIKICAgICBpbmtzY2FwZTp3aW5kb3ctbWF4aW1pemVkPSIwIgogICAgIGlua3NjYXBlOmN1cnJlbnQtbGF5ZXI9Ikdyb3VwIiAvPjxnCiAgICAgaWQ9IlBhZ2UtMSIKICAgICB0cmFuc2Zvcm09Im1hdHJpeCgwLC0xLC0xLDAsNDkuMzYyNDY2LDUxLjcxNjM3MikiPjxnCiAgICAgICBpZD0iR3JvdXAiCiAgICAgICB0cmFuc2Zvcm09InRyYW5zbGF0ZSgyLDEpIj48cGF0aAogICAgICAgICBkPSJNIDI1LDEgQyAxMi4zLDEgMiwxMS4zIDIsMjQgMS45NjI0ODUsMjcuNzc0OTA3IDIuMDI0NDU2LDI3Ljg3Mjc5MyAxLjk5ODMxMiwzMy4zOTg4MDMgTCAyLDQ2LjggbCAxMS4zLC0zIGMgMTAuOSw2LjUgMjUsMi44IDMxLjUsLTguMSBDIDUxLjMsMjQuOCA0Ny42LDEwLjcgMzYuNyw0LjIgMzMuMSwyLjEgMjkuMSwxIDI1LDEgbCAwLDAgeiIKICAgICAgICAgaWQ9IlNoYXBlIgogICAgICAgICBpbmtzY2FwZTpjb25uZWN0b3ItY3VydmF0dXJlPSIwIgogICAgICAgICBzdHlsZT0iZmlsbDojZmZmZmZmO3N0cm9rZTojZmZmZmZmO3N0cm9rZS13aWR0aDoyO3N0cm9rZS1vcGFjaXR5OjAiIC8+PHBhdGgKICAgICAgICAgaWQ9IlNoYXBlXzFfIgogICAgICAgICBkPSJtIDIzLjQ2OTk1NCwzNC4yMjQ5NjEgYyAtNS41LDAgLTEwLC00LjUgLTEwLC0xMCAwLC01LjUgNC41LC0xMCAxMCwtMTAiCiAgICAgICAgIGlua3NjYXBlOmNvbm5lY3Rvci1jdXJ2YXR1cmU9IjAiCiAgICAgICAgIHN0eWxlPSJmaWxsOiM2NjY2NjY7c3Ryb2tlOiM2NjY2NjY7c3Ryb2tlLXdpZHRoOjI7b3BhY2l0eTowLjMwMTk2MDc4IiAvPjwvZz48L2c+PC9zdmc+)
+}
+
+
+#susi-launcher-container.susi-avatar-launcher {
+    bottom: 15px
+}
+
+#susi-launcher-container.susi-avatar-launcher #susi-launcher,
+#susi-launcher-container.susi-launcher-notext #susi-launcher {
+    padding: 0;
+    height: auto
+}
+
+#susi-launcher-container.susi-launcher-notext .susi-launcher-button {
+    width: 55px;
+    height: 55px;
+    background-size: 40px;
+    margin: 4px
+}
+
+#susi-launcher-container.susi-avatar-launcher .susi-launcher-button {
+    width: 60px;
+    height: 60px;
+    background-size: 60px;
+    border-radius: 50%;
+    margin: -1px;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, .15)
+}
+
+#susi-launcher-container.susi-avatar-launcher.susi-launcher-center .susi-launcher-button {
+    margin: 2px
+}
+
+#susi-launcher-container.susi-launcher-notext #susi-launcher-text {
+    display: none
+}
+
+#susi-launcher-container.susi-avatar-launcher .susi-launcher-button:after {
+    content: "";
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background-color: #2ecc71;
+    bottom: 5px;
+    right: -1px
+}
+
+#susi-launcher-container #susi-avatar-text {
+    font-family: Open Sans, sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    position: relative;
+    z-index: 2147482999;
+    cursor: pointer;
+    background-color: #fff;
+    color: #666;
+    padding: 10px;
+    border-radius: .625rem;
+    white-space: normal;
+    text-overflow: ellipsis;
+    max-width: 270px;
+    margin: 0 15px;
+    display: none;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, .15);
+    animation: launcher-frame-appear .25s ease forwards
+}
+
+#susi-launcher-container.susi-launcher-enabled.susi-avatar-launcher #susi-avatar-text {
+    display: block
+}
+
+#susi-launcher-container.susi-avatar-launcher #susi-launcher-text {
+    display: none
+}
+
+#susi-launcher-container #susi-avatar-text:before {
+    content: " ";
+    position: absolute;
+    width: 0;
+    height: 0;
+    left: auto;
+    right: -15px;
+    top: 34%;
+    bottom: auto;
+    border: 8px solid;
+    border-color: transparent transparent transparent #fff
+}
+
+#susi-launcher-container.susi-launcher-left #susi-avatar-text:before {
+    left: -15px;
+    border-color: transparent #fff transparent transparent
+}
+
+#susi-launcher-close {
+    z-index: 2147483001;
+    cursor: pointer;
+    background-size: 15px;
+    background-repeat: no-repeat;
+    background-position: 50%;
+    position: absolute;
+    bottom: calc(70% + 40px);
+    right: 35px;
+    width: 30px;
+    height: 30px;
+    background-color: #666;
+    border-radius: 50%;
+    background-image: url(close.png);
+}
+
+@media only screen and (max-device-width:667px),
+screen and (max-width:450px) {
+    #susi-launcher-close {
+        bottom: 93%;
+        right: 15px;
+    }
+}
