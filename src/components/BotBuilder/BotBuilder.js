@@ -1,9 +1,12 @@
 import React from 'react';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import RaisedButton from 'material-ui/RaisedButton';
+import Cookies from 'universal-cookie';
 import { Paper } from 'material-ui';
 import colors from '../../Utils/colors';
 import './BotBuilder.css';
+
+const cookies = new Cookies();
 
 class BotBuilder extends React.Component {
 
@@ -42,7 +45,7 @@ class BotBuilder extends React.Component {
                 <div className={'code-wrap '+(this.state.showCode?'show':'hide')}>
                   <div className="code-box">
                     <code>
-                      &lt;script type=&quot;text/javascript&quot; src=&quot;https://skills.susi.ai/susi-chatbot.js&quot;&gt;&lt;/script&gt;
+                      &lt;script type=&quot;text/javascript&quot; id=&quot;susi-bot-script&quot; data-token=&quot;{cookies.get('loggedIn')}&quot; src=&quot;https://skills.susi.ai/susi-chatbot.js&quot;&gt;&lt;/script&gt;
                     </code>
                   </div>
                   <h4>Paste the above code just above <i>&lt;/body&gt;</i>

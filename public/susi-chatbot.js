@@ -25,6 +25,9 @@ if(typeof jQuery=='undefined') {
 }
 
 function enableBot(){
+	var script_tag = document.getElementById("susi-bot-script");
+	var token = script_tag.getAttribute("data-token");
+	
 	$(document).ready(function() {
 
 		var baseUrl = "https://api.susi.ai/susi/chat.json?q=";
