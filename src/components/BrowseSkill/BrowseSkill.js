@@ -59,7 +59,10 @@ export default class BrowseSkill extends React.Component {
     };
 
     handleGroupChange = (event, index, value) => {
-        this.setState({groupValue: value}, function () {
+        this.setState({
+          groupValue: value,
+          searchQuery: ''
+        }, function () {
         // console.log(this.state);
         this.loadCards();
         });
