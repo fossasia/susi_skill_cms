@@ -266,7 +266,6 @@ class StaticAppBar extends Component {
                             null
                         }
                         <MenuItem primaryText='Settings'
-                            onTouchTap={this.handleClose}
                             containerElement={<Link to='/settings' />}
                             rightIcon={<Settings />} />
                         {cookies.get('loggedIn') ?
