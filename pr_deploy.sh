@@ -15,5 +15,5 @@ export SURGE_LOGIN=fossasiasusichat@example.co.in
 # Token of a dummy account.
 export SURGE_TOKEN=d1c28a7a75967cc2b4c852cca0d12206
 
-export DEPLOY_DOMAIN=https://pr-${TRAVIS_PULL_REQUEST}-fossasia-susi-sill-cms.surge.sh
+export DEPLOY_DOMAIN=https://pr-${TRAVIS_PULL_REQUEST}-fossasia-susi-skill-cms.surge.sh
 surge --project ./build --domain $DEPLOY_DOMAIN;
