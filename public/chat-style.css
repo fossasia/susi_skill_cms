@@ -333,7 +333,29 @@ screen and (max-width:450px) {
     border-radius: 50%;
     background-image: url(close.png);
 }
-
+#susi-container .susi-composer-textarea .susi-send-button svg{
+    width: 100%;
+    height: 100%;
+}
+.susi-comment-content{
+    overflow-wrap: break-word;
+}
+.susi-comment-body-container-user:after{
+  content: "";
+  position: absolute;
+  box-sizing: border-box;
+  right: -11px;
+  top: 30px;
+  -webkit-transform: rotate(-135deg);
+  -ms-transform: rotate(-135deg);
+  transform: rotate(-135deg);
+  border: 8px solid;
+  background-color: #0177e5;
+  border-color: transparent transparent #0177e5 #0177e5;
+  -webkit-transform-origin: 0 0;
+  -ms-transform-origin: 0 0;
+  transform-origin: 0 0;
+}
 @media only screen and (max-device-width:667px),
 screen and (max-width:450px) {
     #susi-launcher-close {
