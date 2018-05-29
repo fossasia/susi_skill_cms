@@ -214,7 +214,7 @@ class SkillListing extends Component {
 
     changeRating = (newRating) => {
 
-        let baseUrl = urls.API_URL + 'cms/fiveStarRateSkill.json';
+        let baseUrl = urls.API_URL + '/cms/fiveStarRateSkill.json';
         let skillRatingUrl = `${urls.API_URL}/cms/getSkillRating.json`
 
         let modelValue = 'general';
