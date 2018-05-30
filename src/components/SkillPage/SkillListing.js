@@ -63,6 +63,7 @@ class SkillListing extends Component {
             commits: [],
             commitsChecked: [],
             avg_rating: '',
+            total_star: '',
             skill_ratings: [],
             rating : 0
         };
@@ -120,7 +121,7 @@ class SkillListing extends Component {
                 jsonp: 'callback',
                 crossDomain: true,
                 success: function (data) {
-                    self.saveSkillRatings(data.skill_rating)
+                    self.saveSkillRatings(data.skill_rating.stars)
                 },
                 error: function(e) {
                     console.log(e);
@@ -173,7 +174,8 @@ class SkillListing extends Component {
               {name: '1 ⭐', value: skill_ratings.one_star || 0}];
         this.setState({
             skill_ratings: ratings_data,
-            avg_rating: skill_ratings.avg_star
+            avg_rating: skill_ratings.avg_star,
+            total_star: skill_ratings.total_star
         })
     }
 
@@ -214,14 +216,14 @@ class SkillListing extends Component {
 
     changeRating = (newRating) => {
 
-        let baseUrl = urls.API_URL + 'cms/fiveStarRateSkill.json';
+        let baseUrl = urls.API_URL + '/cms/fiveStarRateSkill.json';
         let skillRatingUrl = `${urls.API_URL}/cms/getSkillRating.json`
 
         let modelValue = 'general';
         this.groupValue = this.props.location.pathname.split('/')[1];
         this.languageValue = this.props.location.pathname.split('/')[3];
         skillRatingUrl = skillRatingUrl + '?model=' + modelValue + '&group=' + this.groupValue + '&language=' + this.languageValue + '&skill=' + this.name;
-        let changeRatingUrl = baseUrl + '?model=' + modelValue + '&group=' + this.groupValue + '&language=' + this.languageValue + '&skill=' + this.name + '&rating=' + newRating;
+        let changeRatingUrl = baseUrl + '?model=' + modelValue + '&group=' + this.groupValue + '&language=' + this.languageValue + '&skill=' + this.name + '&stars=' + newRating + '&access_token='+cookies.get('loggedIn');
         // console.log('Url:' + url);
         let self = this;
         $.ajax({
@@ -249,7 +251,7 @@ class SkillListing extends Component {
             jsonp: 'callback',
             crossDomain: true,
             success: function (data) {
-                self.saveSkillRatings(data.skill_rating)
+                self.saveSkillRatings(data.skill_rating.stars)
             },
             error: function(e) {
                 console.log(e);
@@ -473,7 +475,7 @@ class SkillListing extends Component {
                             <div className="average">
                                 Average Rating
                                 <div className="large-text">
-                                    {this.state.avg_star ? this.state.avg_star : 0}
+                                    {this.state.avg_rating ? this.state.avg_rating : 0}
                                 </div>
                             </div>
                             <div className="rating-bar-chart">
@@ -498,7 +500,7 @@ class SkillListing extends Component {
                             <div className="total-rating">
                                 Total Ratings
                                 <div className="large-text">
-                                    { this.state.skill_ratings.total_star || 0 }
+                                    {this.state.total_star ? this.state.total_star : 0}
                                 </div>
                             </div>
                         </div>
