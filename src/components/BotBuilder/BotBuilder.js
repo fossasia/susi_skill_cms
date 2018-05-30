@@ -1,21 +1,29 @@
 import React from 'react';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import RaisedButton from 'material-ui/RaisedButton';
+import Cookies from 'universal-cookie';
 import { Paper } from 'material-ui';
 import colors from '../../Utils/colors';
 import './BotBuilder.css';
+
+const cookies = new Cookies();
 
 class BotBuilder extends React.Component {
 
     constructor(props){
         super(props);
         this.state = {
-            showCode:false
+            showCode:false,
+            showCodeContact:false
         }
     }
 
     handleClickGenerate = () =>{
         this.setState({showCode:true});
+    }
+
+    handleClickGenerateContact = () => {
+        this.setState({showCodeContact:true});
     }
 
     render() {
@@ -43,6 +51,23 @@ class BotBuilder extends React.Component {
                   <div className="code-box">
                     <code>
                       &lt;script type=&quot;text/javascript&quot; src=&quot;https://skills.susi.ai/susi-chatbot.js&quot;&gt;&lt;/script&gt;
+                    </code>
+                  </div>
+                  <h4>Paste the above code just above <i>&lt;/body&gt;</i>
+                  tag in your website</h4>
+                </div>
+                <br/><br/>
+                <RaisedButton
+                  label='Generate JavaScript code for contact bot'
+                  backgroundColor={colors.header}
+                  labelColor='#fff'
+                  onClick={this.handleClickGenerateContact}
+                />
+                <br/><br/>
+                <div className={'code-wrap '+(this.state.showCodeContact?'show':'hide')}>
+                  <div className="code-box">
+                    <code>
+                      &lt;script type=&quot;text/javascript&quot; id=&quot;susi-bot-script&quot; data-token=&quot;{cookies.get('loggedIn')}&quot; src=&quot;https://skills.susi.ai/susi-contactbot.js&quot;&gt;&lt;/script&gt;
                     </code>
                   </div>
                   <h4>Paste the above code just above <i>&lt;/body&gt;</i>
