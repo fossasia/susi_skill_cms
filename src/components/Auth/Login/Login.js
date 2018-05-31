@@ -212,6 +212,9 @@ class Login extends Component {
             'width':'256px',
             'marginBottom':'20px'
         };
+        const fontStyle={
+            'fontSize':'16px'
+        };
         return (
             <div>
                 <div className='loginForm'>
@@ -223,7 +226,8 @@ class Login extends Component {
                                    value={this.state.email}
                                    onChange={this.handleChange}
                                    errorText={this.emailErrorMessage}
-                                   floatingLabelText='Email' />
+                                   floatingLabelText='Email'
+                                   floatingLabelStyle={fontStyle} />
                             </div>
                             <div>
                                 <PasswordField
@@ -232,7 +236,8 @@ class Login extends Component {
                                     value={this.state.password}
                                     onChange={this.handleChange}
                                     errorText={this.passwordErrorMessage}
-                                    floatingLabelText='Password' />
+                                    floatingLabelText='Password'
+                                    floatingLabelStyle={fontStyle} />
                             </div>
                             <span style={{
                                 margin: '3px 0'

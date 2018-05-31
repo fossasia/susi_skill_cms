@@ -4,7 +4,7 @@
 }
 
 .forgotpwdlink:hover{
-    color: #039be5;
+    color: red;
 }
 
 .loginForm{
@@ -19,7 +19,7 @@
 .loginForm h3{
 	font-family: 'Open Sans', sans-serif;
 	margin: 5px 0;
-	font-weight: 500;
+	font-weight: 700;
 }
 
 @media screen and (max-width: 768px) {
