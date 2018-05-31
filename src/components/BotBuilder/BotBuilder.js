@@ -2,8 +2,13 @@ import React from 'react';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import RaisedButton from 'material-ui/RaisedButton';
 import Cookies from 'universal-cookie';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 import { Paper } from 'material-ui';
 import colors from '../../Utils/colors';
+import Builder from './BotBuilderPages/Builder';
+import Design from './BotBuilderPages/Design';
+import Analytics from './BotBuilderPages/Analytics';
 import './BotBuilder.css';
 
 const cookies = new Cookies();
@@ -15,36 +20,74 @@ class BotBuilder extends React.Component {
         this.state = {
             showCode:false,
             showCodeContact:false
+            activeTab: 0
         }
     }
 
     handleClickGenerate = () =>{
-        this.setState({showCode:true});
+        this.setState(prevState => ({
+          showCode: !prevState.showCode
+        }));
     }
 
     handleClickGenerateContact = () => {
         this.setState({showCodeContact:true});
     }
+    
+    handleChange = (event, value) => {
+      this.setState({ activeTab: value });
+    };
 
     render() {
         const style = {
           width: '100%',
           padding: '30px',
-          textAlign: 'center',
+          textAlign: 'right',
           marginTop:'20px'
+        };
+        const tabContent = {
+          textAlign: 'left',
+          padding: '20px 0px 0px 10px'
         };
         return(
           <div>
             <StaticAppBar {...this.props} />
             <div style={styles.home}>
               <Paper style={style} zDepth={1}>
-                <h1 style={styles.bg}>Integrate SUSI chat in your website</h1>
-                <br/>
+                <Tabs
+                  value={this.state.activeTab}
+                  onChange={this.handleChange}
+                  indicatorColor="primary"
+                  textColor="primary"
+                >
+                  <Tab label="Builder" onClick/>
+                  <Tab label="Design" />
+                  <Tab label="Analytics" />
+                </Tabs>
+                {
+                  this.state.activeTab === 0 &&
+                  <div style={tabContent}>
+                    <Builder />
+                  </div>
+                }
+                {
+                  this.state.activeTab === 1 &&
+                  <div style={tabContent}>
+                    <Design />
+                  </div>
+                }
+                {
+                  this.state.activeTab === 2 &&
+                  <div style={tabContent}>
+                    <Analytics />
+                  </div>
+                }
                 <RaisedButton
-                  label='Generate JavaScript code'
+                  label='Deploy'
                   backgroundColor={colors.header}
                   labelColor='#fff'
                   onClick={this.handleClickGenerate}
+                  style={{ width: '100px' }}
                 />
                 <br/><br/>
                 <div className={'code-wrap '+(this.state.showCode?'show':'hide')}>
@@ -73,6 +116,11 @@ class BotBuilder extends React.Component {
                   <h4>Paste the above code just above <i>&lt;/body&gt;</i>
                   tag in your website</h4>
                 </div>
+                <br />
+                <RaisedButton
+                  label='Preview'
+                  style={{ width: '100px' }}
+                />
               </Paper>
             </div>
           </div>
