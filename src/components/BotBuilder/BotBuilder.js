@@ -20,7 +20,7 @@ class BotBuilder extends React.Component {
         super(props);
         this.state = {
             showCode:false,
-            showCodeContact:false
+            showCodeContact:false,
             activeTab: 0
         }
     }
