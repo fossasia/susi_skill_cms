@@ -6,9 +6,10 @@ import * as $ from 'jquery';
 import Cookies from 'universal-cookie';
 import Snackbar from 'material-ui/Snackbar';
 import CircularProgress from 'material-ui/CircularProgress';
-import colors from '../../../Utils/colors';
-import urls from '../../../Utils/urls';
+import colors from '../../Utils/colors';
+import urls from '../../Utils/urls';
 import { SketchPicker } from 'react-color';
+import './BotBuilder.css';
 const cookies = new Cookies();
 let BASE_URL = urls.API_URL;
 class Design extends React.Component {
