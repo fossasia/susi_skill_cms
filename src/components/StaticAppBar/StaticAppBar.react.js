@@ -74,11 +74,6 @@ class StaticAppBar extends Component {
     };
 
     componentDidMount() {
-        if (this.props.location.pathname !== '/') {
-
-            document.getElementById('appBar').classList.add('topAppBarFix');
-        }
-
         window.addEventListener('scroll', this.handleScroll);
         let url;
         url = urls.API_URL + '/aaa/showAdminService.json?access_token=' + cookies.get('loggedIn');
@@ -123,7 +118,6 @@ class StaticAppBar extends Component {
             var st = $(window).scrollTop();
             // Make sure they scroll more than delta
             if (Math.abs(lastScrollTop - st) <= delta) {
-
                 return;
             }
 

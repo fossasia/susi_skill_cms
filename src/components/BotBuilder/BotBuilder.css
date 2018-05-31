@@ -8,12 +8,14 @@
     box-shadow: 0 3px 2px 0 rgba(0,0,0,.1);
 	margin-bottom: 5px;
 }
-
+.center{
+	text-align: center;
+}
 .code-box:after {
 	content: '';
 	position: absolute;
 	top: 0;
-	left: 50%;
+	right: 5%;
 	width: 0;
 	height: 0;
 	border: 15px solid transparent;
@@ -28,4 +30,13 @@
 }
 .code-wrap.show{
 	display: block;
+}
+.design-box{
+	width: 400px;
+    margin: auto;
+    max-width: 100%;
+	text-align: left;
+}
+.sketch-picker{
+	margin: auto;
 }
