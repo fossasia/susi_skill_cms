@@ -1,16 +1,22 @@
+// Packages
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { BrowserRouter as Router, Route} from 'react-router-dom';
+import Switch from 'react-router-dom/es/Switch';
+import injectTapEventPlugin from 'react-tap-event-plugin';
+import Cookies from 'universal-cookie';
+
+// DO not register a SW for now
 // import registerServiceWorker from './registerServiceWorker';
+
+// Components
 import SkillEditor from './components/SkillEditor/SkillEditor';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import { BrowserRouter as Router, Route} from 'react-router-dom';
 import NotFound from './components/NotFound/NotFound';
 import Admin from './components/Admin/Admin'
 import Settings from './components/Settings/Settings';
 import BotBuilder from './components/BotBuilder/BotBuilder';
-import Switch from 'react-router-dom/es/Switch';
 import BrowseSkill from './components/BrowseSkill/BrowseSkill';
-import injectTapEventPlugin from 'react-tap-event-plugin';
 import SkillListing from './components/SkillPage/SkillListing';
 import ListUser from './components/Admin/ListUser/ListUser';
 import Logout from './components/Auth/Logout.react';
@@ -23,6 +29,8 @@ import setDefaults from './DefaultSettings';
 setDefaults();
 
 injectTapEventPlugin();
+
+const cookies = new Cookies();
 
 class App extends React.Component {
 
@@ -38,7 +46,12 @@ class App extends React.Component {
                         <Route path='/listUser' component={ListUser}/>
                         <Route exact path='/:category/:skill/:lang' component={SkillListing}/>
                         <Route exact path='/settings' component={Settings}/>
-                        <Route exact path='/botbuilder' component={BotBuilder}/>
+                        <Route exact path='/botbuilder' render={() => {
+                            if(cookies.get('loggedIn')) {
+                                return <BotBuilder />
+                            }
+                            return <NotFound />
+                        }}/>
                         <Route exact path='/logout' component={Logout} />
                         <Route exact path='/skillCreator' component={CreateSkill}/>
                         <Route exact path='/:category/:skill/versions/:lang' component={SkillVersion}/>
