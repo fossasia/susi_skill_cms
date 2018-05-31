@@ -1,8 +1,7 @@
 import React from 'react';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import RaisedButton from 'material-ui/RaisedButton';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
+import {Tabs, Tab} from 'material-ui/Tabs';
 import { Paper } from 'material-ui';
 import Cookies from 'universal-cookie';
 import colors from '../../Utils/colors';
