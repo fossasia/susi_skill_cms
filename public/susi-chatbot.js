@@ -166,9 +166,11 @@ function enableBot(){
 		});
 		$('.susi-send-button').click(function(){
 			var text = $("#txMessage").val();
-			$("#chat-input").blur();
-			setUserResponse(text);
-			send(text);
+			if(text !== '') {
+				$("#chat-input").blur();
+				setUserResponse(text);
+				send(text);
+			}
 		});
 
 		// Send request to SUSI API
