@@ -171,3 +171,10 @@ abbr[title] {
 .large-text {
   font-size: 48px;
 }
+
+.ratings-default-message {
+  margin: 10px;
+  display: flex;
+  justify-content: center;
+  padding-bottom: 10px;
+}

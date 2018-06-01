@@ -65,7 +65,8 @@ class SkillListing extends Component {
             avg_rating: '',
             total_star: '',
             skill_ratings: [],
-            rating : 0
+            rating : 0,
+            total_reviews: 0
         };
 
         let clickedSkill = this.props.location.pathname.split('/')[2];
@@ -166,12 +167,12 @@ class SkillListing extends Component {
     };
 
     saveSkillRatings = (skill_ratings) => {
-        // Sample data
-        const ratings_data = [{name: '5 ⭐', value: skill_ratings.five_star || 0},
-              {name: '4 ⭐', value: skill_ratings.four_star || 0},
-              {name: '3 ⭐', value: skill_ratings.three_star || 0},
-              {name: '2 ⭐', value: skill_ratings.two_star || 0},
-              {name: '1 ⭐', value: skill_ratings.one_star || 0}];
+        const ratings_data = [{name: '5 ⭐', value: skill_ratings.stars.five_star || 0},
+              {name: '4 ⭐', value: skill_ratings.stars.four_star || 0},
+              {name: '3 ⭐', value: skill_ratings.stars.three_star || 0},
+              {name: '2 ⭐', value: skill_ratings.stars.two_star || 0},
+              {name: '1 ⭐', value: skill_ratings.stars.one_star || 0}];
+        console.log(skill_ratings);
         this.setState({
             skill_ratings: ratings_data,
             avg_rating: skill_ratings.avg_star,
@@ -471,6 +472,7 @@ class SkillListing extends Component {
                             :
                             null
                         }
+
                         <div className="ratings-section">
                             <div className="average">
                                 Average Rating

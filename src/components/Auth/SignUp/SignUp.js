@@ -277,6 +277,9 @@ class SignUp extends Component {
         const fieldStyle={
             'width':'256px'
         };
+        const fontStyle={
+            'fontSize':'16px'
+        };
         const underlineFocusStyle= {
             color: colors.header
         };
@@ -296,7 +299,8 @@ class SignUp extends Component {
                                 errorText={this.emailErrorMessage}
                                 underlineFocusStyle={underlineFocusStyle}
                                 floatingLabelFocusStyle={underlineFocusStyle}
-                                floatingLabelText='Email' />
+                                floatingLabelText='Email'
+                                floatingLabelStyle={fontStyle} />
                         </div>
                         <div className={PasswordClass.join(' ')}>
                             <PasswordField
@@ -307,7 +311,8 @@ class SignUp extends Component {
                                 errorText={this.passwordErrorMessage}
                                 underlineFocusStyle={underlineFocusStyle}
                                 floatingLabelFocusStyle={underlineFocusStyle}
-                                floatingLabelText='Password' />
+                                floatingLabelText='Password'
+                                floatingLabelStyle={fontStyle} />
                               <div className='ReactPasswordStrength-strength-bar' />
                               <div>
                                 <p>
@@ -324,7 +329,8 @@ class SignUp extends Component {
                                 errorText={this.passwordConfirmErrorMessage}
                                 underlineFocusStyle={underlineFocusStyle}
                                 floatingLabelFocusStyle={underlineFocusStyle}
-                                floatingLabelText='Confirm Password' />
+                                floatingLabelText='Confirm Password'
+                                floatingLabelStyle={fontStyle} />
                         </div>
                         <div>
                             <RaisedButton
