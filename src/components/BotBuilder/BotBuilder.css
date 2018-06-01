@@ -11,32 +11,39 @@
 .center{
 	text-align: center;
 }
-.code-box:after {
-	content: '';
-	position: absolute;
-	top: 0;
-	right: 5%;
-	width: 0;
-	height: 0;
-	border: 15px solid transparent;
-	border-bottom-color: #d3d3d3;
-	border-top: 0;
-	margin-left: -15px;
-	margin-top: -15px;
-}
+
 .code-wrap{
 	transition: all 0.3s ease-in;
 	display: none;
 }
-.code-wrap.show{
+.hide{
+	display: none;
+}
+.show{
 	display: block;
 }
 .design-box{
 	width: 400px;
-    margin: auto;
     max-width: 100%;
 	text-align: left;
 }
 .sketch-picker{
 	margin: auto;
+}
+.menu-page{
+	margin-top: 40px;
+}
+.preview-wrap{
+	margin-top: 10px;
+}
+.botBuilder-page-card{
+	padding: 30px 0px;
+}
+@media (min-width:769px){
+	.botbuilder-page-wrapper{
+		padding: 40px 30px 30px;
+	}
+	.botBuilder-page-card{
+		padding: 30px;
+	}
 }

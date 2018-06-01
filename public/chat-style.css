@@ -350,7 +350,7 @@ screen and (max-width:450px) {
   -ms-transform: rotate(-135deg);
   transform: rotate(-135deg);
   border: 8px solid;
-  background-color: #0177e5;
+  background-color: transparent;
   border-color: transparent transparent #0177e5 #0177e5;
   -webkit-transform-origin: 0 0;
   -ms-transform-origin: 0 0;
