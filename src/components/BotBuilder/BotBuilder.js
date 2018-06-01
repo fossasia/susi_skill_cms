@@ -1,9 +1,7 @@
 import React from 'react';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import RaisedButton from 'material-ui/RaisedButton';
-import Cookies from 'universal-cookie';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
+import {Tabs, Tab} from 'material-ui/Tabs';
 import { Paper } from 'material-ui';
 import Cookies from 'universal-cookie';
 import colors from '../../Utils/colors';
@@ -136,11 +134,11 @@ class BotBuilder extends React.Component {
     const styles = {
         home: {
             width: '100%',
-            padding: '40px 30px 30px',
+            padding: '40px 30px 30px'
         },
         bg: {
             textAlign: 'center',
-            padding: '30px',
+            padding: '30px'
         }
     };
 

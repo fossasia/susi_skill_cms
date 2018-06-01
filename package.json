@@ -4,7 +4,6 @@
   "private": false,
   "homepage": "http://skills.susi.ai/",
   "dependencies": {
-    "@material-ui/core": "^1.1.0",
     "add-px": "^1.0.0",
     "antd": "^2.12.0",
     "babel-core": "^6.25.0",
@@ -28,6 +27,7 @@
     "react-ace": "^5.1.0",
     "react-codemirror": "^1.0.0",
     "react-diff": "0.0.7",
+    "react-color": "^2.14.1",
     "react-dom": "^15.6.1",
     "react-icons": "^2.2.7",
     "react-image": "^1.0.1",
