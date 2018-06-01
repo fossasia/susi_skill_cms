@@ -63,6 +63,7 @@ class SkillListing extends Component {
             commits: [],
             commitsChecked: [],
             avg_rating: '',
+            total_star: '',
             skill_ratings: [],
             rating : 0,
             total_reviews: 0
@@ -121,7 +122,7 @@ class SkillListing extends Component {
                 jsonp: 'callback',
                 crossDomain: true,
                 success: function (data) {
-                    self.saveSkillRatings(data.skill_rating)
+                    self.saveSkillRatings(data.skill_rating.stars)
                 },
                 error: function(e) {
                     console.log(e);
@@ -175,7 +176,7 @@ class SkillListing extends Component {
         this.setState({
             skill_ratings: ratings_data,
             avg_rating: skill_ratings.avg_star,
-            total_reviews: parseInt(skill_ratings.stars.total_star, 10)
+            total_star: skill_ratings.total_star
         })
     }
 
@@ -223,7 +224,7 @@ class SkillListing extends Component {
         this.groupValue = this.props.location.pathname.split('/')[1];
         this.languageValue = this.props.location.pathname.split('/')[3];
         skillRatingUrl = skillRatingUrl + '?model=' + modelValue + '&group=' + this.groupValue + '&language=' + this.languageValue + '&skill=' + this.name;
-        let changeRatingUrl = baseUrl + '?model=' + modelValue + '&group=' + this.groupValue + '&language=' + this.languageValue + '&skill=' + this.name + '&rating=' + newRating;
+        let changeRatingUrl = baseUrl + '?model=' + modelValue + '&group=' + this.groupValue + '&language=' + this.languageValue + '&skill=' + this.name + '&stars=' + newRating + '&access_token='+cookies.get('loggedIn');
         // console.log('Url:' + url);
         let self = this;
         $.ajax({
@@ -251,7 +252,7 @@ class SkillListing extends Component {
             jsonp: 'callback',
             crossDomain: true,
             success: function (data) {
-                self.saveSkillRatings(data.skill_rating)
+                self.saveSkillRatings(data.skill_rating.stars)
             },
             error: function(e) {
                 console.log(e);
@@ -471,43 +472,40 @@ class SkillListing extends Component {
                             :
                             null
                         }
-                        {
-                            this.state.total_reviews !== 0?
-                                (<div className="ratings-section">
-                                    <div className="average">
-                                        Average Rating
-                                        <div className="large-text">
-                                            {this.state.avg_star || 0}
-                                        </div>
-                                    </div>
-                                    <div className="rating-bar-chart">
-                                        <BarChart layout='vertical' width={400} height={250} data={this.state.skill_ratings}>
-                                            <XAxis type="number" padding={{right: 20}} />
-                                            <YAxis dataKey="name" type="category"/>
-                                            <Tooltip
-                                                wrapperStyle={{height: '60px'}}
-                                            />
-                                            <Bar name="Skill Rating" dataKey="value" fill="#8884d8">
-                                                <LabelList dataKey="value" position="right" />
-                                                {
-                                                    this.state.skill_ratings
-                                                        .map((entry, index) =>
-                                                            <Cell key={index} fill={
-                                                                ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#FF2323'][index % 5]
-                                                            }/>)
-                                                }
-                                            </Bar>
-                                        </BarChart>
-                                    </div>
-                                    <div className="total-rating">
-                                        Total Ratings
-                                        <div className="large-text">
-                                            { this.state.skill_ratings.total_star || 0 }
-                                        </div>
-                                    </div>
-                                </div>):
-                                (<div className="ratings-default-message">No ratings data available yet, be the first to rate this skill!</div>)
-                        }
+
+                        <div className="ratings-section">
+                            <div className="average">
+                                Average Rating
+                                <div className="large-text">
+                                    {this.state.avg_rating ? this.state.avg_rating : 0}
+                                </div>
+                            </div>
+                            <div className="rating-bar-chart">
+                                <BarChart layout='vertical' width={400} height={250} data={this.state.skill_ratings}>
+                                    <XAxis type="number" padding={{right: 20}} />
+                                    <YAxis dataKey="name" type="category"/>
+                                    <Tooltip
+                                        wrapperStyle={{height: '60px'}}
+                                    />
+                                    <Bar name="Skill Rating" dataKey="value" fill="#8884d8">
+                                        <LabelList dataKey="value" position="right" />
+                                        {
+                                            this.state.skill_ratings
+                                                .map((entry, index) =>
+                                                    <Cell key={index} fill={
+                                                        ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#FF2323'][index % 5]
+                                                    }/>)
+                                        }
+                                    </Bar>
+                                </BarChart>
+                            </div>
+                            <div className="total-rating">
+                                Total Ratings
+                                <div className="large-text">
+                                    {this.state.total_star ? this.state.total_star : 0}
+                                </div>
+                            </div>
+                        </div>
                     </Paper>
                 </div>
             </div>
