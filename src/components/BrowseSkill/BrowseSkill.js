@@ -415,6 +415,10 @@ export default class BrowseSkill extends React.Component {
                                 value={'&applyFilter=true&filter_name=descending&filter_type=lexicographical'}
                                 key={'&applyFilter=true&filter_name=descending&filter_type=lexicographical'}
                                 primaryText={'Z-A'} label={'Name (Z-A)'} />
+                                <MenuItem
+                                value={'&applyFilter=true&filter_name=descending&filter_type=rating'}
+                                key={'&applyFilter=true&filter_name=descending&filter_type=rating'}
+                                primaryText={'Top Rated'} label={'Top Rated'} />
                             </SelectField>
 
                             <div style={styles.newSkillBtn}>
