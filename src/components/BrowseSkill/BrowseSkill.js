@@ -434,6 +434,7 @@ export default class BrowseSkill extends React.Component {
 
                    <SearchBar
                         onChange={this.handleSearch}
+                        onRequestSearch={() => console.log('Nothing to search')}
                         style={{
                           marginTop:'25px',
                           width: '50%'
