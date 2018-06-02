@@ -135,7 +135,7 @@ function enableBot(){
 		'</div>'+
 		'</div>';
 
-		$("body").html(mybot);
+		$("body").append(mybot);
 
 		// Toggle chatbot
 		$('#susi-launcher').click(function() {
