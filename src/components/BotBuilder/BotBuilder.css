@@ -67,4 +67,7 @@
 	.botBuilder-page-card{
 		padding: 30px;
 	}
+	.display-mobile-only{
+		display: none;
+	}
 }

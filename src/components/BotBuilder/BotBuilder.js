@@ -72,7 +72,20 @@ class BotBuilder extends React.Component {
     };
 
     render() {
-        return(
+        if(!cookies.get('loggedIn'))
+        {
+            return (
+                <div>
+                    <StaticAppBar {...this.props} />
+                    <div>
+                        <p style={styles.loggedInError}>
+                            Please login to create a skill bot.
+                        </p>
+                    </div>
+                </div>
+            );
+        }
+        return (
             <div>
                 <StaticAppBar {...this.props} />
                 <div style={styles.home} className="botbuilder-page-wrapper">
@@ -98,8 +111,8 @@ class BotBuilder extends React.Component {
                                 />
                             </div>
                             </Row>
-                            <Row style={(this.state.createBotWizard)?({display: 'none'}):({display: 'block'})}>
-                                <Col xs={12} md={9}>
+                            <Row style={(this.state.createBotWizard)?({display: 'none'}):null}>
+                                <Col xs={12} md={10}>
                                     <Tabs
                                         tabItemContainerStyle={{backgroundColor:'transparent'}}
                                         inkBarStyle={{backgroundColor:'rgb(66, 133, 245)'}} >
@@ -129,7 +142,8 @@ class BotBuilder extends React.Component {
                                         </Tab>
                                     </Tabs>
                                 </Col>
-                                <Col xs={12} md={3} style={{textAlign:window.innerWidth>769?'right':'left'}}>
+                                <Col xs={12} md={2} style={{textAlign:window.innerWidth>769?'right':'left'}}>
+                                    <br className='display-mobile-only'/>
                                 {!this.state.chatbotOpen?(<RaisedButton
                                     label='Preview'
                                     style={{ width: '148px' }}
@@ -167,6 +181,14 @@ const styles = {
     previewButtonStyle: {
         width: '100px',
         marginTop:'50px'
+    },
+    loggedInError: {
+        textAlign:'center',
+        textTransform:'uppercase',
+        fontWeight:'bold',
+        marginBottom: '100px',
+        fontSize: '50px',
+        marginTop: '300px'
     }
 };
 

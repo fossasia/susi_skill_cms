@@ -13,6 +13,8 @@ class Deploy extends Component {
   render() {
     return (
       <div className="menu-page">
+         <h2>Deploy your bot to your own website</h2>
+       <br/>
         <div className='code-wrap show'>
           <div className="code-box">
             <code>
@@ -26,7 +28,7 @@ class Deploy extends Component {
           </div>
 
           <h4>Paste the above code just above <i>&lt;/body&gt;</i>
-          &nbsp;tag in your website</h4>
+        &nbsp;tag in your website.</h4>
         </div>
         <Snackbar
           open={this.state.copied}

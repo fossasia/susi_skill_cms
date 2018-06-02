@@ -4,7 +4,6 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route} from 'react-router-dom';
 import Switch from 'react-router-dom/es/Switch';
 import injectTapEventPlugin from 'react-tap-event-plugin';
-import Cookies from 'universal-cookie';
 
 // DO not register a SW for now
 // import registerServiceWorker from './registerServiceWorker';
@@ -30,8 +29,6 @@ setDefaults();
 
 injectTapEventPlugin();
 
-const cookies = new Cookies();
-
 class App extends React.Component {
 
     render() {
@@ -45,13 +42,8 @@ class App extends React.Component {
                         <Route exact path='/admin' component={Admin}/>
                         <Route path='/listUser' component={ListUser}/>
                         <Route exact path='/:category/:skill/:lang' component={SkillListing}/>
-                        <Route exact path='/botbuilder' render={() => {
-                            if(cookies.get('loggedIn')) {
-                                return <BotBuilder />
-                            }
-                            return <NotFound />
-                        }}/>
                         <Route exact path='/botbuilder/contactbot' component={ContactBot} />
+                        <Route exact path='/botbuilder' component={BotBuilder}/>
                         <Route exact path='/logout' component={Logout} />
                         <Route exact path='/skillCreator' component={CreateSkill}/>
                         <Route exact path='/:category/:skill/versions/:lang' component={SkillVersion}/>
