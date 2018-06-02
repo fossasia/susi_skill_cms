@@ -159,7 +159,6 @@ export default class CreateSkill extends React.Component {
 
                     data = data.languagesArray
                     this.setState({ languages: data });
-                    // console.log(data);
                     for (let i = 0; i < data.length; i++) {
 
                         if (ISO6391.getNativeName(data[i])) {
@@ -173,7 +172,19 @@ export default class CreateSkill extends React.Component {
                                                       key={data[i]}
                                                       primaryText={'Universal'} />);
                         }
+                        if(data[i]==='en'){
+                            this.setState({languageValue:'en'})
+                        }
                     }
+                    languages.sort(function(a, b){
+                        if(a.props.primaryText < b.props.primaryText){
+                            return -1;
+                        }
+                        if(a.props.primaryText > b.props.primaryText){
+                            return 1;
+                        }
+                        return 0;
+                    })
                 }.bind(this)
             });
         }
@@ -383,6 +394,8 @@ export default class CreateSkill extends React.Component {
                                 </SelectField>
                                 <SelectField
                                     floatingLabelText='Language'
+                                    autoWidth={true}
+                                    fullWidth={true}
                                     disabled={this.state.languageSelect}
                                     style={{ width:'125px',marginLeft:10,marginRight:10 }}
                                     value={this.state.languageValue}
