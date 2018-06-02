@@ -49,6 +49,7 @@ function getTheme(){
 		jsonp: 'callback',
 		crossDomain: true,
 		success: function(data) {
+			if(data.settings){
 			let settings = data.settings;
 			botbuilderBackgroundBody = settings.botbuilderBackgroundBody?"#"+settings.botbuilderBackgroundBody:botbuilderBackgroundBody;
 			botbuilderBodyBackgroundImg = settings.botbuilderBodyBackgroundImg?settings.botbuilderBodyBackgroundImg:botbuilderBodyBackgroundImg;
@@ -59,6 +60,7 @@ function getTheme(){
 			botbuilderIconColor = settings.botbuilderIconColor?"#"+settings.botbuilderIconColor:botbuilderIconColor;
 			botbuilderIconImg = settings.botbuilderIconImg?settings.botbuilderIconImg:botbuilderIconImg;
 			applyTheme();
+		}
 		},
 		error: function(e) {
 			console.log(e);
@@ -135,7 +137,7 @@ function enableBot(){
 		'</div>'+
 		'</div>';
 
-		$("body").html(mybot);
+		$("body").append(mybot);
 
 		// Toggle chatbot
 		$('#susi-launcher').click(function() {
