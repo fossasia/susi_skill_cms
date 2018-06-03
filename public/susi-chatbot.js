@@ -91,6 +91,8 @@ function applyTheme(){
 }
 
 function enableBot(){
+	var script_tag = document.getElementById("susi-bot-script");
+	var token = script_tag.getAttribute("data-token");
 	getTheme();
 	$(document).ready(function() {
 
