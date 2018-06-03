@@ -24,6 +24,7 @@ import CreateSkill from './components/CreateSkill/CreateSkill';
 import SkillVersion from './components/SkillVersion/SkillVersion';
 import SkillHistory from './components/SkillHistory/SkillHistory';
 import SkillRollBack from './components/SkillRollBack/SkillRollBack';
+import ContactBot from './components/BotBuilder/ContactBot';
 import setDefaults from './DefaultSettings';
 
 setDefaults();
@@ -52,6 +53,7 @@ class App extends React.Component {
                             }
                             return <NotFound />
                         }}/>
+                        <Route exact path='/botbuilder/contactbot' component={ContactBot} />
                         <Route exact path='/logout' component={Logout} />
                         <Route exact path='/skillCreator' component={CreateSkill}/>
                         <Route exact path='/:category/:skill/versions/:lang' component={SkillVersion}/>
