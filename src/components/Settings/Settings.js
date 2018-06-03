@@ -100,6 +100,7 @@ class Settings extends React.Component {
                         }
                         else{
                             state.theme = data.settings.theme;
+                            state.initialTheme = data.settings.initialTheme;
                         }
                         this.setState(state);
                     }.bind(this)
