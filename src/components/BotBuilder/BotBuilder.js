@@ -1,15 +1,16 @@
 import React from 'react';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import RaisedButton from 'material-ui/RaisedButton';
-import Cookies from 'universal-cookie';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
+import {Tabs, Tab} from 'material-ui/Tabs';
+import {Grid, Col, Row} from 'react-flexbox-grid';
 import { Paper } from 'material-ui';
-import colors from '../../Utils/colors';
-import Builder from './BotBuilderPages/Builder';
+import Build from './BotBuilderPages/Build';
 import Design from './BotBuilderPages/Design';
-import Analytics from './BotBuilderPages/Analytics';
+import Configure from './BotBuilderPages/Configure';
+import Deploy from './BotBuilderPages/Deploy';
 import './BotBuilder.css';
+import Cookies from 'universal-cookie'
+import $ from 'jquery';
 
 const cookies = new Cookies();
 
@@ -18,107 +19,129 @@ class BotBuilder extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            showCode:false,
-            activeTab: 0
+            activeTab: 0,
+            showPreview:false,
+            chatbotOpen: false
         }
-    }
-
-    handleClickGenerate = () =>{
-        this.setState(prevState => ({
-            showCode: !prevState.showCode
-        }));
     }
 
     handleChange = (event, value) => {
         this.setState({ activeTab: value });
+    }
+
+    componentWillUnmount = () =>{
+      this.handleChatbotClose();
+    }
+
+    handleChatbotOpen = () =>{
+      this.setState({
+        chatbotOpen:true
+      });
+    }
+
+    handleChatbotClose = () =>{
+      this.setState({
+        chatbotOpen:false
+      });
+      $('#susi-launcher-container').remove();
+      $('#susi-frame-container').remove();
+      $('#susi-launcher-close').remove();
+      $('#susi-bot-script').remove();
+    }
+
+    injectJS = () => {
+        const myscript = document.createElement('script');
+        myscript.type = 'text/javascript';
+        myscript.id = 'susi-bot-script';
+        myscript.setAttribute('data-token',cookies.get('loggedIn'));
+        myscript.src = '/susi-chatbot.js';
+        myscript.async = true;
+        document.body.appendChild(myscript);
+        this.setState({
+          chatbotOpen:true
+        });
     };
 
     render() {
-        const style = {
-            width: '100%',
-            padding: '30px',
-            textAlign: 'right',
-            marginTop:'20px'
-        };
-        const tabContent = {
-            textAlign: 'left',
-            padding: '20px 0px 0px 10px'
-        };
         return(
             <div>
                 <StaticAppBar {...this.props} />
-                <div style={styles.home}>
-                    <Paper style={style} zDepth={1}>
-                        <Tabs
-                            value={this.state.activeTab}
-                            onChange={this.handleChange}
-                            indicatorColor="primary"
-                            textColor="primary"
-                            >
-                                <Tab label="Builder" onClick/>
-                                <Tab label="Design" />
-                                <Tab label="Analytics" />
-                            </Tabs>
-                            <RaisedButton
-                                label='Deploy'
-                                backgroundColor={colors.header}
-                                labelColor='#fff'
-                                onClick={this.handleClickGenerate}
-                                style={{ width: '100px' }}
-                            />
-                            <br/><br/>
-                            <div className={'code-wrap '+(this.state.showCode?'show':'hide')}>
-                                <div className="code-box">
-                                    <code>
-                                        &lt;script type=&quot;text/javascript&quot; id=&quot;susi-bot-script&quot; data-token=&quot;{cookies.get('loggedIn')}&quot; src=&quot;https://skills.susi.ai/susi-chatbot.js&quot;&gt;&lt;/script&gt;
-                                    </code>
-                                </div>
-                                <h4>Paste the above code just above <i>&lt;/body&gt;</i>
-                                tag in your website</h4>
-                            </div>
-                            <br />
-                            <RaisedButton
-                                label='Preview'
-                                style={{ width: '100px' }}
-                            />
-                            {
-                                this.state.activeTab === 0 &&
-                                <div style={tabContent}>
-                                    <Builder />
-                                </div>
-                            }
-                            {
-                                this.state.activeTab === 1 &&
-                                <div style={tabContent}>
-                                    <Design />
-                                </div>
-                            }
-                            {
-                                this.state.activeTab === 2 &&
-                                <div style={tabContent}>
-                                    <Analytics />
-                                </div>
-                            }
-
-                        </Paper>
-                    </div>
+                <div style={styles.home} className="botbuilder-page-wrapper">
+                    <Paper style={styles.paperStyle} className="botBuilder-page-card" zDepth={1}>
+                        <Grid>
+                            <Row>
+                                <Col xs={12} md={9}>
+                                    <Tabs
+                                        tabItemContainerStyle={{backgroundColor:'transparent'}}
+                                        inkBarStyle={{backgroundColor:'rgb(66, 133, 245)'}} >
+                                        <Tab
+                                            style={styles.tabStyle}
+                                            className='botbuilder-menu-item'
+                                            label="Build" >
+                                            <Build />
+                                        </Tab>
+                                        <Tab
+                                            style={styles.tabStyle}
+                                            className='botbuilder-menu-item'
+                                            label="Design" >
+                                            <Design />
+                                        </Tab>
+                                        <Tab
+                                            style={styles.tabStyle}
+                                            className='botbuilder-menu-item'
+                                            label="Configure" >
+                                            <Configure />
+                                        </Tab>
+                                        <Tab
+                                            style={styles.tabStyle}
+                                            className='botbuilder-menu-item'
+                                            label="Deploy" >
+                                            <Deploy />
+                                        </Tab>
+                                    </Tabs>
+                                </Col>
+                                <Col xs={12} md={3} style={{textAlign:window.innerWidth>769?'right':'left'}}>
+                                {!this.state.chatbotOpen?(<RaisedButton
+                                    label='Preview'
+                                    style={{ width: '148px' }}
+                                    onClick={this.injectJS}
+                                />):(<RaisedButton
+                                    label='Close Preview'
+                                    style={{ width: '148px' }}
+                                    onClick={this.handleChatbotClose}
+                                />)}
+                                </Col>
+                            </Row>
+                        </Grid>
+                    </Paper>
                 </div>
-            )
-        }
+              </div>
+        )
     }
+}
 
-    const styles = {
-        home: {
-            width: '100%',
-            padding: '40px 30px 30px',
-        },
-        bg: {
-            textAlign: 'center',
-            padding: '30px',
-        }
-    };
+const styles = {
+    home: {
+        width: '100%'
+    },
+    bg: {
+        textAlign: 'center',
+        padding: '30px',
+    },
+    paperStyle: {
+        width: '100%',
+        marginTop:'20px',
+    },
+    tabStyle: {
+        color:'rgb(91, 91, 91)'
+    },
+    previewButtonStyle: {
+        width: '100px',
+        marginTop:'50px'
+    }
+};
 
-    BotBuilder.propTypes = {
-    };
+BotBuilder.propTypes = {
+};
 
-    export default BotBuilder;
+export default BotBuilder;

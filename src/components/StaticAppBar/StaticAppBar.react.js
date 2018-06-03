@@ -23,7 +23,7 @@ import Settings from 'material-ui/svg-icons/action/settings';
 import { Link } from 'react-router-dom';
 import susiWhite from '../images/SUSIAI-white.png';
 import colors from '../../Utils/colors';
-import urls from '../../Utils/colors';
+import urls from '../../Utils/urls';
 import $ from 'jquery';
 import './StaticAppBar.css';
 // import ListUser from '../Admin/ListUser/ListUser';

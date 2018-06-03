@@ -63,9 +63,9 @@ class SkillListing extends Component {
             commits: [],
             commitsChecked: [],
             avg_rating: '',
+            total_star: '',
             skill_ratings: [],
             rating : 0,
-            total_reviews: 0
         };
 
         let clickedSkill = this.props.location.pathname.split('/')[2];
@@ -121,7 +121,7 @@ class SkillListing extends Component {
                 jsonp: 'callback',
                 crossDomain: true,
                 success: function (data) {
-                    self.saveSkillRatings(data.skill_rating)
+                    self.saveSkillRatings(data.skill_rating.stars)
                 },
                 error: function(e) {
                     console.log(e);
@@ -166,16 +166,19 @@ class SkillListing extends Component {
     };
 
     saveSkillRatings = (skill_ratings) => {
-        const ratings_data = [{name: '5 ⭐', value: skill_ratings.stars.five_star || 0},
-              {name: '4 ⭐', value: skill_ratings.stars.four_star || 0},
-              {name: '3 ⭐', value: skill_ratings.stars.three_star || 0},
-              {name: '2 ⭐', value: skill_ratings.stars.two_star || 0},
-              {name: '1 ⭐', value: skill_ratings.stars.one_star || 0}];
+        // Added 10 as radix to remove warnings
+        const ratings_data = [
+            {name: '5 ⭐', value: parseInt(skill_ratings.five_star, 10) || 0},
+            {name: '4 ⭐', value: parseInt(skill_ratings.four_star, 10) || 0},
+            {name: '3 ⭐', value: parseInt(skill_ratings.three_star, 10) || 0},
+            {name: '2 ⭐', value: parseInt(skill_ratings.two_star, 10) || 0},
+            {name: '1 ⭐', value: parseInt(skill_ratings.one_star, 10) || 0}
+        ];
         console.log(skill_ratings);
         this.setState({
             skill_ratings: ratings_data,
-            avg_rating: skill_ratings.avg_star,
-            total_reviews: parseInt(skill_ratings.stars.total_star, 10)
+            avg_rating: parseInt(skill_ratings.avg_star, 10),
+            total_star: parseInt(skill_ratings.total_star, 10)
         })
     }
 
@@ -223,7 +226,7 @@ class SkillListing extends Component {
         this.groupValue = this.props.location.pathname.split('/')[1];
         this.languageValue = this.props.location.pathname.split('/')[3];
         skillRatingUrl = skillRatingUrl + '?model=' + modelValue + '&group=' + this.groupValue + '&language=' + this.languageValue + '&skill=' + this.name;
-        let changeRatingUrl = baseUrl + '?model=' + modelValue + '&group=' + this.groupValue + '&language=' + this.languageValue + '&skill=' + this.name + '&rating=' + newRating;
+        let changeRatingUrl = baseUrl + '?model=' + modelValue + '&group=' + this.groupValue + '&language=' + this.languageValue + '&skill=' + this.name + '&stars=' + newRating + '&access_token='+cookies.get('loggedIn');
         // console.log('Url:' + url);
         let self = this;
         $.ajax({
@@ -251,7 +254,7 @@ class SkillListing extends Component {
             jsonp: 'callback',
             crossDomain: true,
             success: function (data) {
-                self.saveSkillRatings(data.skill_rating)
+                self.saveSkillRatings(data.skill_rating.stars)
             },
             error: function(e) {
                 console.log(e);
@@ -472,42 +475,48 @@ class SkillListing extends Component {
                             null
                         }
                         {
-                            this.state.total_reviews !== 0?
-                                (<div className="ratings-section">
-                                    <div className="average">
-                                        Average Rating
-                                        <div className="large-text">
-                                            {this.state.avg_star || 0}
-                                        </div>
+                            this.state.total_star ?
+                            <div className="ratings-section">
+                                <div className="average">
+                                    Average Rating
+                                    <div className="large-text">
+                                        {this.state.avg_rating || 0}
                                     </div>
-                                    <div className="rating-bar-chart">
-                                        <BarChart layout='vertical' width={400} height={250} data={this.state.skill_ratings}>
-                                            <XAxis type="number" padding={{right: 20}} />
-                                            <YAxis dataKey="name" type="category"/>
-                                            <Tooltip
-                                                wrapperStyle={{height: '60px'}}
-                                            />
-                                            <Bar name="Skill Rating" dataKey="value" fill="#8884d8">
-                                                <LabelList dataKey="value" position="right" />
-                                                {
-                                                    this.state.skill_ratings
-                                                        .map((entry, index) =>
-                                                            <Cell key={index} fill={
-                                                                ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#FF2323'][index % 5]
-                                                            }/>)
-                                                }
-                                            </Bar>
-                                        </BarChart>
+                                </div>
+                                <div className="rating-bar-chart">
+                                    <BarChart
+                                        layout='vertical'
+                                        width={400}
+                                        height={250}
+                                        data={this.state.skill_ratings} >
+                                        <XAxis type="number" padding={{right: 20}} />
+                                        <YAxis dataKey="name" type="category"/>
+                                        <Tooltip
+                                            wrapperStyle={{height: '60px'}}
+                                        />
+                                        <Bar name="Skill Rating" dataKey="value" fill="#8884d8">
+                                            <LabelList dataKey="value" position="right" />
+                                            {
+                                                this.state.skill_ratings
+                                                    .map((entry, index) =>
+                                                        <Cell key={index} fill={
+                                                            ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#FF2323'][index % 5]
+                                                        }/>)
+                                            }
+                                        </Bar>
+                                    </BarChart>
+                                </div>
+                                <div className="total-rating">
+                                    Total Ratings
+                                    <div className="large-text">
+                                        {this.state.total_star || 0}
                                     </div>
-                                    <div className="total-rating">
-                                        Total Ratings
-                                        <div className="large-text">
-                                            { this.state.skill_ratings.total_star || 0 }
-                                        </div>
-                                    </div>
-                                </div>):
-                                (<div className="ratings-default-message">No ratings data available yet, be the first to rate this skill!</div>)
+                                </div>
+                            </div>
+                            :
+                            <div className="ratings-default-message">No ratings data available yet, be the first to rate this skill!</div>
                         }
+
                     </Paper>
                 </div>
             </div>
