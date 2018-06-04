@@ -164,7 +164,7 @@ export default class BrowseSkill extends React.Component {
                   // console.log(url);
         }
         else {
-            url = urls.API_URL + '/cms/getSkillList.json?applyFilter=true&filter_name=ascending&filter_type=lexicographical'
+            url = urls.API_URL + '/cms/getSkillList.json?group=Knowledge&applyFilter=true&filter_name=ascending&filter_type=lexicographical'
         }
 
         let self = this;
@@ -259,8 +259,8 @@ export default class BrowseSkill extends React.Component {
                         description = 'No description available'
                     }
                     if (skill.skill_rating) {
-                        average_rating = skill.skill_rating.avg_star;
-                        total_rating = skill.skill_rating.avg_star;
+                        average_rating = parseInt(skill.skill_rating.avg_star,10);
+                        total_rating = parseInt(skill.skill_rating.total_star,10);
                     }
 
                     cards.push(
