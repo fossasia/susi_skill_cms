@@ -1,14 +1,16 @@
 import React from 'react';
 import styles from './SkillStyle';
 import ISO6391 from 'iso-639-1';
-import MenuItem from 'material-ui/MenuItem';
 import SelectField from 'material-ui/SelectField';
-import { FloatingActionButton, Paper } from 'material-ui';
-import Add from 'material-ui/svg-icons/content/add';
+import { Paper } from 'material-ui';
 import { Card } from 'material-ui/Card';
 import * as $ from 'jquery';
-import ReactTooltip from 'react-tooltip';
 import Link from 'react-router-dom/es/Link';
+import IconMenu from 'material-ui/IconMenu';
+import MenuItem from 'material-ui/MenuItem';
+import IconButton from 'material-ui/IconButton';
+import Add from 'material-ui/svg-icons/content/add';
+import Person from 'material-ui/svg-icons/social/person';
 import colors from '../../Utils/colors';
 import CircleImage from '../CircleImage/CircleImage';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
@@ -164,7 +166,7 @@ export default class BrowseSkill extends React.Component {
                   // console.log(url);
         }
         else {
-            url = urls.API_URL + '/cms/getSkillList.json?applyFilter=true&filter_name=ascending&filter_type=lexicographical'
+            url = urls.API_URL + '/cms/getSkillList.json?group=Knowledge&applyFilter=true&filter_name=ascending&filter_type=lexicographical'
         }
 
         let self = this;
@@ -259,8 +261,8 @@ export default class BrowseSkill extends React.Component {
                         description = 'No description available'
                     }
                     if (skill.skill_rating) {
-                        average_rating = skill.skill_rating.avg_star;
-                        total_rating = skill.skill_rating.avg_star;
+                        average_rating = parseInt(skill.skill_rating.avg_star,10);
+                        total_rating = parseInt(skill.skill_rating.total_star,10);
                     }
 
                     cards.push(
@@ -333,6 +335,13 @@ export default class BrowseSkill extends React.Component {
             width: '100%',
             padding: '10px'
         };
+        const addButtonStyle = {
+            backgroundColor: colors.fabButton,
+            borderRadius:'50%',
+            height: '56px',
+            width: '56px',
+            boxShadow: '0px 3px 13px 1px rgba(0, 0, 0, 0.23)'
+        }
         let skillDisplay;
 
         if( !this.state.skills.length && this.state.skillsLoaded ) {
@@ -422,14 +431,15 @@ export default class BrowseSkill extends React.Component {
                             </SelectField>
 
                             <div style={styles.newSkillBtn}>
-                                <Link to='/skillCreator'>
-                                    <FloatingActionButton data-tip='Create Skill'
-                                        backgroundColor={colors.fabButton}
-                                        style={styles.select}>
-                                        <Add />
-                                    </FloatingActionButton>
-                                    <ReactTooltip  effect='solid' place='bottom'/>
-                                </Link>
+                                <IconMenu
+                                    anchorOrigin={{vertical:'bottom',horizontal:'middle'}}
+                                    iconButtonElement={<IconButton className='add-button' iconStyle={{color:'#fff'}} style={addButtonStyle}><Add /></IconButton>}
+                                    open={this.state.openMenu}
+                                    onRequestChange={this.handleOnRequestChange}
+                                    >
+                                        <Link to='/skillCreator'><MenuItem leftIcon={<Add />} primaryText="Create a Skill" /></Link>
+                                        <Link to='/botbuilder'><MenuItem leftIcon={<Person />} primaryText="Create Skill bot" /></Link>
+                                    </IconMenu>
                             </div>
 
                         </div>

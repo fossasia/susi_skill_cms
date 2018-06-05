@@ -120,7 +120,7 @@ class Design extends React.Component {
         +'&access_token='+cookies.get('loggedIn');
         $.ajax({
             url: url,
-            jsonpCallback: 'pa',
+            jsonpCallback: 'p',
             dataType: 'jsonp',
             jsonp: 'callback',
             crossDomain: true,
@@ -154,7 +154,7 @@ class Design extends React.Component {
         ];
         const customizeComponents = customiseOptionsList.map((component) => {
             return <div key={component.id} className='circleChoose'>
-                <h2>Color of {component.name}:</h2>
+                <h2>Color of {component.name}</h2>
                 <div className='center'>
                     <SketchPicker
                         className='center'

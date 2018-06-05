@@ -4,13 +4,14 @@ import RaisedButton from 'material-ui/RaisedButton';
 import {Step, Stepper, StepLabel} from 'material-ui/Stepper';
 import {Grid, Col, Row} from 'react-flexbox-grid';
 import { Paper } from 'material-ui';
+import colors from '../../Utils/colors';
 import Build from './BotBuilderPages/Build';
 import Design from './BotBuilderPages/Design';
 import Configure from './BotBuilderPages/Configure';
 import Deploy from './BotBuilderPages/Deploy';
-import colors from '../../Utils/colors';
 import './BotBuilder.css';
-import Cookies from 'universal-cookie'
+import { Link } from 'react-router-dom';
+import Cookies from 'universal-cookie';
 import $ from 'jquery';
 
 const cookies = new Cookies();
@@ -24,7 +25,8 @@ class BotBuilder extends React.Component {
             showPreview:false,
             chatbotOpen: false,
             finished: false,
-            stepIndex: 0
+            stepIndex: 0,
+            createBotWizard: true
         }
     }
 
@@ -42,6 +44,12 @@ class BotBuilder extends React.Component {
             this.setState({stepIndex: stepIndex - 1});
         }
     };
+
+    toggleCreateBotWizard = () => {
+        this.setState(prevState => ({
+            createBotWizard: !prevState.createBotWizard
+        }));
+    }
 
     handleChange = (event, value) => {
         this.setState({ activeTab: value });
@@ -97,13 +105,46 @@ class BotBuilder extends React.Component {
     render() {
         const {stepIndex} = this.state;
         const contentStyle = {margin: '0 16px'};
-        return(
+        if(!cookies.get('loggedIn'))
+        {
+            return (
+                <div>
+                    <StaticAppBar {...this.props} />
+                    <div>
+                        <p style={styles.loggedInError}>
+                            Please login to create a skill bot.
+                        </p>
+                    </div>
+                </div>
+            );
+        }
+        return (
             <div>
                 <StaticAppBar {...this.props} />
                 <div style={styles.home} className="botbuilder-page-wrapper">
                     <Paper style={styles.paperStyle} className="botBuilder-page-card" zDepth={1}>
                         <Grid>
-                            <Row>
+                            <Row style={(!this.state.createBotWizard)?({display: 'none'}):({display: 'block'})}>
+                            <div style={{textAlign: 'center'}}>
+                            <Link to="/botbuilder/contactbot">
+                                <RaisedButton
+                                    label='Use pre-coded Contact Bot'
+                                    backgroundColor={colors.header}
+                                    labelColor='#fff'
+                                />
+                            </Link>
+                            </div>
+                            <br /><h2 style={{textAlign: 'center'}}> OR </h2><br />
+                            <div style={{textAlign: 'center'}}>
+                                <RaisedButton
+                                    label='Create your own SUSI AI Web bot'
+                                    backgroundColor={colors.header}
+                                    labelColor='#fff'
+                                    onClick={this.toggleCreateBotWizard}
+                                />
+                            </div>
+                            </Row>
+                            <Row style={(this.state.createBotWizard)?({display: 'none'}):null}>
                                 <Col xs={12} md={9}>
                                     <div style={{width: '100%', maxWidth: 700, margin: 'auto'}}>
                                         <Stepper activeStep={stepIndex}>
@@ -183,6 +224,14 @@ const styles = {
     previewButtonStyle: {
         width: '100px',
         marginTop:'50px'
+    },
+    loggedInError: {
+        textAlign:'center',
+        textTransform:'uppercase',
+        fontWeight:'bold',
+        marginBottom: '100px',
+        fontSize: '50px',
+        marginTop: '300px'
     }
 };
 
