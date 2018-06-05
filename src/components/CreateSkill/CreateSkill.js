@@ -1,6 +1,7 @@
 import React from  'react';
 import Icon from 'antd/lib/icon';
 import MenuItem from 'material-ui/MenuItem';
+import PropTypes from 'prop-types';
 import SelectField from 'material-ui/SelectField';
 import ISO6391 from 'iso-639-1';
 import {Paper, RaisedButton, TextField} from 'material-ui';
@@ -24,7 +25,6 @@ import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import LinearProgress from 'material-ui/LinearProgress';
 import colors from '../../Utils/colors';
 import urls from '../../Utils/urls';
-const groups = [];
 const languages = [];
 const fontsizes =[];
 const codeEditorThemes =[];
@@ -53,10 +53,11 @@ export default class CreateSkill extends React.Component {
             modelValue: null,
             groupValue:null,
             languageValue:null,
-            expertValue:null,
+            expertValue:'',
             code:'::name <Skill_name>\n::author <author_name>\n::author_url <author_url>\n::description <description> \n::dynamic_content <Yes/No>\n::developer_privacy_policy <link>\n::image <image_url>\n::terms_of_use <link>\n\n\nUser query1|query2|quer3....\n!example:<The question that should be shown in public skill displays>\n!expect:<The answer expected for the above example>\nAnswer for the user query',
             fontSizeCode:14,
-            editorTheme:'github'
+            editorTheme:'github',
+            groups:[]
         };
         let fonts = [
             14,16,18,20,24,28,32,40
@@ -98,7 +99,7 @@ export default class CreateSkill extends React.Component {
     }
 
     loadgroups() {
-        if(groups.length===0) {
+        if(this.state.groups.length===0) {
             $.ajax({
                 url: urls.API_URL + '/cms/getGroups.json',
                 jsonpCallback: 'pa',
@@ -106,9 +107,10 @@ export default class CreateSkill extends React.Component {
                 jsonp: 'callback',
                 crossDomain: true,
                 success: function (data) {
+                    if(data.groups){
                     data = data.groups;
                     data.sort();
-
+                    let groups = [];
                     for (let i = 0; i < data.length; i++) {
                         groups.push(<MenuItem
                                       value={data[i]}
@@ -116,7 +118,9 @@ export default class CreateSkill extends React.Component {
                                       primaryText={`${data[i]}`}
                                     />);
                     }
-                }
+                    this.setState({groups});
+              }
+          }.bind(this)
             });
         }
     }
@@ -173,7 +177,7 @@ export default class CreateSkill extends React.Component {
                                                       primaryText={'Universal'} />);
                         }
                         if(data[i]==='en'){
-                            this.setState({languageValue:'en'})
+                            this.setState({languageValue:'en',expertSelect:false})
                         }
                     }
                     languages.sort(function(a, b){
@@ -210,8 +214,7 @@ export default class CreateSkill extends React.Component {
     }
 
     saveClick = () => {
-
-
+        let groups = this.state.groups;
         if(!cookies.get('loggedIn')) {
             notification.open({
                 message: 'Not logged In',
@@ -378,8 +381,10 @@ export default class CreateSkill extends React.Component {
         }
         return (
             <div>
-                <StaticAppBar {...this.props} />
-                <div style={styles.home}>
+                {!this.props.botBuilder && <StaticAppBar {...this.props} />}
+                <div style={{width: '100%',
+                    padding: this.props.botBuilder?'0px':'80px 30px 30px',
+                }}>
 
                     <Paper style={style} zDepth={1}>
                         <div style={styles.center}>
@@ -390,7 +395,7 @@ export default class CreateSkill extends React.Component {
                                     value={this.state.groupValue}
                                     onChange={this.handleGroupChange}
                                 >
-                                    {groups}
+                                    {this.state.groups}
                                 </SelectField>
                                 <SelectField
                                     floatingLabelText='Language'
@@ -502,10 +507,6 @@ export default class CreateSkill extends React.Component {
 }
 
 const styles = {
-    home: {
-        width: '100%',
-        padding: '80px 30px 30px',
-    },
     center: {
         display: 'flex',
         alignItems: 'center',
@@ -561,4 +562,7 @@ const styles = {
         width: '100%',
         opacity: 0,
     },
+};
+CreateSkill.propTypes = {
+  botBuilder: PropTypes.bool
 };
