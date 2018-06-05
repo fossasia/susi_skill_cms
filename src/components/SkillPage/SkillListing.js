@@ -70,7 +70,7 @@ class SkillListing extends Component {
 
         let clickedSkill = this.props.location.pathname.split('/')[2];
         this.name = clickedSkill;
-        this.url = urls.API_URL + '/cms/getSkillList.json';
+        this.url = urls.API_URL + '/cms/getSkillList.json?group=Knowledge';
         if (this.url !== undefined) {
             let url = this.url;
             this.name = clickedSkill;
