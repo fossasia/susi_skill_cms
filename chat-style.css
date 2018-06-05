@@ -363,3 +363,127 @@ screen and (max-width:450px) {
         right: 15px;
     }
 }
+
+#susi-container .no-select {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    cursor: default;
+}
+
+#susi-container .susi-comment-option-wrap {
+    max-height: 325px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    margin-top: 5px;
+}
+
+@media only screen and (max-device-width:667px),
+screen and (max-width:450px) {
+    #susi-container .susi-comment-option-wrap {
+        max-height: 250px;
+    }
+}
+
+#susi-container .susi-comment-option {
+    display: inline-block;
+    background: #fff;
+    cursor: pointer;
+    border: 1px solid #0077e5;
+    border-radius: 1.3em;
+    padding: 12px 14px 12px 34px;
+    margin: 5px;
+    min-width: 55px;
+    color: #0077e5;
+    line-height: 1;
+    -webkit-transform-origin: 25% 0;
+    transform-origin: 25% 0
+}
+
+.susi-comment-content.susi-comment-option:before {
+    content: "";
+    background-color: #e1e1e1;
+    width: 14px;
+    height: 14px;
+    position: absolute;
+    left: 12px;
+    top: 12px;
+    border-radius: 50%
+}
+
+#susi-container .susi-comment-option.highlight:before,
+#susi-container .susi-comment-option:focus:before,
+#susi-container .susi-comment-option:hover:before {
+    background-color: #1b9bfc
+}
+
+#susi-container .susi-comment-multioption {
+    display: inline-block;
+    cursor: pointer;
+    border: 1px solid #0077e5;
+    border-radius: 1.3em;
+    padding: 12px 14px 12px 34px;
+    background-color: #fff;
+    margin: 5px;
+    min-width: 55px;
+    color: #0077e5;
+    line-height: 1;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none
+}
+
+.susi-comment-content.susi-comment-multioption:before {
+    content: "";
+    background-color: #e1e1e1;
+    width: 14px;
+    height: 14px;
+    position: absolute;
+    left: 12px;
+    top: 12px;
+    border-radius: 3px
+}
+
+.susi-comment-content.susi-comment-multioption.susi-multioption-checked {
+    display: inline-block
+}
+
+.susi-comment-content.susi-comment-multioption.susi-multioption-checked:before {
+    content: "";
+    display: block;
+    width: 6px;
+    height: 12px;
+    left: 16px;
+    top: 12px;
+    border-radius: 0;
+    background-color: #fff;
+    border: solid #0077e5;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg)
+}
+
+#susi-container .susi-comment-multioption.highlight:before,
+#susi-container .susi-comment-multioption:focus:before,
+#susi-container .susi-comment-multioption:hover:before {
+    background-color: #a7a7a7
+}
+
+#susi-container .susi-comment-multioption.susi-multioption-checked.highlight:before,
+#susi-container .susi-comment-multioption.susi-multioption-checked:focus:before,
+#susi-container .susi-comment-multioption.susi-multioption-checked:hover:before {
+    background-color: transparent
+}
+
+#susi-container .susi-submit-btn {
+    height: 50px;
+    line-height: 45px;
+    background: #0077e5;
+    color: #fff;
+    text-align: center;
+    border-bottom-left-radius: 1.3em;
+    border-bottom-right-radius: 1.3em;
+    margin: 5px -17px -17px;
+    cursor: pointer
+}
