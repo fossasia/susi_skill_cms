@@ -8,10 +8,10 @@ class SkillUsageCard extends Component {
 	render() {
 		return(
 			<Paper className="margin-b-md margin-t-md">
-                <h1 className='title'>
-                   Skill Usage
-                </h1>
-                <div className="skill-usage-graph">
+				<h1 className='title'>
+					Skill Usage
+				</h1>
+				<div className="skill-usage-graph">
 					<LineChart width={600} height={300} data={this.props.skill_usage}
 							margin={{top: 5, right: 30, left: 20, bottom: 5}}>
 						<XAxis dataKey="date" padding={{right: 20}} />
@@ -21,7 +21,7 @@ class SkillUsageCard extends Component {
 						<Line name='Skill usage count' type="monotone" dataKey="count" stroke="#82ca9d" activeDot={{r: 8}}/>
 					</LineChart>
 				</div>
-            </Paper>
+			</Paper>
 		)
 	}
 }
