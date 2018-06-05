@@ -82,10 +82,7 @@ export default class ListUser extends Component {
         url = `${urls.API_URL}/aaa/showAdminService.json?access_token=` + cookies.get('loggedIn');
         $.ajax({
             url: url,
-            dataType: 'jsonp',
-            jsonpCallback: 'py',
-            jsonp: 'callback',
-            crossDomain: true,
+            dataType: 'json',
             success: function (response) {
                 // console.log(response.showAdmin);
                 if (response.showAdmin) {
@@ -93,10 +90,7 @@ export default class ListUser extends Component {
                         + '&getUserCount=true';
                     $.ajax({
                         url: getPagesUrl,
-                        dataType: 'jsonp',
-                        jsonpCallback: 'pvsdu',
-                        jsonp: 'callback',
-                        crossDomain: true,
+                        dataType: 'json',
                         success: function (data) {
                             // console.log(data);
                             pagination.total = data.userCount;
@@ -139,10 +133,7 @@ export default class ListUser extends Component {
             + '&page='+page;
         $.ajax({
             url: url,
-            dataType: 'jsonp',
-            jsonpCallback: 'pvsdu',
-            jsonp: 'callback',
-            crossDomain: true,
+            dataType: 'json',
             success: function (response) {
                 // console.log(response.users);
                 let userList = response.users;

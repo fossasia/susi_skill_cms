@@ -106,10 +106,7 @@ class SkillEditor extends Component {
         if (groups.length === 0) {
             $.ajax({
                 url: urls.API_URL + '/cms/getGroups.json',
-                jsonpCallback: 'pa',
-                dataType: 'jsonp',
-                jsonp: 'callback',
-                crossDomain: true,
+                dataType: 'json',
                 success: function (data) {
                     data = data.groups;
                     data.sort();
@@ -127,10 +124,7 @@ class SkillEditor extends Component {
         if (languages.length === 0) {
             $.ajax({
                 url: urls.API_URL + '/cms/getAllLanguages.json',
-                jsonpCallback: 'pc',
-                dataType: 'jsonp',
-                jsonp: 'callback',
-                crossDomain: true,
+                dataType: 'json',
                 success: function (data) {
 
                     data = data.languagesArray;
@@ -175,10 +169,7 @@ class SkillEditor extends Component {
                                                              '&commitID='+this.state.commitId
              $.ajax({
                      url: skillAtCommitIDUrl,
-                     jsonpCallback: 'p',
-                     dataType: 'jsonp',
-                     jsonp: 'callback',
-                     crossDomain: true,
+                     dataType: 'json',
                      success: function (data) {
                          self.setState({
                              code:data.file,
@@ -195,10 +186,7 @@ class SkillEditor extends Component {
              })
              $.ajax({
                  url: url,
-                 jsonpCallback: 'pd',
-                 dataType: 'jsonp',
-                 jsonp: 'callback',
-                 crossDomain: true,
+                 dataType: 'json',
                  success: function (data) {
                      self.updateData(data.skill_metadata)
                  }
@@ -229,10 +217,7 @@ class SkillEditor extends Component {
         })
         $.ajax({
             url: url,
-            jsonpCallback: 'pd',
-            dataType: 'jsonp',
-            jsonp: 'callback',
-            crossDomain: true,
+            dataType: 'json',
             success: function (data) {
                 self.updateData(data.skill_metadata)
             }
@@ -242,10 +227,7 @@ class SkillEditor extends Component {
 /*         skill_relative_path = this.props.location.pathname.split('/')[2];
  */        $.ajax({
             url: url,
-            jsonpCallback: 'pcc',
-            dataType: 'jsonp',
-            jsonp: 'callback',
-            crossDomain: true,
+            dataType: 'json',
             success: function (data) {
 
                 self.updateCode(data.text)
@@ -300,10 +282,7 @@ class SkillEditor extends Component {
         if (groups.length === 0) {
             $.ajax({
                 url: urls.API_URL + '/aaa/getGroups.json',
-                jsonpCallback: 'pb',
-                dataType: 'jsonp',
-                jsonp: 'callback',
-                crossDomain: true,
+                dataType: 'json',
                 success: function (data) {
                     for (let i = 0; i < data.length; i++) {
                         groups.push(<MenuItem value={data[i]}
@@ -336,10 +315,7 @@ class SkillEditor extends Component {
         if (languages.length === 0) {
             $.ajax({
                 url: urls.API_URL + '/cms/getAllLanguages.json',
-                jsonpCallback: 'pc',
-                dataType: 'jsonp',
-                jsonp: 'callback',
-                crossDomain: true,
+                dataType: 'json',
                 success: function (data) {
 
                     data = data.languagesArray;
@@ -409,10 +385,7 @@ class SkillEditor extends Component {
         // console.log('http://127.0.0.1:4000/cms/deleteSkill.txt?skill='+this.name+'&group='+this.groupValue+'&language='+this.languageValue);
         $.ajax({
             url: urls.API_URL + '/cms/deleteSkill.json?skill='+this.state.oldExpertValue+'&group='+this.state.oldGroupValue+'&language='+this.state.oldLanguageValue,
-            jsonpCallback: 'pa',
-            dataType: 'jsonp',
-            jsonp: 'callback',
-            crossDomain: true,
+            dataType: 'json',
             success: function (d) {
                 if(d.accepted===true) {
                     notification.open({

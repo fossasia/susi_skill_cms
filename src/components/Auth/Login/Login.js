@@ -70,9 +70,7 @@ class Login extends Component {
         if (email && validEmail) {
             $.ajax({
                 url: loginEndPoint,
-                dataType: 'jsonp',
-                jsonpCallback: 'p',
-                jsonp: 'callback',
+                dataType: 'json',
                 headers: {
                         'Accept': 'application/json, application/xml, text/play, text/html',
                         'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'

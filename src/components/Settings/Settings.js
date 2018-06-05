@@ -57,10 +57,7 @@ class Settings extends React.Component {
           +'&key2=initialTheme&value2='+this.state.theme
         $.ajax({
                 url: url,
-                jsonpCallback: 'pa',
-                dataType: 'jsonp',
-                jsonp: 'callback',
-                crossDomain: true,
+                dataType: 'json',
                 success: function (data) {
                     let settings = Object.assign({}, vals);
                     cookies.set('settings',settings);
@@ -89,10 +86,7 @@ class Settings extends React.Component {
         else{
             $.ajax({
                     url: url,
-                    jsonpCallback: 'pa',
-                    dataType: 'jsonp',
-                    jsonp: 'callback',
-                    crossDomain: true,
+                    dataType: 'json',
                     success: function (data) {
                         if(!data.settings){
                             debugger;

@@ -90,10 +90,7 @@ export default class BrowseSkill extends React.Component {
         if (groups.length === 0) {
             $.ajax({
                 url: urls.API_URL + '/cms/getGroups.json',
-                jsonpCallback: 'pb',
-                dataType: 'jsonp',
-                jsonp: 'callback',
-                crossDomain: true,
+                dataType: 'json',
                 success: function (data) {
                     data = data.groups;
                     this.setState({ groups: data });
@@ -119,10 +116,7 @@ export default class BrowseSkill extends React.Component {
         if (languages.length === 0) {
             $.ajax({
                 url: urls.API_URL + '/cms/getAllLanguages.json',
-                jsonpCallback: 'pc',
-                dataType: 'jsonp',
-                jsonp: 'callback',
-                crossDomain: true,
+                dataType: 'json',
                 success: function (data) {
                     data = data.languagesArray;
                     data.sort();
@@ -171,10 +165,7 @@ export default class BrowseSkill extends React.Component {
         let cards=[];
         $.ajax({
             url: url,
-            jsonpCallback: 'pxcd',
-            dataType: 'jsonp',
-            jsonp: 'callback',
-            crossDomain: true,
+            dataType: 'json',
             success: function (data) {
               // console.log(data)
 

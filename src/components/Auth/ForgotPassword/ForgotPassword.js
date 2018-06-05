@@ -94,8 +94,7 @@ class ForgotPassword extends Component {
 		if (email && validEmail) {
 			$.ajax({
 				url: BASE_URL+'/aaa/recoverpassword.json?forgotemail=' + email,
-				dataType: 'jsonp',
-				crossDomain: true,
+				dataType: 'json',
 				timeout: 3000,
 				async: false,
 				statusCode: {

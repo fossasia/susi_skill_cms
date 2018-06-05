@@ -54,10 +54,7 @@ class SkillVersion extends Component {
     let self = this;
     $.ajax({
         url: commitHistoryURL,
-        jsonpCallback: 'pv',
-        dataType: 'jsonp',
-        jsonp: 'callback',
-        crossDomain: true,
+        dataType: 'json',
         success: function (commitsData) {
             self.setCommitHistory(commitsData);
         },

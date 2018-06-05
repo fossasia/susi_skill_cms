@@ -79,10 +79,7 @@ class StaticAppBar extends Component {
         url = urls.API_URL + '/aaa/showAdminService.json?access_token=' + cookies.get('loggedIn');
         $.ajax({
             url: url,
-            dataType: 'jsonp',
-            jsonpCallback: 'pfns',
-            jsonp: 'callback',
-            crossDomain: true,
+            dataType: 'json',
             success: function (newResponse) {
                 let ShowAdmin = newResponse.showAdmin;
                 cookies.set('showAdmin', ShowAdmin);

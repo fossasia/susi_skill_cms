@@ -105,10 +105,7 @@ class SkillListing extends Component {
             let self = this;
             $.ajax({
                 url: url,
-                jsonpCallback: 'pc',
-                dataType: 'jsonp',
-                jsonp: 'callback',
-                crossDomain: true,
+                dataType: 'json',
                 success: function (data) {
                     self.updateData(data.skill_metadata)
                 }
@@ -116,10 +113,7 @@ class SkillListing extends Component {
             // Fetch ratings for the visited skill
             $.ajax({
                 url: skillRatingUrl,
-                jsonpCallback: 'pc',
-                dataType: 'jsonp',
-                jsonp: 'callback',
-                crossDomain: true,
+                dataType: 'json',
                 success: function (data) {
                     self.saveSkillRatings(data.skill_rating.stars)
                 },
@@ -152,10 +146,7 @@ class SkillListing extends Component {
                 let self = this;
                 $.ajax({
                     url: url,
-                    jsonpCallback: 'pc',
-                    dataType: 'jsonp',
-                    jsonp: 'callback',
-                    crossDomain: true,
+                    dataType: 'json',
                     success: function (data) {
                         self.updateData(data.skill_metadata)
                     }
@@ -231,10 +222,7 @@ class SkillListing extends Component {
         let self = this;
         $.ajax({
             url: changeRatingUrl,
-            jsonpCallback: 'pc',
-            dataType: 'jsonp',
-            jsonp: 'callback',
-            crossDomain: true,
+            dataType: 'json',
             success: function (data) {
                 console.log('Ratings accepted');
             },
@@ -249,10 +237,7 @@ class SkillListing extends Component {
         // Fetch ratings for the visited skill
         $.ajax({
             url: skillRatingUrl,
-            jsonpCallback: 'pc',
-            dataType: 'jsonp',
-            jsonp: 'callback',
-            crossDomain: true,
+            dataType: 'json',
             success: function (data) {
                 self.saveSkillRatings(data.skill_rating.stars)
             },

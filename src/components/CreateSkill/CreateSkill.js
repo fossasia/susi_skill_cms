@@ -101,10 +101,7 @@ export default class CreateSkill extends React.Component {
         if(groups.length===0) {
             $.ajax({
                 url: urls.API_URL + '/cms/getGroups.json',
-                jsonpCallback: 'pa',
-                dataType: 'jsonp',
-                jsonp: 'callback',
-                crossDomain: true,
+                dataType: 'json',
                 success: function (data) {
                     data = data.groups;
                     data.sort();
@@ -151,10 +148,7 @@ export default class CreateSkill extends React.Component {
         if (languages.length === 0) {
             $.ajax({
                 url: urls.API_URL + '/cms/getAllLanguages.json',
-                jsonpCallback: 'pc',
-                dataType: 'jsonp',
-                jsonp: 'callback',
-                crossDomain: true,
+                dataType: 'json',
                 success: function (data) {
 
                     data = data.languagesArray
