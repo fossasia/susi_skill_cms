@@ -1,10 +1,23 @@
+// Packages
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom'
-import AuthorSkills from '../AuthorSkills/AuthorSkills'
-import {BarChart, Cell, LabelList, Bar, XAxis, YAxis, Tooltip} from 'recharts';
 import Ratings from 'react-ratings-declarative';
 import Cookies from 'universal-cookie';
+import {BarChart, Cell, LabelList, Bar, XAxis, YAxis, Tooltip} from 'recharts';
+import $ from 'jquery';
+
+// Components
+import AuthorSkills from '../AuthorSkills/AuthorSkills'
+import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
+import SkillUsageCard from '../SkillUsageCard/SkillUsageCard';
+import {
+    FloatingActionButton,
+    Paper,
+} from 'material-ui';
+import Divider from 'material-ui/Divider';
+
+// Static Assets
 import 'brace/mode/markdown';
 import 'brace/theme/github';
 import 'brace/theme/monokai';
@@ -16,20 +29,14 @@ import 'brace/theme/textmate';
 import 'brace/theme/solarized_dark';
 import 'brace/theme/solarized_light';
 import 'brace/theme/terminal';
-import $ from 'jquery';
-import Divider from 'material-ui/Divider';
-import './SkillListing.css';
-import {
-    FloatingActionButton,
-    Paper,
-} from 'material-ui';
 import CircleImage from '../CircleImage/CircleImage';
 import EditBtn from 'material-ui/svg-icons/editor/mode-edit';
 import VersionBtn from 'material-ui/svg-icons/action/history';
-import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import ReactTooltip from 'react-tooltip';
 import colors from '../../Utils/colors';
 import urls from '../../Utils/urls';
+
+import './SkillListing.css';
 
 const cookies = new Cookies();
 
@@ -65,6 +72,7 @@ class SkillListing extends Component {
             avg_rating: '',
             total_star: '',
             skill_ratings: [],
+            skill_usage: [],
             rating : 0,
         };
 
@@ -93,7 +101,8 @@ class SkillListing extends Component {
         if(this.url !== undefined) {
 
             let baseUrl = urls.API_URL + '/cms/getSkillMetadata.json';
-            let skillRatingUrl = `${urls.API_URL}/cms/getSkillRating.json`
+            let skillRatingUrl = `${urls.API_URL}/cms/getSkillRating.json`;
+            let skillUsageUrl = `${urls.API_URL}/cms/getSkillUsage.json`;
             let url = this.url;
 
             let modelValue = 'general';
@@ -101,6 +110,7 @@ class SkillListing extends Component {
             this.languageValue = this.props.location.pathname.split('/')[3];
             url = baseUrl + '?model=' + modelValue + '&group=' + this.groupValue + '&language=' + this.languageValue + '&skill=' + this.name;
             skillRatingUrl = skillRatingUrl + '?model=' + modelValue + '&group=' + this.groupValue + '&language=' + this.languageValue + '&skill=' + this.name;
+            skillUsageUrl = skillUsageUrl + '?model=' + modelValue + '&group=' + this.groupValue + '&language=' + this.languageValue + '&skill=' + this.name;
             // console.log('Url:' + url);
             let self = this;
             $.ajax({
@@ -125,6 +135,18 @@ class SkillListing extends Component {
                 },
                 error: function(e) {
                     console.log(e);
+                }
+            });
+            // Fetch skill usage of the visited skill
+            $.ajax({
+                url: skillUsageUrl,
+                dataType: 'json',
+                crossDomain: true,
+                success: function (data) {
+                    self.saveSkillUsage(data.skill_usage)
+                },
+                error: function(e) {
+                    self.saveSkillUsage()
                 }
             });
         }
@@ -174,11 +196,26 @@ class SkillListing extends Component {
             {name: '2 ⭐', value: parseInt(skill_ratings.two_star, 10) || 0},
             {name: '1 ⭐', value: parseInt(skill_ratings.one_star, 10) || 0}
         ];
-        console.log(skill_ratings);
         this.setState({
             skill_ratings: ratings_data,
             avg_rating: parseInt(skill_ratings.avg_star, 10),
             total_star: parseInt(skill_ratings.total_star, 10)
+        })
+    }
+
+    saveSkillUsage = (skill_usage = []) => {
+        // Add sample data to test
+        const data = [
+              {date: '2018-06-05', count: 7},
+              {date: '2018-06-06', count: 2},
+              {date: '2018-06-07', count: 2},
+              {date: '2018-06-08', count: 2},
+              {date: '2018-06-09', count: 6},
+              {date: '2018-06-10', count: 2},
+              {date: '2018-06-11', count: 2},
+        ];
+        this.setState({
+            skill_usage: data
         })
     }
 
@@ -330,8 +367,6 @@ class SkillListing extends Component {
             renderElement = <div><StaticAppBar {...this.props} /><h1 className='skill_loading_container'>Loading...</h1></div>
         }
         else {
-
-
             renderElement = <div>
                 <StaticAppBar {...this.props} />
                 <div className='skill_listing_container' style={styles.home}>
@@ -400,7 +435,6 @@ class SkillListing extends Component {
                                                 {data}
                                             </Paper>
                                         )
-
                                     })}
                             </div>
                         </div>
@@ -518,6 +552,7 @@ class SkillListing extends Component {
                         }
 
                     </Paper>
+                   <SkillUsageCard skill_usage={this.state.skill_usage} />
                 </div>
             </div>
         }
