@@ -14,7 +14,6 @@ import SkillEditor from './components/SkillEditor/SkillEditor';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import NotFound from './components/NotFound/NotFound';
 import Admin from './components/Admin/Admin'
-import Settings from './components/Settings/Settings';
 import BotBuilder from './components/BotBuilder/BotBuilder';
 import BrowseSkill from './components/BrowseSkill/BrowseSkill';
 import SkillListing from './components/SkillPage/SkillListing';
@@ -46,7 +45,6 @@ class App extends React.Component {
                         <Route exact path='/admin' component={Admin}/>
                         <Route path='/listUser' component={ListUser}/>
                         <Route exact path='/:category/:skill/:lang' component={SkillListing}/>
-                        <Route exact path='/settings' component={Settings}/>
                         <Route exact path='/botbuilder' render={() => {
                             if(cookies.get('loggedIn')) {
                                 return <BotBuilder />

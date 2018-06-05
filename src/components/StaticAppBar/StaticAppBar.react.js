@@ -19,7 +19,6 @@ import Info from 'material-ui/svg-icons/action/info';
 import Chat from 'material-ui/svg-icons/communication/chat';
 import SKillIcon from 'material-ui/svg-icons/action/dashboard';
 import MenuItem from 'material-ui/MenuItem';
-import Settings from 'material-ui/svg-icons/action/settings';
 import { Link } from 'react-router-dom';
 import susiWhite from '../images/SUSIAI-white.png';
 import colors from '../../Utils/colors';
@@ -259,9 +258,6 @@ class StaticAppBar extends Component {
                                 rightIcon={<Extension />} />) :
                             null
                         }
-                        <MenuItem primaryText='Settings'
-                            containerElement={<Link to='/settings' />}
-                            rightIcon={<Settings />} />
                         {cookies.get('loggedIn') ?
                             (<MenuItem primaryText='Logout'
                                 containerElement={<Link to='/logout' />}
