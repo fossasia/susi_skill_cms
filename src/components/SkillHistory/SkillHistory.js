@@ -73,10 +73,7 @@ class SkillHistory extends Component {
       let self = this;
       $.ajax({
           url: commitHistoryURL,
-          jsonpCallback: 'pv',
-          dataType: 'jsonp',
-          jsonp: 'callback',
-          crossDomain: true,
+          dataType: 'json',
           success: function (commitsData) {
               if(commitsData.accepted){
                 let commits = commitsData.commits ? commitsData.commits : [];
@@ -118,19 +115,13 @@ class SkillHistory extends Component {
         // console.log(url1);
         $.ajax({
             url: url1,
-            jsonpCallback: 'pc',
-            dataType: 'jsonp',
-            jsonp: 'callback',
-            crossDomain: true,
+            dataType: 'json',
             success: function (data1) {
               var url2 = baseUrl + self.state.commits[1];
               // console.log(url2);
               $.ajax({
                   url: url2,
-                  jsonpCallback: 'pd',
-                  dataType: 'jsonp',
-                  jsonp: 'callback',
-                  crossDomain: true,
+                  dataType: 'json',
                   success: function (data2) {
                     self.updateData([{
                       code:data1.file,

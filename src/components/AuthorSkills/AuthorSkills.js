@@ -54,9 +54,7 @@ class AuthorSkills extends Component {
       let url = urls.API_URL + '/cms/getSkillsByAuthor.json?author=' + author;
           $.ajax({
               url: url,
-              dataType: 'jsonp',
-              jsonp: 'callback',
-              crossDomain: true,
+              dataType: 'json',
               success: function (data) {
                 let skillByAuthor = Object.keys(data);
                 skillByAuthor = skillByAuthor.slice(0,skillByAuthor.length-1);

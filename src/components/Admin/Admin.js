@@ -32,9 +32,7 @@ class Admin extends Component {
         url = urls.API_URL + '/aaa/showAdminService.json?access_token=' + cookies.get('loggedIn');
         $.ajax({
             url: url,
-            dataType: 'jsonp',
-            jsonpCallback: 'pyfw',
-            jsonp: 'callback',
+            dataType: 'json',
             crossDomain: true,
             success: function (response) {
                 // console.log(response.showAdmin);

@@ -100,10 +100,7 @@ class Design extends React.Component {
         this.setState({saving:true});
         $.ajax({
             url: url,
-            jsonpCallback: 'pa',
-            dataType: 'jsonp',
-            jsonp: 'callback',
-            crossDomain: true,
+            dataType: 'json',
             success: function (data) {
                 // successfully stored
                 this.setState({
@@ -120,10 +117,7 @@ class Design extends React.Component {
         +'&access_token='+cookies.get('loggedIn');
         $.ajax({
             url: url,
-            jsonpCallback: 'pa',
-            dataType: 'jsonp',
-            jsonp: 'callback',
-            crossDomain: true,
+            dataType: 'json',
             success: function (data) {
                 if(data.settings){
                     let settings = data.settings;

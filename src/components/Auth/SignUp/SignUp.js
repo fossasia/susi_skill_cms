@@ -200,8 +200,7 @@ class SignUp extends Component {
         if (!this.state.emailError && !this.state.passwordConfirmError) {
             $.ajax({
                 url: signupEndPoint,
-                dataType: 'jsonp',
-                crossDomain: true,
+                dataType: 'json',
                 timeout: 3000,
                 async: false,
                 statusCode: {
