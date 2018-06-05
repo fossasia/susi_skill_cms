@@ -4,12 +4,14 @@ import RaisedButton from 'material-ui/RaisedButton';
 import {Tabs, Tab} from 'material-ui/Tabs';
 import {Grid, Col, Row} from 'react-flexbox-grid';
 import { Paper } from 'material-ui';
+import colors from '../../Utils/colors';
 import Build from './BotBuilderPages/Build';
 import Design from './BotBuilderPages/Design';
 import Configure from './BotBuilderPages/Configure';
 import Deploy from './BotBuilderPages/Deploy';
 import './BotBuilder.css';
-import Cookies from 'universal-cookie'
+import { Link } from 'react-router-dom';
+import Cookies from 'universal-cookie';
 import $ from 'jquery';
 
 const cookies = new Cookies();
@@ -21,8 +23,15 @@ class BotBuilder extends React.Component {
         this.state = {
             activeTab: 0,
             showPreview:false,
-            chatbotOpen: false
+            chatbotOpen: false,
+            createBotWizard: true
         }
+    }
+
+    toggleCreateBotWizard = () => {
+        this.setState(prevState => ({
+            createBotWizard: !prevState.createBotWizard
+        }));
     }
 
     handleChange = (event, value) => {
@@ -69,7 +78,27 @@ class BotBuilder extends React.Component {
                 <div style={styles.home} className="botbuilder-page-wrapper">
                     <Paper style={styles.paperStyle} className="botBuilder-page-card" zDepth={1}>
                         <Grid>
-                            <Row>
+                            <Row style={(!this.state.createBotWizard)?({display: 'none'}):({display: 'block'})}>
+                            <div style={{textAlign: 'center'}}>
+                            <Link to="/botbuilder/contactbot">
+                                <RaisedButton
+                                    label='Use pre-coded Contact Bot'
+                                    backgroundColor={colors.header}
+                                    labelColor='#fff'
+                                />
+                            </Link>
+                            </div>
+                            <br /><h2 style={{textAlign: 'center'}}> OR </h2><br />
+                            <div style={{textAlign: 'center'}}>
+                                <RaisedButton
+                                    label='Create your own SUSI AI Web bot'
+                                    backgroundColor={colors.header}
+                                    labelColor='#fff'
+                                    onClick={this.toggleCreateBotWizard}
+                                />
+                            </div>
+                            </Row>
+                            <Row style={(this.state.createBotWizard)?({display: 'none'}):({display: 'block'})}>
                                 <Col xs={12} md={9}>
                                     <Tabs
                                         tabItemContainerStyle={{backgroundColor:'transparent'}}
