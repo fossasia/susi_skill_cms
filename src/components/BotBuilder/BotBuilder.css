@@ -73,6 +73,31 @@
 .color-picker-wrap>div>div{
 	width:200px;
 }
+.bot-avatar{
+	width: 60px;
+	height: 60px;
+	border-radius: 50%;
+	margin-right: 10px;
+	cursor: pointer;
+}
+.icon-wrap{
+	display: inline-block;
+	position: relative;
+}
+.icon-wrap .tick{
+	display: none;
+	position: absolute;
+	top: -7px;
+	right: 3px;
+	font-size: 23px;
+	color: #4285f5;
+}
+.icon-selected .tick{
+	display: block;
+}
+.icon-selected .bot-avatar{
+	border: solid 2px #4285f5;
+}
 @media (min-width:769px){
 	.botbuilder-page-wrapper{
 		padding: 40px 30px 30px;

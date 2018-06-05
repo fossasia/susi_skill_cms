@@ -4,12 +4,15 @@ import TextField from 'material-ui/TextField';
 import * as $ from 'jquery';
 import Cookies from 'universal-cookie';
 import Snackbar from 'material-ui/Snackbar';
+import TiTick from 'react-icons/lib/ti/tick';
 import CircularProgress from 'material-ui/CircularProgress';
 import ColorPicker from 'material-ui-color-picker'
 import colors from '../../../Utils/colors';
 import urls from '../../../Utils/urls';
+import avatars from '../../../Utils/avatars';
 const cookies = new Cookies();
 let BASE_URL = urls.API_URL;
+
 class Design extends React.Component {
 
     constructor(props){
@@ -32,7 +35,19 @@ class Design extends React.Component {
     }
 
     handleChangeColor = (component,color) =>{
-        this.setState({[component]:color});
+        if(component === 'botbuilderIconColor'){
+            this.setState({
+                [component]:color,
+                iconSelected:null,
+                botbuilderIconImg:''
+            });
+        }
+        else {
+            this.setState({
+                [component]:color
+            });
+        }
+
     }
 
     handleChangeBodyBackgroundImage = (botbuilderBodyBackgroundImg) =>{
@@ -42,7 +57,10 @@ class Design extends React.Component {
         this.setState({botbuilderBodyBackgroundImg:''});
     }
     handleChangeIconImage = (botbuilderIconImg) =>{
-        this.setState({botbuilderIconImg});
+        this.setState({
+            botbuilderIconImg,
+            iconSelected:null
+        });
     }
     handleRemoveUrlIcon = () =>{
         this.setState({botbuilderIconImg:''});
@@ -145,10 +163,35 @@ class Design extends React.Component {
                         botbuilderBotMessageTextColor:'#'+settings.botbuilderBotMessageTextColor,
                         botbuilderIconColor:'#'+settings.botbuilderIconColor,
                         botbuilderIconImg:settings.botbuilderIconImg,
-                    })
+                    });
+                    let botbuilderIconImg = settings.botbuilderIconImg;
+                    if(botbuilderIconImg){
+                        for(let icon of avatars){
+                            if(icon.url === botbuilderIconImg){
+                                this.handleIconSelect(icon);
+                                break;
+                            }
+                        }
+                    }
                 }
             }.bind(this)
         });
+    }
+
+    handleIconSelect = (icon) =>{
+        if(icon.id === this.state.iconSelected){
+            this.setState({
+                iconSelected:null,
+                botbuilderIconImg:''
+            })
+        }
+        else{
+            this.setState({
+                iconSelected:icon.id,
+                botbuilderIconImg:icon.url
+            })
+        }
+
     }
 
     render() {
@@ -209,6 +252,15 @@ class Design extends React.Component {
                                 labelColor='#fff'
                                 onTouchTap={this.handleRemoveUrlIcon}
                             />
+                        <br/><br/>
+                        {avatars.map((icon)=>{
+                            return(
+                                <span key={icon.id} className={'icon-wrap '+(this.state.iconSelected===icon.id?'icon-selected':'')}>
+                                <img alt='icon' src={icon.url} onClick={()=>this.handleIconSelect(icon)} className='bot-avatar'/>
+                                <TiTick className='tick'/>
+                                </span>
+                            )
+                        })}
                         </div>}
 
                         <br/>
