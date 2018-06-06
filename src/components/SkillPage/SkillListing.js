@@ -406,44 +406,48 @@ class SkillListing extends Component {
                         </div>
                     </div>
                     <Divider />
-                    <div className='desc margin-b-md margin-t-md'>
-                        <h1 className='title'>
-                            Description
-                        </h1>
-                        <p>{this.state.descriptions}</p>
-                    </div>
-                    <div className='margin-b-md margin-t-md skill'>
-                        <h1 className='title'>
-                            Skill Details
-                        </h1>
-                        <div>
-                            <ul>
-                                {this.state.dynamic_content ?
-                                    <li>The Skill Contains content Dynamic Content
-                                        that is updated real-time based on inputs
-                                        from the User.</li> :
-                                    <li>Skill details are not available yet.</li>}
+                    <Paper className="margin-b-md margin-t-md">
+                        <div className='desc margin-b-md margin-t-md'>
+                            <h1 className='title'>
+                                Description
+                            </h1>
+                            <p className="card-content">{this.state.descriptions}</p>
+                        </div>
+                    </Paper>
+                    <Paper className="margin-b-md margin-t-md">
+                        <div className='margin-b-md margin-t-md skill'>
+                            <h1 className='title'>
+                                Skill Details
+                            </h1>
+                            <div className='card-content'>
+                                <ul>
+                                    {this.state.dynamic_content ?
+                                        <li>The Skill Contains content Dynamic Content
+                                            that is updated real-time based on inputs
+                                            from the User.</li> :
+                                        <li>Skill details are not available yet.</li>}
 
-                                {this.state.terms_of_use == null ? '' :
-                                  (<li><a href={this.state.terms_of_use}
-                                          target='_blank'
-                                          rel='noopener noreferrer'>Term & Condition</a></li>)}
+                                    {this.state.terms_of_use == null ? '' :
+                                      (<li><a href={this.state.terms_of_use}
+                                              target='_blank'
+                                              rel='noopener noreferrer'>Term & Condition</a></li>)}
 
-                                {this.state.terms_of_use == null ? '' :
-                                  (<li><a href={this.state.developer_privacy_policy}
-                                          target='_blank'
-                                          rel='noopener noreferrer'>Developer Privacy Policy</a></li>)}
-                            </ul>
+                                    {this.state.terms_of_use == null ? '' :
+                                      (<li><a href={this.state.developer_privacy_policy}
+                                              target='_blank'
+                                              rel='noopener noreferrer'>Developer Privacy Policy</a></li>)}
+                                </ul>
+                            </div>
+                            <div className='card-content'>
+                                Last accessed at -
+                                    {` ${this.parseDate(this.state.last_access_time)}`}
+                            </div>
+                            <div className='card-content'>
+                                Last modified at -
+                                    {` ${this.parseDate(this.state.last_modified_time)}`}
+                            </div>
                         </div>
-                        <div>
-                            Last accessed at -
-                                {` ${this.parseDate(this.state.last_access_time)}`}
-                        </div>
-                        <div>
-                            Last modified at -
-                                {` ${this.parseDate(this.state.last_modified_time)}`}
-                        </div>
-                    </div>
+                    </Paper>
 
                     <Paper className="margin-b-md margin-t-md">
                         <h1 className='title'>
