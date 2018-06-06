@@ -213,7 +213,7 @@ class StaticAppBar extends Component {
             <div onScroll={this.handleScroll}>
                 <div>
                     {cookies.get('loggedIn') ?
-                        (<label
+                        (<label className="useremail"
                             style={{color: 'white', fontSize: '16px', verticalAlign:'super'}}>
                             {cookies.get('emailId')}
                             </label>) :
