@@ -177,7 +177,7 @@ class SkillListing extends Component {
         console.log(skill_ratings);
         this.setState({
             skill_ratings: ratings_data,
-            avg_rating: parseInt(skill_ratings.avg_star, 10),
+            avg_rating: parseFloat(skill_ratings.avg_star),
             total_star: parseInt(skill_ratings.total_star, 10)
         })
     }
