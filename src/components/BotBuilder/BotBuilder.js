@@ -2,6 +2,7 @@ import React from 'react';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import RaisedButton from 'material-ui/RaisedButton';
 import {Tabs, Tab} from 'material-ui/Tabs';
+import CircularProgress from 'material-ui/CircularProgress';
 import {Grid, Col, Row} from 'react-flexbox-grid';
 import { Paper } from 'material-ui';
 import colors from '../../Utils/colors';
@@ -24,7 +25,8 @@ class BotBuilder extends React.Component {
             activeTab: 0,
             showPreview:false,
             chatbotOpen: false,
-            createBotWizard: true
+            createBotWizard: true,
+            previewLabel: 'Preview'
         }
     }
 
@@ -42,23 +44,28 @@ class BotBuilder extends React.Component {
       this.handleChatbotClose();
     }
 
-    handleChatbotOpen = () =>{
-      this.setState({
-        chatbotOpen:true
-      });
-    }
-
     handleChatbotClose = () =>{
-      this.setState({
-        chatbotOpen:false
-      });
       $('#susi-launcher-container').remove();
       $('#susi-frame-container').remove();
       $('#susi-launcher-close').remove();
       $('#susi-bot-script').remove();
+      this.setState({
+        chatbotOpen:false,
+        previewLabel: 'Preview'
+      });
     }
 
-    injectJS = () => {
+    changePreviewLabel = () => {
+        this.setState({
+          previewLabel: 'Close Preview',
+          chatbotOpen:true
+        });
+    }
+
+    handleChatbotOpen = () => {
+        let loader = <CircularProgress innerStyle={{marginTop: 5}} color='#4285f4' size={25} />;
+        this.setState({previewLabel: loader});
+
         const myscript = document.createElement('script');
         myscript.type = 'text/javascript';
         myscript.id = 'susi-bot-script';
@@ -66,9 +73,11 @@ class BotBuilder extends React.Component {
         myscript.src = '/susi-chatbot.js';
         myscript.async = true;
         document.body.appendChild(myscript);
-        this.setState({
-          chatbotOpen:true
-        });
+
+        let self = this;
+        setTimeout(function () {
+            self.changePreviewLabel();
+        }, 2000);
     };
 
     render() {
@@ -145,11 +154,11 @@ class BotBuilder extends React.Component {
                                 <Col xs={12} md={2} style={{textAlign:window.innerWidth>769?'right':'left'}}>
                                     <br className='display-mobile-only'/>
                                 {!this.state.chatbotOpen?(<RaisedButton
-                                    label='Preview'
+                                    label={this.state.previewLabel}
                                     style={{ width: '148px' }}
-                                    onClick={this.injectJS}
+                                    onClick={this.handleChatbotOpen}
                                 />):(<RaisedButton
-                                    label='Close Preview'
+                                    label={this.state.previewLabel}
                                     style={{ width: '148px' }}
                                     onClick={this.handleChatbotClose}
                                 />)}
