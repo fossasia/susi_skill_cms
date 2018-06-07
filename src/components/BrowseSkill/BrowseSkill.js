@@ -5,7 +5,7 @@ import SelectField from 'material-ui/SelectField';
 import { Paper } from 'material-ui';
 import { Card } from 'material-ui/Card';
 import * as $ from 'jquery';
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
@@ -434,8 +434,6 @@ export default class BrowseSkill extends React.Component {
                                 <IconMenu
                                     anchorOrigin={{vertical:'bottom',horizontal:'middle'}}
                                     iconButtonElement={<IconButton className='add-button' iconStyle={{color:'#fff'}} style={addButtonStyle}><Add /></IconButton>}
-                                    open={this.state.openMenu}
-                                    onRequestChange={this.handleOnRequestChange}
                                     >
                                         <Link to='/skillCreator'><MenuItem leftIcon={<Add />} primaryText="Create a Skill" /></Link>
                                         <Link to='/botbuilder'><MenuItem leftIcon={<Person />} primaryText="Create Skill bot" /></Link>
