@@ -261,8 +261,8 @@ export default class BrowseSkill extends React.Component {
                         description = 'No description available'
                     }
                     if (skill.skill_rating) {
-                        average_rating = parseInt(skill.skill_rating.avg_star,10);
-                        total_rating = parseInt(skill.skill_rating.total_star,10);
+                        average_rating = parseInt(skill.skill_rating.stars.avg_star,10);
+                        total_rating = parseInt(skill.skill_rating.stars.total_star,10);
                     }
 
                     cards.push(
