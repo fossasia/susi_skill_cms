@@ -7,6 +7,7 @@ import ISO6391 from 'iso-639-1';
 import {Paper, RaisedButton, TextField} from 'material-ui';
 import AceEditor from 'react-ace';
 import Cookies from 'universal-cookie';
+import { Link } from 'react-router-dom';
 import 'brace/mode/markdown';
 import 'brace/theme/github';
 import 'brace/theme/monokai';
@@ -215,6 +216,8 @@ export default class CreateSkill extends React.Component {
 
     saveClick = () => {
         let groups = this.state.groups;
+        let code = this.state.code;
+        code = '::author_email ' + cookies.get('emailId') + '\n' + code;
         if(!cookies.get('loggedIn')) {
             notification.open({
                 message: 'Not logged In',
@@ -259,7 +262,7 @@ export default class CreateSkill extends React.Component {
         form.append('language', this.state.languageValue);
         form.append('skill', this.state.expertValue.trim().replace(/\s/g,'_'));
         form.append('image', this.state.file);
-        form.append('content', this.state.code);
+        form.append('content', code);
         form.append('image_name', this.state.imageUrl.replace('images/',''));
         form.append('access_token', cookies.get('loggedIn'));
 
@@ -497,7 +500,9 @@ export default class CreateSkill extends React.Component {
                                     onChange={this.handleCommitMessageChange}
                                 />
                                 <RaisedButton label='Save' backgroundColor={colors.header} labelColor='#fff' style={{marginLeft:10}}  onTouchTap={this.saveClick} />
-				<a href="http://skills.susi.ai/"><RaisedButton label='Cancel' backgroundColor={colors.header} labelColor='#fff' style={{marginLeft:10}} /></a>
+                                <Link to="/">
+                                    <RaisedButton label='Cancel' backgroundColor={colors.header} labelColor='#fff' style={{marginLeft:10}} />
+                                </Link>
                             </Paper>
                     </div>
                 </div>

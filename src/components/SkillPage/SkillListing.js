@@ -1,10 +1,23 @@
+// Packages
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom'
-import AuthorSkills from '../AuthorSkills/AuthorSkills'
-import {BarChart, Cell, LabelList, Bar, XAxis, YAxis, Tooltip} from 'recharts';
 import Ratings from 'react-ratings-declarative';
 import Cookies from 'universal-cookie';
+import {BarChart, Cell, LabelList, Bar, XAxis, YAxis, Tooltip} from 'recharts';
+import $ from 'jquery';
+
+// Components
+import AuthorSkills from '../AuthorSkills/AuthorSkills'
+import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
+import SkillUsageCard from '../SkillUsageCard/SkillUsageCard';
+import {
+    FloatingActionButton,
+    Paper,
+} from 'material-ui';
+import Divider from 'material-ui/Divider';
+
+// Static Assets
 import 'brace/mode/markdown';
 import 'brace/theme/github';
 import 'brace/theme/monokai';
@@ -16,20 +29,14 @@ import 'brace/theme/textmate';
 import 'brace/theme/solarized_dark';
 import 'brace/theme/solarized_light';
 import 'brace/theme/terminal';
-import $ from 'jquery';
-import Divider from 'material-ui/Divider';
-import './SkillListing.css';
-import {
-    FloatingActionButton,
-    Paper,
-} from 'material-ui';
 import CircleImage from '../CircleImage/CircleImage';
 import EditBtn from 'material-ui/svg-icons/editor/mode-edit';
 import VersionBtn from 'material-ui/svg-icons/action/history';
-import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import ReactTooltip from 'react-tooltip';
 import colors from '../../Utils/colors';
 import urls from '../../Utils/urls';
+
+import './SkillListing.css';
 
 const cookies = new Cookies();
 
@@ -65,6 +72,7 @@ class SkillListing extends Component {
             avg_rating: '',
             total_star: '',
             skill_ratings: [],
+            skill_usage: [],
             rating : 0,
         };
 
@@ -93,7 +101,8 @@ class SkillListing extends Component {
         if(this.url !== undefined) {
 
             let baseUrl = urls.API_URL + '/cms/getSkillMetadata.json';
-            let skillRatingUrl = `${urls.API_URL}/cms/getSkillRating.json`
+            let skillRatingUrl = `${urls.API_URL}/cms/getSkillRating.json`;
+            let skillUsageUrl = `${urls.API_URL}/cms/getSkillUsage.json`;
             let url = this.url;
 
             let modelValue = 'general';
@@ -101,6 +110,7 @@ class SkillListing extends Component {
             this.languageValue = this.props.location.pathname.split('/')[3];
             url = baseUrl + '?model=' + modelValue + '&group=' + this.groupValue + '&language=' + this.languageValue + '&skill=' + this.name;
             skillRatingUrl = skillRatingUrl + '?model=' + modelValue + '&group=' + this.groupValue + '&language=' + this.languageValue + '&skill=' + this.name;
+            skillUsageUrl = skillUsageUrl + '?model=' + modelValue + '&group=' + this.groupValue + '&language=' + this.languageValue + '&skill=' + this.name;
             // console.log('Url:' + url);
             let self = this;
             $.ajax({
@@ -125,6 +135,18 @@ class SkillListing extends Component {
                 },
                 error: function(e) {
                     console.log(e);
+                }
+            });
+            // Fetch skill usage of the visited skill
+            $.ajax({
+                url: skillUsageUrl,
+                dataType: 'json',
+                crossDomain: true,
+                success: function (data) {
+                    self.saveSkillUsage(data.skill_usage)
+                },
+                error: function(e) {
+                    self.saveSkillUsage()
                 }
             });
         }
@@ -174,11 +196,26 @@ class SkillListing extends Component {
             {name: '2 ⭐', value: parseInt(skill_ratings.two_star, 10) || 0},
             {name: '1 ⭐', value: parseInt(skill_ratings.one_star, 10) || 0}
         ];
-        console.log(skill_ratings);
         this.setState({
             skill_ratings: ratings_data,
-            avg_rating: parseInt(skill_ratings.avg_star, 10),
+            avg_rating: parseFloat(skill_ratings.avg_star),
             total_star: parseInt(skill_ratings.total_star, 10)
+        })
+    }
+
+    saveSkillUsage = (skill_usage = []) => {
+        // Add sample data to test
+        const data = [
+              {date: '2018-06-05', count: 7},
+              {date: '2018-06-06', count: 2},
+              {date: '2018-06-07', count: 2},
+              {date: '2018-06-08', count: 2},
+              {date: '2018-06-09', count: 6},
+              {date: '2018-06-10', count: 2},
+              {date: '2018-06-11', count: 2},
+        ];
+        this.setState({
+            skill_usage: data
         })
     }
 
@@ -208,8 +245,8 @@ class SkillListing extends Component {
         });
         name = skill_name;
         this.setState({
-            last_modified_time: skillData['lastModifiedTime: '],
-            last_access_time: skillData['lastAccessTime: ']
+            last_modified_time: skillData.lastModifiedTime,
+            last_access_time: skillData.lastAccessTime
         })
         this.setState({
             dataReceived: true
@@ -274,28 +311,31 @@ class SkillListing extends Component {
     };
 
     parseDate = dtstr => {
-        // replace anything but numbers by spaces
-        dtstr = dtstr.replace(/\D/g,' ');
-        // trim any hanging white space
-        dtstr = dtstr.replace(/\s+$/,'');
-        // split on space
-        var dtcomps = dtstr.split(' ');
-        // not all ISO 8601 dates can convert, as is
-        // unless month and date specified, invalid
-        if (dtcomps.length < 3) {
-            return 'Invalid date';
+        if (dtstr) {
+            // replace anything but numbers by spaces
+            dtstr = dtstr.replace(/\D/g,' ');
+            // trim any hanging white space
+            dtstr = dtstr.replace(/\s+$/,'');
+            // split on space
+            var dtcomps = dtstr.split(' ');
+            // not all ISO 8601 dates can convert, as is
+            // unless month and date specified, invalid
+            if (dtcomps.length < 3) {
+                return 'Invalid date';
+            }
+            // if time not provided, set to zero
+            if (dtcomps.length < 4) {
+                dtcomps[3] = 0;
+                dtcomps[4] = 0;
+                dtcomps[5] = 0;
+            }
+            // modify month between 1 based ISO 8601 and zero based Date
+            dtcomps[1]--;
+            const convdt = new
+            Date(Date.UTC(dtcomps[0],dtcomps[1],dtcomps[2],
+                dtcomps[3],dtcomps[4],dtcomps[5]));
+            return convdt.toUTCString();
         }
-        // if time not provided, set to zero
-        if (dtcomps.length < 4) {
-            dtcomps[3] = 0;
-            dtcomps[4] = 0;
-            dtcomps[5] = 0;
-        }
-        // modify month between 1 based ISO 8601 and zero based Date
-        dtcomps[1]--;
-        const convdt = new
-        Date(Date.UTC(dtcomps[0],dtcomps[1],dtcomps[2],dtcomps[3],dtcomps[4],dtcomps[5]));
-        return convdt.toUTCString();
     }
 
     render() {
@@ -330,8 +370,6 @@ class SkillListing extends Component {
             renderElement = <div><StaticAppBar {...this.props} /><h1 className='skill_loading_container'>Loading...</h1></div>
         }
         else {
-
-
             renderElement = <div>
                 <StaticAppBar {...this.props} />
                 <div className='skill_listing_container' style={styles.home}>
@@ -400,50 +438,53 @@ class SkillListing extends Component {
                                                 {data}
                                             </Paper>
                                         )
-
                                     })}
                             </div>
                         </div>
                     </div>
                     <Divider />
-                    <div className='desc margin-b-md margin-t-md'>
-                        <h1 className='title'>
-                            Description
-                        </h1>
-                        <p>{this.state.descriptions}</p>
-                    </div>
-                    <div className='margin-b-md margin-t-md skill'>
-                        <h1 className='title'>
-                            Skill Details
-                        </h1>
-                        <div>
-                            <ul>
-                                {this.state.dynamic_content ?
-                                    <li>The Skill Contains content Dynamic Content
-                                        that is updated real-time based on inputs
-                                        from the User.</li> :
-                                    <li>Skill details are not available yet.</li>}
+                    <Paper className="margin-b-md margin-t-md">
+                        <div className='desc margin-b-md margin-t-md'>
+                            <h1 className='title'>
+                                Description
+                            </h1>
+                            <p className="card-content">{this.state.descriptions}</p>
+                        </div>
+                    </Paper>
+                    <Paper className="margin-b-md margin-t-md">
+                        <div className='margin-b-md margin-t-md skill'>
+                            <h1 className='title'>
+                                Skill Details
+                            </h1>
+                            <div className='card-content'>
+                                <ul>
+                                    {this.state.dynamic_content ?
+                                        <li>The Skill Contains content Dynamic Content
+                                            that is updated real-time based on inputs
+                                            from the User.</li> :
+                                        <li>Skill details are not available yet.</li>}
 
-                                {this.state.terms_of_use == null ? '' :
-                                  (<li><a href={this.state.terms_of_use}
-                                          target='_blank'
-                                          rel='noopener noreferrer'>Term & Condition</a></li>)}
+                                    {this.state.terms_of_use == null ? '' :
+                                      (<li><a href={this.state.terms_of_use}
+                                              target='_blank'
+                                              rel='noopener noreferrer'>Term & Condition</a></li>)}
 
-                                {this.state.terms_of_use == null ? '' :
-                                  (<li><a href={this.state.developer_privacy_policy}
-                                          target='_blank'
-                                          rel='noopener noreferrer'>Developer Privacy Policy</a></li>)}
-                            </ul>
+                                    {this.state.terms_of_use == null ? '' :
+                                      (<li><a href={this.state.developer_privacy_policy}
+                                              target='_blank'
+                                              rel='noopener noreferrer'>Developer Privacy Policy</a></li>)}
+                                </ul>
+                            </div>
+                            <div className='card-content'>
+                                Last accessed at -
+                                    {` ${this.parseDate(this.state.last_access_time)}`}
+                            </div>
+                            <div className='card-content'>
+                                Last modified at -
+                                    {` ${this.parseDate(this.state.last_modified_time)}`}
+                            </div>
                         </div>
-                        <div>
-                            Last accessed at -
-                                {` ${this.parseDate(this.state.last_access_time)}`}
-                        </div>
-                        <div>
-                            Last modified at -
-                                {` ${this.parseDate(this.state.last_modified_time)}`}
-                        </div>
-                    </div>
+                    </Paper>
 
                     <Paper className="margin-b-md margin-t-md">
                         <h1 className='title'>
@@ -518,6 +559,7 @@ class SkillListing extends Component {
                         }
 
                     </Paper>
+                   <SkillUsageCard skill_usage={this.state.skill_usage} />
                 </div>
             </div>
         }

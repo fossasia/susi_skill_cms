@@ -325,8 +325,8 @@ screen and (max-width:450px) {
     background-repeat: no-repeat;
     background-position: 50%;
     position: absolute;
-    bottom: calc(70% + 40px);
-    right: 35px;
+    top:10px;
+    right: 10px;
     width: 30px;
     height: 30px;
     background-color: #666;
@@ -461,7 +461,7 @@ screen and (max-width:450px) {
     background-color: #fff;
     border: solid #0077e5;
     border-width: 0 2px 2px 0;
-    transform: rotate(45deg)
+    transform: rotate(45deg);
 }
 
 #susi-container .susi-comment-multioption.highlight:before,

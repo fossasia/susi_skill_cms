@@ -131,6 +131,7 @@ function enableBot(){
 
 		var baseUrl = "https://api.susi.ai/susi/chat.json?q=";
 		var msgNumber = 0;//stores the message number to set id
+
 		// Add dynamic html bot content(Widget style)
 		var mybot;
 		if(flag==0){
@@ -216,6 +217,7 @@ function enableBot(){
 	        		'</div>';
 			}
 		}
+
 		$("body").append(mybot);
 
 		// Toggle chatbot

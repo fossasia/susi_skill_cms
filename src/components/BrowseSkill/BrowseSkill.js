@@ -5,7 +5,7 @@ import SelectField from 'material-ui/SelectField';
 import { Paper } from 'material-ui';
 import { Card } from 'material-ui/Card';
 import * as $ from 'jquery';
-import Link from 'react-router-dom/es/Link';
+import { Link } from 'react-router-dom'
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
@@ -261,8 +261,8 @@ export default class BrowseSkill extends React.Component {
                         description = 'No description available'
                     }
                     if (skill.skill_rating) {
-                        average_rating = parseInt(skill.skill_rating.avg_star,10);
-                        total_rating = parseInt(skill.skill_rating.total_star,10);
+                        average_rating = parseInt(skill.skill_rating.stars.avg_star,10);
+                        total_rating = parseInt(skill.skill_rating.stars.total_star,10);
                     }
 
                     cards.push(

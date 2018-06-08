@@ -178,3 +178,8 @@ abbr[title] {
   justify-content: center;
   padding-bottom: 10px;
 }
+
+.card-content {
+  padding-left: 20px;
+  padding-bottom: 20px;
+}

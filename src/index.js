@@ -23,6 +23,7 @@ import SkillVersion from './components/SkillVersion/SkillVersion';
 import SkillHistory from './components/SkillHistory/SkillHistory';
 import SkillRollBack from './components/SkillRollBack/SkillRollBack';
 import ContactBot from './components/BotBuilder/ContactBot';
+import Explore from './components/Explore/Explore';
 import setDefaults from './DefaultSettings';
 
 setDefaults();
@@ -49,6 +50,7 @@ class App extends React.Component {
                         <Route exact path='/:category/:skill/versions/:lang' component={SkillVersion}/>
                         <Route exact path='/:category/:skill/compare/:lang/:oldid/:recentid' component={SkillHistory}/>
                         <Route exact path='/:category/:skill/edit/:lang/:latestid/:revertid' component={SkillRollBack}/>
+                        <Route exact path='/explore' component={Explore}/>
                         <Route exact path='/' component={BrowseSkill} />
                         <Route exact path='*' component={NotFound} />
                     </Switch>
