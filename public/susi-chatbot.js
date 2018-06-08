@@ -98,6 +98,7 @@ function enableBot(){
 		var msgNumber = 0;//stores the message number to set id
 		// Add dynamic html bot content(Widget style)
 		var mybot = '<div id="susi-frame-container" class="susi-frame-container-active" style="display: none;">'+
+			'<div id="susi-launcher-close" title="Close" style="display: none;">'+'</div>'+
 			'<div id="susi-frame-wrap">'+
 			'<div id="susi">'+
 			    '<div id="susi-container" class="susi-container susi-reset">'+
@@ -128,15 +129,13 @@ function enableBot(){
 			    '</div>'+
 			'</div>'+
 		'</div>'+
-	'</div>'+
-			'<div id="susi-launcher-close" title="Close" style="display: none;">'+'</div>'+
+		'</div>'+
 		'<div id="susi-launcher-container" class="susi-flex-center susi-avatar-launcher susi-launcher-enabled">'+
 		'<div id="susi-avatar-text">'+'Hey there'+'</div>'+
 		'<div id="susi-launcher" class="susi-launcher susi-flex-center susi-launcher-active" style="background-color: rgb(91, 75, 159);">'+
 		'<div id="susi-launcher-button" class="susi-launcher-button" style="background-image: url('+ susi_skills_deployed_url + 'avatar.jpg' +');">'+'</div>'+
 		'</div>'+
 		'</div>';
-
 		$("body").append(mybot);
 
 		// Toggle chatbot
