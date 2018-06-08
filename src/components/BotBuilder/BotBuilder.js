@@ -12,9 +12,10 @@ import Deploy from './BotBuilderPages/Deploy';
 import './BotBuilder.css';
 import { Link } from 'react-router-dom';
 import Cookies from 'universal-cookie';
-import $ from 'jquery';
 
 const cookies = new Cookies();
+const locationBot = '/BotPreview.html?access='+cookies.get('loggedIn')+'&type=botWindow';
+const locationAvatar = '/BotAvatarPreview.html?access='+cookies.get('loggedIn')+'&type=botAvatar';
 
 class BotBuilder extends React.Component {
 
@@ -22,8 +23,6 @@ class BotBuilder extends React.Component {
         super(props);
         this.state = {
             activeTab: 0,
-            showPreview:false,
-            chatbotOpen: false,
             createBotWizard: true
         }
     }
@@ -37,39 +36,6 @@ class BotBuilder extends React.Component {
     handleChange = (event, value) => {
         this.setState({ activeTab: value });
     }
-
-    componentWillUnmount = () =>{
-      this.handleChatbotClose();
-    }
-
-    handleChatbotOpen = () =>{
-      this.setState({
-        chatbotOpen:true
-      });
-    }
-
-    handleChatbotClose = () =>{
-      this.setState({
-        chatbotOpen:false
-      });
-      $('#susi-launcher-container').remove();
-      $('#susi-frame-container').remove();
-      $('#susi-launcher-close').remove();
-      $('#susi-bot-script').remove();
-    }
-
-    injectJS = () => {
-        const myscript = document.createElement('script');
-        myscript.type = 'text/javascript';
-        myscript.id = 'susi-bot-script';
-        myscript.setAttribute('data-token',cookies.get('loggedIn'));
-        myscript.src = '/susi-chatbot.js';
-        myscript.async = true;
-        document.body.appendChild(myscript);
-        this.setState({
-          chatbotOpen:true
-        });
-    };
 
     render() {
         if(!cookies.get('loggedIn'))
@@ -92,68 +58,66 @@ class BotBuilder extends React.Component {
                     <Paper style={styles.paperStyle} className="botBuilder-page-card" zDepth={1}>
                         <Grid>
                             <Row style={(!this.state.createBotWizard)?({display: 'none'}):({display: 'block'})}>
-                            <div style={{textAlign: 'center'}}>
-                            <Link to="/botbuilder/contactbot">
-                                <RaisedButton
-                                    label='Use pre-coded Contact Bot'
-                                    backgroundColor={colors.header}
-                                    labelColor='#fff'
-                                />
-                            </Link>
-                            </div>
-                            <br /><h2 style={{textAlign: 'center'}}> OR </h2><br />
-                            <div style={{textAlign: 'center'}}>
-                                <RaisedButton
-                                    label='Create your own SUSI AI Web bot'
-                                    backgroundColor={colors.header}
-                                    labelColor='#fff'
-                                    onClick={this.toggleCreateBotWizard}
-                                />
-                            </div>
+                                <div style={{textAlign: 'center'}}>
+                                <Link to="/botbuilder/contactbot">
+                                    <RaisedButton
+                                        label='Use pre-coded Contact Bot'
+                                        backgroundColor={colors.header}
+                                        labelColor='#fff'
+                                    />
+                                </Link>
+                                </div>
+                                <br /><h2 style={{textAlign: 'center'}}> OR </h2><br />
+                                <div style={{textAlign: 'center'}}>
+                                    <RaisedButton
+                                        label='Create your own SUSI AI Web bot'
+                                        backgroundColor={colors.header}
+                                        labelColor='#fff'
+                                        onClick={this.toggleCreateBotWizard}
+                                    />
+                                </div>
                             </Row>
                             <Row style={(this.state.createBotWizard)?({display: 'none'}):null}>
-                                <Col xs={12} md={10}>
-                                    <Tabs
-                                        tabItemContainerStyle={{backgroundColor:'transparent'}}
-                                        inkBarStyle={{backgroundColor:'rgb(66, 133, 245)'}} >
-                                        <Tab
-                                            style={styles.tabStyle}
-                                            className='botbuilder-menu-item'
-                                            label="Build" >
-                                            <Build />
-                                        </Tab>
-                                        <Tab
-                                            style={styles.tabStyle}
-                                            className='botbuilder-menu-item'
-                                            label="Design" >
-                                            <Design />
-                                        </Tab>
-                                        <Tab
-                                            style={styles.tabStyle}
-                                            className='botbuilder-menu-item'
-                                            label="Configure" >
-                                            <Configure />
-                                        </Tab>
-                                        <Tab
-                                            style={styles.tabStyle}
-                                            className='botbuilder-menu-item'
-                                            label="Deploy" >
-                                            <Deploy />
-                                        </Tab>
-                                    </Tabs>
-                                </Col>
-                                <Col xs={12} md={2} style={{textAlign:window.innerWidth>769?'right':'left'}}>
-                                    <br className='display-mobile-only'/>
-                                {!this.state.chatbotOpen?(<RaisedButton
-                                    label='Preview'
-                                    style={{ width: '148px' }}
-                                    onClick={this.injectJS}
-                                />):(<RaisedButton
-                                    label='Close Preview'
-                                    style={{ width: '148px' }}
-                                    onClick={this.handleChatbotClose}
-                                />)}
-                                </Col>
+                                <div style={{display:'flex'}}>
+                                    <Col xs={12} md={8} style={{padding:'0.01em 20px'}}>
+                                        <Tabs
+                                            tabItemContainerStyle={{backgroundColor:'transparent'}}
+                                            inkBarStyle={{backgroundColor:'rgb(66, 133, 245)'}} >
+                                            <Tab
+                                                style={styles.tabStyle}
+                                                className='botbuilder-menu-item'
+                                                label="Build" >
+                                                <Build />
+                                            </Tab>
+                                            <Tab
+                                                style={styles.tabStyle}
+                                                className='botbuilder-menu-item'
+                                                label="Design" >
+                                                <Design />
+                                            </Tab>
+                                            <Tab
+                                                style={styles.tabStyle}
+                                                className='botbuilder-menu-item'
+                                                label="Configure" >
+                                                <Configure />
+                                            </Tab>
+                                            <Tab
+                                                style={styles.tabStyle}
+                                                className='botbuilder-menu-item'
+                                                label="Deploy" >
+                                                <Deploy />
+                                            </Tab>
+                                        </Tabs>
+                                    </Col>
+                                    <Col xs={12} md={4} style={{textAlign:window.innerWidth>769?'right':'left', borderLeft:'1px solid rgb(66, 133, 244)', padding:'0.01em 16px'}}>
+                                        <br className='display-mobile-only'/>
+                                        <h2 style={{padding:'10px 0 10px 10px', textAlign:'left'}}>Preview</h2>
+                                        <div style={{position:'relative', overflow:'hidden'}}>
+                                            <iframe title="botPreview" name="frame-name" id="frame-1" src={locationBot} height="600px" style={styles.iframe}></iframe>
+                                            <iframe title="botAvatarPreview" name="frame-2" id="frame-2" src={locationAvatar} height="100px" style={styles.iframe}></iframe>
+                                        </div>
+                                    </Col>
+                                </div>
                             </Row>
                         </Grid>
                     </Paper>
@@ -189,6 +153,16 @@ const styles = {
         marginBottom: '100px',
         fontSize: '50px',
         marginTop: '300px'
+    },
+    iframe: {
+        '-moz-border-radius': '12px',
+        '-webkit-border-radius': '12px',
+        'border-radius': '12px',
+        'max-width': '100%',
+        margin:'0',
+        padding:'0',
+        border:'1px solid #ccc',
+        overflow:'hidden'
     }
 };
 
