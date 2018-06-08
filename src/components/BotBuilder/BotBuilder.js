@@ -1,7 +1,7 @@
 import React from 'react';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import RaisedButton from 'material-ui/RaisedButton';
-import {Tabs, Tab} from 'material-ui/Tabs';
+import {Step, Stepper, StepLabel} from 'material-ui/Stepper';
 import {Grid, Col, Row} from 'react-flexbox-grid';
 import { Paper } from 'material-ui';
 import colors from '../../Utils/colors';
@@ -24,9 +24,26 @@ class BotBuilder extends React.Component {
             activeTab: 0,
             showPreview:false,
             chatbotOpen: false,
+            finished: false,
+            stepIndex: 0,
             createBotWizard: true
         }
     }
+
+    handleNext = () => {
+        const {stepIndex} = this.state;
+        this.setState({
+            stepIndex: stepIndex + 1,
+            finished: stepIndex >= 3,
+        });
+    };
+
+    handlePrev = () => {
+        const {stepIndex} = this.state;
+        if (stepIndex > 0) {
+            this.setState({stepIndex: stepIndex - 1});
+        }
+    };
 
     toggleCreateBotWizard = () => {
         this.setState(prevState => ({
@@ -67,11 +84,27 @@ class BotBuilder extends React.Component {
         myscript.async = true;
         document.body.appendChild(myscript);
         this.setState({
-          chatbotOpen:true
+            chatbotOpen:true
         });
     };
 
+    getStepContent(stepIndex) {
+        switch (stepIndex) {
+            case 0:
+                return <Build />;
+            case 1:
+                return <Design />;
+            case 2:
+                return <Configure />;
+            case 3:
+                return <Deploy />;
+            default:
+        }
+    }
+
     render() {
+        const {stepIndex} = this.state;
+        const contentStyle = {margin: '0 16px'};
         if(!cookies.get('loggedIn'))
         {
             return (
@@ -112,47 +145,57 @@ class BotBuilder extends React.Component {
                             </div>
                             </Row>
                             <Row style={(this.state.createBotWizard)?({display: 'none'}):null}>
-                                <Col xs={12} md={10}>
-                                    <Tabs
-                                        tabItemContainerStyle={{backgroundColor:'transparent'}}
-                                        inkBarStyle={{backgroundColor:'rgb(66, 133, 245)'}} >
-                                        <Tab
-                                            style={styles.tabStyle}
-                                            className='botbuilder-menu-item'
-                                            label="Build" >
-                                            <Build />
-                                        </Tab>
-                                        <Tab
-                                            style={styles.tabStyle}
-                                            className='botbuilder-menu-item'
-                                            label="Design" >
-                                            <Design />
-                                        </Tab>
-                                        <Tab
-                                            style={styles.tabStyle}
-                                            className='botbuilder-menu-item'
-                                            label="Configure" >
-                                            <Configure />
-                                        </Tab>
-                                        <Tab
-                                            style={styles.tabStyle}
-                                            className='botbuilder-menu-item'
-                                            label="Deploy" >
-                                            <Deploy />
-                                        </Tab>
-                                    </Tabs>
+                                <Col xs={12} md={9}>
+                                    <div style={{width: '100%', maxWidth: 700, margin: 'auto'}}>
+                                        <Stepper activeStep={stepIndex}>
+                                            <Step>
+                                                <StepLabel>Build</StepLabel>
+                                            </Step>
+                                            <Step>
+                                                <StepLabel>Design</StepLabel>
+                                            </Step>
+                                            <Step>
+                                                <StepLabel>Configure</StepLabel>
+                                            </Step>
+                                            <Step>
+                                                <StepLabel>Deploy</StepLabel>
+                                            </Step>
+                                        </Stepper>
+                                        <div style={contentStyle}>
+                                            <p>{this.getStepContent(stepIndex)}</p>
+                                            <div style={{marginTop: 6}}>
+                                                <RaisedButton
+                                                    label="Back"
+                                                    disabled={stepIndex === 0}
+                                                    backgroundColor={colors.header}
+                                                    labelColor='#fff'
+                                                    onTouchTap={this.handlePrev}
+                                                    style={{marginRight: 12}}
+                                                />
+                                                {(stepIndex<3) ? (
+                                                <RaisedButton
+                                                    label={stepIndex === 2 ? 'Finish' : 'Next'}
+                                                    backgroundColor={colors.header}
+                                                    labelColor='#fff'
+                                                    onTouchTap={this.handleNext}
+                                                    />
+                                                ) : (
+                                                    <p style={{'padding': '20px 0px 0px 0px' , 'font-family': 'sans-serif', 'font-size': '14px'}}>You&apos;re all done. Thanks for using SUSI Bot.</p>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
                                 </Col>
-                                <Col xs={12} md={2} style={{textAlign:window.innerWidth>769?'right':'left'}}>
-                                    <br className='display-mobile-only'/>
-                                {!this.state.chatbotOpen?(<RaisedButton
-                                    label='Preview'
-                                    style={{ width: '148px' }}
-                                    onClick={this.injectJS}
-                                />):(<RaisedButton
-                                    label='Close Preview'
-                                    style={{ width: '148px' }}
-                                    onClick={this.handleChatbotClose}
-                                />)}
+                                <Col xs={12} md={3} style={{textAlign:window.innerWidth>769?'right':'left', padding:window.innerWidth<350?'40px 20px 20px 20px':''}}>
+                                    {!this.state.chatbotOpen?(<RaisedButton
+                                        label='Preview'
+                                        style={{ width: '148px' }}
+                                        onClick={this.injectJS}
+                                    />):(<RaisedButton
+                                        label='Close Preview'
+                                        style={{ width: '148px' }}
+                                        onClick={this.handleChatbotClose}
+                                    />)}
                                 </Col>
                             </Row>
                         </Grid>
