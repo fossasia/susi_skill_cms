@@ -216,6 +216,8 @@ export default class CreateSkill extends React.Component {
 
     saveClick = () => {
         let groups = this.state.groups;
+        let code = this.state.code;
+        code = '::author_email ' + cookies.get('emailId') + '\n' + code;
         if(!cookies.get('loggedIn')) {
             notification.open({
                 message: 'Not logged In',
@@ -260,7 +262,7 @@ export default class CreateSkill extends React.Component {
         form.append('language', this.state.languageValue);
         form.append('skill', this.state.expertValue.trim().replace(/\s/g,'_'));
         form.append('image', this.state.file);
-        form.append('content', this.state.code);
+        form.append('content', code);
         form.append('image_name', this.state.imageUrl.replace('images/',''));
         form.append('access_token', cookies.get('loggedIn'));
 
