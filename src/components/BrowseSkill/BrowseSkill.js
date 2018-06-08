@@ -28,7 +28,7 @@ export default class BrowseSkill extends React.Component {
             cards: [],
             modelValue: 'general',
             skillURL: null,
-            groupValue: 'Knowledge',
+            groupValue: 'All',
             languageValue: 'en',
             expertValue: null,
             skills: [],
@@ -89,7 +89,7 @@ export default class BrowseSkill extends React.Component {
     };
 
     loadGroups = () => {
-        if (groups.length === 0) {
+        if (this.state.groups.length === 0) {
             $.ajax({
                 url: urls.API_URL + '/cms/getGroups.json',
                 jsonpCallback: 'pb',
@@ -118,7 +118,7 @@ export default class BrowseSkill extends React.Component {
     };
 
     loadLanguages = () => {
-        if (languages.length === 0) {
+        if (this.state.languages.length === 0) {
             $.ajax({
                 url: urls.API_URL + '/cms/getAllLanguages.json',
                 jsonpCallback: 'pc',
@@ -159,6 +159,8 @@ export default class BrowseSkill extends React.Component {
 
     loadCards = () => {
         let url;
+
+
         if (this.state.languages.length > 0 && this.state.groups.length > 0) {
             url = urls.API_URL + '/cms/getSkillList.json?model='
                   + this.state.modelValue + '&group=' + this.state.groupValue
@@ -166,7 +168,7 @@ export default class BrowseSkill extends React.Component {
                   // console.log(url);
         }
         else {
-            url = urls.API_URL + '/cms/getSkillList.json?group=Knowledge&applyFilter=true&filter_name=ascending&filter_type=lexicographical'
+            url = urls.API_URL + '/cms/getSkillList.json?group=All&applyFilter=true&filter_name=ascending&filter_type=lexicographical'
         }
 
         let self = this;
@@ -261,7 +263,7 @@ export default class BrowseSkill extends React.Component {
                         description = 'No description available'
                     }
                     if (skill.skill_rating) {
-                        average_rating = parseInt(skill.skill_rating.stars.avg_star,10);
+                        average_rating = parseFloat(skill.skill_rating.stars.avg_star);
                         total_rating = parseInt(skill.skill_rating.stars.total_star,10);
                     }
 
@@ -269,7 +271,7 @@ export default class BrowseSkill extends React.Component {
                             <Card style={styles.row} key={el}>
                             <Link key={el}
                             to={{
-                                pathname: '/' + self.state.groupValue
+                                pathname: '/' + skill.group
                                           + '/' + skill_name.toLowerCase().replace(/ /g, '_')
                                           + '/' + self.state.languageValue,
                                 state: {
@@ -277,7 +279,7 @@ export default class BrowseSkill extends React.Component {
                                     element: el,
                                     name: el,
                                     modelValue: self.state.modelValue,
-                                    groupValue: self.state.groupValue,
+                                    groupValue: skill.group,
                                     languageValue: self.state.languageValue,
                                 }
                             }}>
