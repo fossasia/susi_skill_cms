@@ -5,7 +5,7 @@ import SelectField from 'material-ui/SelectField';
 import { Paper } from 'material-ui';
 import { Card } from 'material-ui/Card';
 import * as $ from 'jquery';
-import Link from 'react-router-dom/es/Link';
+import { Link } from 'react-router-dom'
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
