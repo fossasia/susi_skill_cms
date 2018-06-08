@@ -7,6 +7,7 @@ import ISO6391 from 'iso-639-1';
 import {Paper, RaisedButton, TextField} from 'material-ui';
 import AceEditor from 'react-ace';
 import Cookies from 'universal-cookie';
+import { Link } from 'react-router-dom';
 import 'brace/mode/markdown';
 import 'brace/theme/github';
 import 'brace/theme/monokai';
@@ -497,7 +498,9 @@ export default class CreateSkill extends React.Component {
                                     onChange={this.handleCommitMessageChange}
                                 />
                                 <RaisedButton label='Save' backgroundColor={colors.header} labelColor='#fff' style={{marginLeft:10}}  onTouchTap={this.saveClick} />
-				<a href="http://skills.susi.ai/"><RaisedButton label='Cancel' backgroundColor={colors.header} labelColor='#fff' style={{marginLeft:10}} /></a>
+                                <Link to="/">
+                                    <RaisedButton label='Cancel' backgroundColor={colors.header} labelColor='#fff' style={{marginLeft:10}} />
+                                </Link>
                             </Paper>
                     </div>
                 </div>
