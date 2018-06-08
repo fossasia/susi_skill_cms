@@ -310,7 +310,7 @@ export default class BrowseSkill extends React.Component {
                                         <Ratings.Widget />
                                         <Ratings.Widget />
                                     </Ratings>
-                                    <span style={styles.totalRating}>
+                                    <span style={styles.totalRating} title="Total ratings">
                                         {total_rating || 0}
                                     </span>
                                 </div>
