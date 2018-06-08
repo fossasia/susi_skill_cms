@@ -9,9 +9,10 @@ import { Link } from 'react-router-dom';
 import Cookies from 'universal-cookie';
 
 const cookies = new Cookies();
+const locationBot = '/BotPreview.html?access='+cookies.get('loggedIn')+'&type=botWindow';
+const locationAvatar = '/BotAvatarPreview.html?access='+cookies.get('loggedIn')+'&type=botAvatar';
 
 class BotBuilder extends React.Component {
-
     render() {
         if(!cookies.get('loggedIn'))
         {
@@ -90,6 +91,16 @@ const styles = {
         marginBottom: '100px',
         fontSize: '50px',
         marginTop: '300px'
+    },
+    iframe: {
+        '-moz-border-radius': '12px',
+        '-webkit-border-radius': '12px',
+        'border-radius': '12px',
+        'max-width': '100%',
+        margin:'0',
+        padding:'0',
+        border:'1px solid #ccc',
+        overflow:'hidden'
     }
 };
 
