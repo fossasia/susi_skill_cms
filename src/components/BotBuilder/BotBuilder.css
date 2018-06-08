@@ -60,6 +60,19 @@
 .copy-button:hover{
 	background-color: #729ce2;
 }
+.color-box{
+	width: 23px;
+	height: 23px;
+	display: inline-block;
+	border-radius: 3px;
+	border: solid 1px #0000006e;
+}
+.color-picker-wrap>div{
+	display: inline-block;
+}
+.color-picker-wrap>div>div{
+	width:200px;
+}
 @media (min-width:769px){
 	.botbuilder-page-wrapper{
 		padding: 40px 30px 30px;

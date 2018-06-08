@@ -5,9 +5,9 @@ import * as $ from 'jquery';
 import Cookies from 'universal-cookie';
 import Snackbar from 'material-ui/Snackbar';
 import CircularProgress from 'material-ui/CircularProgress';
+import ColorPicker from 'material-ui-color-picker'
 import colors from '../../../Utils/colors';
 import urls from '../../../Utils/urls';
-import { SketchPicker } from 'react-color';
 const cookies = new Cookies();
 let BASE_URL = urls.API_URL;
 class Design extends React.Component {
@@ -15,23 +15,24 @@ class Design extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            botbuilderBackgroundBody:'',
+            botbuilderBackgroundBody:'#ffffff',
             botbuilderBodyBackgroundImg:'',
-            botbuilderUserMessageBackground:'',
-            botbuilderUserMessageTextColor:'',
-            botbuilderBotMessageBackground:'',
-            botbuilderBotMessageTextColor:'',
-            botbuilderIconColor:'',
+            botbuilderUserMessageBackground:'#0077e5',
+            botbuilderUserMessageTextColor:'#ffffff',
+            botbuilderBotMessageBackground:'#f8f8f8',
+            botbuilderBotMessageTextColor:'#455a64',
+            botbuilderIconColor:'#000000',
             botbuilderIconImg:'',
             saving:false,
             openSnackbar:false,
             msgSnackbar:'',
+            loadedSettings:false
         }
         this.getSettings();
     }
 
-    handleChangeComplete = (component,color) =>{
-        this.setState({[component]:color.hex});
+    handleChangeColor = (component,color) =>{
+        this.setState({[component]:color});
     }
 
     handleChangeBodyBackgroundImage = (botbuilderBodyBackgroundImg) =>{
@@ -111,6 +112,13 @@ class Design extends React.Component {
                     openSnackbar:true,
                     msgSnackbar:'Success! Saved settings'
                 });
+            }.bind(this),
+            error: function (textStatus, errorThrown) {
+                this.setState({
+                    saving:false,
+                    openSnackbar:true,
+                    msgSnackbar:'Error! Can\'t save your settings. Try logging again'
+                });
             }.bind(this)
         });
     }
@@ -128,6 +136,7 @@ class Design extends React.Component {
                 if(data.settings){
                     let settings = data.settings;
                     this.setState({
+                        loadedSettings:true,
                         botbuilderBackgroundBody:'#'+settings.botbuilderBackgroundBody,
                         botbuilderBodyBackgroundImg:settings.botbuilderBodyBackgroundImg,
                         botbuilderUserMessageBackground:'#'+settings.botbuilderUserMessageBackground,
@@ -155,13 +164,16 @@ class Design extends React.Component {
         const customizeComponents = customiseOptionsList.map((component) => {
             return <div key={component.id} className='circleChoose'>
                 <h2>Color of {component.name}</h2>
-                <div className='center'>
-                    <SketchPicker
-                        className='center'
-                        color={ this.state[component.component] }
-                        onChangeComplete={(color)=>
-                            this.handleChangeComplete(component.component,color) }
+            <div className='color-picker-wrap'>
+                        <ColorPicker
+                            className='color-picker'
+                            style={{display:'inline-block',float:'left'}}
+                            name='color'
+                            defaultValue={ this.state[component.component] }
+                            onChange={(color)=>
+                                this.handleChangeColor(component.component,color) }
                         />
+                    <span className='color-box' style={{backgroundColor:this.state[component.component]}}></span>
                     </div>
                     {component.component === 'botbuilderBackgroundBody' && <div>
                         <TextField
@@ -205,7 +217,7 @@ class Design extends React.Component {
                 return(
                     <div className="center menu-page">
                         <div className='design-box'>
-                            {customizeComponents}
+                            {this.state.loadedSettings && customizeComponents}
                             <div className='center'>
                                 <RaisedButton
                                     name='save'
