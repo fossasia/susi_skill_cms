@@ -245,8 +245,8 @@ class SkillListing extends Component {
         });
         name = skill_name;
         this.setState({
-            last_modified_time: skillData['lastModifiedTime: '],
-            last_access_time: skillData['lastAccessTime: ']
+            last_modified_time: skillData.lastModifiedTime,
+            last_access_time: skillData.lastAccessTime
         })
         this.setState({
             dataReceived: true
