@@ -23,6 +23,7 @@ import SkillVersion from './components/SkillVersion/SkillVersion';
 import SkillHistory from './components/SkillHistory/SkillHistory';
 import SkillRollBack from './components/SkillRollBack/SkillRollBack';
 import ContactBot from './components/BotBuilder/ContactBot';
+import BotWizard from './components/BotBuilder/BotWizard';
 import Explore from './components/Explore/Explore';
 import setDefaults from './DefaultSettings';
 
@@ -44,6 +45,7 @@ class App extends React.Component {
                         <Route path='/listUser' component={ListUser}/>
                         <Route exact path='/:category/:skill/:lang' component={SkillListing}/>
                         <Route exact path='/botbuilder/contactbot' component={ContactBot} />
+                        <Route exact path='/botbuilder/botwizard' component={BotWizard} />
                         <Route exact path='/botbuilder' component={BotBuilder}/>
                         <Route exact path='/logout' component={Logout} />
                         <Route exact path='/skillCreator' component={CreateSkill}/>
