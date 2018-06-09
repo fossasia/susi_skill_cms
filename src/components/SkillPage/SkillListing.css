@@ -130,36 +130,7 @@ abbr[title] {
   }
 }
 
-.ratings-section {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-}
 
-.rating-bar-chart {
-    flex: 3;
-    margin: 20px;
-    padding: 20px;
-}
-
-.ratings-section div {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.average {
-  display: flex;
-  flex-direction: column;
-  margin-left: 40px;
-}
-
-.total-rating {
-  display: flex;
-  flex-direction: column;
-  margin-right: 40px;
-}
 .title {
   padding : 20px 0 0 20px;
 }
