@@ -95,7 +95,7 @@ class ContactBot extends React.Component {
 		return (
 			<div>
 				<StaticAppBar {...this.props} />
-				<div style={styles.home}>
+				<div style={styles.home} className="botbuilder-page-wrapper">
 					<Paper style={styles.paperStyle} className="botBuilder-page-card" zDepth={1}>
                         <Grid>
                             <Row>
@@ -117,7 +117,7 @@ class ContactBot extends React.Component {
                                         </Stepper>
                                         <div style={contentStyle}>
                                             <p>{this.getStepContent(stepIndex)}</p>
-                                            <div style={{marginTop: 6}}>
+                                            <div style={{marginTop: '20px'}}>
                                                 <RaisedButton
                                                     label="Back"
                                                     disabled={stepIndex === 0}

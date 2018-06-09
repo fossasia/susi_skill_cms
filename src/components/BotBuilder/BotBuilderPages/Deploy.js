@@ -23,10 +23,8 @@ class Deploy extends Component {
             <CopyToClipboard text={'<script type=\'text/javascript\' id=\'susi-bot-script\' data-token=\''+cookies.get('loggedIn')+'\' src=\'https://skills.susi.ai/susi-chatbot.js\'></script>'}
               onCopy={() => this.setState({copied: true})}>
               <span className='copy-button'>copy</span>
-          </CopyToClipboard>
-
+            </CopyToClipboard>
           </div>
-
           <h4>Paste the above code just above <i>&lt;/body&gt;</i>
         &nbsp;tag in your website.</h4>
         </div>
