@@ -32,7 +32,7 @@ class SkillRatingCard extends Component {
                         <div className="ratings-section">
                             <div>
                                 <Ratings
-                                    rating={this.props.avg_rating}
+                                    rating={this.props.rating}
                                     widgetRatedColors="#ffbb28"
                                     widgetHoverColors="#ffbb28"
                                     widgetDimensions="50px"
