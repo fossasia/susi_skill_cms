@@ -19,8 +19,8 @@ import './SkillRatingCard.css';
 const cookies = new Cookies();
 
 class SkillRatingCard extends Component {
-	render() {
-		return(
+    render() {
+        return(
             <Paper className="margin-b-md margin-t-md">
                 <h1 className='title'>
                     Ratings
@@ -28,14 +28,14 @@ class SkillRatingCard extends Component {
                 {
                     cookies.get('loggedIn') ?
                     <div>
-                        <div className='subTitle'> Rate your experience with {this.name} on SUSI.AI </div>
+                        <div className='subTitle'> Rate your experience with {this.props.skill_name} on SUSI.AI </div>
                         <div className="ratings-section">
                             <div>
                                 <Ratings
                                     rating={this.props.avg_rating}
                                     widgetRatedColors="#ffbb28"
                                     widgetHoverColors="#ffbb28"
-                                    widgetDimensions="30px"
+                                    widgetDimensions="50px"
                                     changeRating={this.props.changeRating}
                                 >
                                     <Ratings.Widget />
@@ -54,57 +54,55 @@ class SkillRatingCard extends Component {
                     this.props.total_star ?
                     <div className="ratings-section">
                         <div className="average">
-                            Average Rating
                             <div className="large-text">
                                 {this.props.avg_rating || 0}
                             </div>
+                            Average Rating
                         </div>
                         <div className="rating-bar-chart">
                             <BarChart
                                 layout='vertical'
                                 width={400}
-                                height={250}
+                                height={200}
+                                margin={{right: 48}}
                                 data={this.props.skill_ratings} >
-                                <XAxis type="number" padding={{right: 20}} />
-                                <YAxis dataKey="name" type="category"/>
-                                <Tooltip
-                                    wrapperStyle={{height: '60px'}}
-                                />
-                                <Bar name="Skill Rating" dataKey="value" fill="#8884d8">
-                                    <LabelList dataKey="value" position="right" />
+                                <XAxis type="number" hide={true} />
+                                <YAxis dataKey="name" type="category" axisLine={false} tickLine={false}/>
+                                <Tooltip cursor={false} wrapperStyle={{height: '30px'}} />
+                                <Bar name="Skill Rating" background={true} barSize={32} maxBarSize={100} dataKey="value">
+                                <LabelList position='insideLeft' offset={305} fill='#666666' />
                                     {
                                         this.props.skill_ratings
                                             .map((entry, index) =>
                                                 <Cell key={index} fill={
-                                                    ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#FF2323'][index % 5]
+                                                    ['#81C784', '#AED581', '#FFF176', '#FFB74D', '#E57373'][index % 5]
                                                 }/>)
                                     }
                                 </Bar>
                             </BarChart>
                         </div>
                         <div className="total-rating">
-                            Total Ratings
                             <div className="large-text">
                                 {this.props.total_star || 0}
                             </div>
+                            Total Ratings
                         </div>
                     </div>
                     :
                     <div className="ratings-default-message">No ratings data available yet, be the first to rate this skill!</div>
                 }
-
             </Paper>
-		)
-	}
+        )
+    }
 }
 
 SkillRatingCard.propTypes = {
+    skill_name: PropTypes.string,
     skill_ratings: PropTypes.array,
     rating: PropTypes.number,
-    avg_rating: PropTypes.string,
-    total_star: PropTypes.string,
+    avg_rating: PropTypes.number,
+    total_star: PropTypes.number,
     changeRating: PropTypes.func
 };
-
 
 export default SkillRatingCard;

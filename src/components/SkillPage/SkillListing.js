@@ -68,8 +68,8 @@ class SkillListing extends Component {
             imgUrl: null,
             commits: [],
             commitsChecked: [],
-            avg_rating: '',
-            total_star: '',
+            avg_rating: 0,
+            total_star: 0,
             skill_ratings: [],
             skill_usage: [],
             rating : 0,
@@ -189,15 +189,17 @@ class SkillListing extends Component {
     saveSkillRatings = (skill_ratings) => {
         // Added 10 as radix to remove warnings
         const ratings_data = [
-            {name: '5 ⭐', value: parseInt(skill_ratings.five_star, 10) || 0},
-            {name: '4 ⭐', value: parseInt(skill_ratings.four_star, 10) || 0},
-            {name: '3 ⭐', value: parseInt(skill_ratings.three_star, 10) || 0},
-            {name: '2 ⭐', value: parseInt(skill_ratings.two_star, 10) || 0},
-            {name: '1 ⭐', value: parseInt(skill_ratings.one_star, 10) || 0}
+            {name: '5.0 ⭐', value: parseInt(skill_ratings.five_star, 10) || 0},
+            {name: '4.0 ⭐', value: parseInt(skill_ratings.four_star, 10) || 0},
+            {name: '3.0 ⭐', value: parseInt(skill_ratings.three_star, 10) || 0},
+            {name: '2.0 ⭐', value: parseInt(skill_ratings.two_star, 10) || 0},
+            {name: '1.0 ⭐', value: parseInt(skill_ratings.one_star, 10) || 0}
         ];
+
+        let avg_rating = parseFloat(skill_ratings.avg_star);
         this.setState({
             skill_ratings: ratings_data,
-            avg_rating: parseFloat(skill_ratings.avg_star),
+            avg_rating: parseFloat(avg_rating.toFixed(2)),
             total_star: parseInt(skill_ratings.total_star, 10)
         })
     }
@@ -256,12 +258,9 @@ class SkillListing extends Component {
     changeRating = (newRating) => {
 
         let baseUrl = urls.API_URL + '/cms/fiveStarRateSkill.json';
-        let skillRatingUrl = `${urls.API_URL}/cms/getSkillRating.json`
-
         let modelValue = 'general';
         this.groupValue = this.props.location.pathname.split('/')[1];
         this.languageValue = this.props.location.pathname.split('/')[3];
-        skillRatingUrl = skillRatingUrl + '?model=' + modelValue + '&group=' + this.groupValue + '&language=' + this.languageValue + '&skill=' + this.name;
         let changeRatingUrl = baseUrl + '?model=' + modelValue + '&group=' + this.groupValue + '&language=' + this.languageValue + '&skill=' + this.name + '&stars=' + newRating + '&access_token='+cookies.get('loggedIn');
         // console.log('Url:' + url);
         let self = this;
@@ -272,7 +271,7 @@ class SkillListing extends Component {
             jsonp: 'callback',
             crossDomain: true,
             success: function (data) {
-                console.log('Ratings accepted');
+                self.saveSkillRatings(data.ratings)
             },
             error: function(e) {
                 console.log(e);
@@ -280,21 +279,7 @@ class SkillListing extends Component {
         });
 
          this.setState({
-            rating: newRating
-        });
-        // Fetch ratings for the visited skill
-        $.ajax({
-            url: skillRatingUrl,
-            jsonpCallback: 'pc',
-            dataType: 'jsonp',
-            jsonp: 'callback',
-            crossDomain: true,
-            success: function (data) {
-                self.saveSkillRatings(data.skill_rating.stars)
-            },
-            error: function(e) {
-                console.log(e);
-            }
+            rating: parseInt(newRating,10)
         });
     };
 
@@ -484,15 +469,14 @@ class SkillListing extends Component {
                             </div>
                         </div>
                     </Paper>
-
                     <SkillRatingCard
+                        skill_name={this.state.skill_name}
                         skill_ratings={this.state.skill_ratings}
                         rating={this.state.rating}
                         avg_rating={this.state.avg_rating}
                         total_star={this.state.total_star}
                         changeRating={this.changeRating}
                     />
-
                    <SkillUsageCard skill_usage={this.state.skill_usage} />
                 </div>
             </div>
