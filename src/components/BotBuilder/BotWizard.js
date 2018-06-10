@@ -84,7 +84,7 @@ class ContactBot extends React.Component {
                                         </Stepper>
                                         <div style={contentStyle}>
                                             <p>{this.getStepContent(stepIndex)}</p>
-                                            <div style={{marginTop: 6}}>
+                                            <div style={{marginTop: '20px'}}>
                                                 <RaisedButton
                                                     label="Back"
                                                     disabled={stepIndex === 0}

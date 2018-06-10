@@ -11,7 +11,7 @@ class ContactBot extends React.Component {
 		return (
 			<div>
 				<StaticAppBar {...this.props} />
-				<div style={styles.home}>
+				<div style={styles.home} className="botbuilder-page-wrapper">
 					<Paper style={styles.paperStyle} className="botBuilder-page-card" zDepth={1}>
 					<div style={{padding: '40px 40px 40px 40px', textAlign: 'center'}}>
 						<h1>The SUSI AI Contact Bot for your website is ready!</h1><br/>
@@ -22,7 +22,7 @@ class ContactBot extends React.Component {
 						</div>
 							<h4>Paste the above code just above
 								<i> &lt;/body&gt; </i>
-							tag in your website</h4>
+							tag in your website.</h4>
 					</div>
 					</Paper>
 				</div>

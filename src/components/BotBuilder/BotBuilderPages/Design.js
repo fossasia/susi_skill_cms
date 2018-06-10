@@ -187,7 +187,7 @@ class Design extends React.Component {
                                 name='removeBackgroundBody'
                                 key={'RemoveBody'}
                                 backgroundColor={colors.header}
-                                style={{marginLeft:'5px'}}
+                                style={{marginLeft:'15px'}}
                                 label='Remove URL'
                                 labelColor='#fff'
                                 onTouchTap={this.handleRemoveUrlBody}
@@ -204,7 +204,7 @@ class Design extends React.Component {
                                 name='removeIconUrl'
                                 key={'RemoveIconUrl'}
                                 backgroundColor={colors.header}
-                                style={{marginLeft:'5px'}}
+                                style={{marginLeft:'15px'}}
                                 label='Remove URL'
                                 labelColor='#fff'
                                 onTouchTap={this.handleRemoveUrlIcon}
@@ -218,15 +218,13 @@ class Design extends React.Component {
                     <div className="center menu-page">
                         <div className='design-box'>
                             {this.state.loadedSettings && customizeComponents}
-                            <div className='center'>
-                                <RaisedButton
-                                    name='save'
-                                    backgroundColor={colors.header}
-                                    onTouchTap={this.handleSave}
-                                    labelColor='#fff'
-                                    label={this.state.saving?<CircularProgress color="#ffffff" size={32}/>:'Save Changes'}
-                                />
-                            </div>
+                            <RaisedButton
+                                name='save'
+                                backgroundColor={colors.header}
+                                onTouchTap={this.handleSave}
+                                labelColor='#fff'
+                                label={this.state.saving?<CircularProgress color="#ffffff" size={32}/>:'Save Changes'}
+                            />
                         </div>
                         <Snackbar
                             open={this.state.openSnackbar}
