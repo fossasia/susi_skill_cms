@@ -30,7 +30,7 @@ var botbuilderUserMessageTextColor = "#ffffff";
 var botbuilderBotMessageBackground = "#f8f8f8";
 var botbuilderBotMessageTextColor = "#455a64";
 var botbuilderIconColor = "";
-var botbuilderIconImg = susi_skills_deployed_url + 'avatar.jpg';
+var botbuilderIconImg = susi_skills_deployed_url + 'customAvatars/0.png';
 
 if(typeof jQuery=='undefined') {
 	var jqTag = document.createElement('script');
@@ -295,37 +295,13 @@ function enableBot(){
 			setBotResponse(ans);
 		}
 
-
-		// Set bot response
-		function setBotResponse(val) {
-				val = val.replace(new RegExp('\r?\n','g'), '<br />');
-				var BotResponse = '<div class="susi-conversation-part susi-conversation-part-grouped-first">'+
-				'<div style="background-image: url('+ botbuilderIconImg + ')" class="susi-comment-avatar susi-theme-bg">'+
-
-				'</div>'+
-				'<div class=" susi-comment susi-comment-by-susi ">'+
-				'<div class="susi-comment-body-container" style="background-color:'+botbuilderBotMessageBackground+';color:'+botbuilderBotMessageTextColor+'">'+
-				'<div class="susi-comment-body ">'+
-				'<div class="susi-comment-content">'+
-				'<div class="susi-question-label">'+
-				'<div>'+val+'</div>'+
-				'</div>'+
-				'</div>'+
-				'</div>'+
-				'</div>'+
-				'</div>'+
-				'</div>';
-				$(BotResponse).appendTo('.susi-conversation-parts');
-				scrollToBottomOfResults();
-		}
-
 		function setLoadingMessage(msgNumber){
-				var BotResponse = '<div id="susiMsg-'+msgNumber+'" class="susi-conversation-part susi-conversation-part-grouped-first">'+
-		'<div style="background-image: url('+ susi_skills_deployed_url + 'avatar.jpg' + ')" class="susi-comment-avatar susi-theme-bg">'+
+		    var BotResponse = '<div id="susiMsg-'+msgNumber+'" class="susi-conversation-part susi-conversation-part-grouped-first">'+
+		'<div style="background-image: url('+ botbuilderIconImg + ')" class="susi-comment-avatar susi-theme-bg">'+
 
 		'</div>'+
 		'<div class="susi-comment susi-comment-by-susi">'+
-			'<div class="susi-comment-body-container susi-comment-body-container-susi">'+
+			'<div class="susi-comment-body-container susi-comment-body-container-susi" style="background-color:'+botbuilderBotMessageBackground+';color:'+botbuilderBotMessageTextColor+'">'+
 				'<div class="susi-comment-body ">'+
 					'<div class="susi-comment-content">'+
 						'<div class="susi-question-label">'+
