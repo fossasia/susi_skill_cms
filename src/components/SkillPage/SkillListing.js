@@ -10,6 +10,7 @@ import AuthorSkills from '../AuthorSkills/AuthorSkills'
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import SkillUsageCard from '../SkillUsageCard/SkillUsageCard';
 import SkillRatingCard from '../SkillRatingCard/SkillRatingCard';
+import CountryWiseSkillUsageCard from '../CountryWiseSkillUsageCard/CountryWiseSkillUsageCard';
 import {
     FloatingActionButton,
     Paper,
@@ -72,6 +73,7 @@ class SkillListing extends Component {
             total_star: '',
             skill_ratings: [],
             skill_usage: [],
+            country_wise_skill_usage: [],
             rating : 0,
         };
 
@@ -102,6 +104,8 @@ class SkillListing extends Component {
             let baseUrl = urls.API_URL + '/cms/getSkillMetadata.json';
             let skillRatingUrl = `${urls.API_URL}/cms/getSkillRating.json`;
             let skillUsageUrl = `${urls.API_URL}/cms/getSkillUsage.json`;
+            let countryWiseSkillUsageUrl =
+            	`${urls.API_URL}/cms/getCountryWiseSkillUsage.json`;
             let url = this.url;
 
             let modelValue = 'general';
@@ -110,6 +114,7 @@ class SkillListing extends Component {
             url = baseUrl + '?model=' + modelValue + '&group=' + this.groupValue + '&language=' + this.languageValue + '&skill=' + this.name;
             skillRatingUrl = skillRatingUrl + '?model=' + modelValue + '&group=' + this.groupValue + '&language=' + this.languageValue + '&skill=' + this.name;
             skillUsageUrl = skillUsageUrl + '?model=' + modelValue + '&group=' + this.groupValue + '&language=' + this.languageValue + '&skill=' + this.name;
+            countryWiseSkillUsageUrl = countryWiseSkillUsageUrl + '?model=' + modelValue + '&group=' + this.groupValue + '&language=' + this.languageValue + '&skill=' + this.name;
             // console.log('Url:' + url);
             let self = this;
             $.ajax({
@@ -146,6 +151,18 @@ class SkillListing extends Component {
                 },
                 error: function(e) {
                     self.saveSkillUsage()
+                }
+            });
+            // Fetch country wise skill usage of the visited skill
+            $.ajax({
+                url: countryWiseSkillUsageUrl,
+                dataType: 'json',
+                crossDomain: true,
+                success: function (data) {
+                    self.saveCountryWiseSkillUsage(data.skill_usage)
+                },
+                error: function(e) {
+                    self.saveCountryWiseSkillUsage()
                 }
             });
         }
@@ -215,6 +232,16 @@ class SkillListing extends Component {
         ];
         this.setState({
             skill_usage: data
+        })
+    }
+
+    saveCountryWiseSkillUsage = (country_wise_skill_usage = []) => {
+        // Add sample data to test
+        let data=country_wise_skill_usage
+        .map(country => [country.country_code, Number(country.count)]);
+
+        this.setState({
+            country_wise_skill_usage: data
         })
     }
 
@@ -494,6 +521,8 @@ class SkillListing extends Component {
                     />
 
                    <SkillUsageCard skill_usage={this.state.skill_usage} />
+                   <CountryWiseSkillUsageCard
+						country_wise_skill_usage={this.state.country_wise_skill_usage} />
                 </div>
             </div>
         }
