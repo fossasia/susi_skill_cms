@@ -9,19 +9,6 @@
 	margin-bottom: 5px;
 }
 
-.code-box:after {
-	content: '';
-	position: absolute;
-	top: 0;
-	left: 50%;
-	width: 0;
-	height: 0;
-	border: 15px solid transparent;
-	border-bottom-color: #d3d3d3;
-	border-top: 0;
-	margin-left: -15px;
-	margin-top: -15px;
-}
 .code-wrap{
 	transition: all 0.3s ease-in;
 	display: none;

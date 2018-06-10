@@ -1,5 +1,4 @@
 const styles = {
-
     center: {
         display: 'flex',
         alignItems: 'center',
@@ -118,7 +117,7 @@ const styles = {
         float: 'left',
     },
     totalRating : {
-        fontSize : '12px',
+        fontSize : '13px',
         paddingLeft : '5px',
         color : '#108ee9'
     }

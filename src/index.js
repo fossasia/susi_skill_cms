@@ -14,6 +14,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import NotFound from './components/NotFound/NotFound';
 import Admin from './components/Admin/Admin'
 import BotBuilder from './components/BotBuilder/BotBuilder';
+import Dashboard from './components/Dashboard/Dashboard';
 import BrowseSkill from './components/BrowseSkill/BrowseSkill';
 import SkillListing from './components/SkillPage/SkillListing';
 import ListUser from './components/Admin/ListUser/ListUser';
@@ -47,6 +48,7 @@ class App extends React.Component {
                         <Route exact path='/botbuilder/contactbot' component={ContactBot} />
                         <Route exact path='/botbuilder/botwizard' component={BotWizard} />
                         <Route exact path='/botbuilder' component={BotBuilder}/>
+                        <Route exact path='/dashboard' component={Dashboard}/>
                         <Route exact path='/logout' component={Logout} />
                         <Route exact path='/skillCreator' component={CreateSkill}/>
                         <Route exact path='/:category/:skill/versions/:lang' component={SkillVersion}/>

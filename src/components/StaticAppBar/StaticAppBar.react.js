@@ -253,8 +253,8 @@ class StaticAppBar extends Component {
 
                         }
                         {cookies.get('loggedIn') ?
-                            (<MenuItem primaryText='Botbuilder'
-                                containerElement={<Link to='/botbuilder' />}
+                            (<MenuItem primaryText='Dashboard'
+                                containerElement={<Link to='/dashboard' />}
                                 rightIcon={<Extension />} />) :
                             null
                         }
