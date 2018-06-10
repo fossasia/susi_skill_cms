@@ -83,6 +83,7 @@ function applyTheme(){
 		}
 		// user message container
 		$(".susi-comment-by-user .susi-comment-body-container").css("background-color",botbuilderUserMessageBackground);
+	  $("head").append($('<style>.susi-comment-body-container-user:after { border-color:'+ `transparent transparent ${botbuilderUserMessageBackground} ${botbuilderUserMessageBackground} !important` +'}</style>'));
 		$(".susi-comment-by-user .susi-comment-body-container").css("color",botbuilderUserMessageTextColor);
 		// bot message container
 		$(".susi-comment-by-susi .susi-comment-body-container").css("background-color",botbuilderBotMessageBackground);
@@ -103,6 +104,7 @@ function applyTheme(){
 			}
 			// user message container
 			$(".susi-comment-by-user .susi-comment-body-container").css("background-color",botbuilderUserMessageBackground);
+      $("head").append($('<style>.susi-comment-body-container-user:after { border-color:'+ `transparent transparent ${botbuilderUserMessageBackground} ${botbuilderUserMessageBackground} !important` +'}</style>'));
 			$(".susi-comment-by-user .susi-comment-body-container").css("color",botbuilderUserMessageTextColor);
 			// bot message container
 			$(".susi-comment-by-susi .susi-comment-body-container").css("background-color",botbuilderBotMessageBackground);
