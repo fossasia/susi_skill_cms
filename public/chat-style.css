@@ -324,9 +324,9 @@ screen and (max-width:450px) {
     background-size: 15px;
     background-repeat: no-repeat;
     background-position: 50%;
-    position: absolute;
-    top:10px;
-    right: 10px;
+    position: fixed;
+    bottom: calc(70% + 40px);
+    right: 35px;
     width: 30px;
     height: 30px;
     background-color: #666;
