@@ -10,10 +10,11 @@ import Configure from './BotBuilderPages/Configure';
 import Deploy from './BotBuilderPages/Deploy';
 import { Paper } from 'material-ui';
 import './BotBuilder.css';
-import $ from 'jquery';
 import Cookies from 'universal-cookie';
 
 const cookies = new Cookies();
+const locationBot = '/BotPreview.html?access='+cookies.get('loggedIn')+'&type=botWindow';
+const locationAvatar = '/BotAvatarPreview.html?access='+cookies.get('loggedIn')+'&type=botAvatar';
 
 class ContactBot extends React.Component {
 
@@ -21,9 +22,7 @@ class ContactBot extends React.Component {
         super(props);
         this.state = {
             finished: false,
-            stepIndex: 0,
-            showPreview:false,
-            chatbotOpen: false
+            stepIndex: 0
         }
     }
 
@@ -54,39 +53,6 @@ class ContactBot extends React.Component {
                 return <Deploy />;
             default:
         }
-    }
-
-    componentWillUnmount = () =>{
-      this.handleChatbotClose();
-    }
-
-    handleChatbotOpen = () =>{
-      this.setState({
-        chatbotOpen:true
-      });
-    }
-
-    handleChatbotClose = () =>{
-      this.setState({
-        chatbotOpen:false
-      });
-      $('#susi-launcher-container').remove();
-      $('#susi-frame-container').remove();
-      $('#susi-launcher-close').remove();
-      $('#susi-bot-script').remove();
-    }
-
-    injectJS = () => {
-        const myscript = document.createElement('script');
-        myscript.type = 'text/javascript';
-        myscript.id = 'susi-bot-script';
-        myscript.setAttribute('data-token',cookies.get('loggedIn'));
-        myscript.src = '/susi-chatbot.js';
-        myscript.async = true;
-        document.body.appendChild(myscript);
-        this.setState({
-            chatbotOpen:true
-        });
     };
 
 	render() {
@@ -95,12 +61,13 @@ class ContactBot extends React.Component {
 		return (
 			<div>
 				<StaticAppBar {...this.props} />
-				<div style={styles.home}>
+				<div style={styles.home} className="botbuilder-page-wrapper">
 					<Paper style={styles.paperStyle} className="botBuilder-page-card" zDepth={1}>
                         <Grid>
                             <Row>
-                                <Col xs={12} md={9}>
-                                    <div style={{width: '100%', maxWidth: 700, margin: 'auto'}}>
+                                <div style={{display: 'flex', 'flex-direction':window.innerWidth>769?'row':'column'}}>
+                                <Col xs={12} md={8} lg={8}>
+                                    <div style={{width: '100%', 'max-width': '100%', margin: 'auto'}}>
                                         <Stepper activeStep={stepIndex}>
                                             <Step>
                                                 <StepLabel>Build</StepLabel>
@@ -140,17 +107,15 @@ class ContactBot extends React.Component {
                                         </div>
                                     </div>
                                 </Col>
-                                <Col xs={12} md={3} style={{textAlign:window.innerWidth>769?'right':'left', padding:window.innerWidth<350?'40px 20px 20px 20px':''}}>
-                                    {!this.state.chatbotOpen?(<RaisedButton
-                                        label='Preview'
-                                        style={{ width: '148px' }}
-                                        onClick={this.injectJS}
-                                    />):(<RaisedButton
-                                        label='Close Preview'
-                                        style={{ width: '148px' }}
-                                        onClick={this.handleChatbotClose}
-                                    />)}
+                                <Col xs={12} md={4} lg={4} style={{textAlign:window.innerWidth>769?'right':'left', borderLeft:'1px solid rgb(66, 133, 244)', padding:'0.01em 16px'}}>
+                                    <br className='display-mobile-only'/>
+                                    <h2 style={{padding:'10px 0 10px 10px', textAlign:'left'}}>Preview</h2><br/>
+                                    <div style={{position:'relative', overflow:'hidden'}}>
+                                        <iframe title="botPreview" name="frame-name" id="frame-1" src={locationBot} height="600px" style={styles.iframe}></iframe>
+                                        <iframe title="botAvatarPreview" name="frame-2" id="frame-2" src={locationAvatar} height="100px" style={styles.iframe}></iframe>
+                                    </div>
                                 </Col>
+                                </div>
                             </Row>
                         </Grid>
 					</Paper>
@@ -164,10 +129,27 @@ const styles = {
 	home: {
         width: '100%'
     },
-	paperStyle: {
-		width: '100%',
-		marginTop:'20px'
-	}
+    bg: {
+        textAlign: 'center',
+        padding: '30px',
+    },
+    paperStyle: {
+        width: '100%',
+        marginTop:'20px',
+    },
+    tabStyle: {
+        color:'rgb(91, 91, 91)'
+    },
+    iframe: {
+        '-moz-border-radius': '12px',
+        '-webkit-border-radius': '12px',
+        'border-radius': '12px',
+        'max-width': '100%',
+        margin:'0',
+        padding:'0',
+        border:'1px solid #ccc',
+        overflow:'hidden'
+    }
 }
 
 export default ContactBot;

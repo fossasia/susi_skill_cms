@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <body onload="addJS()">
+        <script>
+            function addJS() {
+                var loc = location.href.split('?')[1].split('=');
+                var access = loc[1].split('&');
+                const myscript = document.createElement('script');
+                myscript.type = 'text/javascript';
+                myscript.id = 'susi-bot-script';
+                myscript.setAttribute('data-token',access[0]);
+                myscript.setAttribute('data-bot-type', loc[2]);
+                myscript.src = 'susi-chatbot.js';
+                myscript.async = true;
+                document.body.appendChild(myscript);
+                return;
+            }
+        </script>
+    </body>
+</html>
