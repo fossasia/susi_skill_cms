@@ -150,6 +150,6 @@ const styles = {
         border:'1px solid #ccc',
         overflow:'hidden'
     }
-}
+};
 
 export default ContactBot;
