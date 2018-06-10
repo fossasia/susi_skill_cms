@@ -2,15 +2,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom'
-import Ratings from 'react-ratings-declarative';
 import Cookies from 'universal-cookie';
-import {BarChart, Cell, LabelList, Bar, XAxis, YAxis, Tooltip} from 'recharts';
 import $ from 'jquery';
 
 // Components
 import AuthorSkills from '../AuthorSkills/AuthorSkills'
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import SkillUsageCard from '../SkillUsageCard/SkillUsageCard';
+import SkillRatingCard from '../SkillRatingCard/SkillRatingCard';
 import {
     FloatingActionButton,
     Paper,
@@ -486,79 +485,14 @@ class SkillListing extends Component {
                         </div>
                     </Paper>
 
-                    <Paper className="margin-b-md margin-t-md">
-                        <h1 className='title'>
-                            Ratings
-                        </h1>
-                        {
-                            cookies.get('loggedIn') ?
-                            <div>
-                                <div className='subTitle'> Rate your experience with {this.name} on SUSI.AI </div>
-                                <div className="ratings-section">
-                                    <div>
-                                        <Ratings
-                                            rating={this.state.rating}
-                                            widgetRatedColors="#ffbb28"
-                                            widgetHoverColors="#ffbb28"
-                                            widgetDimensions="30px"
-                                            changeRating={this.changeRating}
-                                          >
-                                            <Ratings.Widget />
-                                            <Ratings.Widget />
-                                            <Ratings.Widget />
-                                            <Ratings.Widget />
-                                            <Ratings.Widget />
-                                        </Ratings>
-                                    </div>
-                                </div>
-                            </div>
-                            :
-                            null
-                        }
-                        {
-                            this.state.total_star ?
-                            <div className="ratings-section">
-                                <div className="average">
-                                    Average Rating
-                                    <div className="large-text">
-                                        {this.state.avg_rating || 0}
-                                    </div>
-                                </div>
-                                <div className="rating-bar-chart">
-                                    <BarChart
-                                        layout='vertical'
-                                        width={400}
-                                        height={250}
-                                        data={this.state.skill_ratings} >
-                                        <XAxis type="number" padding={{right: 20}} />
-                                        <YAxis dataKey="name" type="category"/>
-                                        <Tooltip
-                                            wrapperStyle={{height: '60px'}}
-                                        />
-                                        <Bar name="Skill Rating" dataKey="value" fill="#8884d8">
-                                            <LabelList dataKey="value" position="right" />
-                                            {
-                                                this.state.skill_ratings
-                                                    .map((entry, index) =>
-                                                        <Cell key={index} fill={
-                                                            ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#FF2323'][index % 5]
-                                                        }/>)
-                                            }
-                                        </Bar>
-                                    </BarChart>
-                                </div>
-                                <div className="total-rating">
-                                    Total Ratings
-                                    <div className="large-text">
-                                        {this.state.total_star || 0}
-                                    </div>
-                                </div>
-                            </div>
-                            :
-                            <div className="ratings-default-message">No ratings data available yet, be the first to rate this skill!</div>
-                        }
+                    <SkillRatingCard
+                        skill_ratings={this.state.skill_ratings}
+                        rating={this.state.rating}
+                        avg_rating={this.state.avg_rating}
+                        total_star={this.state.total_star}
+                        changeRating={this.changeRating}
+                    />
 
-                    </Paper>
                    <SkillUsageCard skill_usage={this.state.skill_usage} />
                 </div>
             </div>
