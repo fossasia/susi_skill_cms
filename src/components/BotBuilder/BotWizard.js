@@ -1,7 +1,7 @@
 import React from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
-import {Step, Stepper, StepLabel} from 'material-ui/Stepper';
+import { Step, Stepper, StepButton} from 'material-ui/Stepper';
 import {Grid, Col, Row} from 'react-flexbox-grid';
 import colors from '../../Utils/colors';
 import Build from './BotBuilderPages/Build';
@@ -55,6 +55,10 @@ class ContactBot extends React.Component {
         }
     };
 
+    setStep = (stepIndex) =>{
+        this.setState({stepIndex});
+    }
+
 	render() {
         const {stepIndex} = this.state;
         const contentStyle = {margin: '0 16px'};
@@ -68,18 +72,26 @@ class ContactBot extends React.Component {
                                 <div style={{display: 'flex', 'flex-direction':window.innerWidth>769?'row':'column'}}>
                                 <Col xs={12} md={8} lg={8}>
                                     <div style={{width: '100%', 'max-width': '100%', margin: 'auto'}}>
-                                        <Stepper activeStep={stepIndex}>
+                                        <Stepper activeStep={stepIndex} linear={false}>
                                             <Step>
-                                                <StepLabel>Build</StepLabel>
+                                                <StepButton onClick={()=>this.setStep(0)}>
+                                                    Build
+                                                </StepButton>
                                             </Step>
                                             <Step>
-                                                <StepLabel>Design</StepLabel>
+                                                <StepButton onClick={()=>this.setStep(1)}>
+                                                    Design
+                                                </StepButton>
                                             </Step>
                                             <Step>
-                                                <StepLabel>Configure</StepLabel>
+                                                <StepButton onClick={()=>this.setStep(2)}>
+                                                    Configure
+                                                </StepButton>
                                             </Step>
                                             <Step>
-                                                <StepLabel>Deploy</StepLabel>
+                                                <StepButton onClick={()=>this.setStep(3)}>
+                                                    Deploy
+                                                </StepButton>
                                             </Step>
                                         </Stepper>
                                         <div style={contentStyle}>
