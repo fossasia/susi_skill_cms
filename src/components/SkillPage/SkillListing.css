@@ -34,23 +34,21 @@ abbr[title] {
   transform: scale(1.2);
 }
 
-.examples{
+.examples {
   display: flex;
   flex-wrap: wrap;
 }
 
-.examples > div{
+.examples > div {
     margin-top:10px ;
 }
 
-.exampleTile{
-  height: auto;
+.exampleTile {
   width: 200px;
   margin-right: 20px;
   box-shadow: none;
   padding: 20px;
   color: #555;
-  max-height: 80px;
 }
 
 .margin-b-md {
@@ -88,7 +86,7 @@ abbr[title] {
   float: left;
 }
 
-.skillEditBtn > button{
+.skillEditBtn > button {
     background-color: #4285f4;
 }
 
@@ -107,7 +105,7 @@ abbr[title] {
   flex-direction: column;
 }
 
-@media only screen and (min-width: 0px) and (max-width: 768px){
+@media only screen and (min-width: 0px) and (max-width: 768px) {
 
   .avatar-img {
      display:inline;
@@ -117,7 +115,7 @@ abbr[title] {
         text-align:center;
     }
 
-  .exampleTile{
+  .exampleTile {
     width: 90%;
   }
   .skill_listing_container {

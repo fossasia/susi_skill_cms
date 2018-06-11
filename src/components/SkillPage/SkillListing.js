@@ -149,7 +149,7 @@ class SkillListing extends Component {
                 }
             });
         }
-        if(this.props.location.state!==undefined){
+        if(this.props.location.state !== undefined){
             if (this.props.location.state.from_upload !== undefined) {
                 let baseUrl = urls.API_URL + '/cms/getSkillMetadata.json';
                 let url;
