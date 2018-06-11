@@ -29,7 +29,8 @@ class Design extends React.Component {
             saving:false,
             openSnackbar:false,
             msgSnackbar:'',
-            loadedSettings:false
+            loadedSettings:false,
+            resetting:false
         }
         this.getSettings();
     }
@@ -153,16 +154,50 @@ class Design extends React.Component {
             success: function (data) {
                 if(data.settings){
                     let settings = data.settings;
+                    if(settings.botbuilderBackgroundBody){
+                        this.setState({
+                            botbuilderBackgroundBody:'#'+settings.botbuilderBackgroundBody
+                        });
+                    }
+                    if(settings.botbuilderBodyBackgroundImg){
+                        let img = settings.botbuilderBodyBackgroundImg;
+                        this.setState({
+                            botbuilderBodyBackgroundImg:img
+                        });
+                    }
+                    if(settings.botbuilderUserMessageBackground){
+                        this.setState({
+                            botbuilderUserMessageBackground:'#'+settings.botbuilderUserMessageBackground
+                        });
+                    }
+                    if(settings.botbuilderUserMessageTextColor){
+                        this.setState({
+                            botbuilderUserMessageTextColor:'#'+settings.botbuilderUserMessageTextColor
+                        });
+                    }
+                    if(settings.botbuilderBotMessageBackground){
+                        this.setState({
+                            botbuilderBotMessageBackground:'#'+settings.botbuilderBotMessageBackground
+                        });
+                    }
+                    if(settings.botbuilderBotMessageTextColor){
+                        this.setState({
+                            botbuilderBotMessageTextColor:'#'+settings.botbuilderBotMessageTextColor
+                        });
+                    }
+                    if(settings.botbuilderIconColor){
+                        this.setState({
+                            botbuilderIconColor:'#'+settings.botbuilderIconColor
+                        });
+                    }
+                    if(settings.botbuilderIconImg){
+                        this.setState({
+                            botbuilderIconImg:settings.botbuilderIconImg
+                        });
+                    }
+
                     this.setState({
-                        loadedSettings:true,
-                        botbuilderBackgroundBody:'#'+settings.botbuilderBackgroundBody,
-                        botbuilderBodyBackgroundImg:settings.botbuilderBodyBackgroundImg,
-                        botbuilderUserMessageBackground:'#'+settings.botbuilderUserMessageBackground,
-                        botbuilderUserMessageTextColor:'#'+settings.botbuilderUserMessageTextColor,
-                        botbuilderBotMessageBackground:'#'+settings.botbuilderBotMessageBackground,
-                        botbuilderBotMessageTextColor:'#'+settings.botbuilderBotMessageTextColor,
-                        botbuilderIconColor:'#'+settings.botbuilderIconColor,
-                        botbuilderIconImg:settings.botbuilderIconImg,
+                        loadedSettings:true
                     });
                     let botbuilderIconImg = settings.botbuilderIconImg;
                     if(botbuilderIconImg){
@@ -174,6 +209,85 @@ class Design extends React.Component {
                         }
                     }
                 }
+            }.bind(this),
+            error: function(error){
+                this.setState({
+                    openSnackbar:true,
+                    msgSnackbar:'Couldn\'t get settings. Please try login again'
+                });
+            }.bind(this)
+        });
+    }
+
+    handleReset = () =>{
+        // send settings to server
+        if(cookies.get('loggedIn')===null||
+        cookies.get('loggedIn')===undefined) {
+            return;
+        }
+        let settings = [
+            {
+                key:'botbuilderBackgroundBody',
+                value:''
+            },
+            {
+                key:'botbuilderBodyBackgroundImg',
+                value:''
+            },
+            {
+                key:'botbuilderUserMessageBackground',
+                value:''
+            },
+            {
+                key:'botbuilderUserMessageTextColor',
+                value:''
+            },
+            {
+                key:'botbuilderBotMessageBackground',
+                value:''
+            },
+            {
+                key:'botbuilderBotMessageTextColor',
+                value:''
+            },
+            {
+                key:'botbuilderIconColor',
+                value:''
+            },
+            {
+                key:'botbuilderIconImg',
+                value:''
+            }
+        ];
+        let url = BASE_URL+'/aaa/changeUserSettings.json?'
+        +'&access_token='+cookies.get('loggedIn');
+
+        settings.forEach((obj,index) => {
+            url += '&key'+(index+1).toString()+'='+obj.key
+            +'&value'+(index+1).toString()+'='+(obj.value).toString();
+        });
+        url += '&count='+((settings).length).toString();
+        this.setState({resetting:true});
+        $.ajax({
+            url: url,
+            jsonpCallback: 'pa',
+            dataType: 'jsonp',
+            jsonp: 'callback',
+            crossDomain: true,
+            success: function (data) {
+                // successfully stored
+                this.setState({
+                    resetting:false,
+                    openSnackbar:true,
+                    msgSnackbar:'Success! Saved settings'
+                });
+            }.bind(this),
+            error: function (textStatus, errorThrown) {
+                this.setState({
+                    resetting:false,
+                    openSnackbar:true,
+                    msgSnackbar:'Error! Can\'t save your settings. Try logging again'
+                });
             }.bind(this)
         });
     }
@@ -271,7 +385,12 @@ class Design extends React.Component {
                         <div className='design-box'>
                             {this.state.loadedSettings && customizeComponents}
                             <RaisedButton
+                                label={this.state.resetting?<CircularProgress color={colors.header} size={32}/>:'Reset'}
+                                onTouchTap={this.handleReset}
+                            />
+                            <RaisedButton
                                 name='save'
+                                style={{marginLeft:'15px'}}
                                 backgroundColor={colors.header}
                                 onTouchTap={this.handleSave}
                                 labelColor='#fff'
