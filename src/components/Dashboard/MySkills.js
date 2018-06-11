@@ -22,11 +22,12 @@ import * as $ from 'jquery';
 import Add from 'material-ui/svg-icons/content/add';
 import urls from '../../Utils/urls';
 import colors from '../../Utils/colors';
+
 const cookies = new Cookies();
 
 class MySkills extends Component {
 
-    constructor(props){
+    constructor (props) {
         super(props);
         this.state={
             skillsData:[],
@@ -41,9 +42,7 @@ class MySkills extends Component {
     componentDidMount(){
         this.loadSkills();
     }
-    handleShowSkills = () =>{
 
-    }
     loadSkills = () => {
         let url;
         url = urls.API_URL + '/cms/getSkillList.json?applyFilter=true&filter_name=ascending&filter_type=lexicographical';
@@ -56,7 +55,7 @@ class MySkills extends Component {
             jsonp: 'callback',
             crossDomain: true,
             success: function (data) {
-              for(let i of data.filteredData){
+              for (let i of data.filteredData) {
                   skillsData.push({
                       skill_name:i.skill_name,
                       type:'public',
@@ -69,7 +68,7 @@ class MySkills extends Component {
                   loading:false
               });
             },
-            error: function (err){
+            error: function (err) {
               self.setState({
                   loading: false,
                   openSnackbar:false,
@@ -79,22 +78,24 @@ class MySkills extends Component {
         });
     }
 
-    handleShowMySkills = (event, isInputChecked) =>{
+    handleShowMySkills = (event, isInputChecked) => {
         this.setState({showMySkills:isInputChecked});
     }
-    handleOnRequestChangeBottom = (value) =>{
+
+    handleOnRequestChangeBottom = (value) => {
         this.setState({
             openMenuBottom: value,
         });
     }
-    handleOnRequestChange = (value) =>{
+
+    handleOnRequestChange = (value) => {
         this.setState({
             openMenu: value,
         });
     }
     render() {
-        let skillsData = this.state.skillsData.filter((item)=>{
-            if(!this.state.showMySkills || item.author_email === cookies.get('loggedIn')){
+        let skillsData = this.state.skillsData.filter( item => {
+            if(!this.state.showMySkills || item.author_email === cookies.get('loggedIn')) {
                 return item;
             }
             return null;
@@ -110,7 +111,7 @@ class MySkills extends Component {
                         iconButtonElement={<IconButton className='add-button' iconStyle={{color:'#fff'}}><Add /></IconButton>}
                         >
                             <Link to='/skillCreator'><MenuItem leftIcon={<Add />} primaryText="Create a Skill" /></Link>
-                        <Link to='/botbuilder'><MenuItem leftIcon={<Person />} primaryText="Create Skill bot" /></Link>
+                            <Link to='/botbuilder'><MenuItem leftIcon={<Person />} primaryText="Create Skill bot" /></Link>
                     </IconMenu>
                     <RaisedButton
                         backgroundColor={colors.header}
@@ -145,35 +146,52 @@ class MySkills extends Component {
                     <TableHeader
                     displaySelectAll={false}
                     adjustForCheckbox={false}>
-                        <TableRow>
-                            <TableHeaderColumn>Skill Name</TableHeaderColumn>
-                            <TableHeaderColumn>Type</TableHeaderColumn>
-                        <TableHeaderColumn>Author</TableHeaderColumn>
-                            <TableHeaderColumn>Status</TableHeaderColumn>
+                        <TableRow >
+                            <TableHeaderColumn>Skill Name</TableHeaderColumn >
+                            <TableHeaderColumn>Type</TableHeaderColumn >
+                        <TableHeaderColumn>Author</TableHeaderColumn >
+                            <TableHeaderColumn>Status</TableHeaderColumn >
                         </TableRow>
                     </TableHeader>
                     <TableBody displayRowCheckbox={false}>
-                    {skillsData.map((skill,index)=>{
-                        return (
-                            <TableRow key={index}>
-                                <TableRowColumn style={{fontSize:'16px'}}>{skill.skill_name?skill.skill_name:'NA'}</TableRowColumn>
-                                <TableRowColumn style={{fontSize:'16px'}}>{skill.type}</TableRowColumn>
-                            <TableRowColumn style={{fontSize:'16px'}}>{skill.author?skill.author:'NA'}</TableRowColumn>
-                                <TableRowColumn>
-                                    <SelectField
-                                        floatingLabelText="Status"
-                                        fullWidth={true}
-                                        value={1}
-                                        >
-                                            <MenuItem value={1} primaryText="Enable" />
-                                    </SelectField>
-                                </TableRowColumn>
-                            </TableRow>
-                        )
-                    })}
-                    <TableRow>
+                        {skillsData.map((skill, index) => {
+                            return (
+                                <TableRow key={index}>
+                                    <TableRowColumn style={{fontSize:'16px'}}>
+                                        {skill.skill_name ?
+                                            <Link to={{
+                                                pathname:
+                                                    '/' + skill.group +
+                                                    '/' + skill.skill_name.toLowerCase().replace(/ /g, '_') +
+                                                    '/' + skill.language
+                                            }}>
+                                                {skill.skill_name}
+                                            </Link>:
+                                        'NA'}
+                                    </TableRowColumn>
+                                    <TableRowColumn
+                                        style={{fontSize:'16px'}}>
+                                            {skill.type}
+                                    </TableRowColumn>
+                                    <TableRowColumn
+                                        style={{fontSize:'16px'}}>
+                                            {skill.author ? skill.author : 'NA'}
+                                    </TableRowColumn>
+                                    <TableRowColumn>
+                                        <SelectField
+                                            floatingLabelText="Status"
+                                            fullWidth={true}
+                                            value={1}
+                                            >
+                                                <MenuItem value={1} primaryText="Enable" />
+                                        </SelectField>
+                                    </TableRowColumn>
+                                </TableRow>
+                            )
+                        })}
+                        <TableRow>
 
-                    </TableRow>
+                        </TableRow>
                     </TableBody>
 
                 </Table>
@@ -184,23 +202,23 @@ class MySkills extends Component {
                     <h2>Create your first skill or learn more about <a href='https://github.com/fossasia/susi_skill_cms/blob/master/docs/Skill_Tutorial.md' rel="noopener noreferrer" target='_blank'>SUSI Skills</a></h2>
                 <br/>
                 <IconMenu
-                        anchorOrigin={{vertical:'bottom',horizontal:'middle'}}
-                        label='Add new skill'
-                        open={this.state.openMenuBottom}
-                        onRequestChange={this.handleOnRequestChangeBottom}
-                        iconButtonElement={<IconButton style={{display:'none'}} iconStyle={{color:'#fff'}}><Add /></IconButton>}
-                        >
-                            <Link to='/skillCreator'><MenuItem leftIcon={<Add />} primaryText="Create a Skill" /></Link>
-                            <Link to='/botbuilder'><MenuItem leftIcon={<Person />} primaryText="Create Skill bot" /></Link>
-                        </IconMenu>
-                        <RaisedButton
-                                backgroundColor={colors.header}
-                                onClick={()=>{this.setState({openMenuBottom:true})}}
-                                label='Create Skill'
-                                labelStyle={{verticalAlign:'middle'}}
-                                labelColor='#fff'
-                                icon={<Add/>}
-                            />
+                    anchorOrigin={{vertical:'bottom',horizontal:'middle'}}
+                    label='Add new skill'
+                    open={this.state.openMenuBottom}
+                    onRequestChange={this.handleOnRequestChangeBottom}
+                    iconButtonElement={<IconButton style={{display:'none'}} iconStyle={{color:'#fff'}}><Add /></IconButton>}
+                >
+                        <Link to='/skillCreator'><MenuItem leftIcon={<Add />} primaryText="Create a Skill" /></Link>
+                        <Link to='/botbuilder'><MenuItem leftIcon={<Person />} primaryText="Create Skill bot" /></Link>
+                </IconMenu>
+                <RaisedButton
+                    backgroundColor={colors.header}
+                    onClick={()=>{this.setState({openMenuBottom:true})}}
+                    label='Create Skill'
+                    labelStyle={{verticalAlign:'middle'}}
+                    labelColor='#fff'
+                    icon={<Add/>}
+                />
                 </div>
             </div>}
 
@@ -208,7 +226,7 @@ class MySkills extends Component {
                 open={this.state.openSnackbar}
                 message={this.state.msgSnackbar}
                 autoHideDuration={2000}
-                onRequestClose={()=>{this.setState({openSnackbar:false})}}
+                onRequestClose={ () => {this.setState({openSnackbar:false})}}
             />
             </div>
         );
