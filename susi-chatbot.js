@@ -270,7 +270,7 @@ function enableBot(){
 			setLoadingMessage(thisMsgNumber);
 			$.ajax({
 				type: "GET",
-				url: baseUrl+text,
+				url: baseUrl+encodeURIComponent(text),
 				contentType: "application/json",
 				dataType: "json",
 				success: function(data) {
