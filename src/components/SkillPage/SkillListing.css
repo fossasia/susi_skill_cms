@@ -35,6 +35,7 @@ abbr[title] {
 }
 
 .examples {
+  height: max-content;
   display: flex;
   flex-wrap: wrap;
 }
