@@ -13,16 +13,16 @@ import './BotBuilder.css';
 import Cookies from 'universal-cookie';
 
 const cookies = new Cookies();
-const locationBot = '/BotPreview.html?access='+cookies.get('loggedIn')+'&type=botWindow';
-const locationAvatar = '/BotAvatarPreview.html?access='+cookies.get('loggedIn')+'&type=botAvatar';
 
-class ContactBot extends React.Component {
+
+class BotWizard extends React.Component {
 
     constructor(props){
         super(props);
         this.state = {
             finished: false,
-            stepIndex: 0
+            stepIndex: 0,
+            themeSettingsString:'{}'
         }
     }
 
@@ -41,12 +41,16 @@ class ContactBot extends React.Component {
         }
     };
 
+    updateSettings = (themeSettingsString) =>{
+        this.setState({themeSettingsString})
+    }
+
     getStepContent(stepIndex) {
         switch (stepIndex) {
             case 0:
                 return <Build />;
             case 1:
-                return <Design />;
+                return <Design updateSettings={this.updateSettings} />;
             case 2:
                 return <Configure />;
             case 3:
@@ -58,10 +62,13 @@ class ContactBot extends React.Component {
     setStep = (stepIndex) =>{
         this.setState({stepIndex});
     }
-
 	render() {
         const {stepIndex} = this.state;
         const contentStyle = {margin: '0 16px'};
+        const locationAvatar = '/BotAvatarPreview.html?access='+cookies.get('loggedIn')+'&type=botAvatar'+
+        '&themeSettings='+encodeURIComponent(this.state.themeSettingsString);
+        const locationBot = '/BotPreview.html?access='+cookies.get('loggedIn')+'&type=botWindow'+
+        '&themeSettings='+encodeURIComponent(this.state.themeSettingsString);
 		return (
 			<div>
 				<StaticAppBar {...this.props} />
@@ -69,9 +76,8 @@ class ContactBot extends React.Component {
 					<Paper style={styles.paperStyle} className="botBuilder-page-card" zDepth={1}>
                         <Grid>
                             <Row>
-                                <div style={{display: 'flex', 'flex-direction':window.innerWidth>769?'row':'column'}}>
                                 <Col xs={12} md={8} lg={8}>
-                                    <div style={{width: '100%', 'max-width': '100%', margin: 'auto'}}>
+                                    <div style={{width: '100%', maxWidth: '100%', margin: 'auto'}}>
                                         <Stepper activeStep={stepIndex} linear={false}>
                                             <Step>
                                                 <StepButton onClick={()=>this.setStep(0)}>
@@ -95,7 +101,7 @@ class ContactBot extends React.Component {
                                             </Step>
                                         </Stepper>
                                         <div style={contentStyle}>
-                                            <p>{this.getStepContent(stepIndex)}</p>
+                                            <div>{this.getStepContent(stepIndex)}</div>
                                             <div style={{marginTop: '20px'}}>
                                                 <RaisedButton
                                                     label="Back"
@@ -119,15 +125,14 @@ class ContactBot extends React.Component {
                                         </div>
                                     </div>
                                 </Col>
-                                <Col xs={12} md={4} lg={4} style={{textAlign:window.innerWidth>769?'right':'left', borderLeft:'1px solid rgb(66, 133, 244)', padding:'0.01em 16px'}}>
+                                <Col xs={12} md={4} lg={4} style={{textAlign:'center', padding:'0.01em 16px'}}>
                                     <br className='display-mobile-only'/>
-                                    <h2 style={{padding:'10px 0 10px 10px', textAlign:'left'}}>Preview</h2><br/>
+                                <h2 className='center'>Preview</h2><br/>
                                     <div style={{position:'relative', overflow:'hidden'}}>
-                                        <iframe title="botPreview" name="frame-name" id="frame-1" src={locationBot} height="600px" style={styles.iframe}></iframe>
-                                        <iframe title="botAvatarPreview" name="frame-2" id="frame-2" src={locationAvatar} height="100px" style={styles.iframe}></iframe>
+                                        <iframe title="botPreview" name="frame-name" id="frame-1" src={locationBot} height="600px"></iframe>
+                                        <iframe title="botAvatarPreview" name="frame-2" id="frame-2" src={locationAvatar} height="100px"></iframe>
                                     </div>
                                 </Col>
-                                </div>
                             </Row>
                         </Grid>
 					</Paper>
@@ -151,17 +156,7 @@ const styles = {
     },
     tabStyle: {
         color:'rgb(91, 91, 91)'
-    },
-    iframe: {
-        '-moz-border-radius': '12px',
-        '-webkit-border-radius': '12px',
-        'border-radius': '12px',
-        'max-width': '100%',
-        margin:'0',
-        padding:'0',
-        border:'1px solid #ccc',
-        overflow:'hidden'
     }
 };
 
-export default ContactBot;
+export default BotWizard;
