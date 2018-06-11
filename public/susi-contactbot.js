@@ -71,7 +71,7 @@ function enableBot(){
 		'<div id="susi-launcher-container" class="susi-flex-center susi-avatar-launcher susi-launcher-enabled">'+
 			'<div id="susi-avatar-text">'+'Hey there'+'</div>'+
 			'<div id="susi-launcher" class="susi-launcher susi-flex-center susi-launcher-active" style="background-color: rgb(91, 75, 159);">'+
-				'<div id="susi-launcher-button" class="susi-launcher-button" style="background-image: url('+ susi_skills_deployed_url + 'avatar.jpg' +');">'+'</div>'+
+				'<div id="susi-launcher-button" class="susi-launcher-button" style="background-image: url('+ susi_skills_deployed_url + 'customAvatars/0.png' +');">'+'</div>'+
 			'</div>'+
 		'</div>';
 
@@ -84,11 +84,13 @@ function enableBot(){
 			$('#susi-launcher-close').toggle();
 			document.getElementById('chat-input').focus();
 			if(flag==0){
-				start();
 				flag = 1;
+				start();
 			}
 			else if(flag==1){
 				info[0] = ''; info[1] = ''; info[2] = '';
+				$('.susi-conversation-parts').empty();
+				flag = 0;
 			}
 		});
 
@@ -198,9 +200,9 @@ function enableBot(){
 		$('.susi-send-button').click(function(){
 			var text = $("#susiTextMessage").val();
 			$("#chat-input").blur();
-			setUserResponse(text);
-			for(i in info){
-				if(info[i] === ''){
+			if(text !== ''){
+				setUserResponse(text);
+				for(i in info){
 					if(info[i] === ''){
 						if(i == 1){
 							if(validateEmail(text)){
