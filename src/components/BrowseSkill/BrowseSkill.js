@@ -46,39 +46,42 @@ export default class BrowseSkill extends React.Component {
         this.loadLanguages();
         this.loadGroups();
         this.loadCards();
+        // Variable to store running timeouts corresponding to searchInput change.
+        this.searchTimer = null;
     }
 
     handleFilterChange = (event, index, value) => {
         this.setState({ filter: value}, function() {
-        this.loadCards();
+            this.loadCards();
         });
     };
 
     handleModelChange = (event, index) => {
         this.setState({ groupSelect: false}, function() {
-        this.loadCards();
+            this.loadCards();
         });
     };
 
     handleGroupChange = (event, index, value) => {
         this.setState({groupValue: value}, function () {
         // console.log(this.state);
-        this.loadCards();
+            this.loadCards();
         });
     };
 
     handleLanguageChange = (event, index, value) => {
-      this.setState({languageValue: value}, function () {
+        this.setState({languageValue: value}, function () {
         // console.log(this.state);
-        this.loadCards();
+            this.loadCards();
         });
     };
 
-    handleSearch = (value) => {
-        console.log(value);
-      this.setState({searchQuery: value}, function () {
-        // console.log(this.state);
-        this.loadCards();
+    handleSearch = (searchQuery) => {
+        this.setState({searchQuery}, () => {
+            // Clear any already running timeouts
+            clearTimeout(this.searchTimer);
+            // Set the searchTimer and load cards in 300ms interval
+            this.searchTimer = setTimeout(() => this.loadCards(), 300);
         });
     };
 
