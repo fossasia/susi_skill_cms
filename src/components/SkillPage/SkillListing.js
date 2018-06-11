@@ -100,7 +100,6 @@ class SkillListing extends Component {
         if(this.url !== undefined) {
 
             let baseUrl = urls.API_URL + '/cms/getSkillMetadata.json';
-            let skillRatingUrl = `${urls.API_URL}/cms/getSkillRating.json`;
             let skillUsageUrl = `${urls.API_URL}/cms/getSkillUsage.json`;
             let url = this.url;
 
@@ -108,7 +107,6 @@ class SkillListing extends Component {
             this.groupValue = this.props.location.pathname.split('/')[1];
             this.languageValue = this.props.location.pathname.split('/')[3];
             url = baseUrl + '?model=' + modelValue + '&group=' + this.groupValue + '&language=' + this.languageValue + '&skill=' + this.name;
-            skillRatingUrl = skillRatingUrl + '?model=' + modelValue + '&group=' + this.groupValue + '&language=' + this.languageValue + '&skill=' + this.name;
             skillUsageUrl = skillUsageUrl + '?model=' + modelValue + '&group=' + this.groupValue + '&language=' + this.languageValue + '&skill=' + this.name;
             // console.log('Url:' + url);
             let self = this;
@@ -122,21 +120,6 @@ class SkillListing extends Component {
                     self.updateData(data.skill_metadata)
                 }
             });
-            // Fetch ratings for the visited skill
-            $.ajax({
-                url: skillRatingUrl,
-                jsonpCallback: 'pc',
-                dataType: 'jsonp',
-                jsonp: 'callback',
-                crossDomain: true,
-                success: function (data) {
-                    self.saveSkillRatings(data.skill_rating.stars)
-                },
-                error: function(e) {
-                    console.log(e);
-                }
-            });
-            // Fetch skill usage of the visited skill
             $.ajax({
                 url: skillUsageUrl,
                 dataType: 'json',
@@ -149,41 +132,6 @@ class SkillListing extends Component {
                 }
             });
         }
-        if(this.props.location.state!==undefined){
-            if (this.props.location.state.from_upload !== undefined) {
-                let baseUrl = urls.API_URL + '/cms/getSkillMetadata.json';
-                let url;
-
-                let modelValue = 'general';
-                let groupValue = this.props.location.state.groupValue;
-                let languageValue = this.props.location.state.languageValue;
-                let expertValue = this.props.location.state.expertValue;
-
-                url = baseUrl +
-                      '?model=' + modelValue +
-                      '&group=' + groupValue +
-                      '&language=' + languageValue +
-                      '&skill=' + expertValue;
-
-                // console.log('Url meta:' + url);
-
-                urlCode = url.toString();
-                urlCode = url.replace('getSkillMetadata', 'getSkill');
-                // console.log(url);
-                let self = this;
-                $.ajax({
-                    url: url,
-                    jsonpCallback: 'pc',
-                    dataType: 'jsonp',
-                    jsonp: 'callback',
-                    crossDomain: true,
-                    success: function (data) {
-                        self.updateData(data.skill_metadata)
-                    }
-                });
-            }
-        }
-
     };
 
     saveSkillRatings = (skill_ratings) => {
@@ -221,6 +169,7 @@ class SkillListing extends Component {
     }
 
     updateData = (skillData) => {
+        this.saveSkillRatings(skillData.skill_rating.stars)
         let imgUrl = `https://raw.githubusercontent.com/fossasia/susi_skill_data/master/models/general/${this.groupValue}/${this.languageValue}/${skillData.image}`;
         if (!skillData.image) {
             imgUrl = 'https://pbs.twimg.com/profile_images/904617517489979392/6Hff65Th.jpg';
