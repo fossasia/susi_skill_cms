@@ -120,6 +120,7 @@ class SkillListing extends Component {
                     self.updateData(data.skill_metadata)
                 }
             });
+            // Fetch skill usage data
             $.ajax({
                 url: skillUsageUrl,
                 dataType: 'json',
