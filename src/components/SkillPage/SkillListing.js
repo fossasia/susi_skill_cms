@@ -139,13 +139,13 @@ class SkillListing extends Component {
             // Fetch skill usage of the visited skill
             $.ajax({
                 url: skillUsageUrl,
-                dataType: 'json',
+                dataType: 'jsonp',
                 crossDomain: true,
                 success: function (data) {
-                    self.saveSkillUsage(data.skill_usage)
+                    self.saveSkillUsage(data.skill_usage);
                 },
                 error: function(e) {
-                    self.saveSkillUsage()
+                    console.log(e);
                 }
             });
         }
@@ -205,18 +205,8 @@ class SkillListing extends Component {
     }
 
     saveSkillUsage = (skill_usage = []) => {
-        // Add sample data to test
-        const data = [
-              {date: '2018-06-05', count: 7},
-              {date: '2018-06-06', count: 2},
-              {date: '2018-06-07', count: 2},
-              {date: '2018-06-08', count: 2},
-              {date: '2018-06-09', count: 6},
-              {date: '2018-06-10', count: 2},
-              {date: '2018-06-11', count: 2},
-        ];
         this.setState({
-            skill_usage: data
+            skill_usage
         })
     }
 
