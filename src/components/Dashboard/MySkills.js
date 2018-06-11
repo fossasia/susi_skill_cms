@@ -124,14 +124,14 @@ class MySkills extends Component {
                 </div>
                 {!this.state.loading &&
                 <span>
-                <Toggle
-                    style={styles.toggle}
-                    labelStyle={styles.toggleLabelStyle}
-                    label='Show my skills only'
-                    labelPosition='right'
-                    onToggle={this.handleShowMySkills}
-                    disabled={this.state.loading}
-                />
+                    <Toggle
+                        style={styles.toggle}
+                        labelStyle={styles.toggleLabelStyle}
+                        label='Show my skills only'
+                        labelPosition='right'
+                        onToggle={this.handleShowMySkills}
+                        disabled={this.state.loading}
+                    />
                 </span>}
 
 

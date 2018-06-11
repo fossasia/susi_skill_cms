@@ -15,6 +15,7 @@ import {
     Paper,
 } from 'material-ui';
 import Divider from 'material-ui/Divider';
+import CircularProgress from 'material-ui/CircularProgress';
 
 // Static Assets
 import 'brace/mode/markdown';
@@ -351,7 +352,16 @@ class SkillListing extends Component {
         let oldImageValue = this.state.imgUrl;
         let imageValue = this.state.image;
         if (!this.state.dataReceived) {
-            renderElement = <div><StaticAppBar {...this.props} /><h1 className='skill_loading_container'>Loading...</h1></div>
+            renderElement = <div>
+                    <StaticAppBar
+                    {...this.props} />
+                    <h1 className='skill_loading_container'>
+                        <div className='center'>
+                            <CircularProgress size={62} color='#4285f5'/>
+                            <h4>Loading</h4>
+                        </div>
+                    </h1>
+                </div>
         }
         else {
             renderElement = <div>
