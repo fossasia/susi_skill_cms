@@ -1,6 +1,18 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import AceEditor from 'react-ace';
+import * as $ from 'jquery';
+import { Paper } from 'material-ui';
+import Diff from 'react-diff';
+import Cookies from 'universal-cookie';
+import Icon from 'antd/lib/icon';
+import notification from 'antd/lib/notification';
+import CircularProgress from 'material-ui/CircularProgress';
+
+import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
+import SkillEditor from '../SkillEditor/SkillEditor';
+import urls from '../../Utils/urls';
+
 import 'brace/mode/markdown';
 import 'brace/theme/github';
 import 'brace/theme/monokai';
@@ -13,15 +25,6 @@ import 'brace/theme/textmate';
 import 'brace/theme/solarized_dark';
 import 'brace/theme/solarized_light';
 import 'brace/theme/terminal';
-import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
-import * as $ from 'jquery';
-import {Paper} from 'material-ui';
-import Diff from 'react-diff';
-import Cookies from 'universal-cookie';
-import Icon from 'antd/lib/icon';
-import notification from 'antd/lib/notification';
-import SkillEditor from '../SkillEditor/SkillEditor';
-import urls from '../../Utils/urls';
 
 const cookies = new Cookies();
 
@@ -259,7 +262,12 @@ class SkillRollBack extends Component {
         <div>
           <StaticAppBar {...this.props} />
           {this.state.commitData.length === 0 && (
-            <h1 className='skill_loading_container'>Loading...</h1>
+            <h1 className='skill_loading_container'>
+              <div className='center'>
+                <CircularProgress size={62} color='#4285f5'/>
+                <h4>Loading</h4>
+              </div>
+            </h1>
           )}
           {this.state.commitData.length === 2 && (<div style={{display:'block'}}>
             <div style={styles.home}>
