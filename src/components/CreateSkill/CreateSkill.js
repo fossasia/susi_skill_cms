@@ -130,7 +130,11 @@ export default class CreateSkill extends React.Component {
         this.setState({
             code: newCode,
         });
-    };
+        // save code to botbuilder
+        if(this.props.onSkillChange){
+            this.props.onSkillChange(newCode);
+        }
+    }
 
     handleExpertChange = (event) => {
 
@@ -569,5 +573,6 @@ const styles = {
     },
 };
 CreateSkill.propTypes = {
-  botBuilder: PropTypes.bool
+  botBuilder: PropTypes.bool,
+  onSkillChange: PropTypes.func,
 };
