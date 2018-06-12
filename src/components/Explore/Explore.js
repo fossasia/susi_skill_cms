@@ -3,18 +3,15 @@ import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import './Explore.css';
 
 class Explore extends React.Component {
-
-    render() {
-        return(
-          <div>
-            <StaticAppBar {...this.props} />
-          </div>
-       )
-    }
+  render() {
+    return (
+      <div>
+        <StaticAppBar {...this.props} />
+      </div>
+    );
+  }
 }
 
-
-Explore.propTypes = {
-};
+Explore.propTypes = {};
 
 export default Explore;
