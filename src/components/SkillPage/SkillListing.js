@@ -102,6 +102,7 @@ class SkillListing extends Component {
 
             let baseUrl = urls.API_URL + '/cms/getSkillMetadata.json';
             let skillRatingUrl = `${urls.API_URL}/cms/getSkillRating.json`;
+            let userSkillRatingUrl = `${urls.API_URL}/cms/getRatingByUser.json`;
             let skillUsageUrl = `${urls.API_URL}/cms/getSkillUsage.json`;
             let url = this.url;
 
@@ -110,6 +111,7 @@ class SkillListing extends Component {
             this.languageValue = this.props.location.pathname.split('/')[3];
             url = baseUrl + '?model=' + modelValue + '&group=' + this.groupValue + '&language=' + this.languageValue + '&skill=' + this.name;
             skillRatingUrl = skillRatingUrl + '?model=' + modelValue + '&group=' + this.groupValue + '&language=' + this.languageValue + '&skill=' + this.name;
+            userSkillRatingUrl = userSkillRatingUrl + '?model=' + modelValue + '&group=' + this.groupValue + '&language=' + this.languageValue + '&skill=' + this.name + '&access_token='+cookies.get('loggedIn');
             skillUsageUrl = skillUsageUrl + '?model=' + modelValue + '&group=' + this.groupValue + '&language=' + this.languageValue + '&skill=' + this.name;
             // console.log('Url:' + url);
             let self = this;
@@ -137,11 +139,30 @@ class SkillListing extends Component {
                     console.log(e);
                 }
             });
+             // Fetch user ratings for the visited skill
+            $.ajax({
+                url: userSkillRatingUrl,
+                dataType: 'jsonp',
+                jsonp: 'callback',
+                crossDomain: true,
+                success: function (data) {
+                    if(data.ratings)
+                    {
+                        self.setState({
+                            rating: parseInt(data.ratings.stars, 10)
+                        });
+                    }
+                },
+                error: function(e) {
+                    console.log(e);
+                }
+            });
             // Fetch skill usage of the visited skill
             $.ajax({
                 url: skillUsageUrl,
-                dataType: 'json',
+                dataType: 'jsonp',
                 crossDomain: true,
+                jsonp: 'callback',
                 success: function (data) {
                     self.saveSkillUsage(data.skill_usage)
                 },
