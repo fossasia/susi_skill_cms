@@ -131,6 +131,23 @@ class SkillListing extends Component {
                     self.updateData(data.skill_metadata)
                 }
             });
+            // Fetch user ratings for the visited skill
+            $.ajax({
+                url: userSkillRatingUrl,
+                dataType: 'jsonp',
+                jsonp: 'callback',
+                crossDomain: true,
+                success: function (data) {
+                    if(data.ratings) {
+                        self.setState({
+                            rating: parseInt(data.ratings.stars, 10)
+                        });
+                    }
+                },
+                error: function(e) {
+                    console.log(e);
+                }
+            });
             // Fetch skill usage of the visited skill
             $.ajax({
                 url: skillUsageUrl,
