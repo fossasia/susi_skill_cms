@@ -1,0 +1,11 @@
+.feedback-textbox {
+  padding: 16px;
+  margin: 16px;
+}
+
+.feedback-default-message {
+  margin: 10px;
+  display: flex;
+  justify-content: center;
+  padding-bottom: 10px;
+}
