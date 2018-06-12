@@ -32,7 +32,7 @@ function enableBot(){
 		//info[0] stores name, info[1] stores email id, info[2] stores message
 		var info = ['', '', ''], flag=0;
 		var baseUrl = "https://api.susi.ai/susi/chat.json?q=";
-		
+		var assist, load, botResp, endText, close, askName, askEmail, askMessage, thanksMessage, loading, toEmail, toMessage, toEnd; //intervals
 		// Add dynamic html bot content(Widget style)
 		var mybot = 
 		'<div id="susi-frame-container" class="susi-frame-container-active" style="display: none;">'+
@@ -50,7 +50,7 @@ function enableBot(){
 				                    '</div>'+
 				                '</div>'+
 				                '<div class="susi-composer-container">'+
-				                    '<div id="susi-composer" class="susi-composer ">'+
+				                    '<div id="susi-composer" class="susi-composer " style="display: none;">'+
 				                        '<div class="susi-composer-textarea-container">'+
 				                        	'<div class="susi-composer-textarea" id="chat-input">'+ '<pre class="susi-send-button"><?xml version="1.0" encoding="UTF-8"?>'+
 				                            '<!DOCTYPE svg  PUBLIC "-//W3C//DTD SVG 1.1//EN"  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">'+
@@ -71,7 +71,7 @@ function enableBot(){
 		'<div id="susi-launcher-container" class="susi-flex-center susi-avatar-launcher susi-launcher-enabled">'+
 			'<div id="susi-avatar-text">'+'Hey there'+'</div>'+
 			'<div id="susi-launcher" class="susi-launcher susi-flex-center susi-launcher-active" style="background-color: rgb(91, 75, 159);">'+
-				'<div id="susi-launcher-button" class="susi-launcher-button" style="background-image: url('+ susi_skills_deployed_url + 'avatar.jpg' +');">'+'</div>'+
+				'<div id="susi-launcher-button" class="susi-launcher-button" style="background-image: url('+ susi_skills_deployed_url + 'customAvatars/0.png' +');">'+'</div>'+
 			'</div>'+
 		'</div>';
 
@@ -79,20 +79,28 @@ function enableBot(){
 
 		// Toggle chatbot 
 		$('#susi-launcher').click(function() {
-			$('.susi-frame-container-active').toggle();
-			$('#susi-avatar-text').toggle();
-			$('#susi-launcher-close').toggle();
-			document.getElementById('chat-input').focus();
+			clearIntervals();
 			if(flag==0){
 				start();
 				flag = 1;
 			}
 			else if(flag==1){
+				if($('#susi-composer:visible').length === 1) {
+					$('#susi-composer').toggle();
+				}
 				info[0] = ''; info[1] = ''; info[2] = '';
 			}
+			$('.susi-frame-container-active').toggle();
+			$('#susi-avatar-text').toggle();
+			$('#susi-launcher-close').toggle();
+			document.getElementById('chat-input').focus();
 		});
 
 		$('#susi-launcher-close').click(function() {
+			clearIntervals();
+			if($('#susi-composer:visible').length === 1) {
+				$('#susi-composer').toggle();
+			}
 			$('.susi-frame-container-active').toggle();
 			$('#susi-avatar-text').toggle();
 			$('#susi-launcher-close').toggle();
@@ -121,7 +129,7 @@ function enableBot(){
 					}
 				}
 				var BotResponse = '<div class="susi-conversation-part susi-conversation-part-grouped-first"'+ 'id=\"'+type+'\"' +'>'+
-										'<div style="background-image: url('+ susi_skills_deployed_url + 'avatar.jpg' + ')" class="susi-comment-avatar susi-theme-bg">'+
+										'<div style="background-image: url('+ susi_skills_deployed_url + 'customAvatars/0.png' + ')" class="susi-comment-avatar susi-theme-bg">'+
 										'</div>'+
 										'<div class=" susi-comment susi-comment-by-susi ">'+
 											'<div class="susi-comment-body-container">'+
@@ -220,6 +228,7 @@ function enableBot(){
 		$(document).on('click', '#Yes', function() {
 			$("#option").remove();
 			setUserResponse("Yes");
+			$('#susi-composer').toggle();
 			console.log('yes');
 			getName();
 		});
@@ -227,10 +236,10 @@ function enableBot(){
 			$("#option").remove();
 			setUserResponse("No");
 			setLoading();
-			setTimeout(function(){
+			endText = setTimeout(function(){
 				setBotResponse(["Okay, Bye! See you later."], 'text');
 			}, 1700);
-			setTimeout(function(){
+			close = setTimeout(function(){
 				$('.susi-conversation-parts').empty();
 				$('.susi-frame-container-active').toggle();
 				$('#susi-avatar-text').toggle();
@@ -244,10 +253,10 @@ function enableBot(){
 		// Main functions
 		function start() {
 			setBotResponse(["Hello. I'm SUSI. I'm here to help you."], 'text');
-			setTimeout(function(){
+			load = setTimeout(function(){
 				setLoading();
 			}, 200);
-			setTimeout(function(){
+			assist = setTimeout(function(){
 				setBotResponse(["Do you want my assistance?"], 'text');
 				setBotResponse(['Yes', 'No'], 'option');
 			},1800);
@@ -255,10 +264,10 @@ function enableBot(){
 
 		function getName(){
 			setLoading();
-			setTimeout(function(){
+			askName = setTimeout(function(){
 				setBotResponse(["Okay. Please tell me your name."], 'text');
 			}, 1600);
-			var toEmail = setInterval(function(){
+			toEmail = setInterval(function(){
 				if(info[0] !== ''){
 					clearInterval(toEmail);
 					getEmail();
@@ -268,10 +277,10 @@ function enableBot(){
 
 		function getEmail() {
 			setLoading();
-			setTimeout(function(){
+			askEmail = setTimeout(function(){
 				setBotResponse(["Thanks. Kindly give me your Email ID."], 'text');
 			}, 1600);
-			var toMessage = setInterval(function(){
+			toMessage = setInterval(function(){
 				if(info[1] !== ''){
 					clearInterval(toMessage);
 					getMessage();
@@ -281,10 +290,10 @@ function enableBot(){
 
 		function getMessage() {
 			setLoading();
-			setTimeout(function(){
+			askMessage = setTimeout(function(){
 				setBotResponse(["What is your message?"], 'text');
 			}, 1600);
-			var toEnd = setInterval(function(){
+			toEnd = setInterval(function(){
 				if(info[2] !== ''){
 					clearInterval(toEnd);
 					end();
@@ -294,10 +303,10 @@ function enableBot(){
 
 		function end() {
 			setLoading();
-			setTimeout(function() {
+			thanksMessage = setTimeout(function() {
 				setBotResponse(["Thank you for your interest. Someone will contact you soon."], 'text');
 			}, 1600);
-			setTimeout(function(){
+			close = setTimeout(function(){
 				console.log("Name - "+info[0]);
 				console.log("Email - "+info[1]);
 				console.log("Message - "+info[2]);
@@ -313,7 +322,7 @@ function enableBot(){
 
 		function setLoading() {
 			var BotResponse = '<div class="susi-conversation-part susi-conversation-part-grouped-first" id="load">'+
-									'<div style="background-image: url('+ susi_skills_deployed_url + 'avatar.jpg' + ')" class="susi-comment-avatar susi-theme-bg">'+
+									'<div style="background-image: url('+ susi_skills_deployed_url + 'customAvatars/0.png' + ')" class="susi-comment-avatar susi-theme-bg">'+
 									'</div>'+
 									'<div class=" susi-comment susi-comment-by-susi ">'+
 										'<div class="susi-comment-body-container">'+
@@ -331,7 +340,7 @@ function enableBot(){
 								'</div>';
 			$(BotResponse).appendTo('.susi-conversation-parts');
 			scrollToBottomOfResults();
-			setTimeout(function() {
+			loading = setTimeout(function() {
 				$("#load").remove();
 			},1500);
 		}
@@ -340,6 +349,36 @@ function enableBot(){
 		function validateEmail(email) {
 			var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 			return re.test(email);
+		}
+
+		// Clearing all intervals
+		function clearIntervals() {
+			if(load)
+				clearTimeout(load);
+			if(loading)
+				clearTimeout(loading);
+			if(assist)
+				clearTimeout(assist);
+			if(botResp)
+				clearTimeout(botResp);
+			if(endText)
+				clearTimeout(endText);
+			if(close)
+				clearTimeout(close);
+			if(askName)
+				clearTimeout(askName);
+			if(askEmail)
+				clearTimeout(askEmail);
+			if(askMessage)
+				clearTimeout(askMessage);
+			if(toEmail)
+				clearTimeout(toEmail);
+			if(toMessage)
+				clearTimeout(toMessage);
+			if(toEnd)
+				clearTimeout(toEnd);
+			if(thanksMessage)
+				clearTimeout(thanksMessage);
 		}
 	});
 }
