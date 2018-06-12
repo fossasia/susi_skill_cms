@@ -26,6 +26,7 @@
     "prop-types": "latest",
     "react": "^15.6.1",
     "react-ace": "^5.1.0",
+    "react-chartkick": "^0.2.0",
     "react-codemirror": "^1.0.0",
     "react-color": "^2.14.1",
     "react-copy-to-clipboard": "^5.0.1",

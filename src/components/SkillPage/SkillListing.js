@@ -10,6 +10,7 @@ import AuthorSkills from '../AuthorSkills/AuthorSkills'
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import SkillUsageCard from '../SkillUsageCard/SkillUsageCard';
 import SkillRatingCard from '../SkillRatingCard/SkillRatingCard';
+import CountryWiseSkillUsageCard from '../CountryWiseSkillUsageCard/CountryWiseSkillUsageCard';
 import {
     FloatingActionButton,
     Paper,
@@ -74,6 +75,7 @@ class SkillListing extends Component {
             total_star: 0,
             skill_ratings: [],
             skill_usage: [],
+            country_wise_skill_usage: [],
             rating : 0,
             openSnack: false,
             snackMessage: ''
@@ -107,6 +109,8 @@ class SkillListing extends Component {
             let skillRatingUrl = `${urls.API_URL}/cms/getSkillRating.json`;
             let userSkillRatingUrl = `${urls.API_URL}/cms/getRatingByUser.json`;
             let skillUsageUrl = `${urls.API_URL}/cms/getSkillUsage.json`;
+            let countryWiseSkillUsageUrl =
+            	`${urls.API_URL}/cms/getCountryWiseSkillUsage.json`;
             let url = this.url;
 
             let modelValue = 'general';
@@ -116,6 +120,7 @@ class SkillListing extends Component {
             skillRatingUrl = skillRatingUrl + '?model=' + modelValue + '&group=' + this.groupValue + '&language=' + this.languageValue + '&skill=' + this.name;
             userSkillRatingUrl = userSkillRatingUrl + '?model=' + modelValue + '&group=' + this.groupValue + '&language=' + this.languageValue + '&skill=' + this.name + '&access_token='+cookies.get('loggedIn');
             skillUsageUrl = skillUsageUrl + '?model=' + modelValue + '&group=' + this.groupValue + '&language=' + this.languageValue + '&skill=' + this.name;
+            countryWiseSkillUsageUrl = countryWiseSkillUsageUrl + '?model=' + modelValue + '&group=' + this.groupValue + '&language=' + this.languageValue + '&skill=' + this.name;
             // console.log('Url:' + url);
             let self = this;
             $.ajax({
@@ -171,6 +176,18 @@ class SkillListing extends Component {
                 },
                 error: function(e) {
                     self.saveSkillUsage()
+                }
+            });
+            // Fetch country wise skill usage of the visited skill
+            $.ajax({
+                url: countryWiseSkillUsageUrl,
+                dataType: 'json',
+                crossDomain: true,
+                success: function (data) {
+                    self.saveCountryWiseSkillUsage(data.skill_usage)
+                },
+                error: function(e) {
+                    self.saveCountryWiseSkillUsage()
                 }
             });
         }
@@ -242,6 +259,16 @@ class SkillListing extends Component {
         ];
         this.setState({
             skill_usage: data
+        })
+    }
+
+    saveCountryWiseSkillUsage = (country_wise_skill_usage = []) => {
+        // Add sample data to test
+        let data=country_wise_skill_usage
+        .map(country => [country.country_code, Number(country.count)]);
+
+        this.setState({
+            country_wise_skill_usage: data
         })
     }
 
@@ -521,6 +548,8 @@ class SkillListing extends Component {
                         changeRating={this.changeRating}
                     />
                    <SkillUsageCard skill_usage={this.state.skill_usage} />
+                   <CountryWiseSkillUsageCard
+						country_wise_skill_usage={this.state.country_wise_skill_usage} />
                 </div>
             </div>
         }
