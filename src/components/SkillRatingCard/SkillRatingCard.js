@@ -19,7 +19,30 @@ import './SkillRatingCard.css';
 const cookies = new Cookies();
 
 class SkillRatingCard extends Component {
+
     render() {
+
+        let ratingMessage = '';
+
+        if(this.props.rating === 0) {
+            ratingMessage = 'The skill has not been rated by you';
+        }
+        else if(this.props.rating === 1) {
+            ratingMessage = 'Hated it';
+        }
+        else if(this.props.rating === 2) {
+            ratingMessage = 'Disliked it';
+        }
+        else if(this.props.rating === 3) {
+            ratingMessage = 'It\'s OK';
+        }
+        else if(this.props.rating === 4) {
+            ratingMessage = 'Liked it';
+        }
+        else if(this.props.rating === 5) {
+            ratingMessage = 'Loved it';
+        }
+
         return(
             <Paper className="margin-b-md margin-t-md">
                 <h1 className='title'>
@@ -32,7 +55,7 @@ class SkillRatingCard extends Component {
                         <div className="ratings-section">
                             <div>
                                 <Ratings
-                                    rating={this.props.avg_rating}
+                                    rating={this.props.rating}
                                     widgetRatedColors="#ffbb28"
                                     widgetHoverColors="#ffbb28"
                                     widgetDimensions="50px"
@@ -46,6 +69,7 @@ class SkillRatingCard extends Component {
                                 </Ratings>
                             </div>
                         </div>
+                        <div className='rating-message'>{ratingMessage}</div>
                     </div>
                     :
                     null

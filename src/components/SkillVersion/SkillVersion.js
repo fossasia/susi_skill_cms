@@ -12,6 +12,7 @@ import {
 } from 'material-ui/Table';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import { RaisedButton } from 'material-ui';
+import CircularProgress from 'material-ui/CircularProgress';
 import { RadioButton } from 'material-ui/RadioButton';
 import notification from 'antd/lib/notification';
 import Icon from 'antd/lib/icon';
@@ -262,7 +263,12 @@ class SkillVersion extends Component {
                 <StaticAppBar {...this.props} />
                 {!this.state.dataReceived ?
                     (
-                        <h1 className='skill_loading_container'>Loading...</h1>
+                        <h1 className='skill_loading_container'>
+                            <div className='center'>
+                                <CircularProgress size={62} color='#4285f5'/>
+                                <h4>Loading</h4>
+                            </div>
+                        </h1>
                     )
                     :
                     (

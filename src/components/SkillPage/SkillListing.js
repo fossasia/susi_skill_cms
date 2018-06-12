@@ -10,11 +10,14 @@ import AuthorSkills from '../AuthorSkills/AuthorSkills'
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import SkillUsageCard from '../SkillUsageCard/SkillUsageCard';
 import SkillRatingCard from '../SkillRatingCard/SkillRatingCard';
+import CountryWiseSkillUsageCard from '../CountryWiseSkillUsageCard/CountryWiseSkillUsageCard';
 import {
     FloatingActionButton,
     Paper,
 } from 'material-ui';
 import Divider from 'material-ui/Divider';
+import CircularProgress from 'material-ui/CircularProgress';
+import Snackbar from 'material-ui/Snackbar';
 
 // Static Assets
 import 'brace/mode/markdown';
@@ -72,7 +75,10 @@ class SkillListing extends Component {
             total_star: 0,
             skill_ratings: [],
             skill_usage: [],
+            country_wise_skill_usage: [],
             rating : 0,
+            openSnack: false,
+            snackMessage: ''
         };
 
         let clickedSkill = this.props.location.pathname.split('/')[2];
@@ -100,14 +106,19 @@ class SkillListing extends Component {
         if(this.url !== undefined) {
 
             let baseUrl = urls.API_URL + '/cms/getSkillMetadata.json';
+            let userSkillRatingUrl = `${urls.API_URL}/cms/getRatingByUser.json`;
             let skillUsageUrl = `${urls.API_URL}/cms/getSkillUsage.json`;
+            let countryWiseSkillUsageUrl =
+            	`${urls.API_URL}/cms/getCountryWiseSkillUsage.json`;
             let url = this.url;
 
             let modelValue = 'general';
             this.groupValue = this.props.location.pathname.split('/')[1];
             this.languageValue = this.props.location.pathname.split('/')[3];
             url = baseUrl + '?model=' + modelValue + '&group=' + this.groupValue + '&language=' + this.languageValue + '&skill=' + this.name;
+            userSkillRatingUrl = userSkillRatingUrl + '?model=' + modelValue + '&group=' + this.groupValue + '&language=' + this.languageValue + '&skill=' + this.name + '&access_token='+cookies.get('loggedIn');
             skillUsageUrl = skillUsageUrl + '?model=' + modelValue + '&group=' + this.groupValue + '&language=' + this.languageValue + '&skill=' + this.name;
+            countryWiseSkillUsageUrl = countryWiseSkillUsageUrl + '?model=' + modelValue + '&group=' + this.groupValue + '&language=' + this.languageValue + '&skill=' + this.name;
             // console.log('Url:' + url);
             let self = this;
             $.ajax({
@@ -120,16 +131,29 @@ class SkillListing extends Component {
                     self.updateData(data.skill_metadata)
                 }
             });
-            // Fetch skill usage data
+            // Fetch skill usage of the visited skill
             $.ajax({
                 url: skillUsageUrl,
-                dataType: 'json',
+                dataType: 'jsonp',
                 crossDomain: true,
+                jsonp: 'callback',
                 success: function (data) {
                     self.saveSkillUsage(data.skill_usage)
                 },
                 error: function(e) {
                     self.saveSkillUsage()
+                }
+            });
+            // Fetch country wise skill usage of the visited skill
+            $.ajax({
+                url: countryWiseSkillUsageUrl,
+                dataType: 'json',
+                crossDomain: true,
+                success: function (data) {
+                    self.saveCountryWiseSkillUsage(data.skill_usage)
+                },
+                error: function(e) {
+                    self.saveCountryWiseSkillUsage()
                 }
             });
         }
@@ -150,7 +174,7 @@ class SkillListing extends Component {
             skill_ratings: ratings_data,
             avg_rating: parseFloat(avg_rating.toFixed(2)),
             total_star: parseInt(skill_ratings.total_star, 10)
-        })
+        });
     }
 
     saveSkillUsage = (skill_usage = []) => {
@@ -166,6 +190,16 @@ class SkillListing extends Component {
         ];
         this.setState({
             skill_usage: data
+        })
+    }
+
+    saveCountryWiseSkillUsage = (country_wise_skill_usage = []) => {
+        // Add sample data to test
+        let data=country_wise_skill_usage
+        .map(country => [country.country_code, Number(country.count)]);
+
+        this.setState({
+            country_wise_skill_usage: data
         })
     }
 
@@ -221,7 +255,11 @@ class SkillListing extends Component {
             jsonp: 'callback',
             crossDomain: true,
             success: function (data) {
-                self.saveSkillRatings(data.ratings)
+                self.saveSkillRatings(data.ratings);
+                self.setState({
+                    openSnack: true,
+                    snackMessage: 'The skill was successfully rated!'
+                });
             },
             error: function(e) {
                 console.log(e);
@@ -230,6 +268,12 @@ class SkillListing extends Component {
 
          this.setState({
             rating: parseInt(newRating,10)
+        });
+    };
+
+    handleSnackRequestClose = () => {
+        this.setState({
+            openSnack: false,
         });
     };
 
@@ -301,7 +345,16 @@ class SkillListing extends Component {
         let oldImageValue = this.state.imgUrl;
         let imageValue = this.state.image;
         if (!this.state.dataReceived) {
-            renderElement = <div><StaticAppBar {...this.props} /><h1 className='skill_loading_container'>Loading...</h1></div>
+            renderElement = <div>
+                    <StaticAppBar
+                    {...this.props} />
+                    <h1 className='skill_loading_container'>
+                        <div className='center'>
+                            <CircularProgress size={62} color='#4285f5'/>
+                            <h4>Loading</h4>
+                        </div>
+                    </h1>
+                </div>
         }
         else {
             renderElement = <div>
@@ -316,28 +369,27 @@ class SkillListing extends Component {
                     <div className='linkButtons'>
                         <Link to={{
                             pathname: '/'+this.groupValue+ '/'+this.name+'/edit/'+this.languageValue,
-                            state: { url: urlCode, name:name,
-                                oldExpertValue:this.name,
-                                oldGroupValue:oldGroupValue,
-                                oldLanguageValue:oldLanguageValue,
-                                oldImageUrl:oldImageValue, oldImageValue:imageValue }
+                            state: {
+                                url: urlCode,
+                                name: name,
+                                oldExpertValue: this.name,
+                                oldGroupValue: oldGroupValue,
+                                oldLanguageValue: oldLanguageValue,
+                                oldImageUrl: oldImageValue,
+                                oldImageValue: imageValue }
                         }}>
 
                             <FloatingActionButton data-tip='Edit Skill' backgroundColor={colors.header} >
                                 <EditBtn />
                             </FloatingActionButton>
                             <ReactTooltip effect='solid' place='bottom' />
-
                         </Link>
-                        <Link to={{
-                            pathname: '/'+this.groupValue+ '/'+this.name+'/versions/'+this.languageValue,
-                        }}>
+                        <Link to={{ pathname: '/'+this.groupValue+ '/'+this.name+'/versions/'+this.languageValue }}>
                             <div className='skillVersionBtn'>
                                 <FloatingActionButton data-tip='Skill Versions'  backgroundColor={colors.header} >
                                     <VersionBtn />
                                 </FloatingActionButton>
                                 <ReactTooltip  effect='solid' place='bottom'/>
-
                             </div>
                         </Link>
                     </div>
@@ -428,6 +480,8 @@ class SkillListing extends Component {
                         changeRating={this.changeRating}
                     />
                    <SkillUsageCard skill_usage={this.state.skill_usage} />
+                   <CountryWiseSkillUsageCard
+						country_wise_skill_usage={this.state.country_wise_skill_usage} />
                 </div>
             </div>
         }
@@ -444,6 +498,12 @@ class SkillListing extends Component {
                         authorUrl={this.state.author_url}
                     />
                 </div>
+                <Snackbar
+                  open={this.state.openSnack}
+                  message={this.state.snackMessage}
+                  autoHideDuration={4000}
+                  onRequestClose={this.handleSnackRequestClose}
+                />
             </div>
         );
     }
