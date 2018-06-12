@@ -16,6 +16,7 @@ import {
 } from 'material-ui';
 import Divider from 'material-ui/Divider';
 import CircularProgress from 'material-ui/CircularProgress';
+import Snackbar from 'material-ui/Snackbar';
 
 // Static Assets
 import 'brace/mode/markdown';
@@ -74,6 +75,8 @@ class SkillListing extends Component {
             skill_ratings: [],
             skill_usage: [],
             rating : 0,
+            openSnack: false,
+            snackMessage: ''
         };
 
         let clickedSkill = this.props.location.pathname.split('/')[2];
@@ -223,7 +226,7 @@ class SkillListing extends Component {
             skill_ratings: ratings_data,
             avg_rating: parseFloat(avg_rating.toFixed(2)),
             total_star: parseInt(skill_ratings.total_star, 10)
-        })
+        });
     }
 
     saveSkillUsage = (skill_usage = []) => {
@@ -293,7 +296,11 @@ class SkillListing extends Component {
             jsonp: 'callback',
             crossDomain: true,
             success: function (data) {
-                self.saveSkillRatings(data.ratings)
+                self.saveSkillRatings(data.ratings);
+                self.setState({
+                    openSnack: true,
+                    snackMessage: 'The skill was successfully rated!'
+                });
             },
             error: function(e) {
                 console.log(e);
@@ -302,6 +309,12 @@ class SkillListing extends Component {
 
          this.setState({
             rating: parseInt(newRating,10)
+        });
+    };
+
+    handleSnackRequestClose = () => {
+        this.setState({
+            openSnack: false,
         });
     };
 
@@ -397,28 +410,27 @@ class SkillListing extends Component {
                     <div className='linkButtons'>
                         <Link to={{
                             pathname: '/'+this.groupValue+ '/'+this.name+'/edit/'+this.languageValue,
-                            state: { url: urlCode, name:name,
-                                oldExpertValue:this.name,
-                                oldGroupValue:oldGroupValue,
-                                oldLanguageValue:oldLanguageValue,
-                                oldImageUrl:oldImageValue, oldImageValue:imageValue }
+                            state: {
+                                url: urlCode,
+                                name: name,
+                                oldExpertValue: this.name,
+                                oldGroupValue: oldGroupValue,
+                                oldLanguageValue: oldLanguageValue,
+                                oldImageUrl: oldImageValue,
+                                oldImageValue: imageValue }
                         }}>
 
                             <FloatingActionButton data-tip='Edit Skill' backgroundColor={colors.header} >
                                 <EditBtn />
                             </FloatingActionButton>
                             <ReactTooltip effect='solid' place='bottom' />
-
                         </Link>
-                        <Link to={{
-                            pathname: '/'+this.groupValue+ '/'+this.name+'/versions/'+this.languageValue,
-                        }}>
+                        <Link to={{ pathname: '/'+this.groupValue+ '/'+this.name+'/versions/'+this.languageValue }}>
                             <div className='skillVersionBtn'>
                                 <FloatingActionButton data-tip='Skill Versions'  backgroundColor={colors.header} >
                                     <VersionBtn />
                                 </FloatingActionButton>
                                 <ReactTooltip  effect='solid' place='bottom'/>
-
                             </div>
                         </Link>
                     </div>
@@ -525,6 +537,12 @@ class SkillListing extends Component {
                         authorUrl={this.state.author_url}
                     />
                 </div>
+                <Snackbar
+                  open={this.state.openSnack}
+                  message={this.state.snackMessage}
+                  autoHideDuration={4000}
+                  onRequestClose={this.handleSnackRequestClose}
+                />
             </div>
         );
     }
