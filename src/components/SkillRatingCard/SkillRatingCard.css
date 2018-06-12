@@ -29,3 +29,8 @@
   flex-direction: column;
   padding: 24px 48px 24px 48px;
 }
+
+.rating-message {
+    text-align: center;
+    font-size: 16px;
+}
