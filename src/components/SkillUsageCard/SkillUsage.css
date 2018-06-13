@@ -23,3 +23,10 @@
   flex-direction: column;
   padding: 24px 48px 24px 48px;
 }
+
+.default-message {
+  margin: 10px;
+  display: flex;
+  justify-content: center;
+  padding-bottom: 10px;
+}

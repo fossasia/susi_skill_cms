@@ -7,27 +7,11 @@ import './SignUp.css';
 import PasswordField from 'material-ui-password-field';
 import Dialog from 'material-ui/Dialog';
 import PropTypes from 'prop-types';
-import { addUrlProps, UrlQueryParamTypes } from 'react-url-query';
 import zxcvbn from 'zxcvbn';
 import colors from '../../../Utils/colors';
 import urls from '../../../Utils/urls';
 
-const urlPropsQueryConfig = {
-    token: { type: UrlQueryParamTypes.string },
-};
-
-class SignUp extends Component {
-    static propTypes = {
-        // URL props are automatically decoded and passed in based on the config
-        token: PropTypes.string,
-        // change handlers are automatically generated when given a config.
-        // By default they update that single query parameter and maintain existing
-        // values in the other parameters.
-        onChangeToken: PropTypes.func,
-    };
-    static defaultProps = {
-        token: 'null',
-    };
+export default class SignUp extends Component {
     constructor(props) {
         super(props);
 
@@ -43,6 +27,7 @@ class SignUp extends Component {
             success: false,
             open: false,
             openLogin: false,
+            openForgotPassword: false,
             validForm: false,
             serverUrl: '',
             checked:false,
@@ -60,6 +45,7 @@ class SignUp extends Component {
         }
     }
 
+    // Handle closing the dialog
     handleClose = () => {
         let state = this.state;
         if (state.success) {
@@ -89,8 +75,9 @@ class SignUp extends Component {
                 msgOpen: false
             });
         }
-    };
+    }
 
+    // Handle toggle between custom server and default server
     handleServeChange=(event)=>{
         if(this.state.emailError||
         this.state.passwordError||
@@ -100,14 +87,15 @@ class SignUp extends Component {
         else{
             this.setState({validForm: true});
         }
-    };
+    }
 
+    // Handle changes in email, password and confirmPassword
     handleChange = (event) => {
         let email;
         let password;
         let confirmPassword;
         // let serverUrl;
-        let state = this.state;
+        let state = this.state
         if (event.target.name === 'email') {
             email = event.target.value.trim();
             let validEmail =
@@ -187,8 +175,9 @@ class SignUp extends Component {
         else{
             this.setState({validForm: true});
         }
-    };
+    }
 
+    // Submit the SignUp Form
     handleSubmit = (event) => {
         event.preventDefault();
         let BASE_URL =urls.API_URL;
@@ -242,13 +231,39 @@ class SignUp extends Component {
                 }.bind(this)
             });
         }
+    }
 
-    };
+    // Open Forgot Password Dialog
+    handleForgotPassword = () => {
+        this.setState({
+          openForgotPassword: true,
+          open: false,
+          openLogin: false
+        });
+    }
 
+    handleForgotPasswordToggle = (forgotPassword) => {
+        if(forgotPassword){
+          this.setState({
+            open:false,
+            openForgotPassword: true,
+            openLogin: false
+          });
+        }
+        else{
+          // Go back to login dialog
+          this.setState({
+            open: true,
+            openForgotPassword: false,
+            openLogin:false
+          });
+        }
+    }
+
+    // Open Login Dialog
     handleOpen = () => {
         this.setState(
             {
-            open: true,
             msgOpen: false,
             email: '',
             isEmail: false,
@@ -273,86 +288,77 @@ class SignUp extends Component {
             'width': '100%',
             'textAlign': 'center',
             'padding': '10px'
-        };
+        }
         const fieldStyle={
             'width':'256px'
-        };
+        }
         const fontStyle={
             'fontSize':'16px'
         };
         const underlineFocusStyle= {
-            color: colors.header
-        };
+            color: '#4285f4'
+        }
 
         const PasswordClass=[`is-strength-${this.state.passwordScore}`];
 
         return (
-            <div className='signUpForm'>
+            <div className="signUpForm">
                 <Paper zDepth={0} style={styles}>
-                    <h3>Sign Up with SUSI</h3>
+                    <div>Sign Up with SUSI</div>
                     <form onSubmit={this.handleSubmit}>
                         <div>
                             <TextField
-                                name='email'
+                                name="email"
                                 value={this.state.email}
                                 onChange={this.handleChange}
                                 errorText={this.emailErrorMessage}
+                                floatingLabelStyle={fontStyle}
                                 underlineFocusStyle={underlineFocusStyle}
                                 floatingLabelFocusStyle={underlineFocusStyle}
-                                floatingLabelText='Email'
-                                floatingLabelStyle={fontStyle} />
+                                floatingLabelText="Email"/>
                         </div>
                         <div className={PasswordClass.join(' ')}>
                             <PasswordField
-                                name='password'
+                                name="password"
                                 style={fieldStyle}
                                 value={this.state.passwordValue}
                                 onChange={this.handleChange}
                                 errorText={this.passwordErrorMessage}
+                                floatingLabelStyle={fontStyle}
                                 underlineFocusStyle={underlineFocusStyle}
                                 floatingLabelFocusStyle={underlineFocusStyle}
-                                floatingLabelText='Password'
-                                floatingLabelStyle={fontStyle} />
-                              <div className='ReactPasswordStrength-strength-bar' />
-                              <div>
-                                <p>
-                                  {this.state.passwordStrength}
-                                </p>
-                              </div>
+                                floatingLabelText="Password" />
                         </div>
                         <div>
                             <PasswordField
-                                name='confirmPassword'
+                                name="confirmPassword"
                                 style={fieldStyle}
                                 value={this.state.confirmPasswordValue}
                                 onChange={this.handleChange}
                                 errorText={this.passwordConfirmErrorMessage}
+                                floatingLabelStyle={fontStyle}
                                 underlineFocusStyle={underlineFocusStyle}
                                 floatingLabelFocusStyle={underlineFocusStyle}
-                                floatingLabelText='Confirm Password'
-                                floatingLabelStyle={fontStyle} />
+                                floatingLabelText="Confirm Password" />
                         </div>
+                        <span
+                           style={{
+                                display: 'inline-block',
+                                marginTop: '10px'
+                           }}
+                           className="login-links"
+                               onClick={this.handleOpen}>
+                                   Already have an account? Login here
+                           </span>
+
                         <div>
                             <RaisedButton
-                                label='Sign Up'
-                                type='submit'
+                                label="Sign Up"
+                                type="submit"
                                 disabled={!this.state.validForm}
                                 backgroundColor={colors.header}
-                                labelColor='#fff'
+                                labelColor="#fff"
                                 style={{margin:'15px 0 0 0 '}} />
-                        </div>
-                        <h4 style={{
-                            margin: '5px 0'
-                        }}>OR</h4>
-                        <div>
-                            <h4 style={{
-                            margin: '5px 0'
-                        }}>If you have an Account Please Login</h4>
-                            <RaisedButton
-                                label='Login'
-                                onTouchTap={this.handleOpen}
-                                backgroundColor={colors.header}
-                                labelColor='#fff' />
                         </div>
                     </form>
                 </Paper>
@@ -373,7 +379,5 @@ class SignUp extends Component {
 SignUp.propTypes = {
     history: PropTypes.object,
     onRequestClose: PropTypes.func,
-    onLoginSignUp: PropTypes.func,
-};
-
-export default addUrlProps({ urlPropsQueryConfig })(SignUp);
+    onLoginSignUp: PropTypes.func
+}
