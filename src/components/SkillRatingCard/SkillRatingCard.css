@@ -31,6 +31,18 @@
 }
 
 .rating-message {
-    text-align: center;
-    font-size: 16px;
+  text-align: center;
+  font-size: 16px;
+}
+
+.ratings-default-message {
+  margin: 10px;
+  display: flex;
+  justify-content: center;
+  padding-bottom: 10px;
+}
+
+.rating-message {
+  text-align: center;
+  font-size: 16px;
 }
