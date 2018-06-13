@@ -19,6 +19,34 @@ import './SkillRatingCard.css';
 const cookies = new Cookies();
 
 class SkillRatingCard extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { width: 0 };
+  }
+
+  componentDidMount = () => {
+    this.updateWindowDimensions();
+    window.addEventListener('resize', this.updateWindowDimensions);
+  };
+
+  componentWillUnmount = () => {
+    window.removeEventListener('resize', this.updateWindowDimensions);
+  };
+
+  updateWindowDimensions = () => {
+    this.setState({
+      width: window.innerWidth * 0.8 > 500 ? 400 : window.innerWidth * 0.8,
+      /* eslint-disable no-nested-ternary */
+      offset:
+        window.innerWidth * 0.8 > 500
+          ? 305
+          : window.innerWidth > 400
+            ? window.innerWidth * 0.6
+            : window.innerWidth * 0.55,
+      /* eslint-enable no-nested-ternary */
+    });
+  };
+
   render() {
     let ratingMessage = '';
 
@@ -74,7 +102,7 @@ class SkillRatingCard extends Component {
             <div className="rating-bar-chart">
               <BarChart
                 layout="vertical"
-                width={400}
+                width={this.state.width}
                 height={200}
                 margin={{ right: 48 }}
                 data={this.props.skill_ratings}
@@ -96,7 +124,7 @@ class SkillRatingCard extends Component {
                 >
                   <LabelList
                     position="insideLeft"
-                    offset={305}
+                    offset={this.state.offset}
                     fill="#666666"
                   />
                   {this.props.skill_ratings.map((entry, index) => (
