@@ -1,19 +1,26 @@
 import React, { Component } from 'react';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
-import CreateSkill from '../../CreateSkill/CreateSkill';
+import CodeView from './BuildViews/CodeView';
+import ConversationView from './BuildViews/ConversationView';
+import TreeView from './BuildViews/TreeView';
+
 class Build extends Component {
   constructor(props) {
     super(props);
     this.state = {
       value: 1,
+      skillCode: '',
     };
   }
 
   handleChange = (event, index, value) => {
     this.setState({ value });
   };
-
+  componentDidMount() {}
+  onSkillChange = skillCode => {
+    this.setState({ skillCode });
+  };
   render() {
     return (
       <div className="menu-page">
@@ -31,7 +38,11 @@ class Build extends Component {
             <MenuItem value={3} primaryText="Tree View" />
           </DropDownMenu>
           <div style={{ paddingTop: 20 }}>
-            {this.state.value === 1 ? <CreateSkill botBuilder={true} /> : ''}
+            {this.state.value === 1 ? (
+              <CodeView onSkillChange={this.onSkillChange} botBuilder={true} />
+            ) : null}
+            {this.state.value === 2 ? <ConversationView /> : null}
+            {this.state.value === 3 ? <TreeView /> : null}
           </div>
         </div>
       </div>

@@ -7,27 +7,11 @@ import './SignUp.css';
 import PasswordField from 'material-ui-password-field';
 import Dialog from 'material-ui/Dialog';
 import PropTypes from 'prop-types';
-import { addUrlProps, UrlQueryParamTypes } from 'react-url-query';
 import zxcvbn from 'zxcvbn';
 import colors from '../../../Utils/colors';
 import urls from '../../../Utils/urls';
 
-const urlPropsQueryConfig = {
-  token: { type: UrlQueryParamTypes.string },
-};
-
-class SignUp extends Component {
-  static propTypes = {
-    // URL props are automatically decoded and passed in based on the config
-    token: PropTypes.string,
-    // change handlers are automatically generated when given a config.
-    // By default they update that single query parameter and maintain existing
-    // values in the other parameters.
-    onChangeToken: PropTypes.func,
-  };
-  static defaultProps = {
-    token: 'null',
-  };
+export default class SignUp extends Component {
   constructor(props) {
     super(props);
 
@@ -43,6 +27,7 @@ class SignUp extends Component {
       success: false,
       open: false,
       openLogin: false,
+      openForgotPassword: false,
       validForm: false,
       serverUrl: '',
       checked: false,
@@ -373,5 +358,3 @@ SignUp.propTypes = {
   onRequestClose: PropTypes.func,
   onLoginSignUp: PropTypes.func,
 };
-
-export default addUrlProps({ urlPropsQueryConfig })(SignUp);

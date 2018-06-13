@@ -141,12 +141,6 @@ abbr[title] {
   font-size: 48px;
 }
 
-.ratings-default-message {
-  margin: 10px;
-  display: flex;
-  justify-content: center;
-  padding-bottom: 10px;
-}
 
 .card-content {
   padding-left: 20px;

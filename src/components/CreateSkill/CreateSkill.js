@@ -642,4 +642,5 @@ const styles = {
 };
 CreateSkill.propTypes = {
   botBuilder: PropTypes.bool,
+  onSkillChange: PropTypes.func,
 };
