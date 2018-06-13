@@ -195,18 +195,8 @@ class SkillListing extends Component {
     }
 
     saveSkillUsage = (skill_usage = []) => {
-        // Add sample data to test
-        const data = [
-              {date: '2018-06-05', count: 7},
-              {date: '2018-06-06', count: 2},
-              {date: '2018-06-07', count: 2},
-              {date: '2018-06-08', count: 2},
-              {date: '2018-06-09', count: 6},
-              {date: '2018-06-10', count: 2},
-              {date: '2018-06-11', count: 2},
-        ];
         this.setState({
-            skill_usage: data
+            skill_usage: skill_usage
         })
     }
 
