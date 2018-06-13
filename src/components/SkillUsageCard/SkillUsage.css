@@ -1,0 +1,25 @@
+.usage-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    margin: 24px;
+}
+
+.skill-usage-chart {
+    flex: 3;
+    margin: 16px 32px 16px 16px;
+    padding: 20px;
+}
+
+.usage-section div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.total-hits {
+  display: flex;
+  flex-direction: column;
+  padding: 24px 48px 24px 48px;
+}
