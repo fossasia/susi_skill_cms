@@ -308,6 +308,10 @@ class Design extends React.Component {
 
     }
 
+    handleClickColorBox = (id) =>{
+        $('#colorPicker' + id).click();
+    }
+
     render() {
         // Custom Theme feature Component
         const customiseOptionsList = [
@@ -326,11 +330,13 @@ class Design extends React.Component {
                             className='color-picker'
                             style={{display:'inline-block',float:'left'}}
                             name='color'
+                            id={'colorPicker'+component.id}
                             defaultValue={ this.state[component.component] }
                             onChange={(color)=>
                                 this.handleChangeColor(component.component,color) }
                         />
-                    <span className='color-box' style={{backgroundColor:this.state[component.component]}}></span>
+                    <span className='color-box' onClick={()=>this.handleClickColorBox(component.id)}
+                        style={{backgroundColor:this.state[component.component]}}></span>
                     </div>
                     {component.component === 'botbuilderBackgroundBody' && <div>
                         <TextField
