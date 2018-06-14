@@ -1,7 +1,7 @@
 // Packages
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter as Router, Route} from 'react-router-dom';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 import Switch from 'react-router-dom/es/Switch';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
@@ -12,7 +12,7 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 import SkillEditor from './components/SkillEditor/SkillEditor';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import NotFound from './components/NotFound/NotFound';
-import Admin from './components/Admin/Admin'
+import Admin from './components/Admin/Admin';
 import BotBuilder from './components/BotBuilder/BotBuilder';
 import Dashboard from './components/Dashboard/Dashboard';
 import BrowseSkill from './components/BrowseSkill/BrowseSkill';
@@ -33,35 +33,58 @@ setDefaults();
 injectTapEventPlugin();
 
 class App extends React.Component {
-
-    render() {
-        document.body.style.backgroundColor = '#eee';
-        return (
-            <Router>
-                <MuiThemeProvider>
-                    <Switch>
-                        <Route exact path='/:category/:skill/edit/:lang' component={SkillEditor} />
-                        <Route exact path='/:category/:skill/edit/:lang/:commit' component={SkillEditor}/>
-                        <Route exact path='/admin' component={Admin}/>
-                        <Route path='/listUser' component={ListUser}/>
-                        <Route exact path='/:category/:skill/:lang' component={SkillListing}/>
-                        <Route exact path='/botbuilder/contactbot' component={ContactBot} />
-                        <Route exact path='/botbuilder/botwizard' component={BotWizard} />
-                        <Route exact path='/botbuilder' component={BotBuilder}/>
-                        <Route exact path='/dashboard' component={Dashboard}/>
-                        <Route exact path='/logout' component={Logout} />
-                        <Route exact path='/skillCreator' component={CreateSkill}/>
-                        <Route exact path='/:category/:skill/versions/:lang' component={SkillVersion}/>
-                        <Route exact path='/:category/:skill/compare/:lang/:oldid/:recentid' component={SkillHistory}/>
-                        <Route exact path='/:category/:skill/edit/:lang/:latestid/:revertid' component={SkillRollBack}/>
-                        <Route exact path='/explore' component={Explore}/>
-                        <Route exact path='/' component={BrowseSkill} />
-                        <Route exact path='*' component={NotFound} />
-                    </Switch>
-                </MuiThemeProvider>
-            </Router>
-        );
-    }
+  render() {
+    document.body.style.backgroundColor = '#eee';
+    return (
+      <Router>
+        <MuiThemeProvider>
+          <Switch>
+            <Route
+              exact
+              path="/:category/:skill/edit/:lang"
+              component={SkillEditor}
+            />
+            <Route
+              exact
+              path="/:category/:skill/edit/:lang/:commit"
+              component={SkillEditor}
+            />
+            <Route exact path="/admin" component={Admin} />
+            <Route path="/listUser" component={ListUser} />
+            <Route
+              exact
+              path="/:category/:skill/:lang"
+              component={SkillListing}
+            />
+            <Route exact path="/botbuilder/contactbot" component={ContactBot} />
+            <Route exact path="/botbuilder/botwizard" component={BotWizard} />
+            <Route exact path="/botbuilder" component={BotBuilder} />
+            <Route exact path="/dashboard" component={Dashboard} />
+            <Route exact path="/logout" component={Logout} />
+            <Route exact path="/skillCreator" component={CreateSkill} />
+            <Route
+              exact
+              path="/:category/:skill/versions/:lang"
+              component={SkillVersion}
+            />
+            <Route
+              exact
+              path="/:category/:skill/compare/:lang/:oldid/:recentid"
+              component={SkillHistory}
+            />
+            <Route
+              exact
+              path="/:category/:skill/edit/:lang/:latestid/:revertid"
+              component={SkillRollBack}
+            />
+            <Route exact path="/explore" component={Explore} />
+            <Route exact path="/" component={BrowseSkill} />
+            <Route exact path="*" component={NotFound} />
+          </Switch>
+        </MuiThemeProvider>
+      </Router>
+    );
+  }
 }
 
 ReactDOM.render(<App />, document.getElementById('root'));
