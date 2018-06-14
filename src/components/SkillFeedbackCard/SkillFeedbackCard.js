@@ -9,35 +9,58 @@ import { List, ListItem } from 'material-ui/List';
 import Divider from 'material-ui/Divider';
 import IconButton from 'material-ui/IconButton';
 import CircleImage from '../CircleImage/CircleImage';
-import EditBtn from 'material-ui/svg-icons/editor/mode-edit';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
+import IconMenu from 'material-ui/IconMenu';
+import MenuItem from 'material-ui/MenuItem';
+
+// Icons
+import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
+import Delete from 'material-ui/svg-icons/action/delete';
+import EditBtn from 'material-ui/svg-icons/editor/mode-edit';
 
 // CSS
 import './SkillFeedbackCard.css';
 
 const cookies = new Cookies();
 
+const iconButtonElement = (
+  <IconButton touch={true} tooltip="More" tooltipPosition="bottom-left">
+    <MoreVertIcon />
+  </IconButton>
+);
+
 class SkillFeedbackCard extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      openDialog: false,
+      openEditDialog: false,
+      openDeleteDialog: false,
       errorText: '',
     };
   }
 
-  handleOpen = () => {
-    this.setState({ openDialog: true });
+  handleEditOpen = () => {
+    this.setState({ openEditDialog: true });
   };
 
-  handleClose = () => {
+  handleDeleteOpen = () => {
+    this.setState({ openDeleteDialog: true });
+  };
+
+  handleEditClose = () => {
     this.setState({
-      openDialog: false,
+      openEditDialog: false,
       errorText: '',
+    });
+  };
+
+  handleDeleteClose = () => {
+    this.setState({
+      openDeleteDialog: false,
     });
   };
 
@@ -47,7 +70,7 @@ class SkillFeedbackCard extends Component {
       this.setState({ errorText: 'Feedback cannot be empty' });
     } else {
       this.props.postFeedback(feedbackText);
-      this.handleClose();
+      this.handleEditClose();
     }
   };
 
@@ -57,17 +80,22 @@ class SkillFeedbackCard extends Component {
       this.setState({ errorText: 'Feedback cannot be empty' });
     } else {
       this.props.postFeedback(feedbackText);
-      this.handleClose();
+      this.handleEditClose();
     }
   };
 
+  deleteFeedback = () => {
+    this.props.deleteFeedback();
+    this.handleDeleteClose();
+  };
+
   render() {
-    const actions = [
+    const editActions = [
       <FlatButton
         key={0}
         label="Cancel"
         labelStyle={{ color: '#4285f4' }}
-        onClick={this.handleClose}
+        onClick={this.handleEditClose}
       />,
       <FlatButton
         key={1}
@@ -76,6 +104,23 @@ class SkillFeedbackCard extends Component {
         keyboardFocused={true}
         labelStyle={{ color: '#4285f4' }}
         onClick={this.editFeedback}
+      />,
+    ];
+
+    const deleteActions = [
+      <FlatButton
+        key={1}
+        label="Yes"
+        primary={true}
+        keyboardFocused={true}
+        labelStyle={{ color: '#4285f4' }}
+        onClick={this.deleteFeedback}
+      />,
+      <FlatButton
+        key={0}
+        label="No"
+        labelStyle={{ color: '#4285f4' }}
+        onClick={this.handleDeleteClose}
       />,
     ];
 
@@ -95,9 +140,20 @@ class SkillFeedbackCard extends Component {
               }
               primaryText={data.email}
               rightIconButton={
-                <IconButton touch={true} onClick={this.handleOpen}>
-                  <EditBtn />
-                </IconButton>
+                <IconMenu iconButtonElement={iconButtonElement}>
+                  <MenuItem
+                    onClick={this.handleEditOpen}
+                    leftIcon={<EditBtn />}
+                  >
+                    Edit
+                  </MenuItem>
+                  <MenuItem
+                    onClick={this.handleDeleteOpen}
+                    leftIcon={<Delete />}
+                  >
+                    Delete
+                  </MenuItem>
+                </IconMenu>
               }
               secondaryText={<p>{data.feedback}</p>}
             />
@@ -164,10 +220,10 @@ class SkillFeedbackCard extends Component {
         )}
         <Dialog
           title="Edit Feedback"
-          actions={actions}
+          actions={editActions}
           modal={false}
-          open={this.state.openDialog}
-          onRequestClose={this.handleClose}
+          open={this.state.openEditDialog}
+          onRequestClose={this.handleEditClose}
         >
           <TextField
             id="edit-feedback"
@@ -178,6 +234,15 @@ class SkillFeedbackCard extends Component {
             fullWidth={true}
           />
         </Dialog>
+        <Dialog
+          title="Delete Feedback"
+          actions={deleteActions}
+          modal={true}
+          open={this.state.openDeleteDialog}
+          onRequestClose={this.handleEditClose}
+        >
+          Are you sure, you want to delete your feedback ?
+        </Dialog>
       </Paper>
     );
   }
@@ -187,6 +252,7 @@ SkillFeedbackCard.propTypes = {
   skill_name: PropTypes.string,
   skill_feedback: PropTypes.array,
   postFeedback: PropTypes.func,
+  deleteFeedback: PropTypes.func,
 };
 
 export default SkillFeedbackCard;
