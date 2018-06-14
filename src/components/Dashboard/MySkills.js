@@ -9,7 +9,7 @@ import {
 } from 'material-ui/Table';
 import Cookies from 'universal-cookie';
 import SelectField from 'material-ui/SelectField';
-import Link from 'react-router-dom/es/Link';
+import { Link } from 'react-router-dom';
 import Person from 'material-ui/svg-icons/social/person';
 import IconMenu from 'material-ui/IconMenu';
 import IconButton from 'material-ui/IconButton';
