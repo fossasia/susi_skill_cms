@@ -16,6 +16,7 @@ import { FloatingActionButton, Paper } from 'material-ui';
 import Divider from 'material-ui/Divider';
 import CircularProgress from 'material-ui/CircularProgress';
 import Snackbar from 'material-ui/Snackbar';
+import Chip from 'material-ui/Chip';
 
 // Static Assets
 import 'brace/mode/markdown';
@@ -452,6 +453,13 @@ class SkillListing extends Component {
         marginBottom: 10,
         display: 'inline-block',
       },
+      chip: {
+        margin: '6px 6px 6px 0',
+        border: '1px solid #ccc',
+      },
+      chipLabel: {
+        fontWeight: 500,
+      },
     };
     let renderElement = null;
     let oldGroupValue = this.props.location.pathname.split('/')[1];
@@ -567,14 +575,14 @@ class SkillListing extends Component {
                     ? ''
                     : this.state.examples.map((data, index) => {
                         return (
-                          <Paper
+                          <Chip
                             key={index}
-                            className="exampleTile"
-                            style={{ backgroundColor: '#f5f5f5' }}
-                            zDepth={1}
+                            style={styles.chip}
+                            labelStyle={styles.chipLabel}
+                            backgroundColor={'#FFFFFF'}
                           >
                             {data}
-                          </Paper>
+                          </Chip>
                         );
                       })}
                 </div>
