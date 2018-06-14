@@ -466,6 +466,11 @@ class SkillListing extends Component {
     }
   };
 
+  testExample = (e, exampleText) => {
+    let link = 'https://chat.susi.ai/?testExample=' + exampleText;
+    window.open(link, '_blank');
+  };
+
   render() {
     const authorStyle = {
       cursor: 'pointer',
@@ -490,6 +495,7 @@ class SkillListing extends Component {
       chip: {
         margin: '6px 6px 6px 0',
         border: '1px solid #ccc',
+        cursor: 'pointer',
       },
       chipLabel: {
         fontWeight: 500,
@@ -614,6 +620,7 @@ class SkillListing extends Component {
                             style={styles.chip}
                             labelStyle={styles.chipLabel}
                             backgroundColor={'#FFFFFF'}
+                            onClick={event => this.testExample(event, data)}
                           >
                             {data}
                           </Chip>
