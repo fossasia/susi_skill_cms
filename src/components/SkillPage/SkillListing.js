@@ -11,6 +11,7 @@ import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import SkillUsageCard from '../SkillUsageCard/SkillUsageCard';
 import SkillRatingCard from '../SkillRatingCard/SkillRatingCard';
 import CountryWiseSkillUsageCard from '../CountryWiseSkillUsageCard/CountryWiseSkillUsageCard';
+import SkillFeedbackCard from '../SkillFeedbackCard/SkillFeedbackCard';
 import {
     FloatingActionButton,
     Paper,
@@ -78,7 +79,8 @@ class SkillListing extends Component {
             country_wise_skill_usage: [],
             rating : 0,
             openSnack: false,
-            snackMessage: ''
+            snackMessage: '',
+            skill_feedback: []
         };
 
         let clickedSkill = this.props.location.pathname.split('/')[2];
@@ -173,6 +175,8 @@ class SkillListing extends Component {
                     self.saveCountryWiseSkillUsage()
                 }
             });
+
+            this.getFeedback();
         }
     };
 
@@ -207,6 +211,13 @@ class SkillListing extends Component {
 
         this.setState({
             country_wise_skill_usage: data
+        })
+    }
+
+    saveSkillFeedback = (feedback = []) => {
+
+        this.setState({
+            skill_feedback: feedback
         })
     }
 
@@ -281,6 +292,30 @@ class SkillListing extends Component {
     handleSnackRequestClose = () => {
         this.setState({
             openSnack: false,
+        });
+    };
+
+    getFeedback = () => {
+
+        let getFeedbackUrl = `${urls.API_URL}/cms/getSkillFeedback.json`;
+        let modelValue = 'general';
+        this.groupValue = this.props.location.pathname.split('/')[1];
+        this.languageValue = this.props.location.pathname.split('/')[3];
+        getFeedbackUrl = getFeedbackUrl + '?model=' + modelValue + '&group=' + this.groupValue + '&language=' + this.languageValue + '&skill=' + this.name;
+
+        let self = this;
+        // Get skill feedback of the visited skill
+        $.ajax({
+            url: getFeedbackUrl,
+            dataType: 'jsonp',
+            crossDomain: true,
+            jsonp: 'callback',
+            success: function (data) {
+                self.saveSkillFeedback(data.feedback);
+            },
+            error: function(e) {
+                console.log(e);
+            }
         });
     };
 
@@ -486,9 +521,14 @@ class SkillListing extends Component {
                         total_star={this.state.total_star}
                         changeRating={this.changeRating}
                     />
+                    <SkillFeedbackCard
+                        skill_name={this.state.skill_name}
+                        skill_feedback={this.state.skill_feedback}
+                    />
                    <SkillUsageCard skill_usage={this.state.skill_usage} />
                    <CountryWiseSkillUsageCard
-						country_wise_skill_usage={this.state.country_wise_skill_usage} />
+						country_wise_skill_usage={this.state.country_wise_skill_usage}
+                    />
                 </div>
             </div>
         }
