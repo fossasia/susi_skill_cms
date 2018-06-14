@@ -61,6 +61,18 @@ class BotWizard extends React.Component {
     this.setState({ stepIndex });
   };
   render() {
+    if (!cookies.get('loggedIn')) {
+      return (
+        <div>
+          <StaticAppBar {...this.props} />
+          <div>
+            <p style={styles.loggedInError}>
+              Please login to create the Web Bot.
+            </p>
+          </div>
+        </div>
+      );
+    }
     const { stepIndex } = this.state;
     const contentStyle = { margin: '0 16px' };
     const locationAvatar =
@@ -194,6 +206,14 @@ const styles = {
   },
   tabStyle: {
     color: 'rgb(91, 91, 91)',
+  },
+  loggedInError: {
+    textAlign: 'center',
+    textTransform: 'uppercase',
+    fontWeight: 'bold',
+    marginBottom: '100px',
+    fontSize: '50px',
+    marginTop: '300px',
   },
 };
 

@@ -18,6 +18,18 @@ class ContactBot extends React.Component {
   }
 
   render() {
+    if (!cookies.get('loggedIn')) {
+      return (
+        <div>
+          <StaticAppBar {...this.props} />
+          <div>
+            <p style={styles.loggedInError}>
+              Please login to create the Contact Bot.
+            </p>
+          </div>
+        </div>
+      );
+    }
     return (
       <div>
         <StaticAppBar {...this.props} />
@@ -81,6 +93,13 @@ const styles = {
     width: '100%',
     marginTop: '20px',
   },
+  loggedInError: {
+    textAlign: 'center',
+    textTransform: 'uppercase',
+    fontWeight: 'bold',
+    marginBottom: '100px',
+    fontSize: '50px',
+    marginTop: '300px',
+  },
 };
-
 export default ContactBot;
