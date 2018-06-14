@@ -66,6 +66,7 @@
 	display: inline-block;
 	border-radius: 3px;
 	border: solid 1px #0000006e;
+	cursor: pointer;
 }
 .color-picker-wrap>div{
 	display: inline-block;
