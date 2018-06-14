@@ -15,18 +15,18 @@ class BotBuilder extends React.Component {
     if (!cookies.get('loggedIn')) {
       return (
         <div>
-          <StaticAppBar {...this.props} />
+          <StaticAppBar {...this.props} />{' '}
           <div>
             <p style={styles.loggedInError}>
-              Please login to create a skill bot.
-            </p>
-          </div>
+              Please login to create a skill bot.{' '}
+            </p>{' '}
+          </div>{' '}
         </div>
       );
     }
     return (
       <div>
-        <StaticAppBar {...this.props} />
+        <StaticAppBar {...this.props} />{' '}
         <div style={styles.home} className="botbuilder-page-wrapper">
           <Paper
             style={styles.paperStyle}
@@ -36,33 +36,47 @@ class BotBuilder extends React.Component {
             <Grid>
               <Row>
                 <Col xs={12} md={12}>
-                  <div style={{ textAlign: 'center' }}>
+                  <div
+                    style={{
+                      textAlign: 'center',
+                    }}
+                  >
                     <Link to="/botbuilder/contactbot">
                       <RaisedButton
                         label="Use pre-coded Contact Bot"
                         backgroundColor={colors.header}
                         labelColor="#fff"
                       />
-                    </Link>
-                  </div>
+                    </Link>{' '}
+                  </div>{' '}
+                  <br />{' '}
+                  <h2
+                    style={{
+                      textAlign: 'center',
+                    }}
+                  >
+                    {' '}
+                    OR{' '}
+                  </h2>
                   <br />
-                  <h2 style={{ textAlign: 'center' }}> OR </h2>
-                  <br />
-                  <div style={{ textAlign: 'center' }}>
+                  <div
+                    style={{
+                      textAlign: 'center',
+                    }}
+                  >
                     <Link to="/botbuilder/botwizard">
                       <RaisedButton
                         label="Create your own SUSI AI Web bot"
                         backgroundColor={colors.header}
                         labelColor="#fff"
-                        onClick={this.toggleCreateBotWizard}
                       />
-                    </Link>
-                  </div>
-                </Col>
-              </Row>
-            </Grid>
-          </Paper>
-        </div>
+                    </Link>{' '}
+                  </div>{' '}
+                </Col>{' '}
+              </Row>{' '}
+            </Grid>{' '}
+          </Paper>{' '}
+        </div>{' '}
       </div>
     );
   }

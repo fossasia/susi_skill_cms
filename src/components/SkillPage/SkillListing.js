@@ -11,6 +11,7 @@ import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import SkillUsageCard from '../SkillUsageCard/SkillUsageCard';
 import SkillRatingCard from '../SkillRatingCard/SkillRatingCard';
 import CountryWiseSkillUsageCard from '../CountryWiseSkillUsageCard/CountryWiseSkillUsageCard';
+import SkillFeedbackCard from '../SkillFeedbackCard/SkillFeedbackCard';
 import { FloatingActionButton, Paper } from 'material-ui';
 import Divider from 'material-ui/Divider';
 import CircularProgress from 'material-ui/CircularProgress';
@@ -83,6 +84,7 @@ class SkillListing extends Component {
       rating: 0,
       openSnack: false,
       snackMessage: '',
+      skill_feedback: [],
     };
 
     let clickedSkill = this.props.location.pathname.split('/')[2];
@@ -106,7 +108,6 @@ class SkillListing extends Component {
   componentDidMount() {
     if (this.url !== undefined) {
       let baseUrl = urls.API_URL + '/cms/getSkillMetadata.json';
-      let skillRatingUrl = `${urls.API_URL}/cms/getSkillRating.json`;
       let userSkillRatingUrl = `${urls.API_URL}/cms/getRatingByUser.json`;
       let skillUsageUrl = `${urls.API_URL}/cms/getSkillUsage.json`;
       let countryWiseSkillUsageUrl = `${
@@ -119,16 +120,6 @@ class SkillListing extends Component {
       this.languageValue = this.props.location.pathname.split('/')[3];
       url =
         baseUrl +
-        '?model=' +
-        modelValue +
-        '&group=' +
-        this.groupValue +
-        '&language=' +
-        this.languageValue +
-        '&skill=' +
-        this.name;
-      skillRatingUrl =
-        skillRatingUrl +
         '?model=' +
         modelValue +
         '&group=' +
@@ -181,20 +172,6 @@ class SkillListing extends Component {
           self.updateData(data.skill_metadata);
         },
       });
-      // Fetch ratings for the visited skill
-      $.ajax({
-        url: skillRatingUrl,
-        jsonpCallback: 'pc',
-        dataType: 'jsonp',
-        jsonp: 'callback',
-        crossDomain: true,
-        success: function(data) {
-          self.saveSkillRatings(data.skill_rating.stars);
-        },
-        error: function(e) {
-          console.log(e);
-        },
-      });
       // Fetch user ratings for the visited skill
       $.ajax({
         url: userSkillRatingUrl,
@@ -237,45 +214,8 @@ class SkillListing extends Component {
           self.saveCountryWiseSkillUsage();
         },
       });
-    }
-    if (this.props.location.state !== undefined) {
-      if (this.props.location.state.from_upload !== undefined) {
-        let baseUrl = urls.API_URL + '/cms/getSkillMetadata.json';
-        let url;
 
-        let modelValue = 'general';
-        let groupValue = this.props.location.state.groupValue;
-        let languageValue = this.props.location.state.languageValue;
-        let expertValue = this.props.location.state.expertValue;
-
-        url =
-          baseUrl +
-          '?model=' +
-          modelValue +
-          '&group=' +
-          groupValue +
-          '&language=' +
-          languageValue +
-          '&skill=' +
-          expertValue;
-
-        // console.log('Url meta:' + url);
-
-        urlCode = url.toString();
-        urlCode = url.replace('getSkillMetadata', 'getSkill');
-        // console.log(url);
-        let self = this;
-        $.ajax({
-          url: url,
-          jsonpCallback: 'pc',
-          dataType: 'jsonp',
-          jsonp: 'callback',
-          crossDomain: true,
-          success: function(data) {
-            self.updateData(data.skill_metadata);
-          },
-        });
-      }
+      this.getFeedback();
     }
   }
 
@@ -298,18 +238,8 @@ class SkillListing extends Component {
   };
 
   saveSkillUsage = (skill_usage = []) => {
-    // Add sample data to test
-    const data = [
-      { date: '2018-06-05', count: 7 },
-      { date: '2018-06-06', count: 2 },
-      { date: '2018-06-07', count: 2 },
-      { date: '2018-06-08', count: 2 },
-      { date: '2018-06-09', count: 6 },
-      { date: '2018-06-10', count: 2 },
-      { date: '2018-06-11', count: 2 },
-    ];
     this.setState({
-      skill_usage: data,
+      skill_usage: skill_usage,
     });
   };
 
@@ -325,7 +255,14 @@ class SkillListing extends Component {
     });
   };
 
+  saveSkillFeedback = (feedback = []) => {
+    this.setState({
+      skill_feedback: feedback,
+    });
+  };
+
   updateData = skillData => {
+    this.saveSkillRatings(skillData.skill_rating.stars);
     let imgUrl = `https://raw.githubusercontent.com/fossasia/susi_skill_data/master/models/general/${
       this.groupValue
     }/${this.languageValue}/${skillData.image}`;
@@ -413,6 +350,38 @@ class SkillListing extends Component {
   handleSnackRequestClose = () => {
     this.setState({
       openSnack: false,
+    });
+  };
+
+  getFeedback = () => {
+    let getFeedbackUrl = `${urls.API_URL}/cms/getSkillFeedback.json`;
+    let modelValue = 'general';
+    this.groupValue = this.props.location.pathname.split('/')[1];
+    this.languageValue = this.props.location.pathname.split('/')[3];
+    getFeedbackUrl =
+      getFeedbackUrl +
+      '?model=' +
+      modelValue +
+      '&group=' +
+      this.groupValue +
+      '&language=' +
+      this.languageValue +
+      '&skill=' +
+      this.name;
+
+    let self = this;
+    // Get skill feedback of the visited skill
+    $.ajax({
+      url: getFeedbackUrl,
+      dataType: 'jsonp',
+      crossDomain: true,
+      jsonp: 'callback',
+      success: function(data) {
+        self.saveSkillFeedback(data.feedback);
+      },
+      error: function(e) {
+        console.log(e);
+      },
     });
   };
 
@@ -678,6 +647,10 @@ class SkillListing extends Component {
               avg_rating={this.state.avg_rating}
               total_star={this.state.total_star}
               changeRating={this.changeRating}
+            />
+            <SkillFeedbackCard
+              skill_name={this.state.skill_name}
+              skill_feedback={this.state.skill_feedback}
             />
             <SkillUsageCard skill_usage={this.state.skill_usage} />
             <CountryWiseSkillUsageCard

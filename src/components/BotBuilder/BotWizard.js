@@ -13,19 +13,14 @@ import './BotBuilder.css';
 import Cookies from 'universal-cookie';
 
 const cookies = new Cookies();
-const locationBot =
-  '/BotPreview.html?access=' + cookies.get('loggedIn') + '&type=botWindow';
-const locationAvatar =
-  '/BotAvatarPreview.html?access=' +
-  cookies.get('loggedIn') +
-  '&type=botAvatar';
 
-class ContactBot extends React.Component {
+class BotWizard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       finished: false,
       stepIndex: 0,
+      themeSettingsString: '{}',
     };
   }
 
@@ -44,12 +39,16 @@ class ContactBot extends React.Component {
     }
   };
 
+  updateSettings = themeSettingsString => {
+    this.setState({ themeSettingsString });
+  };
+
   getStepContent(stepIndex) {
     switch (stepIndex) {
       case 0:
         return <Build />;
       case 1:
-        return <Design />;
+        return <Design updateSettings={this.updateSettings} />;
       case 2:
         return <Configure />;
       case 3:
@@ -61,10 +60,21 @@ class ContactBot extends React.Component {
   setStep = stepIndex => {
     this.setState({ stepIndex });
   };
-
   render() {
     const { stepIndex } = this.state;
     const contentStyle = { margin: '0 16px' };
+    const locationAvatar =
+      '/BotAvatarPreview.html?access=' +
+      cookies.get('loggedIn') +
+      '&type=botAvatar' +
+      '&themeSettings=' +
+      encodeURIComponent(this.state.themeSettingsString);
+    const locationBot =
+      '/BotPreview.html?access=' +
+      cookies.get('loggedIn') +
+      '&type=botWindow' +
+      '&themeSettings=' +
+      encodeURIComponent(this.state.themeSettingsString);
     return (
       <div>
         <StaticAppBar {...this.props} />
@@ -76,113 +86,91 @@ class ContactBot extends React.Component {
           >
             <Grid>
               <Row>
-                <div
-                  style={{
-                    display: 'flex',
-                    'flex-direction':
-                      window.innerWidth > 769 ? 'row' : 'column',
-                  }}
-                >
-                  <Col xs={12} md={8} lg={8}>
-                    <div
-                      style={{
-                        width: '100%',
-                        'max-width': '100%',
-                        margin: 'auto',
-                      }}
-                    >
-                      <Stepper activeStep={stepIndex} linear={false}>
-                        <Step>
-                          <StepButton onClick={() => this.setStep(0)}>
-                            Build
-                          </StepButton>
-                        </Step>
-                        <Step>
-                          <StepButton onClick={() => this.setStep(1)}>
-                            Design
-                          </StepButton>
-                        </Step>
-                        <Step>
-                          <StepButton onClick={() => this.setStep(2)}>
-                            Configure
-                          </StepButton>
-                        </Step>
-                        <Step>
-                          <StepButton onClick={() => this.setStep(3)}>
-                            Deploy
-                          </StepButton>
-                        </Step>
-                      </Stepper>
-                      <div style={contentStyle}>
-                        <p>{this.getStepContent(stepIndex)}</p>
-                        <div style={{ marginTop: '20px' }}>
+                <Col xs={12} md={8} lg={8}>
+                  <div
+                    style={{ width: '100%', maxWidth: '100%', margin: 'auto' }}
+                  >
+                    <Stepper activeStep={stepIndex} linear={false}>
+                      <Step>
+                        <StepButton onClick={() => this.setStep(0)}>
+                          Build
+                        </StepButton>
+                      </Step>
+                      <Step>
+                        <StepButton onClick={() => this.setStep(1)}>
+                          Design
+                        </StepButton>
+                      </Step>
+                      <Step>
+                        <StepButton onClick={() => this.setStep(2)}>
+                          Configure
+                        </StepButton>
+                      </Step>
+                      <Step>
+                        <StepButton onClick={() => this.setStep(3)}>
+                          Deploy
+                        </StepButton>
+                      </Step>
+                    </Stepper>
+                    <div style={contentStyle}>
+                      <div>{this.getStepContent(stepIndex)}</div>
+                      <div style={{ marginTop: '20px' }}>
+                        <RaisedButton
+                          label="Back"
+                          disabled={stepIndex === 0}
+                          backgroundColor={colors.header}
+                          labelColor="#fff"
+                          onTouchTap={this.handlePrev}
+                          style={{ marginRight: 12 }}
+                        />
+                        {stepIndex < 3 ? (
                           <RaisedButton
-                            label="Back"
-                            disabled={stepIndex === 0}
+                            label={stepIndex === 2 ? 'Finish' : 'Next'}
                             backgroundColor={colors.header}
                             labelColor="#fff"
-                            onTouchTap={this.handlePrev}
-                            style={{ marginRight: 12 }}
+                            onTouchTap={this.handleNext}
                           />
-                          {stepIndex < 3 ? (
-                            <RaisedButton
-                              label={stepIndex === 2 ? 'Finish' : 'Next'}
-                              backgroundColor={colors.header}
-                              labelColor="#fff"
-                              onTouchTap={this.handleNext}
-                            />
-                          ) : (
-                            <p
-                              style={{
-                                padding: '20px 0px 0px 0px',
-                                'font-family': 'sans-serif',
-                                'font-size': '14px',
-                              }}
-                            >
-                              You&apos;re all done. Thanks for using SUSI Bot.
-                            </p>
-                          )}
-                        </div>
+                        ) : (
+                          <p
+                            style={{
+                              padding: '20px 0px 0px 0px',
+                              'font-family': 'sans-serif',
+                              'font-size': '14px',
+                            }}
+                          >
+                            You&apos;re all done. Thanks for using SUSI Bot.
+                          </p>
+                        )}
                       </div>
                     </div>
-                  </Col>
-                  <Col
-                    xs={12}
-                    md={4}
-                    lg={4}
-                    style={{
-                      textAlign: window.innerWidth > 769 ? 'right' : 'left',
-                      borderLeft: '1px solid rgb(66, 133, 244)',
-                      padding: '0.01em 16px',
-                    }}
-                  >
-                    <br className="display-mobile-only" />
-                    <h2
-                      style={{ padding: '10px 0 10px 10px', textAlign: 'left' }}
-                    >
-                      Preview
-                    </h2>
-                    <br />
-                    <div style={{ position: 'relative', overflow: 'hidden' }}>
-                      <iframe
-                        title="botPreview"
-                        name="frame-name"
-                        id="frame-1"
-                        src={locationBot}
-                        height="600px"
-                        style={styles.iframe}
-                      />
-                      <iframe
-                        title="botAvatarPreview"
-                        name="frame-2"
-                        id="frame-2"
-                        src={locationAvatar}
-                        height="100px"
-                        style={styles.iframe}
-                      />
-                    </div>
-                  </Col>
-                </div>
+                  </div>
+                </Col>
+                <Col
+                  xs={12}
+                  md={4}
+                  lg={4}
+                  style={{ textAlign: 'center', padding: '0.01em 16px' }}
+                >
+                  <br className="display-mobile-only" />
+                  <h2 className="center">Preview</h2>
+                  <br />
+                  <div style={{ position: 'relative', overflow: 'hidden' }}>
+                    <iframe
+                      title="botPreview"
+                      name="frame-name"
+                      id="frame-1"
+                      src={locationBot}
+                      height="600px"
+                    />
+                    <iframe
+                      title="botAvatarPreview"
+                      name="frame-2"
+                      id="frame-2"
+                      src={locationAvatar}
+                      height="100px"
+                    />
+                  </div>
+                </Col>
               </Row>
             </Grid>
           </Paper>
@@ -207,16 +195,6 @@ const styles = {
   tabStyle: {
     color: 'rgb(91, 91, 91)',
   },
-  iframe: {
-    '-moz-border-radius': '12px',
-    '-webkit-border-radius': '12px',
-    'border-radius': '12px',
-    'max-width': '100%',
-    margin: '0',
-    padding: '0',
-    border: '1px solid #ccc',
-    overflow: 'hidden',
-  },
 };
 
-export default ContactBot;
+export default BotWizard;

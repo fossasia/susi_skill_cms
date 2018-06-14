@@ -6,6 +6,7 @@ import Cookies from 'universal-cookie';
 import Snackbar from 'material-ui/Snackbar';
 import TiTick from 'react-icons/lib/ti/tick';
 import CircularProgress from 'material-ui/CircularProgress';
+import PropTypes from 'prop-types';
 import ColorPicker from 'material-ui-color-picker';
 import colors from '../../../Utils/colors';
 import urls from '../../../Utils/urls';
@@ -34,38 +35,54 @@ class Design extends React.Component {
     this.getSettings();
   }
 
+  componentDidMount() {
+    this.updateSettings();
+  }
+  updateSettings = () => {
+    let settingsString = JSON.stringify(this.state);
+    this.props.updateSettings(settingsString);
+  };
   handleChangeColor = (component, color) => {
     if (component === 'botbuilderIconColor') {
-      this.setState({
-        [component]: color,
-        iconSelected: null,
-        botbuilderIconImg: '',
-      });
+      this.setState(
+        {
+          [component]: color,
+          iconSelected: null,
+          botbuilderIconImg: '',
+        },
+        () => this.updateSettings(),
+      );
     } else {
-      this.setState({
-        [component]: color,
-      });
+      this.setState(
+        {
+          [component]: color,
+        },
+        () => this.updateSettings(),
+      );
     }
   };
 
   handleChangeBodyBackgroundImage = botbuilderBodyBackgroundImg => {
-    this.setState({ botbuilderBodyBackgroundImg });
+    this.setState({ botbuilderBodyBackgroundImg }, () => this.updateSettings());
   };
   handleRemoveUrlBody = () => {
-    this.setState({ botbuilderBodyBackgroundImg: '' });
+    this.setState({ botbuilderBodyBackgroundImg: '' }, () =>
+      this.updateSettings(),
+    );
   };
   handleChangeIconImage = botbuilderIconImg => {
-    this.setState({
-      botbuilderIconImg,
-      iconSelected: null,
-    });
+    this.setState(
+      {
+        botbuilderIconImg,
+        iconSelected: null,
+      },
+      () => this.updateSettings(),
+    );
   };
   handleRemoveUrlIcon = () => {
-    this.setState({ botbuilderIconImg: '' });
+    this.setState({ botbuilderIconImg: '' }, () => this.updateSettings());
   };
-  implementSettings = () => {
-    // implement settings locally
-  };
+
   handleSave = () => {
     // send settings to server
     if (
@@ -212,9 +229,12 @@ class Design extends React.Component {
             });
           }
 
-          this.setState({
-            loadedSettings: true,
-          });
+          this.setState(
+            {
+              loadedSettings: true,
+            },
+            () => this.updateSettings(),
+          );
           let botbuilderIconImg = settings.botbuilderIconImg;
           if (botbuilderIconImg) {
             for (let icon of avatars) {
@@ -304,11 +324,14 @@ class Design extends React.Component {
       crossDomain: true,
       success: function(data) {
         // successfully stored
-        this.setState({
-          resetting: false,
-          openSnackbar: true,
-          msgSnackbar: 'Success! Saved settings',
-        });
+        this.setState(
+          {
+            resetting: false,
+            openSnackbar: true,
+            msgSnackbar: 'Success! Saved settings',
+          },
+          () => this.updateSettings(),
+        );
       }.bind(this),
       error: function(textStatus, errorThrown) {
         this.setState({
@@ -322,16 +345,26 @@ class Design extends React.Component {
 
   handleIconSelect = icon => {
     if (icon.id === this.state.iconSelected) {
-      this.setState({
-        iconSelected: null,
-        botbuilderIconImg: '',
-      });
+      this.setState(
+        {
+          iconSelected: null,
+          botbuilderIconImg: '',
+        },
+        () => this.updateSettings(),
+      );
     } else {
-      this.setState({
-        iconSelected: icon.id,
-        botbuilderIconImg: icon.url,
-      });
+      this.setState(
+        {
+          iconSelected: icon.id,
+          botbuilderIconImg: icon.url,
+        },
+        () => this.updateSettings(),
+      );
     }
+  };
+
+  handleClickColorBox = id => {
+    $('#colorPicker' + id).click();
   };
 
   render() {
@@ -369,6 +402,7 @@ class Design extends React.Component {
               className="color-picker"
               style={{ display: 'inline-block', float: 'left' }}
               name="color"
+              id={'colorPicker' + component.id}
               defaultValue={this.state[component.component]}
               onChange={color =>
                 this.handleChangeColor(component.component, color)
@@ -376,6 +410,7 @@ class Design extends React.Component {
             />
             <span
               className="color-box"
+              onClick={() => this.handleClickColorBox(component.id)}
               style={{ backgroundColor: this.state[component.component] }}
             />
           </div>
@@ -489,6 +524,8 @@ class Design extends React.Component {
   }
 }
 
-Design.propTypes = {};
+Design.propTypes = {
+  updateSettings: PropTypes.function,
+};
 
 export default Design;

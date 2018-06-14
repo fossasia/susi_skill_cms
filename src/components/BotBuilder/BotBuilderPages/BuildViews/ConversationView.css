@@ -1,0 +1,25 @@
+.user-text-box {
+    background-color: #e0e0e0;
+    font-size: 14px;
+    padding: 20px;
+    text-align: right;
+    max-width: 60%;
+    min-width: 60px;
+    margin-right: 10px;
+    margin-left: auto;
+    margin-bottom: 15px;
+    border-radius: 12px;
+}
+
+.bot-text-box {
+    background-color: #F5F5F5;
+    font-size: 14px;
+    padding: 20px;
+    text-align: left;
+    max-width: 60%;
+    min-width: 60px;
+    margin-right: auto;
+    margin-left: 10px;
+    margin-bottom: 15px;
+    border-radius: 12px;
+}
