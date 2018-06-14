@@ -29,9 +29,12 @@ class SkillUsageCard extends Component {
   };
 
   render() {
-    const totalSkillUsage = this.props.skill_usage.reduce((totalCount, day) => {
-      return totalCount + day.count;
-    }, 0);
+    const totalSkillUsage = 0;
+    if (this.props.skill_usage) {
+      totalSkillUsage = this.props.skill_usage.reduce((totalCount, day) => {
+        return totalCount + day.count;
+      }, 0);
+    }
 
     return (
       <div>
