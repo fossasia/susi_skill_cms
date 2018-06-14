@@ -50,7 +50,6 @@ class BotBuilder extends React.Component {
                                                 label='Create your own SUSI AI Web bot'
                                                 backgroundColor={colors.header}
                                                 labelColor='#fff'
-                                                onClick={this.toggleCreateBotWizard}
                                             />
                                         </Link>
                                     </div>
