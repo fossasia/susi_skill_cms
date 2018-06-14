@@ -29,10 +29,10 @@ class SkillUsageCard extends Component {
   };
 
   render() {
-    const totalSkillUsage = 0;
+    let totalSkillUsage = 0;
     if (this.props.skill_usage) {
       totalSkillUsage = this.props.skill_usage.reduce((totalCount, day) => {
-        return totalCount + day.count;
+        return parseInt(totalCount, 10) + parseInt(day.count, 10);
       }, 0);
     }
 
