@@ -20,9 +20,9 @@ var flag = 0;
 if(bot_type){
 	flag = 1;
 }
+var theme_settings = script_tag.getAttribute("data-theme")?script_tag.getAttribute("data-theme"):null;
 
 // custom theme variables
-
 var botbuilderBackgroundBody = "#ffffff";
 var botbuilderBodyBackgroundImg = "";
 var botbuilderUserMessageBackground = "#0077e5";
@@ -45,32 +45,46 @@ if(typeof jQuery=='undefined') {
 
 // get custom theme from user
 function getTheme(){
-	$.ajax({
-		type: "GET",
-		url: "https://api.susi.ai/aaa/listUserSettings.json?access_token="+access_token,
-		jsonpCallback: 'pa',
-		contentType: "application/json",
-		dataType: 'jsonp',
-		jsonp: 'callback',
-		crossDomain: true,
-		success: function(data) {
-			if(data.settings){
-			let settings = data.settings;
-			botbuilderBackgroundBody = settings.botbuilderBackgroundBody?"#"+settings.botbuilderBackgroundBody:botbuilderBackgroundBody;
-			botbuilderBodyBackgroundImg = settings.botbuilderBodyBackgroundImg?settings.botbuilderBodyBackgroundImg:botbuilderBodyBackgroundImg;
-			botbuilderUserMessageBackground = settings.botbuilderUserMessageBackground?"#"+settings.botbuilderUserMessageBackground:botbuilderUserMessageBackground;
-			botbuilderUserMessageTextColor = settings.botbuilderUserMessageTextColor?"#"+settings.botbuilderUserMessageTextColor:botbuilderUserMessageTextColor;
-			botbuilderBotMessageBackground = settings.botbuilderBotMessageBackground?"#"+settings.botbuilderBotMessageBackground:botbuilderBotMessageBackground;
-			botbuilderBotMessageTextColor = settings.botbuilderBotMessageTextColor?"#"+settings.botbuilderBotMessageTextColor:botbuilderBotMessageTextColor;
-			botbuilderIconColor = settings.botbuilderIconColor?"#"+settings.botbuilderIconColor:botbuilderIconColor;
-			botbuilderIconImg = settings.botbuilderIconImg?settings.botbuilderIconImg:botbuilderIconImg;
-			applyTheme();
-		}
-		},
-		error: function(e) {
-			console.log(e);
-		}
-	});
+	if(theme_settings){
+		let settings = JSON.parse(theme_settings);
+		botbuilderBackgroundBody = settings.botbuilderBackgroundBody?settings.botbuilderBackgroundBody:botbuilderBackgroundBody;
+		botbuilderBodyBackgroundImg = settings.botbuilderBodyBackgroundImg?settings.botbuilderBodyBackgroundImg:botbuilderBodyBackgroundImg;
+		botbuilderUserMessageBackground = settings.botbuilderUserMessageBackground?settings.botbuilderUserMessageBackground:botbuilderUserMessageBackground;
+		botbuilderUserMessageTextColor = settings.botbuilderUserMessageTextColor?settings.botbuilderUserMessageTextColor:botbuilderUserMessageTextColor;
+		botbuilderBotMessageBackground = settings.botbuilderBotMessageBackground?settings.botbuilderBotMessageBackground:botbuilderBotMessageBackground;
+		botbuilderBotMessageTextColor = settings.botbuilderBotMessageTextColor?settings.botbuilderBotMessageTextColor:botbuilderBotMessageTextColor;
+		botbuilderIconColor = settings.botbuilderIconColor?settings.botbuilderIconColor:botbuilderIconColor;
+		botbuilderIconImg = settings.botbuilderIconImg?settings.botbuilderIconImg:botbuilderIconImg;
+		applyTheme();
+	}
+	else{
+		$.ajax({
+			type: "GET",
+			url: "https://api.susi.ai/aaa/listUserSettings.json?access_token="+access_token,
+			jsonpCallback: 'pa',
+			contentType: "application/json",
+			dataType: 'jsonp',
+			jsonp: 'callback',
+			crossDomain: true,
+			success: function(data) {
+				if(data.settings){
+				let settings = data.settings;
+				botbuilderBackgroundBody = settings.botbuilderBackgroundBody?"#"+settings.botbuilderBackgroundBody:botbuilderBackgroundBody;
+				botbuilderBodyBackgroundImg = settings.botbuilderBodyBackgroundImg?settings.botbuilderBodyBackgroundImg:botbuilderBodyBackgroundImg;
+				botbuilderUserMessageBackground = settings.botbuilderUserMessageBackground?"#"+settings.botbuilderUserMessageBackground:botbuilderUserMessageBackground;
+				botbuilderUserMessageTextColor = settings.botbuilderUserMessageTextColor?"#"+settings.botbuilderUserMessageTextColor:botbuilderUserMessageTextColor;
+				botbuilderBotMessageBackground = settings.botbuilderBotMessageBackground?"#"+settings.botbuilderBotMessageBackground:botbuilderBotMessageBackground;
+				botbuilderBotMessageTextColor = settings.botbuilderBotMessageTextColor?"#"+settings.botbuilderBotMessageTextColor:botbuilderBotMessageTextColor;
+				botbuilderIconColor = settings.botbuilderIconColor?"#"+settings.botbuilderIconColor:botbuilderIconColor;
+				botbuilderIconImg = settings.botbuilderIconImg?settings.botbuilderIconImg:botbuilderIconImg;
+				applyTheme();
+			}
+			},
+			error: function(e) {
+				console.log(e);
+			}
+		});
+	}
 }
 
 // to apply custom theme
@@ -123,10 +137,6 @@ function applyTheme(){
 	}
 }
 
-setInterval(function(){
-	getTheme();
-}, 2000);
-
 function enableBot(){
 	getTheme();
 	$(document).ready(function() {
@@ -173,7 +183,7 @@ function enableBot(){
 			'<div id="susi-launcher-container" class="susi-flex-center susi-avatar-launcher susi-launcher-enabled">'+
 			'<div id="susi-avatar-text">'+'Hey there'+'</div>'+
 			'<div id="susi-launcher" class="susi-launcher susi-flex-center susi-launcher-active" style="background-color: rgb(91, 75, 159);">'+
-			'<div id="susi-launcher-button" class="susi-launcher-button" style="background-image: url('+ susi_skills_deployed_url + 'avatar.jpg' +');">'+'</div>'+
+			'<div id="susi-launcher-button" class="susi-launcher-button" style="background-image: url('+ botbuilderIconImg +');">'+'</div>'+
 			'</div>'+
 			'</div>';
 		} else if (flag==1) {
@@ -185,7 +195,7 @@ function enableBot(){
 							'<div id="susi-chatbox" class="susi-chatbox">'+
 								'<div id="susi-conversation" class="susi-conversation susi-sheet susi-sheet-active susi-active">'+
 									'<div class="susi-sheet-content">'+
-										'<div class="susi-sheet-content-container" style="background-color:'+botbuilderBackgroundBody+'">'+
+										'<div class="susi-sheet-content-container" style="background-color:'+botbuilderBackgroundBody+';background-image:url('+botbuilderBodyBackgroundImg+')">'+
 											'<div class="susi-conversation-parts-container">'+
 												'<div id="susi-message" class="susi-conversation-parts">'+
 												'</div>'+
@@ -214,7 +224,7 @@ function enableBot(){
 				mybot = '<div id="susi-launcher-container" class="susi-flex-center susi-avatar-launcher susi-launcher-enabled">'+
 	            	'<div id="susi-avatar-text" style="display: block !important">'+'Hey there'+'</div>'+
 	            	'<div id="susi-launcher" class="susi-launcher susi-flex-center susi-launcher-active" style="background-color: rgb(91, 75, 159);">'+
-	                '<div id="susi-launcher-button" class="susi-launcher-button" style="background-image: url(avatar.jpg)">'+'</div>'+
+	                '<div id="susi-launcher-button" class="susi-launcher-button" style="background-image: url('+botbuilderIconImg+')">'+'</div>'+
 	            	'</div>'+
 	        		'</div>';
 			}
