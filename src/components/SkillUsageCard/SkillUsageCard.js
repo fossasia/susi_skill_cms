@@ -1,7 +1,16 @@
 // Packages
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { LineChart, Line, XAxis, YAxis, Tooltip, Legend } from 'recharts';
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
+  PieChart,
+  Pie,
+} from 'recharts';
 import { Paper } from 'material-ui';
 
 // Static assets
@@ -67,6 +76,23 @@ class SkillUsageCard extends Component {
                   />
                 </LineChart>
               </div>
+              {this.props.device_usage_data !== [] ? (
+                <div className="device-usage">
+                  <PieChart width={800} height={400}>
+                    <Pie
+                      data={this.props.device_usage_data}
+                      cx={200}
+                      cy={200}
+                      outerRadius={80}
+                      fill="#8884d8"
+                      label
+                    />
+                    <Tooltip />
+                  </PieChart>
+                </div>
+              ) : (
+                ''
+              )}
               <div className="total-hits">
                 <div className="large-text">{totalSkillUsage}</div>
                 Hits this week
@@ -85,6 +111,7 @@ class SkillUsageCard extends Component {
 
 SkillUsageCard.propTypes = {
   skill_usage: PropTypes.array,
+  device_usage_data: PropTypes.array,
 };
 
 export default SkillUsageCard;
