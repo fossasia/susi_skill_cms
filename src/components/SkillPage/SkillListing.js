@@ -239,16 +239,20 @@ class SkillListing extends Component {
   };
 
   saveSkillUsage = (skill_usage = []) => {
+    let data = skill_usage.map(usage => {
+      usage.count = parseInt(usage.count, 10);
+      return usage;
+    });
     this.setState({
-      skill_usage: skill_usage,
+      skill_usage: data,
     });
   };
 
   saveCountryWiseSkillUsage = (country_wise_skill_usage = []) => {
     // Add sample data to test
     let data = country_wise_skill_usage.map(country => [
-      country.country_code,
-      Number(country.count),
+      country.country_name,
+      parseInt(country.count, 10),
     ]);
 
     this.setState({
