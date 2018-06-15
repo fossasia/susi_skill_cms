@@ -426,6 +426,38 @@ class SkillListing extends Component {
     });
   };
 
+  deleteFeedback = () => {
+    let baseUrl = urls.API_URL + '/cms/removeFeedback.json';
+    let modelValue = 'general';
+    this.groupValue = this.props.location.pathname.split('/')[1];
+    this.languageValue = this.props.location.pathname.split('/')[3];
+    let deleteFeedbackUrl =
+      baseUrl +
+      '?model=' +
+      modelValue +
+      '&group=' +
+      this.groupValue +
+      '&language=' +
+      this.languageValue +
+      '&skill=' +
+      this.name +
+      '&access_token=' +
+      cookies.get('loggedIn');
+    let self = this;
+    $.ajax({
+      url: deleteFeedbackUrl,
+      dataType: 'jsonp',
+      jsonp: 'callback',
+      crossDomain: true,
+      success: function(data) {
+        self.getFeedback();
+      },
+      error: function(e) {
+        console.log(e);
+      },
+    });
+  };
+
   openAuthorSkills = () => {
     if (this.author) {
       this.author.loadSkillCards(this.state.author);
@@ -707,6 +739,7 @@ class SkillListing extends Component {
               skill_name={this.state.skill_name}
               skill_feedback={this.state.skill_feedback}
               postFeedback={this.postFeedback}
+              deleteFeedback={this.deleteFeedback}
             />
             <SkillUsageCard skill_usage={this.state.skill_usage} />
             <CountryWiseSkillUsageCard
