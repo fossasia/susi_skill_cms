@@ -36,6 +36,10 @@ export default class CreateSkill extends React.Component {
   componentDidMount() {
     self = this;
     self.loadgroups();
+    // send code to CodeView in botbuilder
+    if (this.props.botBuilder) {
+      this.setState({ code: this.props.botBuilder.code });
+    }
   }
 
   constructor(props) {
@@ -143,6 +147,9 @@ export default class CreateSkill extends React.Component {
     this.setState({
       code: newCode,
     });
+    if (this.props.botBuilder) {
+      this.props.botBuilder.onSkillChange(newCode);
+    }
   };
 
   handleExpertChange = event => {
@@ -641,6 +648,5 @@ const styles = {
   },
 };
 CreateSkill.propTypes = {
-  botBuilder: PropTypes.bool,
-  onSkillChange: PropTypes.func,
+  botBuilder: PropTypes.object,
 };
