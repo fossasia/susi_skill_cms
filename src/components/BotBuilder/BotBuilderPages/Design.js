@@ -11,6 +11,7 @@ import ColorPicker from 'material-ui-color-picker';
 import colors from '../../../Utils/colors';
 import urls from '../../../Utils/urls';
 import avatars from '../../../Utils/avatars';
+
 const cookies = new Cookies();
 let BASE_URL = urls.API_URL;
 
@@ -484,33 +485,40 @@ class Design extends React.Component {
     });
     return (
       <div className="center menu-page">
-        <div className="design-box">
-          {this.state.loadedSettings && customizeComponents}
-          <RaisedButton
-            label={
-              this.state.resetting ? (
-                <CircularProgress color={colors.header} size={32} />
-              ) : (
-                'Reset'
-              )
-            }
-            onTouchTap={this.handleReset}
-          />
-          <RaisedButton
-            name="save"
-            style={{ marginLeft: '15px' }}
-            backgroundColor={colors.header}
-            onTouchTap={this.handleSave}
-            labelColor="#fff"
-            label={
-              this.state.saving ? (
-                <CircularProgress color="#ffffff" size={32} />
-              ) : (
-                'Save Changes'
-              )
-            }
-          />
-        </div>
+        {!this.state.loadedSettings ? (
+          <div className="center">
+            <CircularProgress size={62} color="#4285f5" />
+            <h4>Loading</h4>
+          </div>
+        ) : (
+          <div className="design-box">
+            {this.state.loadedSettings && customizeComponents}
+            <RaisedButton
+              label={
+                this.state.resetting ? (
+                  <CircularProgress color={colors.header} size={32} />
+                ) : (
+                  'Reset'
+                )
+              }
+              onTouchTap={this.handleReset}
+            />
+            <RaisedButton
+              name="save"
+              style={{ marginLeft: '15px' }}
+              backgroundColor={colors.header}
+              onTouchTap={this.handleSave}
+              labelColor="#fff"
+              label={
+                this.state.saving ? (
+                  <CircularProgress color="#ffffff" size={32} />
+                ) : (
+                  'Save Changes'
+                )
+              }
+            />
+          </div>
+        )}
         <Snackbar
           open={this.state.openSnackbar}
           message={this.state.msgSnackbar}
@@ -525,7 +533,7 @@ class Design extends React.Component {
 }
 
 Design.propTypes = {
-  updateSettings: PropTypes.function,
+  updateSettings: PropTypes.func,
 };
 
 export default Design;
