@@ -33,6 +33,8 @@ import 'brace/theme/terminal';
 import CircleImage from '../CircleImage/CircleImage';
 import EditBtn from 'material-ui/svg-icons/editor/mode-edit';
 import VersionBtn from 'material-ui/svg-icons/action/history';
+import Bookmark from 'material-ui/svg-icons/action/bookmark';
+import BookmarkBorder from 'material-ui/svg-icons/action/bookmark-border';
 import ReactTooltip from 'react-tooltip';
 import colors from '../../Utils/colors';
 import urls from '../../Utils/urls';
@@ -86,6 +88,7 @@ class SkillListing extends Component {
       openSnack: false,
       snackMessage: '',
       skill_feedback: [],
+      bookmark: false,
     };
 
     let clickedSkill = this.props.location.pathname.split('/')[2];
@@ -307,6 +310,42 @@ class SkillListing extends Component {
     });
     this.setState({
       dataReceived: true,
+    });
+  };
+
+  bookmarkSkill = () => {
+    let bookmarkSkillUrl = urls.API_URL + '/cms/bookmarkSkill.json';
+    let modelValue = 'general';
+    this.groupValue = this.props.location.pathname.split('/')[1];
+    this.languageValue = this.props.location.pathname.split('/')[3];
+    // Change bookmark value
+    let bookmarkValue = this.state.bookmark ? 0 : 1;
+    bookmarkSkillUrl =
+      bookmarkSkillUrl +
+      '?model=' +
+      modelValue +
+      '&group=' +
+      this.groupValue +
+      '&language=' +
+      this.languageValue +
+      '&skill=' +
+      this.name +
+      '&bookmark=' +
+      bookmarkValue +
+      '&access_token=' +
+      cookies.get('loggedIn');
+
+    let self = this;
+    $.ajax({
+      url: bookmarkSkillUrl,
+      dataType: 'jsonp',
+      jsonp: 'callback',
+      crossDomain: true,
+      success: function(data) {
+        self.setState(prevState => ({
+          bookmark: !prevState.bookmark,
+        }));
+      },
     });
   };
 
@@ -576,6 +615,16 @@ class SkillListing extends Component {
               )}
             </div>
             <div className="linkButtons">
+              {cookies.get('loggedIn') ? (
+                <FloatingActionButton
+                  data-tip="Edit Skill"
+                  backgroundColor={colors.header}
+                  onClick={this.bookmarkSkill}
+                  style={{ marginRight: 8 }}
+                >
+                  {this.state.bookmark ? <Bookmark /> : <BookmarkBorder />}
+                </FloatingActionButton>
+              ) : null}
               <Link
                 to={{
                   pathname:
