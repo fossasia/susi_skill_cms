@@ -48,8 +48,6 @@ class Design extends React.Component {
       this.setState(
         {
           [component]: color,
-          iconSelected: null,
-          botbuilderIconImg: '',
         },
         () => this.updateSettings(),
       );

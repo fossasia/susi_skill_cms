@@ -1,44 +1,10 @@
 import React, { Component } from 'react';
 import OrgChart from 'react-orgchart';
+import PropTypes from 'prop-types';
 import Person from 'material-ui/svg-icons/social/person';
 import 'react-orgchart/index.css';
 import './TreeView.css';
 
-const treeData = {
-  name: 'Welcome!',
-  children: [
-    {
-      name: 'User query 1',
-      type: 'user',
-      children: [
-        {
-          name: 'Answer for the user query',
-          type: 'bot',
-        },
-      ],
-    },
-    {
-      name: 'User query 2',
-      type: 'user',
-      children: [
-        {
-          name: 'Answer for the user query',
-          type: 'bot',
-        },
-      ],
-    },
-    {
-      name: 'User query 3',
-      type: 'user',
-      children: [
-        {
-          name: 'Answer for the user query',
-          type: 'bot',
-        },
-      ],
-    },
-  ],
-};
 class TreeView extends Component {
   constructor(props) {
     super(props);
@@ -71,7 +37,10 @@ class TreeView extends Component {
     return (
       <div>
         <div>
-          <OrgChart tree={treeData} NodeComponent={MyNodeComponent} />
+          <OrgChart
+            tree={this.props.treeData}
+            NodeComponent={MyNodeComponent}
+          />
           <br />
           <br />
         </div>
@@ -88,11 +57,13 @@ const styles = {
     verticalAlign: 'middle',
   },
   botIcon: {
-    height: '33px',
-    paddingTop: '9px',
+    height: '25px',
+    verticalAlign: 'middle',
     width: '21px',
     color: 'rgb(66, 133, 245)',
   },
 };
-
+TreeView.propTypes = {
+  treeData: PropTypes.object,
+};
 export default TreeView;

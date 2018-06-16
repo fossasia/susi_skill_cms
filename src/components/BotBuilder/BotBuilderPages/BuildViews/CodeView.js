@@ -12,12 +12,20 @@ class CodeView extends Component {
 
   render() {
     return (
-      <div className="menu-page">
+      <div>
         <div>
-          <CreateSkill
-            onSkillChange={this.props.onSkillChange}
-            botBuilder={true}
-          />
+          <h3>
+            Know more about{' '}
+            <a
+              href="https://github.com/fossasia/susi_skill_cms/blob/master/docs/Skill_Tutorial.md"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              SUSI Skill Language
+            </a>
+          </h3>
+          <br />
+          <CreateSkill botBuilder={this.props.botBuilder} />
         </div>
       </div>
     );
@@ -25,7 +33,7 @@ class CodeView extends Component {
 }
 
 CodeView.propTypes = {
-  onSkillChange: PropTypes.func,
+  botBuilder: PropTypes.object,
 };
 
 export default CodeView;
