@@ -81,7 +81,10 @@ class AuthorSkills extends Component {
             let image2 = image + '.jpg';
 
             let skillURL =
-              'http://skills.susi.ai/' +
+              window.location.protocol +
+              '//' +
+              window.location.host +
+              '/' +
               parse[4] +
               '/' +
               parse[6].split('.')[0] +
