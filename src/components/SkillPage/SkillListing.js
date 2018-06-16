@@ -672,11 +672,6 @@ class SkillListing extends Component {
               <div className="desc margin-b-md margin-t-md">
                 <h1 className="title">Description</h1>
                 <p className="card-content">{this.state.descriptions}</p>
-              </div>
-            </Paper>
-            <Paper className="margin-b-md margin-t-md">
-              <div className="margin-b-md margin-t-md skill">
-                <h1 className="title">Skill Details</h1>
                 <div className="card-content">
                   <ul>
                     {this.state.dynamic_content ? (
@@ -716,14 +711,11 @@ class SkillListing extends Component {
                       </li>
                     )}
                   </ul>
-                </div>
-                <div className="card-content">
-                  Last accessed at -
-                  {` ${this.parseDate(this.state.last_access_time)}`}
-                </div>
-                <div className="card-content">
-                  Last modified at -
-                  {` ${this.parseDate(this.state.last_modified_time)}`}
+                  <div>
+                    <br />
+                    Last modified at -
+                    {` ${this.parseDate(this.state.last_modified_time)}`}
+                  </div>
                 </div>
               </div>
             </Paper>
