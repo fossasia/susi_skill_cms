@@ -110,6 +110,7 @@ class MySkills extends Component {
           <IconMenu
             anchorOrigin={{ vertical: 'bottom', horizontal: 'middle' }}
             label="Add new skill"
+            animated={false}
             open={this.state.openMenu}
             onRequestChange={this.handleOnRequestChange}
             iconButtonElement={
