@@ -45,6 +45,7 @@ export default class SignUp extends Component {
     }
   }
 
+  // Handle closing the dialog
   handleClose = () => {
     let state = this.state;
     if (state.success) {
@@ -75,6 +76,7 @@ export default class SignUp extends Component {
     }
   };
 
+  // Handle toggle between custom server and default server
   handleServeChange = event => {
     if (
       this.state.emailError ||
@@ -87,6 +89,7 @@ export default class SignUp extends Component {
     }
   };
 
+  // Handle changes in email, password and confirmPassword
   handleChange = event => {
     let email;
     let password;
@@ -161,6 +164,7 @@ export default class SignUp extends Component {
     }
   };
 
+  // Submit the SignUp Form
   handleSubmit = event => {
     event.preventDefault();
     let BASE_URL = urls.API_URL;
@@ -217,9 +221,35 @@ export default class SignUp extends Component {
     }
   };
 
+  // Open Forgot Password Dialog
+  handleForgotPassword = () => {
+    this.setState({
+      openForgotPassword: true,
+      open: false,
+      openLogin: false,
+    });
+  };
+
+  handleForgotPasswordToggle = forgotPassword => {
+    if (forgotPassword) {
+      this.setState({
+        open: false,
+        openForgotPassword: true,
+        openLogin: false,
+      });
+    } else {
+      // Go back to login dialog
+      this.setState({
+        open: true,
+        openForgotPassword: false,
+        openLogin: false,
+      });
+    }
+  };
+
+  // Open Login Dialog
   handleOpen = () => {
     this.setState({
-      open: true,
       msgOpen: false,
       email: '',
       isEmail: false,
@@ -251,7 +281,7 @@ export default class SignUp extends Component {
       fontSize: '16px',
     };
     const underlineFocusStyle = {
-      color: colors.header,
+      color: '#4285f4',
     };
 
     const PasswordClass = [`is-strength-${this.state.passwordScore}`];
@@ -259,7 +289,7 @@ export default class SignUp extends Component {
     return (
       <div className="signUpForm">
         <Paper zDepth={0} style={styles}>
-          <h3>Sign Up with SUSI</h3>
+          <div>Sign Up with SUSI</div>
           <form onSubmit={this.handleSubmit}>
             <div>
               <TextField
@@ -267,10 +297,10 @@ export default class SignUp extends Component {
                 value={this.state.email}
                 onChange={this.handleChange}
                 errorText={this.emailErrorMessage}
+                floatingLabelStyle={fontStyle}
                 underlineFocusStyle={underlineFocusStyle}
                 floatingLabelFocusStyle={underlineFocusStyle}
                 floatingLabelText="Email"
-                floatingLabelStyle={fontStyle}
               />
             </div>
             <div className={PasswordClass.join(' ')}>
@@ -280,15 +310,11 @@ export default class SignUp extends Component {
                 value={this.state.passwordValue}
                 onChange={this.handleChange}
                 errorText={this.passwordErrorMessage}
+                floatingLabelStyle={fontStyle}
                 underlineFocusStyle={underlineFocusStyle}
                 floatingLabelFocusStyle={underlineFocusStyle}
                 floatingLabelText="Password"
-                floatingLabelStyle={fontStyle}
               />
-              <div className="ReactPasswordStrength-strength-bar" />
-              <div>
-                <p>{this.state.passwordStrength}</p>
-              </div>
             </div>
             <div>
               <PasswordField
@@ -297,12 +323,23 @@ export default class SignUp extends Component {
                 value={this.state.confirmPasswordValue}
                 onChange={this.handleChange}
                 errorText={this.passwordConfirmErrorMessage}
+                floatingLabelStyle={fontStyle}
                 underlineFocusStyle={underlineFocusStyle}
                 floatingLabelFocusStyle={underlineFocusStyle}
                 floatingLabelText="Confirm Password"
-                floatingLabelStyle={fontStyle}
               />
             </div>
+            <span
+              style={{
+                display: 'inline-block',
+                marginTop: '10px',
+              }}
+              className="login-links"
+              onClick={this.handleOpen}
+            >
+              Already have an account? Login here
+            </span>
+
             <div>
               <RaisedButton
                 label="Sign Up"
@@ -311,28 +348,6 @@ export default class SignUp extends Component {
                 backgroundColor={colors.header}
                 labelColor="#fff"
                 style={{ margin: '15px 0 0 0 ' }}
-              />
-            </div>
-            <h4
-              style={{
-                margin: '5px 0',
-              }}
-            >
-              OR
-            </h4>
-            <div>
-              <h4
-                style={{
-                  margin: '5px 0',
-                }}
-              >
-                If you have an Account Please Login
-              </h4>
-              <RaisedButton
-                label="Login"
-                onTouchTap={this.handleOpen}
-                backgroundColor={colors.header}
-                labelColor="#fff"
               />
             </div>
           </form>
