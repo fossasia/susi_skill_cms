@@ -10,6 +10,8 @@ import {
   Legend,
   PieChart,
   Pie,
+  Sector,
+  Cell,
 } from 'recharts';
 import { Paper } from 'material-ui';
 
@@ -19,7 +21,10 @@ import './SkillUsage.css';
 class SkillUsageCard extends Component {
   constructor(props) {
     super(props);
-    this.state = { width: 0 };
+    this.state = {
+      width: 0,
+      activePieIndex: 0,
+    };
   }
 
   componentDidMount = () => {
@@ -37,6 +42,12 @@ class SkillUsageCard extends Component {
     });
   };
 
+  onPieEnter = (data, index) => {
+    this.setState({
+      activePieIndex: index,
+    });
+  };
+
   render() {
     let totalSkillUsage = 0;
     if (this.props.skill_usage) {
@@ -51,52 +62,74 @@ class SkillUsageCard extends Component {
           <h1 className="title">Skill Usage</h1>
           {totalSkillUsage > 0 ? (
             <div className="usage-section">
-              <div className="skill-usage-graph">
-                <LineChart
-                  width={this.state.width}
-                  height={300}
-                  data={this.props.skill_usage}
-                  margin={{
-                    top: 5,
-                    right: 30,
-                    left: 20,
-                    bottom: 5,
-                  }}
-                >
-                  <XAxis dataKey="date" padding={{ right: 20 }} />
-                  <YAxis />
-                  <Tooltip wrapperStyle={{ height: '60px' }} />
-                  <Legend />
-                  <Line
-                    name="Skill usage count"
-                    type="monotone"
-                    dataKey="count"
-                    stroke="#82ca9d"
-                    activeDot={{ r: 8 }}
-                  />
-                </LineChart>
+              <div className="overall-usage">
+                <div className="skill-usage-graph">
+                  <LineChart
+                    width={this.state.width}
+                    height={300}
+                    data={this.props.skill_usage}
+                    margin={{
+                      top: 5,
+                      right: 30,
+                      left: 20,
+                      bottom: 5,
+                    }}
+                  >
+                    <XAxis dataKey="date" padding={{ right: 20 }} />
+                    <YAxis />
+                    <Tooltip wrapperStyle={{ height: '60px' }} />
+                    <Legend />
+                    <Line
+                      name="Skill usage count"
+                      type="monotone"
+                      dataKey="count"
+                      stroke="#82ca9d"
+                      activeDot={{ r: 8 }}
+                    />
+                  </LineChart>
+                </div>
+                <div className="total-hits">
+                  <div className="large-text">{totalSkillUsage}</div>
+                  Hits this week
+                </div>
               </div>
               {this.props.device_usage_data !== [] ? (
                 <div className="device-usage">
+                  <h2 className="title">Device Usage</h2>
                   <PieChart width={800} height={400}>
                     <Pie
+                      activeIndex={this.state.activePieIndex}
+                      activeShape={renderActiveShape}
                       data={this.props.device_usage_data}
-                      cx={200}
+                      cx={300}
                       cy={200}
+                      innerRadius={50}
+                      nameKey="device_type"
+                      dataKey="count"
                       outerRadius={80}
                       fill="#8884d8"
-                      label
-                    />
-                    <Tooltip />
+                      onMouseEnter={this.onPieEnter}
+                    >
+                      {this.props.device_usage_data.map((entry, index) => (
+                        <Cell
+                          key={index}
+                          fill={
+                            [
+                              '#0088FE',
+                              '#00C49F',
+                              '#FFBB28',
+                              '#FF8042',
+                              '#EA4335',
+                            ][index % 5]
+                          }
+                        />
+                      ))}
+                    </Pie>
                   </PieChart>
                 </div>
               ) : (
                 ''
               )}
-              <div className="total-hits">
-                <div className="large-text">{totalSkillUsage}</div>
-                Hits this week
-              </div>
             </div>
           ) : (
             <div className="default-message">
@@ -108,6 +141,93 @@ class SkillUsageCard extends Component {
     );
   }
 }
+
+const renderActiveShape = props => {
+  const RADIAN = Math.PI / 180;
+  const {
+    cx,
+    cy,
+    midAngle,
+    innerRadius,
+    outerRadius,
+    startAngle,
+    endAngle,
+    fill,
+    percent,
+    value,
+    name,
+  } = props;
+  const sin = Math.sin(-RADIAN * midAngle);
+  const cos = Math.cos(-RADIAN * midAngle);
+  const sx = cx + (outerRadius + 10) * cos;
+  const sy = cy + (outerRadius + 10) * sin;
+  const mx = cx + (outerRadius + 30) * cos;
+  const my = cy + (outerRadius + 30) * sin;
+  const ex = mx + (cos >= 0 ? 1 : -1) * 22;
+  const ey = my;
+  const textAnchor = cos >= 0 ? 'start' : 'end';
+
+  return (
+    <g>
+      <text x={cx} y={cy} dy={8} textAnchor="middle" fill={fill}>
+        {name}
+      </text>
+      <Sector
+        cx={cx}
+        cy={cy}
+        innerRadius={innerRadius}
+        outerRadius={outerRadius}
+        startAngle={startAngle}
+        endAngle={endAngle}
+        fill={fill}
+      />
+      <Sector
+        cx={cx}
+        cy={cy}
+        startAngle={startAngle}
+        endAngle={endAngle}
+        innerRadius={outerRadius + 6}
+        outerRadius={outerRadius + 10}
+        fill={fill}
+      />
+      <path
+        d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`}
+        stroke={fill}
+        fill="none"
+      />
+      <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
+      <text
+        x={ex + (cos >= 0 ? 1 : -1) * 12}
+        y={ey}
+        textAnchor={textAnchor}
+        fill="#333"
+      >{`${name}: ${value}`}</text>
+      <text
+        x={ex + (cos >= 0 ? 1 : -1) * 12}
+        y={ey}
+        dy={18}
+        textAnchor={textAnchor}
+        fill="#999"
+      >
+        {`(Rate ${(percent * 100).toFixed(2)}%)`}
+      </text>
+    </g>
+  );
+};
+
+renderActiveShape.propTypes = {
+  cx: PropTypes.number,
+  cy: PropTypes.number,
+  midAngle: PropTypes.number,
+  innerRadius: PropTypes.number,
+  outerRadius: PropTypes.number,
+  startAngle: PropTypes.number,
+  endAngle: PropTypes.number,
+  fill: PropTypes.string,
+  percent: PropTypes.number,
+  value: PropTypes.number,
+  name: PropTypes.string,
+};
 
 SkillUsageCard.propTypes = {
   skill_usage: PropTypes.array,

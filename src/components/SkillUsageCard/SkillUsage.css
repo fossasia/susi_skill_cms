@@ -1,3 +1,7 @@
+.title {
+  font-weight: normal
+}
+
 .usage-section {
     display: flex;
     justify-content: center;
@@ -12,7 +16,7 @@
     padding: 20px;
 }
 
-.usage-section div {
+.overall-usage div {
   display: flex;
   justify-content: center;
   align-items: center;

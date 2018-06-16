@@ -300,12 +300,8 @@ class SkillListing extends Component {
       { device_type: 'iOS', count: 1 },
       { device_type: 'Web', count: 5 },
     ];
-    const data = device_usage_data.map(device => ({
-      name: device.device_type,
-      value: parseInt(device.count, 10) || 0,
-    }));
     this.setState({
-      device_usage_data: data,
+      device_usage_data,
     });
   };
 
