@@ -86,6 +86,7 @@ class SkillListing extends Component {
       openSnack: false,
       snackMessage: '',
       skill_feedback: [],
+      device_usage_data: [],
     };
 
     let clickedSkill = this.props.location.pathname.split('/')[2];
@@ -111,6 +112,7 @@ class SkillListing extends Component {
       let baseUrl = urls.API_URL + '/cms/getSkillMetadata.json';
       let userSkillRatingUrl = `${urls.API_URL}/cms/getRatingByUser.json`;
       let skillUsageUrl = `${urls.API_URL}/cms/getSkillUsage.json`;
+      let deviceUsageUrl = `${urls.API_URL}/cms/getDeviceWiseSkillUsage.json`;
       let countryWiseSkillUsageUrl = `${
         urls.API_URL
       }/cms/getCountryWiseSkillUsage.json`;
@@ -153,6 +155,16 @@ class SkillListing extends Component {
         this.name;
       countryWiseSkillUsageUrl =
         countryWiseSkillUsageUrl +
+        '?model=' +
+        modelValue +
+        '&group=' +
+        this.groupValue +
+        '&language=' +
+        this.languageValue +
+        '&skill=' +
+        this.name;
+      deviceUsageUrl =
+        deviceUsageUrl +
         '?model=' +
         modelValue +
         '&group=' +
@@ -218,6 +230,19 @@ class SkillListing extends Component {
         },
       });
 
+      // Fetch device wise skill usage data
+      $.ajax({
+        url: deviceUsageUrl,
+        dataType: 'json',
+        crossDomain: true,
+        success: function(data) {
+          self.saveDeviceUsageData(data.skill_usage);
+        },
+        error: function(e) {
+          self.saveDeviceUsageData();
+        },
+      });
+
       this.getFeedback();
     }
   }
@@ -262,9 +287,21 @@ class SkillListing extends Component {
     });
   };
 
-  saveSkillFeedback = (feedback = []) => {
+  saveSkillFeedback = (skill_feedback = []) => {
     this.setState({
-      skill_feedback: feedback,
+      skill_feedback,
+    });
+  };
+
+  saveDeviceUsageData = (device_usage_data = []) => {
+    // Sample data to test
+    device_usage_data = [
+      { device_type: 'Android', count: 2 },
+      { device_type: 'iOS', count: 1 },
+      { device_type: 'Web', count: 5 },
+    ];
+    this.setState({
+      device_usage_data,
     });
   };
 
@@ -733,7 +770,10 @@ class SkillListing extends Component {
               postFeedback={this.postFeedback}
               deleteFeedback={this.deleteFeedback}
             />
-            <SkillUsageCard skill_usage={this.state.skill_usage} />
+            <SkillUsageCard
+              skill_usage={this.state.skill_usage}
+              device_usage_data={this.state.device_usage_data}
+            />
             <CountryWiseSkillUsageCard
               country_wise_skill_usage={this.state.country_wise_skill_usage}
             />
