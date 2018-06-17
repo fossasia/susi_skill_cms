@@ -43,8 +43,7 @@ export default class BrowseSkill extends React.Component {
       groupSelect: false,
       languageSelect: false,
       skillsLoaded: false,
-      filter:
-        '&applyFilter=true&filter_name=ascending&filter_type=lexicographical',
+      filter: '&applyFilter=true&filter_name=descending&filter_type=rating',
       searchQuery: '',
     };
   }
@@ -179,7 +178,7 @@ export default class BrowseSkill extends React.Component {
     } else {
       url =
         urls.API_URL +
-        '/cms/getSkillList.json?group=All&applyFilter=true&filter_name=ascending&filter_type=lexicographical';
+        '/cms/getSkillList.json?group=All&applyFilter=true&filter_name=descending&filter_type=rating';
     }
 
     let self = this;
