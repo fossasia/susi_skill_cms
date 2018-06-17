@@ -14,6 +14,7 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import Popover from 'material-ui/Popover';
 import Exit from 'material-ui/svg-icons/action/exit-to-app';
 import Extension from 'material-ui/svg-icons/action/extension';
+import Assessment from 'material-ui/svg-icons/action/assessment';
 import LoginIcon from 'material-ui/svg-icons/action/account-circle';
 import Info from 'material-ui/svg-icons/action/info';
 import Chat from 'material-ui/svg-icons/communication/chat';
@@ -31,15 +32,17 @@ const cookies = new Cookies();
 
 let TopRightMenuItems = props => (
   <div>
-    <MenuItem href="http://chat.susi.ai/overview" rightIcon={<Info />}>
-      About
-    </MenuItem>
     <MenuItem href="http://chat.susi.ai/" rightIcon={<Chat />}>
       Chat
     </MenuItem>
     <Link to="/">
       <MenuItem rightIcon={<SKillIcon />}>Skills</MenuItem>
     </Link>
+    {!cookies.get('loggedIn') ? (
+      <MenuItem href="http://chat.susi.ai/overview" rightIcon={<Info />}>
+        About
+      </MenuItem>
+    ) : null}
   </div>
 );
 
@@ -254,22 +257,35 @@ class StaticAppBar extends Component {
             targetOrigin={{ horizontal: 'right', vertical: 'top' }}
             onRequestClose={this.closeOptions}
           >
-            <TopRightMenuItems />
             {this.state.showAdmin === true ? (
               <MenuItem
                 primaryText="Admin"
                 containerElement={<Link to="/admin" />}
                 rightIcon={<List />}
               />
-            ) : (
-              console.log('Admin page allowed ' + cookies.get('showAdmin'))
-            )}
+            ) : null}
             {cookies.get('loggedIn') ? (
               <MenuItem
                 primaryText="Dashboard"
                 containerElement={<Link to="/dashboard" />}
+                rightIcon={<Assessment />}
+              />
+            ) : null}
+            <TopRightMenuItems />
+            {cookies.get('loggedIn') ? (
+              <MenuItem
+                primaryText="Botbuilder"
+                containerElement={<Link to="/botbuilder" />}
                 rightIcon={<Extension />}
               />
+            ) : null}
+            {cookies.get('loggedIn') ? (
+              <MenuItem
+                href="http://chat.susi.ai/overview"
+                rightIcon={<Info />}
+              >
+                About
+              </MenuItem>
             ) : null}
             {cookies.get('loggedIn') ? (
               <MenuItem
