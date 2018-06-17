@@ -3,6 +3,7 @@ import styles from './SkillStyle';
 import ISO6391 from 'iso-639-1';
 import SelectField from 'material-ui/SelectField';
 import { Paper } from 'material-ui';
+// eslint-disable-next-line
 import { Card } from 'material-ui/Card';
 import * as $ from 'jquery';
 import { Link } from 'react-router-dom';
@@ -12,15 +13,20 @@ import IconButton from 'material-ui/IconButton';
 import Add from 'material-ui/svg-icons/content/add';
 import Person from 'material-ui/svg-icons/social/person';
 import colors from '../../Utils/colors';
+// eslint-disable-next-line
 import CircleImage from '../CircleImage/CircleImage';
 import CircularProgress from 'material-ui/CircularProgress';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
+import SkillCardList from '../SkillCardList/SkillCardList';
 import urls from '../../Utils/urls';
 import Footer from '../Footer/Footer.react';
 import SearchBar from 'material-ui-search-bar';
+// eslint-disable-next-line
 import Ratings from 'react-ratings-declarative';
+
 const groups = [];
 const languages = [];
+
 export default class BrowseSkill extends React.Component {
   constructor(props) {
     super(props);
@@ -76,7 +82,6 @@ export default class BrowseSkill extends React.Component {
   };
 
   handleSearch = value => {
-    console.log(value);
     this.setState({ searchQuery: value }, function() {
       // console.log(this.state);
       this.loadCards();
@@ -160,7 +165,6 @@ export default class BrowseSkill extends React.Component {
 
   loadCards = () => {
     let url;
-
     if (this.state.languages.length > 0 && this.state.groups.length > 0) {
       url =
         urls.API_URL +
@@ -179,7 +183,6 @@ export default class BrowseSkill extends React.Component {
     }
 
     let self = this;
-    let cards = [];
     $.ajax({
       url: url,
       jsonpCallback: 'pxcd',
@@ -187,8 +190,6 @@ export default class BrowseSkill extends React.Component {
       jsonp: 'callback',
       crossDomain: true,
       success: function(data) {
-        // console.log(data)
-
         if (self.state.searchQuery.length > 0) {
           data.filteredData = data.filteredData.filter(function(i) {
             let result = false;
@@ -231,114 +232,9 @@ export default class BrowseSkill extends React.Component {
           });
         }
 
-        let skills = Object.keys(data.filteredData);
-        // eslint-disable-next-line
-        skills = skills.map((el, i) => {
-          let skill = data.filteredData[el];
-          let skill_name, examples, image, description;
-          let average_rating = 0,
-            total_rating = 0;
-          if (skill.skill_name) {
-            skill_name = skill.skill_name;
-            skill_name =
-              skill_name.charAt(0).toUpperCase() + skill_name.slice(1);
-          } else {
-            skill_name = 'Name not available';
-          }
-          if (skill.image) {
-            image =
-              'https://raw.githubusercontent.com/fossasia/susi_skill_data/master/models/' +
-              self.state.modelValue +
-              '/' +
-              skill.group +
-              '/' +
-              self.state.languageValue +
-              '/' +
-              skill.image;
-          } else {
-            image = '';
-          }
-          if (skill.examples) {
-            examples = skill.examples;
-            examples = examples[0];
-          } else {
-            examples = null;
-          }
-          if (skill.descriptions) {
-            if (skill.descriptions.length > 105) {
-              description = skill.descriptions.substring(0, 104) + '...';
-            } else {
-              description = skill.descriptions;
-            }
-          } else {
-            description = 'No description available';
-          }
-          if (skill.skill_rating) {
-            average_rating = parseFloat(skill.skill_rating.stars.avg_star);
-            total_rating = parseInt(skill.skill_rating.stars.total_star, 10);
-          }
-
-          cards.push(
-            <Card style={styles.row} key={el}>
-              <Link
-                key={el}
-                to={{
-                  pathname:
-                    '/' +
-                    skill.group +
-                    '/' +
-                    skill_name.toLowerCase().replace(/ /g, '_') +
-                    '/' +
-                    self.state.languageValue,
-                  state: {
-                    url: url,
-                    element: el,
-                    name: el,
-                    modelValue: self.state.modelValue,
-                    groupValue: skill.group,
-                    languageValue: self.state.languageValue,
-                  },
-                }}
-              >
-                <div style={styles.right} key={el}>
-                  {image ? (
-                    <div style={styles.imageContainer}>
-                      <img alt={skill_name} src={image} style={styles.image} />
-                    </div>
-                  ) : (
-                    <CircleImage name={el} size="48" />
-                  )}
-                  <div style={styles.titleStyle}>&quot;{examples}&quot;</div>
-                </div>
-                <div style={styles.details}>
-                  <h3 style={styles.name}>{skill_name}</h3>
-                  <p style={styles.description}>{description}</p>
-                </div>
-              </Link>
-              <div style={styles.rating}>
-                <Ratings
-                  rating={average_rating || 0}
-                  widgetRatedColors="#ffbb28"
-                  widgetDimensions="20px"
-                  widgetSpacings="0px"
-                >
-                  <Ratings.Widget />
-                  <Ratings.Widget />
-                  <Ratings.Widget />
-                  <Ratings.Widget />
-                  <Ratings.Widget />
-                </Ratings>
-                <span style={styles.totalRating} title="Total ratings">
-                  {total_rating || 0}
-                </span>
-              </div>
-            </Card>,
-          );
-        });
-
         self.setState({
-          skills: skills,
-          cards: cards,
+          skills: data.filteredData,
+          // cards: cards,
           skillURL: url,
           skillsLoaded: true,
         });
@@ -359,18 +255,7 @@ export default class BrowseSkill extends React.Component {
       width: '56px',
       boxShadow: '0px 3px 13px 1px rgba(0, 0, 0, 0.23)',
     };
-    let skillDisplay;
 
-    if (!this.state.skills.length && this.state.skillsLoaded) {
-      skillDisplay = (
-        <div style={{ fontSize: 30 }}>
-          No Skills found. Be the first one to
-          <Link to="/skillCreator"> create</Link> a skill in this category
-        </div>
-      );
-    } else {
-      skillDisplay = this.state.cards;
-    }
     return (
       <div>
         <StaticAppBar {...this.props} />
@@ -516,19 +401,12 @@ export default class BrowseSkill extends React.Component {
               value={this.state.searchQuery}
             />
 
-            <div
-              style={{
-                marginTop: '20px',
-                marginBottom: '40px',
-                textAlign: 'justify',
-                fontSize: '0.1px',
-                width: '100%',
-              }}
-            >
-              <div className="row" style={styles.scroll}>
-                <div style={styles.gridList}>{skillDisplay}</div>
-              </div>
-            </div>
+            <SkillCardList
+              skills={this.state.skills}
+              modalValue={this.state.modalValue}
+              languageValue={this.state.languageValue}
+              skillUrl={this.state.skillUrl}
+            />
             <Footer />
             <a href="#top">
               <center>Back to top</center>
