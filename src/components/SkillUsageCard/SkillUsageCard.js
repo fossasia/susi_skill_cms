@@ -96,36 +96,41 @@ class SkillUsageCard extends Component {
               {this.props.device_usage_data !== [] ? (
                 <div className="device-usage">
                   <h2 className="title">Device Usage</h2>
-                  <PieChart width={800} height={400}>
-                    <Pie
-                      activeIndex={this.state.activePieIndex}
-                      activeShape={renderActiveShape}
-                      data={this.props.device_usage_data}
-                      cx={300}
-                      cy={200}
-                      innerRadius={50}
-                      nameKey="device_type"
-                      dataKey="count"
-                      outerRadius={80}
-                      fill="#8884d8"
-                      onMouseEnter={this.onPieEnter}
-                    >
-                      {this.props.device_usage_data.map((entry, index) => (
-                        <Cell
-                          key={index}
-                          fill={
-                            [
-                              '#0088FE',
-                              '#00C49F',
-                              '#FFBB28',
-                              '#FF8042',
-                              '#EA4335',
-                            ][index % 5]
-                          }
-                        />
-                      ))}
-                    </Pie>
-                  </PieChart>
+                  <div className="pie-chart">
+                    <PieChart width={600} height={350}>
+                      <Pie
+                        activeIndex={this.state.activePieIndex}
+                        activeShape={renderActiveShape}
+                        data={this.props.device_usage_data}
+                        cx={300}
+                        cy={200}
+                        innerRadius={50}
+                        nameKey="device_type"
+                        dataKey="count"
+                        outerRadius={80}
+                        fill="#8884d8"
+                        onMouseEnter={this.onPieEnter}
+                      >
+                        {this.props.device_usage_data.map((entry, index) => (
+                          <Cell
+                            key={index}
+                            fill={
+                              [
+                                '#0088FE',
+                                '#00C49F',
+                                '#FFBB28',
+                                '#FF8042',
+                                '#EA4335',
+                              ][index % 5]
+                            }
+                          />
+                        ))}
+                      </Pie>
+                      <Legend
+                        margin={{ top: 10, left: 0, right: 0, bottom: 10 }}
+                      />
+                    </PieChart>
+                  </div>
                 </div>
               ) : (
                 ''
