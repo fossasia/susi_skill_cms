@@ -100,14 +100,11 @@
 	border: solid 2px #4285f5;
 }
 iframe{
-moz-border-radius: 12px;
-webkit-border-radius: 12px;
-border-radius: 12px;
-max-width: 100%;
-margin:0;
-padding:0;
-border:1px solid #ccc;
-overflow:hidden;
+	border-radius: 12px;
+	margin:0;
+	padding:0;
+	border:1px solid #ccc;
+	overflow:hidden;
 }
 @media (min-width:769px){
 	.botbuilder-page-wrapper{
