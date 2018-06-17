@@ -19,6 +19,7 @@ import Snackbar from 'material-ui/Snackbar';
 import Chip from 'material-ui/Chip';
 
 // Static Assets
+import ISO6391 from 'iso-639-1';
 import 'brace/mode/markdown';
 import 'brace/theme/github';
 import 'brace/theme/monokai';
@@ -753,6 +754,50 @@ class SkillListing extends Component {
                     Last modified at -
                     {` ${this.parseDate(this.state.last_modified_time)}`}
                   </div>
+                </div>
+              </div>
+            </Paper>
+            <Paper className="margin-b-md margin-t-md">
+              <div className="desc margin-b-md margin-t-md">
+                <h1 className="title">Information</h1>
+                <div className="card-content">
+                  <table>
+                    <tr>
+                      <td>Author:</td>
+                      <td>
+                        <Link to="/">{this.state.author}</Link>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Category:</td>
+                      <td>
+                        <Link to="/">{this.groupValue}</Link>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Language:</td>
+                      <td>
+                        <Link to="/">
+                          {ISO6391.getNativeName(this.languageValue)}
+                        </Link>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Report:</td>
+                      <td>
+                        <Link to="/Report">Flag as inappropriate</Link>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Last modified at:</td>
+                      <td>{` ${this.parseDate(
+                        this.state.last_modified_time,
+                      )}`}</td>
+                    </tr>
+                    <tr>
+                      <td>Content Rating:</td> <td>4+ age</td>
+                    </tr>
+                  </table>
                 </div>
               </div>
             </Paper>
