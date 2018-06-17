@@ -306,7 +306,9 @@ class SkillListing extends Component {
   };
 
   updateData = skillData => {
-    this.saveSkillRatings(skillData.skill_rating.stars);
+    if (skillData.skill_rating) {
+      this.saveSkillRatings(skillData.skill_rating.stars);
+    }
     let imgUrl = `https://raw.githubusercontent.com/fossasia/susi_skill_data/master/models/general/${
       this.groupValue
     }/${this.languageValue}/${skillData.image}`;
