@@ -32,12 +32,16 @@ class Dashboard extends React.Component {
       <div>
         <StaticAppBar {...this.props} />
         <div style={styles.home} className="botbuilder-page-wrapper">
+          <br />
+          <br />
+          <h1 className="center">My Dashboard</h1>
+          <br />
           <Paper
             style={styles.paperStyle}
             className="botBuilder-page-card"
             zDepth={1}
           >
-            <h1 className="center">My Dashboard</h1>
+            <h1 className="center">My Skills</h1>
             <MySkills />
           </Paper>
         </div>
