@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import colors from '../../../../Utils/colors';
 import { Paper } from 'material-ui';
+import PropTypes from 'prop-types';
 import RaisedButton from 'material-ui/RaisedButton';
 import Snackbar from 'material-ui/Snackbar';
 import Person from 'material-ui/svg-icons/social/person';
@@ -8,7 +9,8 @@ import Delete from 'material-ui/svg-icons/action/delete';
 import './ConversationView.css';
 
 let conversation = [],
-  indexConv = 0;
+  indexConv = 0,
+  conversation_from_code = [];
 
 class ConversationView extends Component {
   constructor(props) {
@@ -25,6 +27,11 @@ class ConversationView extends Component {
     this.handleDelete = this.handleDelete.bind(this);
   }
 
+  componentDidMount() {
+    conversation_from_code = [];
+    this.generateConversation();
+  }
+
   handleChange(event) {
     this.setState({
       value: event.target.value,
@@ -36,6 +43,13 @@ class ConversationView extends Component {
     this.setState({
       openSnackbar: true,
       msgSnackbar: 'Text successfully deleted!',
+    });
+  }
+
+  handleLoad(event) {
+    this.setState({
+      openSnackbar: true,
+      msgSnackbar: 'Conversation Loaded Successfully!',
     });
   }
 
@@ -51,6 +65,44 @@ class ConversationView extends Component {
       event.preventDefault();
     }
   }
+
+  generateConversation = () => {
+    let conversation_data = this.props.ConversationData;
+    let user_queries = conversation_data.userQueries;
+    let bot_responses = conversation_data.botResponses;
+    for (let i = 0; i < user_queries.length; i++) {
+      let user_query = user_queries[i];
+      for (let query of user_query) {
+        if (query !== '') {
+          conversation_from_code.push(
+            <div style={{ display: 'flex', flexDirection: 'row' }}>
+              <div className="user-text-box">{query}</div>
+              <Person style={{ height: '40px' }} />
+            </div>,
+          );
+        }
+      }
+      let bot_response = bot_responses[i];
+      if (bot_response) {
+        for (let response of bot_response) {
+          if (response !== '') {
+            conversation_from_code.push(
+              <div style={{ display: 'flex', flexDirection: 'row' }}>
+                <img
+                  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAIISURBVFhH7di/S5VRHMfxa0RG0A+kKCGkIkhHazEKatAGB0EhCIeQhgajbBBqqSmJgiASKxpqkNZwcBBdRHELyoZESpD8A5QITNT0/TG/8CXO/eG9Hp8LPR94Dc+X5+F8eTj3nPPczP+U43iHGxtXZZinWMMyKlUot7yEGpSDKpRDDuAORvAL1uAUXuEcEksH5mFNZfMBR7FjqcALhJrJ5gfOYEfyAKEm8lGTVYgazakVhBooxHtEzQBssFk046GreZNoQq+rraIOUXII/u31wPITVje3oOyHrz9ClLTAD/Qdl9Dtat5HnMcTV5MJREkn/EDFmkOU3EdoQHmDWpzapLm5gNC9qkdJA+5lEVo+WhG69y7SlEVOQyeUL5iJ4BuGcB27sKVcxW+EJnkMw9iHgnIWS7CHtWNk+0WWYhqL7rofBUXHI3uoCzq9jLvadrmIk1Cjuv4DLVV5YwdPv+LHalDxO9RtFXLF75uvVdhMzAZPwGp+fw9G3xJ2s37BlpgN1sBqj1XIlbRBp6gG98DWPz8fYjaol6KDrGraq/OmDc9xeOPqb8bw7wClugBLO56h6O/pPoQGKZY2Av8CSs4xfEZosK1Sczex7dmNejSW4DKOII1lL+yYH6KpkWi0VITmmRlEotH/LaHGjP7QTDQ6CX9CqDm5gsRTjbf4CjvOj+Ia0qTJnUxmHfGs+A6k/UOLAAAAAElFTkSuQmCC"
+                  alt="bot icon"
+                  style={styles.botIcon}
+                />
+                <div className="bot-text-box">{response}</div>
+              </div>,
+            );
+          }
+        }
+      }
+    }
+    console.log(conversation_from_code);
+    this.handleLoad();
+  };
 
   handleTexts = (type, i) => {
     switch (type) {
@@ -98,7 +150,7 @@ class ConversationView extends Component {
     return (
       <div style={{ padding: '10px 10px 20px 10px' }}>
         <Paper id="message-container" style={styles.paperStyle} zDepth={1}>
-          {conversation}
+          {conversation_from_code}
         </Paper>
         <form onSubmit={this.handleSubmit} style={{ marginTop: '15px' }}>
           <label>
@@ -189,5 +241,7 @@ const styles = {
     cursor: 'pointer',
   },
 };
-
+ConversationView.propTypes = {
+  ConversationData: PropTypes.object,
+};
 export default ConversationView;

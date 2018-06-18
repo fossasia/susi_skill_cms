@@ -13,9 +13,12 @@ class Build extends Component {
         name: 'Welcome!',
         children: [],
       },
+      ConversationData: {
+        userQueries: [],
+        botResponses: [],
+      },
       skillCode:
         '::name <Skill_name>\n::author <author_name>\n::author_url <author_url>\n::description <description> \n::dynamic_content <Yes/No>\n::developer_privacy_policy <link>\n::image <image_url>\n::terms_of_use <link>\n\n\nUser query1|query2|quer3....\n!example:<The question that should be shown in public skill displays>\n!expect:<The answer expected for the above example>\nAnswer for the user query',
-      skills: [],
     };
   }
 
@@ -24,17 +27,22 @@ class Build extends Component {
   };
 
   componentDidMount() {
-    this.generateTreeData();
+    this.generateSkillData();
   }
 
   onSkillChange = skillCode => {
     this.setState({ skillCode });
-    this.generateTreeData();
+    this.generateSkillData();
   };
-  generateTreeData = () => {
+
+  generateSkillData = () => {
     let treeData_new = {
       name: 'Welcome!',
       children: [],
+    };
+    var conversationData_new = {
+      userQueries: [],
+      botResponses: [],
     };
     let tree_children = [];
     var lines = this.state.skillCode.split('\n');
@@ -61,11 +69,10 @@ class Build extends Component {
             !line.startsWith('!') &&
             !line.startsWith('#')
           ) {
-            bot_response = lines[i];
+            bot_response = line;
             break;
           }
         }
-
         let obj = {
           user_query,
           bot_response,
@@ -81,6 +88,7 @@ class Build extends Component {
       let bot_responses = [];
       if (line_bot) {
         let responses_bot = line_bot.trim().split('|');
+        conversationData_new.botResponses.push(responses_bot);
         for (let response of responses_bot) {
           let obj = {
             name: response.trim(),
@@ -90,6 +98,7 @@ class Build extends Component {
         }
       }
       let queries = line_user.trim().split('|');
+      conversationData_new.userQueries.push(queries);
       for (let query of queries) {
         let obj = {
           name: query.trim(),
@@ -100,7 +109,9 @@ class Build extends Component {
       }
     }
     treeData_new.children = tree_children;
+    this.setState({ ConversationData: conversationData_new });
     this.setState({ treeData: treeData_new });
+    console.log(conversationData_new);
   };
   render() {
     return (
@@ -128,7 +139,9 @@ class Build extends Component {
               />
             ) : null}
             {this.state.value === 2 ? (
-              <ConversationView treeData={this.state.treeData} />
+              <ConversationView
+                ConversationData={this.state.ConversationData}
+              />
             ) : null}
             {this.state.value === 3 ? (
               <TreeView treeData={this.state.treeData} />
