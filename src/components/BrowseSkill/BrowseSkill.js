@@ -125,7 +125,6 @@ export default class BrowseSkill extends React.Component {
     if (this.state.languages.length === 0) {
       $.ajax({
         url: urls.API_URL + '/cms/getAllLanguages.json',
-        jsonpCallback: 'pc',
         dataType: 'jsonp',
         jsonp: 'callback',
         crossDomain: true,
