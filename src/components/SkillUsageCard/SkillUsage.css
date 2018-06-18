@@ -34,3 +34,9 @@
   justify-content: center;
   padding-bottom: 10px;
 }
+
+.recharts-legend-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 5px;
+}
