@@ -90,12 +90,14 @@ class Login extends Component {
             let accessToken = response.access_token;
             let state = this.state;
             let time = response.valid_seconds;
+
             state.isFilled = true;
             state.accessToken = accessToken;
             state.success = true;
             state.msg = response.message;
             state.time = time;
             this.setState(state);
+
             this.handleOnSubmit(email, accessToken, time);
             let msg = 'You are logged in';
             state.msg = msg;

@@ -16,7 +16,6 @@ import IconButton from 'material-ui/IconButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import CircularProgress from 'material-ui/CircularProgress';
 import Snackbar from 'material-ui/Snackbar';
-import Toggle from 'material-ui/Toggle';
 import MenuItem from 'material-ui/MenuItem';
 import * as $ from 'jquery';
 import Add from 'material-ui/svg-icons/content/add';
@@ -32,7 +31,7 @@ class MySkills extends Component {
       skillsData: [],
       loading: true,
       openSnackbar: false,
-      showMySkills: false,
+      showMySkills: true,
       msgSnackbar: '',
       openMenu: false,
       openMenuBottom: false,
@@ -110,6 +109,7 @@ class MySkills extends Component {
           <IconMenu
             anchorOrigin={{ vertical: 'bottom', horizontal: 'middle' }}
             label="Add new skill"
+            animated={false}
             open={this.state.openMenu}
             onRequestChange={this.handleOnRequestChange}
             iconButtonElement={
@@ -136,18 +136,6 @@ class MySkills extends Component {
             icon={<Add />}
           />
         </div>
-        {!this.state.loading && (
-          <span>
-            <Toggle
-              style={styles.toggle}
-              labelStyle={styles.toggleLabelStyle}
-              label="Show my skills only"
-              labelPosition="right"
-              onToggle={this.handleShowMySkills}
-              disabled={this.state.loading}
-            />
-          </span>
-        )}
 
         {this.state.loading ? (
           <div className="center">
@@ -161,7 +149,6 @@ class MySkills extends Component {
                 <TableRow>
                   <TableHeaderColumn>Skill Name</TableHeaderColumn>
                   <TableHeaderColumn>Type</TableHeaderColumn>
-                  <TableHeaderColumn>Author</TableHeaderColumn>
                   <TableHeaderColumn>Status</TableHeaderColumn>
                 </TableRow>
               </TableHeader>
@@ -192,9 +179,6 @@ class MySkills extends Component {
                       </TableRowColumn>
                       <TableRowColumn style={{ fontSize: '16px' }}>
                         {skill.type}
-                      </TableRowColumn>
-                      <TableRowColumn style={{ fontSize: '16px' }}>
-                        {skill.author ? skill.author : 'NA'}
                       </TableRowColumn>
                       <TableRowColumn>
                         <SelectField
@@ -229,40 +213,6 @@ class MySkills extends Component {
                   </a>
                 </h2>
                 <br />
-                <IconMenu
-                  anchorOrigin={{ vertical: 'bottom', horizontal: 'middle' }}
-                  label="Add new skill"
-                  open={this.state.openMenuBottom}
-                  onRequestChange={this.handleOnRequestChangeBottom}
-                  iconButtonElement={
-                    <IconButton
-                      style={{ display: 'none' }}
-                      iconStyle={{ color: '#fff' }}
-                    >
-                      <Add />
-                    </IconButton>
-                  }
-                >
-                  <Link to="/skillCreator">
-                    <MenuItem leftIcon={<Add />} primaryText="Create a Skill" />
-                  </Link>
-                  <Link to="/botbuilder">
-                    <MenuItem
-                      leftIcon={<Person />}
-                      primaryText="Create Skill bot"
-                    />
-                  </Link>
-                </IconMenu>
-                <RaisedButton
-                  backgroundColor={colors.header}
-                  onClick={() => {
-                    this.setState({ openMenuBottom: true });
-                  }}
-                  label="Create Skill"
-                  labelStyle={{ verticalAlign: 'middle' }}
-                  labelColor="#fff"
-                  icon={<Add />}
-                />
               </div>
             </div>
           )}
@@ -279,20 +229,5 @@ class MySkills extends Component {
     );
   }
 }
-const styles = {
-  toggle: {
-    maxWidth: '180px',
-  },
-  toggleLabelStyle: {
-    fontSize: '15px',
-  },
-  addButtonStyle: {
-    backgroundColor: colors.fabButton,
-    borderRadius: '50%',
-    height: '56px',
-    width: '56px',
-    boxShadow: '0px 3px 13px 1px rgba(0, 0, 0, 0.23)',
-  },
-};
 
 export default MySkills;

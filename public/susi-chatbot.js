@@ -15,11 +15,6 @@ link.media = 'all';
 headTag.appendChild(link);
 var script_tag = document.getElementById("susi-bot-script");
 var access_token = script_tag.getAttribute("data-token");
-var bot_type = script_tag.getAttribute('data-bot-type');
-var flag = 0;
-if(bot_type){
-	flag = 1;
-}
 var theme_settings = script_tag.getAttribute("data-theme")?script_tag.getAttribute("data-theme"):null;
 
 // custom theme variables
@@ -89,55 +84,28 @@ function getTheme(){
 
 // to apply custom theme
 function applyTheme(){
-		if(flag==0) {
-		// body background
-		$(".susi-sheet-content-container").css("background-color",botbuilderBackgroundBody);
-		if(botbuilderBodyBackgroundImg){
-			$(".susi-sheet-content-container").css("background-image","url("+botbuilderBodyBackgroundImg+")");
-		}
-		// user message container
-		$(".susi-comment-by-user .susi-comment-body-container").css("background-color",botbuilderUserMessageBackground);
-	  $("head").append($('<style>.susi-comment-body-container-user:after { border-color:'+ `transparent transparent ${botbuilderUserMessageBackground} ${botbuilderUserMessageBackground} !important` +'}</style>'));
-		$(".susi-comment-by-user .susi-comment-body-container").css("color",botbuilderUserMessageTextColor);
-		// bot message container
-		$(".susi-comment-by-susi .susi-comment-body-container").css("background-color",botbuilderBotMessageBackground);
-		$(".susi-comment-by-susi .susi-comment-body-container").css("color",botbuilderBotMessageTextColor);
-		// bot icon
-		$(".susi-launcher-button").css("background-color",botbuilderIconColor);
-		$(".susi-comment-avatar").css("background-color",botbuilderIconColor);
-		if(botbuilderIconImg){
-			$(".susi-launcher-button").css("background-image","url("+botbuilderIconImg+")");
-			$(".susi-comment-avatar").css("background-image","url("+botbuilderIconImg+")");
-		}
-	} else if (flag==1) {
-		if(bot_type=='botWindow'){
-			// body background
-			$(".susi-sheet-content-container").css("background-color",botbuilderBackgroundBody);
-			if(botbuilderBodyBackgroundImg){
-				$(".susi-sheet-content-container").css("background-image","url("+botbuilderBodyBackgroundImg+")");
-			}
-			// user message container
-			$(".susi-comment-by-user .susi-comment-body-container").css("background-color",botbuilderUserMessageBackground);
-      $("head").append($('<style>.susi-comment-body-container-user:after { border-color:'+ `transparent transparent ${botbuilderUserMessageBackground} ${botbuilderUserMessageBackground} !important` +'}</style>'));
-			$(".susi-comment-by-user .susi-comment-body-container").css("color",botbuilderUserMessageTextColor);
-			// bot message container
-			$(".susi-comment-by-susi .susi-comment-body-container").css("background-color",botbuilderBotMessageBackground);
-			$(".susi-comment-by-susi .susi-comment-body-container").css("color",botbuilderBotMessageTextColor);
-			// bot icon
-			$(".susi-comment-avatar").css("background-color",botbuilderIconColor);
-			if(botbuilderIconImg){
-				$(".susi-comment-avatar").css("background-image","url("+botbuilderIconImg+")");
-			}
-		} else if (bot_type == 'botAvatar') {
-			$(".susi-launcher-button").css("background-color",botbuilderIconColor);
-			if(botbuilderIconImg){
-				$(".susi-launcher-button").css("background-image","url("+botbuilderIconImg+")");
-			}
-		}
+	// body background
+	$(".susi-sheet-content-container").css("background-color",botbuilderBackgroundBody);
+	if(botbuilderBodyBackgroundImg){
+		$(".susi-sheet-content-container").css("background-image","url("+botbuilderBodyBackgroundImg+")");
+	}
+	// user message container
+	$(".susi-comment-by-user .susi-comment-body-container").css("background-color",botbuilderUserMessageBackground);
+	$("head").append($('<style>.susi-comment-body-container-user:after { border-color:'+ `transparent transparent ${botbuilderUserMessageBackground} ${botbuilderUserMessageBackground} !important` +'}</style>'));
+	$(".susi-comment-by-user .susi-comment-body-container").css("color",botbuilderUserMessageTextColor);
+	// bot message container
+	$(".susi-comment-by-susi .susi-comment-body-container").css("background-color",botbuilderBotMessageBackground);
+	$(".susi-comment-by-susi .susi-comment-body-container").css("color",botbuilderBotMessageTextColor);
+	// bot icon
+	$(".susi-launcher-button").css("background-color",botbuilderIconColor);
+	$(".susi-comment-avatar").css("background-color",botbuilderIconColor);
+	if(botbuilderIconImg){
+		$(".susi-launcher-button").css("background-image","url("+botbuilderIconImg+")");
+		$(".susi-comment-avatar").css("background-image","url("+botbuilderIconImg+")");
 	}
 }
 
-function enableBot(){
+function enableBot() {
 	getTheme();
 	$(document).ready(function() {
 
@@ -145,9 +113,7 @@ function enableBot(){
 		var msgNumber = 0;//stores the message number to set id
 
 		// Add dynamic html bot content(Widget style)
-		var mybot;
-		if(flag==0){
-			mybot = '<div id="susi-frame-container" class="susi-frame-container-active" style="display: none;">'+
+		var mybot = '<div id="susi-frame-container" class="susi-frame-container-active" style="display: none;">'+
 				'<div id="susi-frame-wrap">'+
 				'<div id="susi">'+
 				    '<div id="susi-container" class="susi-container susi-reset">'+
@@ -186,67 +152,23 @@ function enableBot(){
 			'<div id="susi-launcher-button" class="susi-launcher-button" style="background-image: url('+ botbuilderIconImg +');">'+'</div>'+
 			'</div>'+
 			'</div>';
-		} else if (flag==1) {
-			if(bot_type=='botWindow'){
-				mybot = '<div id="susi-frame-container" class="susi-frame-container-active" style="display: block;">'+
-					'<div id="susi-frame-wrap">'+
-					'<div id="susi">'+
-						'<div id="susi-container" class="susi-container susi-reset">'+
-							'<div id="susi-chatbox" class="susi-chatbox">'+
-								'<div id="susi-conversation" class="susi-conversation susi-sheet susi-sheet-active susi-active">'+
-									'<div class="susi-sheet-content">'+
-										'<div class="susi-sheet-content-container" style="background-color:'+botbuilderBackgroundBody+';background-image:url('+botbuilderBodyBackgroundImg+')">'+
-											'<div class="susi-conversation-parts-container">'+
-												'<div id="susi-message" class="susi-conversation-parts">'+
-												'</div>'+
-											'</div>'+
-										'</div>'+
-									'</div>'+
-									'<div class="susi-composer-container">'+
-										'<div id="susi-composer" class="susi-composer ">'+
-											'<div class="susi-composer-textarea-container">'+
-												'<div class="susi-composer-textarea" id="chat-input">'+ '<pre class="susi-send-button"><?xml version="1.0" encoding="UTF-8"?>'+
-												'<!DOCTYPE svg  PUBLIC "-//W3C//DTD SVG 1.1//EN"  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">'+
-												'<svg width="100%" height="100%" enable-background="new 0 0 535.5 535.5" version="1.1" viewBox="0 0 535.5 535.5" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">'+
-												'<polygon points="0 497.25 535.5 267.75 0 38.25 0 216.75 382.5 267.75 0 318.75" fill="#2180c0"/>'+'</pre>'+
-													'<textarea id="susiTextMessage" placeholder="Enter your response" rows="1">'+'</textarea>'+
-												'</div>'+
-											'</div>'+
-										'</div>'+
-									'</div>'+
-								'</div>'+
-							'</div>'+
-						'</div>'+
-					'</div>'+
-				'</div>'+
-			'</div>';
-			} else if (bot_type == 'botAvatar') {
-				mybot = '<div id="susi-launcher-container" class="susi-flex-center susi-avatar-launcher susi-launcher-enabled">'+
-	            	'<div id="susi-avatar-text" style="display: block !important">'+'Hey there'+'</div>'+
-	            	'<div id="susi-launcher" class="susi-launcher susi-flex-center susi-launcher-active" style="background-color: rgb(91, 75, 159);">'+
-	                '<div id="susi-launcher-button" class="susi-launcher-button" style="background-image: url('+botbuilderIconImg+')">'+'</div>'+
-	            	'</div>'+
-	        		'</div>';
-			}
-		}
 
 		$("body").append(mybot);
 
 		// Toggle chatbot
-		if(flag==0){
-			$('#susi-launcher').click(function() {
-				$('.susi-frame-container-active').toggle();
-				$('#susi-avatar-text').toggle();
-				$('#susi-launcher-close').toggle();
-				document.getElementById('susiTextMessage').focus();
-			});
+		$('#susi-launcher').click(function() {
+			$('.susi-frame-container-active').toggle();
+			$('#susi-avatar-text').toggle();
+			$('#susi-launcher-close').toggle();
+			document.getElementById('susiTextMessage').focus();
+		});
 
-			$('#susi-launcher-close').click(function() {
-				$('.susi-frame-container-active').toggle();
-				$('#susi-avatar-text').toggle();
-				$('#susi-launcher-close').toggle();
-			});
-		}
+		$('#susi-launcher-close').click(function() {
+			$('.susi-frame-container-active').toggle();
+			$('#susi-avatar-text').toggle();
+			$('#susi-launcher-close').toggle();
+		});
+		
 
 		// on input/text enter
 		$('#susiTextMessage').on('keyup keypress', function(e) {

@@ -19,6 +19,7 @@ class Logout extends Component {
     deleteCookie('serverUrl');
     deleteCookie('email');
     deleteCookie('showAdmin');
+    deleteCookie('username');
     this.props.history.push('/');
     window.location.reload();
   }

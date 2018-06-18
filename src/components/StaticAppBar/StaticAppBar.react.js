@@ -94,6 +94,24 @@ class StaticAppBar extends Component {
       },
     });
 
+    $.ajax({
+      url:
+        urls.API_URL +
+        '/aaa/listUserSettings.json?access_token=' +
+        cookies.get('loggedIn'),
+      jsonpCallback: 'pc',
+      dataType: 'jsonp',
+      jsonp: 'callback',
+      crossDomain: true,
+      success: function(data) {
+        let userName = data.settings.userName;
+        cookies.set('username', userName);
+      },
+      error: function(errorThrown) {
+        console.log(errorThrown);
+      },
+    });
+
     var didScroll;
     var lastScrollTop = 0;
     var delta = 5;
@@ -226,7 +244,7 @@ class StaticAppBar extends Component {
                 verticalAlign: 'super',
               }}
             >
-              {cookies.get('emailId')}
+              {cookies.get('username')}
             </label>
           ) : (
             <label />
