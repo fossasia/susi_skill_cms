@@ -358,6 +358,16 @@ export default class BrowseSkill extends React.Component {
                     primaryText={'Top Rated'}
                     label={'Top Rated'}
                   />
+                  <MenuItem
+                    value={
+                      '&applyFilter=true&filter_name=descending&filter_type=feedback'
+                    }
+                    key={
+                      '&applyFilter=true&filter_name=descending&filter_type=feedback'
+                    }
+                    primaryText={'Feedback Count'}
+                    label={'Feedback Count'}
+                  />
                 </SelectField>
 
                 <div style={styles.newSkillBtn}>
