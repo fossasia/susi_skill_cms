@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import styles from './SkillStyle';
 import ISO6391 from 'iso-639-1';
 import SelectField from 'material-ui/SelectField';
@@ -160,8 +161,22 @@ export default class BrowseSkill extends React.Component {
 
   loadCards = () => {
     let url;
-
-    if (this.state.languages.length > 0 && this.state.groups.length > 0) {
+    if (this.props.selector == 'category') {
+      url =
+        urls.API_URL +
+        '/cms/getSkillList.json?group=' +
+        this.props.value +
+        '&applyFilter=true&filter_name=ascending&filter_type=lexicographical';
+    } else if (this.props.selector == 'language') {
+      url =
+        urls.API_URL +
+        '/cms/getSkillList.json?group=All&applyFilter=true&language=' +
+        this.props.value +
+        '&filter_name=ascending&filter_type=lexicographical';
+    } else if (
+      this.state.languages.length > 0 &&
+      this.state.groups.length > 0
+    ) {
       url =
         urls.API_URL +
         '/cms/getSkillList.json?model=' +
@@ -348,6 +363,10 @@ export default class BrowseSkill extends React.Component {
   };
 
   render() {
+    let style_header = this.props.selector
+      ? styles.container_minimal
+      : styles.container;
+
     const style = {
       width: '100%',
       padding: '10px',
@@ -386,125 +405,141 @@ export default class BrowseSkill extends React.Component {
           )}
 
         {this.state.skillsLoaded ? (
-          <div style={styles.container}>
-            <Paper style={style} zDepth={1}>
-              <div style={styles.center}>
-                <SelectField
-                  disabled={this.state.groupSelect}
-                  floatingLabelText="Category"
-                  value={this.state.groupValue}
-                  floatingLabelFixed={false}
-                  onChange={this.handleGroupChange}
-                  style={styles.selection}
-                  listStyle={{
-                    top: '100px',
-                  }}
-                  selectedMenuItemStyle={{
-                    color: colors.header,
-                  }}
-                  underlineFocusStyle={{
-                    color: colors.header,
-                  }}
-                >
-                  {groups}
-                </SelectField>
-                <SelectField
-                  disabled={this.state.languageSelect}
-                  floatingLabelText="Language"
-                  value={this.state.languageValue}
-                  floatingLabelFixed={false}
-                  onChange={this.handleLanguageChange}
-                  style={styles.selection}
-                  listStyle={{
-                    top: '100px',
-                  }}
-                  selectedMenuItemStyle={{
-                    color: colors.header,
-                  }}
-                  underlineFocusStyle={{
-                    color: colors.header,
-                  }}
-                >
-                  {languages}
-                </SelectField>
-                <SelectField
-                  floatingLabelText="Sort by"
-                  value={this.state.filter}
-                  floatingLabelFixed={false}
-                  onChange={this.handleFilterChange}
-                  style={styles.selection}
-                  className="select"
-                  listStyle={{
-                    top: '100px',
-                  }}
-                  selectedMenuItemStyle={{
-                    color: colors.header,
-                  }}
-                  underlineFocusStyle={{
-                    color: colors.header,
-                  }}
-                >
-                  <MenuItem
-                    value={
-                      '&applyFilter=true&filter_name=ascending&filter_type=lexicographical'
-                    }
-                    key={
-                      '&applyFilter=true&filter_name=ascending&filter_type=lexicographical'
-                    }
-                    primaryText={'A-Z'}
-                    label={'Name (A-Z)'}
-                  />
-                  <MenuItem
-                    value={
-                      '&applyFilter=true&filter_name=descending&filter_type=lexicographical'
-                    }
-                    key={
-                      '&applyFilter=true&filter_name=descending&filter_type=lexicographical'
-                    }
-                    primaryText={'Z-A'}
-                    label={'Name (Z-A)'}
-                  />
-                  <MenuItem
-                    value={
-                      '&applyFilter=true&filter_name=descending&filter_type=rating'
-                    }
-                    key={
-                      '&applyFilter=true&filter_name=descending&filter_type=rating'
-                    }
-                    primaryText={'Top Rated'}
-                    label={'Top Rated'}
-                  />
-                </SelectField>
-
-                <div style={styles.newSkillBtn}>
-                  <IconMenu
-                    anchorOrigin={{ vertical: 'bottom', horizontal: 'middle' }}
-                    iconButtonElement={
-                      <IconButton
-                        className="add-button"
-                        iconStyle={{ color: '#fff' }}
-                        style={addButtonStyle}
-                      >
-                        <Add />
-                      </IconButton>
-                    }
+          <div style={style_header}>
+            {!this.props.selector && (
+              <Paper style={style} zDepth={1}>
+                <div style={styles.center}>
+                  <SelectField
+                    disabled={this.state.groupSelect}
+                    floatingLabelText="Category"
+                    value={this.state.groupValue}
+                    floatingLabelFixed={false}
+                    onChange={this.handleGroupChange}
+                    style={styles.selection}
+                    listStyle={{
+                      top: '100px',
+                    }}
+                    selectedMenuItemStyle={{
+                      color: colors.header,
+                    }}
+                    underlineFocusStyle={{
+                      color: colors.header,
+                    }}
                   >
-                    <Link to="/skillCreator">
-                      <MenuItem
-                        leftIcon={<Add />}
-                        primaryText="Create a Skill"
-                      />
-                    </Link>
-                    <Link to="/botbuilder">
-                      <MenuItem
-                        leftIcon={<Person />}
-                        primaryText="Create Skill bot"
-                      />
-                    </Link>
-                  </IconMenu>
+                    {groups}
+                  </SelectField>
+                  <SelectField
+                    disabled={this.state.languageSelect}
+                    floatingLabelText="Language"
+                    value={this.state.languageValue}
+                    floatingLabelFixed={false}
+                    onChange={this.handleLanguageChange}
+                    style={styles.selection}
+                    listStyle={{
+                      top: '100px',
+                    }}
+                    selectedMenuItemStyle={{
+                      color: colors.header,
+                    }}
+                    underlineFocusStyle={{
+                      color: colors.header,
+                    }}
+                  >
+                    {languages}
+                  </SelectField>
+                  <SelectField
+                    floatingLabelText="Sort by"
+                    value={this.state.filter}
+                    floatingLabelFixed={false}
+                    onChange={this.handleFilterChange}
+                    style={styles.selection}
+                    className="select"
+                    listStyle={{
+                      top: '100px',
+                    }}
+                    selectedMenuItemStyle={{
+                      color: colors.header,
+                    }}
+                    underlineFocusStyle={{
+                      color: colors.header,
+                    }}
+                  >
+                    <MenuItem
+                      value={
+                        '&applyFilter=true&filter_name=ascending&filter_type=lexicographical'
+                      }
+                      key={
+                        '&applyFilter=true&filter_name=ascending&filter_type=lexicographical'
+                      }
+                      primaryText={'A-Z'}
+                      label={'Name (A-Z)'}
+                    />
+                    <MenuItem
+                      value={
+                        '&applyFilter=true&filter_name=descending&filter_type=lexicographical'
+                      }
+                      key={
+                        '&applyFilter=true&filter_name=descending&filter_type=lexicographical'
+                      }
+                      primaryText={'Z-A'}
+                      label={'Name (Z-A)'}
+                    />
+                    <MenuItem
+                      value={
+                        '&applyFilter=true&filter_name=descending&filter_type=rating'
+                      }
+                      key={
+                        '&applyFilter=true&filter_name=descending&filter_type=rating'
+                      }
+                      primaryText={'Top Rated'}
+                      label={'Top Rated'}
+                    />
+                    <MenuItem
+                      value={
+                        '&applyFilter=true&filter_name=descending&filter_type=feedback'
+                      }
+                      key={
+                        '&applyFilter=true&filter_name=descending&filter_type=feedback'
+                      }
+                      primaryText={'Feedback Count'}
+                      label={'Feedback Count'}
+                    />
+                  </SelectField>
+
+                  <div style={styles.newSkillBtn}>
+                    <IconMenu
+                      animated={false}
+                      anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'middle',
+                      }}
+                      iconButtonElement={
+                        <IconButton
+                          className="add-button"
+                          iconStyle={{ color: '#fff' }}
+                          style={addButtonStyle}
+                        >
+                          <Add />
+                        </IconButton>
+                      }
+                    >
+                      <Link to="/skillCreator">
+                        <MenuItem
+                          leftIcon={<Add />}
+                          primaryText="Create a Skill"
+                        />
+                      </Link>
+                      <Link to="/botbuilder">
+                        <MenuItem
+                          leftIcon={<Person />}
+                          primaryText="Create Skill bot"
+                        />
+                      </Link>
+                    </IconMenu>
+                  </div>
                 </div>
-              </div>
-            </Paper>
+              </Paper>
+            )}
 
             <SearchBar
               onChange={this.handleSearch}
@@ -539,3 +574,8 @@ export default class BrowseSkill extends React.Component {
     );
   }
 }
+
+BrowseSkill.propTypes = {
+  selector: PropTypes.string,
+  value: PropTypes.string,
+};

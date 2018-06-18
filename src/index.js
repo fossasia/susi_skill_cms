@@ -27,6 +27,8 @@ import ContactBot from './components/BotBuilder/ContactBot';
 import BotWizard from './components/BotBuilder/BotWizard';
 import Explore from './components/Explore/Explore';
 import setDefaults from './DefaultSettings';
+import BrowseSkillByCategory from './components/BrowseSkill/BrowseSkillByCategory';
+import BrowseSkillByLanguage from './components/BrowseSkill/BrowseSkillByLanguage';
 
 setDefaults();
 
@@ -76,6 +78,16 @@ class App extends React.Component {
               exact
               path="/:category/:skill/edit/:lang/:latestid/:revertid"
               component={SkillRollBack}
+            />
+            <Route
+              exact
+              path="/category/:category"
+              component={BrowseSkillByCategory}
+            />
+            <Route
+              exact
+              path="/language/:language"
+              component={BrowseSkillByLanguage}
             />
             <Route exact path="/explore" component={Explore} />
             <Route exact path="/" component={BrowseSkill} />
