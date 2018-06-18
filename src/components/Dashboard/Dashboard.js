@@ -3,6 +3,7 @@ import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import { Paper } from 'material-ui';
 import Cookies from 'universal-cookie';
 import MySkills from './MySkills';
+import MyRatings from './MyRatings';
 import './Dashboard.css';
 const cookies = new Cookies();
 
@@ -43,6 +44,14 @@ class Dashboard extends React.Component {
           >
             <h1 className="center">My Skills</h1>
             <MySkills />
+          </Paper>
+          <Paper
+            style={styles.paperStyle}
+            className="botBuilder-page-card"
+            zDepth={1}
+          >
+            <h1 className="center">My Ratings</h1>
+            <MyRatings />
           </Paper>
         </div>
       </div>
