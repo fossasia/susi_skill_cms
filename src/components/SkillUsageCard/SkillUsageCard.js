@@ -52,7 +52,7 @@ class SkillUsageCard extends Component {
     let totalSkillUsage = 0;
     if (this.props.skill_usage) {
       totalSkillUsage = this.props.skill_usage.reduce((totalCount, day) => {
-        return parseInt(totalCount, 10) + parseInt(day.count, 10);
+        return parseInt(totalCount, 10) + (day ? parseInt(day.count, 10) : 0);
       }, 0);
     }
 

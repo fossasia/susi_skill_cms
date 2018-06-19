@@ -167,89 +167,94 @@ class Design extends React.Component {
   };
 
   getSettings = () => {
-    let url =
-      BASE_URL +
-      '/aaa/listUserSettings.json?' +
-      '&access_token=' +
-      cookies.get('loggedIn');
-    $.ajax({
-      url: url,
-      dataType: 'jsonp',
-      jsonp: 'callback',
-      crossDomain: true,
-      success: function(data) {
-        if (data.settings) {
-          let settings = data.settings;
-          if (settings.botbuilderBackgroundBody) {
-            this.setState({
-              botbuilderBackgroundBody: '#' + settings.botbuilderBackgroundBody,
-            });
-          }
-          if (settings.botbuilderBodyBackgroundImg) {
-            let img = settings.botbuilderBodyBackgroundImg;
-            this.setState({
-              botbuilderBodyBackgroundImg: img,
-            });
-          }
-          if (settings.botbuilderUserMessageBackground) {
-            this.setState({
-              botbuilderUserMessageBackground:
-                '#' + settings.botbuilderUserMessageBackground,
-            });
-          }
-          if (settings.botbuilderUserMessageTextColor) {
-            this.setState({
-              botbuilderUserMessageTextColor:
-                '#' + settings.botbuilderUserMessageTextColor,
-            });
-          }
-          if (settings.botbuilderBotMessageBackground) {
-            this.setState({
-              botbuilderBotMessageBackground:
-                '#' + settings.botbuilderBotMessageBackground,
-            });
-          }
-          if (settings.botbuilderBotMessageTextColor) {
-            this.setState({
-              botbuilderBotMessageTextColor:
-                '#' + settings.botbuilderBotMessageTextColor,
-            });
-          }
-          if (settings.botbuilderIconColor) {
-            this.setState({
-              botbuilderIconColor: '#' + settings.botbuilderIconColor,
-            });
-          }
-          if (settings.botbuilderIconImg) {
-            this.setState({
-              botbuilderIconImg: settings.botbuilderIconImg,
-            });
-          }
+    if (cookies.get('loggedIn')) {
+      let url =
+        BASE_URL +
+        '/aaa/listUserSettings.json?' +
+        '&access_token=' +
+        cookies.get('loggedIn');
 
-          this.setState(
-            {
-              loadedSettings: true,
-            },
-            () => this.updateSettings(),
-          );
-          let botbuilderIconImg = settings.botbuilderIconImg;
-          if (botbuilderIconImg) {
-            for (let icon of avatars) {
-              if (icon.url === botbuilderIconImg) {
-                this.handleIconSelect(icon);
-                break;
+      $.ajax({
+        url: url,
+        jsonpCallback: 'p',
+        dataType: 'jsonp',
+        jsonp: 'callback',
+        crossDomain: true,
+        success: function(data) {
+          if (data.settings) {
+            let settings = data.settings;
+            if (settings.botbuilderBackgroundBody) {
+              this.setState({
+                botbuilderBackgroundBody:
+                  '#' + settings.botbuilderBackgroundBody,
+              });
+            }
+            if (settings.botbuilderBodyBackgroundImg) {
+              let img = settings.botbuilderBodyBackgroundImg;
+              this.setState({
+                botbuilderBodyBackgroundImg: img,
+              });
+            }
+            if (settings.botbuilderUserMessageBackground) {
+              this.setState({
+                botbuilderUserMessageBackground:
+                  '#' + settings.botbuilderUserMessageBackground,
+              });
+            }
+            if (settings.botbuilderUserMessageTextColor) {
+              this.setState({
+                botbuilderUserMessageTextColor:
+                  '#' + settings.botbuilderUserMessageTextColor,
+              });
+            }
+            if (settings.botbuilderBotMessageBackground) {
+              this.setState({
+                botbuilderBotMessageBackground:
+                  '#' + settings.botbuilderBotMessageBackground,
+              });
+            }
+            if (settings.botbuilderBotMessageTextColor) {
+              this.setState({
+                botbuilderBotMessageTextColor:
+                  '#' + settings.botbuilderBotMessageTextColor,
+              });
+            }
+            if (settings.botbuilderIconColor) {
+              this.setState({
+                botbuilderIconColor: '#' + settings.botbuilderIconColor,
+              });
+            }
+            if (settings.botbuilderIconImg) {
+              this.setState({
+                botbuilderIconImg: settings.botbuilderIconImg,
+              });
+            }
+
+            this.setState(
+              {
+                loadedSettings: true,
+              },
+              () => this.updateSettings(),
+            );
+            let botbuilderIconImg = settings.botbuilderIconImg;
+            if (botbuilderIconImg) {
+              for (let icon of avatars) {
+                if (icon.url === botbuilderIconImg) {
+                  this.handleIconSelect(icon);
+                  break;
+                }
               }
             }
           }
-        }
-      }.bind(this),
-      error: function(error) {
-        this.setState({
-          openSnackbar: true,
-          msgSnackbar: "Couldn't get settings. Please try login again",
-        });
-      }.bind(this),
-    });
+        }.bind(this),
+        error: function(error) {
+          this.setState({
+            openSnackbar: true,
+            msgSnackbar: "Couldn't get settings. Please try login again",
+          });
+        }.bind(this),
+      });
+    }
   };
 
   handleReset = () => {
