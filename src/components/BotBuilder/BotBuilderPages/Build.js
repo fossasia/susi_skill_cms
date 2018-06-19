@@ -2,11 +2,17 @@ import React, { Component } from 'react';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
 import CodeView from './BuildViews/CodeView';
+import PropTypes from 'prop-types';
 import ConversationView from './BuildViews/ConversationView';
 import TreeView from './BuildViews/TreeView';
 class Build extends Component {
   constructor(props) {
     super(props);
+    let skillCode =
+      '::name <Skill_name>\n::author <author_name>\n::author_url <author_url>\n::description <description> \n::dynamic_content <Yes/No>\n::developer_privacy_policy <link>\n::image <image_url>\n::terms_of_use <link>\n\n\nUser query1|query2|quer3....\n!example:<The question that should be shown in public skill displays>\n!expect:<The answer expected for the above example>\nAnswer for the user query';
+    if (this.props.code) {
+      skillCode = this.props.code;
+    }
     this.state = {
       value: 1,
       treeData: {
@@ -17,8 +23,7 @@ class Build extends Component {
         userQueries: [],
         botResponses: [],
       },
-      skillCode:
-        '::name <Skill_name>\n::author <author_name>\n::author_url <author_url>\n::description <description> \n::dynamic_content <Yes/No>\n::developer_privacy_policy <link>\n::image <image_url>\n::terms_of_use <link>\n\n\nUser query1|query2|quer3....\n!example:<The question that should be shown in public skill displays>\n!expect:<The answer expected for the above example>\nAnswer for the user query',
+      skillCode,
     };
   }
 
@@ -157,6 +162,9 @@ const styles = {
   customWidth: {
     width: 250,
   },
+};
+Build.propTypes = {
+  code: PropTypes.string,
 };
 
 export default Build;

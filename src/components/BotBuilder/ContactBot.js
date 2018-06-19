@@ -4,7 +4,6 @@ import Snackbar from 'material-ui/Snackbar';
 import Cookies from 'universal-cookie';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { Paper } from 'material-ui';
-import './BotBuilder.css';
 
 const cookies = new Cookies();
 const host = window.location.protocol + '//' + window.location.host;
