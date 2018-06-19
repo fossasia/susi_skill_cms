@@ -85,7 +85,6 @@ export default class ListUser extends Component {
     $.ajax({
       url: url,
       dataType: 'jsonp',
-      jsonpCallback: 'py',
       jsonp: 'callback',
       crossDomain: true,
       success: function(response) {
@@ -98,7 +97,6 @@ export default class ListUser extends Component {
           $.ajax({
             url: getPagesUrl,
             dataType: 'jsonp',
-            jsonpCallback: 'pvsdu',
             jsonp: 'callback',
             crossDomain: true,
             success: function(data) {
@@ -145,7 +143,6 @@ export default class ListUser extends Component {
     $.ajax({
       url: url,
       dataType: 'jsonp',
-      jsonpCallback: 'pvsdu',
       jsonp: 'callback',
       crossDomain: true,
       success: function(response) {

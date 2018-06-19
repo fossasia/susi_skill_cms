@@ -145,7 +145,6 @@ class Design extends React.Component {
     this.setState({ saving: true });
     $.ajax({
       url: url,
-      jsonpCallback: 'pa',
       dataType: 'jsonp',
       jsonp: 'callback',
       crossDomain: true,
@@ -175,7 +174,6 @@ class Design extends React.Component {
       cookies.get('loggedIn');
     $.ajax({
       url: url,
-      jsonpCallback: 'p',
       dataType: 'jsonp',
       jsonp: 'callback',
       crossDomain: true,
@@ -317,7 +315,6 @@ class Design extends React.Component {
     this.setState({ resetting: true });
     $.ajax({
       url: url,
-      jsonpCallback: 'pa',
       dataType: 'jsonp',
       jsonp: 'callback',
       crossDomain: true,

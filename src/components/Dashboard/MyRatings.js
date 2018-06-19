@@ -76,7 +76,6 @@ class MyRatings extends Component {
     let ratingsData = [];
     $.ajax({
       url: url,
-      jsonpCallback: 'pxcd',
       dataType: 'jsonp',
       jsonp: 'callback',
       crossDomain: true,

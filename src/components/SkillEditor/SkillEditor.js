@@ -123,7 +123,6 @@ class SkillEditor extends Component {
     if (groups.length === 0) {
       $.ajax({
         url: urls.API_URL + '/cms/getGroups.json',
-        jsonpCallback: 'pa',
         dataType: 'jsonp',
         jsonp: 'callback',
         crossDomain: true,
@@ -205,7 +204,6 @@ class SkillEditor extends Component {
         this.state.commitId;
       $.ajax({
         url: skillAtCommitIDUrl,
-        jsonpCallback: 'p',
         dataType: 'jsonp',
         jsonp: 'callback',
         crossDomain: true,
@@ -234,7 +232,6 @@ class SkillEditor extends Component {
       });
       $.ajax({
         url: url,
-        jsonpCallback: 'pd',
         dataType: 'jsonp',
         jsonp: 'callback',
         crossDomain: true,
@@ -273,7 +270,6 @@ class SkillEditor extends Component {
     });
     $.ajax({
       url: url,
-      jsonpCallback: 'pd',
       dataType: 'jsonp',
       jsonp: 'callback',
       crossDomain: true,
@@ -287,7 +283,6 @@ class SkillEditor extends Component {
  */ $.ajax(
       {
         url: url,
-        jsonpCallback: 'pcc',
         dataType: 'jsonp',
         jsonp: 'callback',
         crossDomain: true,
@@ -340,7 +335,6 @@ class SkillEditor extends Component {
     if (groups.length === 0) {
       $.ajax({
         url: urls.API_URL + '/aaa/getGroups.json',
-        jsonpCallback: 'pb',
         dataType: 'jsonp',
         jsonp: 'callback',
         crossDomain: true,
@@ -462,7 +456,6 @@ class SkillEditor extends Component {
         this.state.oldGroupValue +
         '&language=' +
         this.state.oldLanguageValue,
-      jsonpCallback: 'pa',
       dataType: 'jsonp',
       jsonp: 'callback',
       crossDomain: true,

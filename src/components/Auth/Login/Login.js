@@ -80,7 +80,6 @@ class Login extends Component {
       $.ajax({
         url: loginEndPoint,
         dataType: 'jsonp',
-        jsonpCallback: 'p',
         jsonp: 'callback',
         crossDomain: true,
         success: function(response) {
