@@ -87,7 +87,6 @@ class SkillHistory extends Component {
     let self = this;
     $.ajax({
       url: commitHistoryURL,
-      jsonpCallback: 'pv',
       dataType: 'jsonp',
       jsonp: 'callback',
       crossDomain: true,
@@ -132,7 +131,6 @@ class SkillHistory extends Component {
       // console.log(url1);
       $.ajax({
         url: url1,
-        jsonpCallback: 'pc',
         dataType: 'jsonp',
         jsonp: 'callback',
         crossDomain: true,
@@ -141,7 +139,6 @@ class SkillHistory extends Component {
           // console.log(url2);
           $.ajax({
             url: url2,
-            jsonpCallback: 'pd',
             dataType: 'jsonp',
             jsonp: 'callback',
             crossDomain: true,

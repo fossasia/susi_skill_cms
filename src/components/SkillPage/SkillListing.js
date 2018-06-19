@@ -177,7 +177,6 @@ class SkillListing extends Component {
       let self = this;
       $.ajax({
         url: url,
-        jsonpCallback: 'pc',
         dataType: 'jsonp',
         jsonp: 'callback',
         crossDomain: true,
@@ -372,7 +371,6 @@ class SkillListing extends Component {
     let self = this;
     $.ajax({
       url: changeRatingUrl,
-      jsonpCallback: 'pc',
       dataType: 'jsonp',
       jsonp: 'callback',
       crossDomain: true,

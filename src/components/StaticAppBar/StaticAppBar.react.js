@@ -78,7 +78,6 @@ class StaticAppBar extends Component {
     $.ajax({
       url: url,
       dataType: 'jsonp',
-      jsonpCallback: 'pfns',
       jsonp: 'callback',
       crossDomain: true,
       success: function(newResponse) {
@@ -99,7 +98,6 @@ class StaticAppBar extends Component {
         urls.API_URL +
         '/aaa/listUserSettings.json?access_token=' +
         cookies.get('loggedIn'),
-      jsonpCallback: 'pc',
       dataType: 'jsonp',
       jsonp: 'callback',
       crossDomain: true,

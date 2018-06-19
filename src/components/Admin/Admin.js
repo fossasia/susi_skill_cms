@@ -35,7 +35,6 @@ class Admin extends Component {
     $.ajax({
       url: url,
       dataType: 'jsonp',
-      jsonpCallback: 'pyfw',
       jsonp: 'callback',
       crossDomain: true,
       success: function(response) {

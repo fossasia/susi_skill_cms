@@ -50,7 +50,6 @@ class MySkills extends Component {
     let skillsData = [];
     $.ajax({
       url: url,
-      jsonpCallback: 'pxcd',
       dataType: 'jsonp',
       jsonp: 'callback',
       crossDomain: true,
