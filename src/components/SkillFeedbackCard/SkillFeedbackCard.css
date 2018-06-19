@@ -9,3 +9,13 @@
   justify-content: center;
   padding-bottom: 10px;
 }
+
+.display-all div div div {
+	display: flex;
+	justify-content: center;
+}
+
+.feedback-timestamp {
+	color: #aaa;
+	font-size: 12px;
+}

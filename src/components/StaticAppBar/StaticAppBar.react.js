@@ -71,44 +71,50 @@ class StaticAppBar extends Component {
   componentDidMount() {
     window.addEventListener('scroll', this.handleScroll);
     let url;
-    url =
-      urls.API_URL +
-      '/aaa/showAdminService.json?access_token=' +
-      cookies.get('loggedIn');
-    $.ajax({
-      url: url,
-      dataType: 'jsonp',
-      jsonp: 'callback',
-      crossDomain: true,
-      success: function(newResponse) {
-        let ShowAdmin = newResponse.showAdmin;
-        cookies.set('showAdmin', ShowAdmin);
-        this.setState({
-          showAdmin: ShowAdmin,
-        });
-        // console.log(newResponse.showAdmin)
-      }.bind(this),
-      error: function(newErrorThrown) {
-        console.log(newErrorThrown);
-      },
-    });
 
-    $.ajax({
-      url:
+    if (cookies.get('loggedIn')) {
+      url =
         urls.API_URL +
-        '/aaa/listUserSettings.json?access_token=' +
-        cookies.get('loggedIn'),
-      dataType: 'jsonp',
-      jsonp: 'callback',
-      crossDomain: true,
-      success: function(data) {
-        let userName = data.settings.userName;
-        cookies.set('username', userName);
-      },
-      error: function(errorThrown) {
-        console.log(errorThrown);
-      },
-    });
+        '/aaa/showAdminService.json?access_token=' +
+        cookies.get('loggedIn');
+
+      $.ajax({
+        url: url,
+        dataType: 'jsonp',
+        jsonpCallback: 'pfns',
+        jsonp: 'callback',
+        crossDomain: true,
+        success: function(newResponse) {
+          let ShowAdmin = newResponse.showAdmin;
+          cookies.set('showAdmin', ShowAdmin);
+          this.setState({
+            showAdmin: ShowAdmin,
+          });
+          // console.log(newResponse.showAdmin)
+        }.bind(this),
+        error: function(newErrorThrown) {
+          console.log(newErrorThrown);
+        },
+      });
+
+      $.ajax({
+        url:
+          urls.API_URL +
+          '/aaa/listUserSettings.json?access_token=' +
+          cookies.get('loggedIn'),
+        jsonpCallback: 'pc',
+        dataType: 'jsonp',
+        jsonp: 'callback',
+        crossDomain: true,
+        success: function(data) {
+          let userName = data.settings.userName;
+          cookies.set('username', userName);
+        },
+        error: function(errorThrown) {
+          console.log(errorThrown);
+        },
+      });
+    }
 
     var didScroll;
     var lastScrollTop = 0;
@@ -325,7 +331,6 @@ class StaticAppBar extends Component {
       <div>
         <header className="nav-down" style={headerStyle} id="headerSection">
           <AppBar
-            className="topAppBar"
             id="appBar"
             title={
               <div id="rightIconButton">
@@ -348,7 +353,9 @@ class StaticAppBar extends Component {
               boxShadow: 'none',
               margin: '0 auto',
             }}
+            onLeftIconButtonTouchTap={this.props.toggleDrawer}
             iconStyleRight={{ marginTop: '-2px' }}
+            iconStyleLeft={{ marginTop: '-2px' }}
             iconElementRight={<TopRightMenu />}
           />
         </header>
@@ -403,6 +410,7 @@ class StaticAppBar extends Component {
 
 StaticAppBar.propTypes = {
   location: PropTypes.object,
+  toggleDrawer: PropTypes.func,
 };
 
 export default StaticAppBar;

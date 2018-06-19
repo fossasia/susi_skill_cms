@@ -87,6 +87,7 @@ class SkillListing extends Component {
       snackMessage: '',
       skill_feedback: [],
       device_usage_data: [],
+      show_all_feedback: false,
     };
 
     let clickedSkill = this.props.location.pathname.split('/')[2];
@@ -210,7 +211,9 @@ class SkillListing extends Component {
         crossDomain: true,
         jsonp: 'callback',
         success: function(data) {
-          self.saveSkillUsage(data.skill_usage);
+          if (data.skill_usage) {
+            self.saveSkillUsage(data.skill_usage);
+          }
         },
         error: function(e) {
           self.saveSkillUsage();
@@ -222,7 +225,9 @@ class SkillListing extends Component {
         dataType: 'json',
         crossDomain: true,
         success: function(data) {
-          self.saveCountryWiseSkillUsage(data.skill_usage);
+          if (data.skill_usage) {
+            self.saveCountryWiseSkillUsage(data.skill_usage);
+          }
         },
         error: function(e) {
           self.saveCountryWiseSkillUsage();
@@ -235,7 +240,9 @@ class SkillListing extends Component {
         dataType: 'json',
         crossDomain: true,
         success: function(data) {
-          self.saveDeviceUsageData(data.skill_usage);
+          if (data.skill_usage) {
+            self.saveDeviceUsageData(data.skill_usage);
+          }
         },
         error: function(e) {
           self.saveDeviceUsageData();
@@ -265,9 +272,12 @@ class SkillListing extends Component {
   };
 
   saveSkillUsage = (skill_usage = []) => {
+    // eslint-disable-next-line
     let data = skill_usage.map(usage => {
-      usage.count = parseInt(usage.count, 10);
-      return usage;
+      if (usage !== null) {
+        usage.count = parseInt(usage.count, 10);
+        return usage;
+      }
     });
     this.setState({
       skill_usage: data,
@@ -421,7 +431,9 @@ class SkillListing extends Component {
       crossDomain: true,
       jsonp: 'callback',
       success: function(data) {
-        self.saveSkillFeedback(data.feedback);
+        !self.state.show_all_feedback
+          ? self.saveSkillFeedback(data.feedback.slice(0, 5))
+          : self.saveSkillFeedback(data.feedback);
       },
       error: function(e) {
         console.log(e);
@@ -493,6 +505,15 @@ class SkillListing extends Component {
         console.log(e);
       },
     });
+  };
+
+  toggleShowAll = () => {
+    this.setState(
+      {
+        show_all_feedback: !this.state.show_all_feedback,
+      },
+      this.getFeedback(),
+    );
   };
 
   openAuthorSkills = () => {
@@ -769,6 +790,8 @@ class SkillListing extends Component {
               skill_feedback={this.state.skill_feedback}
               postFeedback={this.postFeedback}
               deleteFeedback={this.deleteFeedback}
+              toggleShowAll={this.toggleShowAll}
+              show_all_feedback={this.state.show_all_feedback}
             />
             <SkillUsageCard
               skill_usage={this.state.skill_usage}

@@ -219,6 +219,8 @@
       "quotes": [2, "single", "avoid-escape"],
       // Require use of the second argument for parseInt().
       "radix": 2,
+      // disallow the use of deprecated react changes and lifecycle methods
+      "react/no-deprecated": 1,
       // Dont require to sort variables within the same declaration block.
       // Anyway, one-var is disabled.
       "sort-vars": 0,
