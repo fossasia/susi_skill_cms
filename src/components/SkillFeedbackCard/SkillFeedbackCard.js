@@ -120,7 +120,10 @@ class SkillFeedbackCard extends Component {
           dtcomps[5],
         ),
       );
-      return convdt.toUTCString();
+      let time = convdt.toString();
+      time = time.split(' ').slice(1, 4);
+      time[1] = `${time[1]},`;
+      return time.join(' ');
     }
   };
 
