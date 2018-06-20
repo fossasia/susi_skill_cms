@@ -395,7 +395,7 @@ export default class BrowseSkill extends React.Component {
               </IconMenu>
             </div>
           </div>
-          <Menu desktop={true}>
+          <Menu desktop={true} disableAutoFocus={true}>
             <Subheader>Skill Categories</Subheader>
             {groups}
           </Menu>
