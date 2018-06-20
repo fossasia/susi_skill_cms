@@ -121,6 +121,9 @@ const styles = {
     paddingLeft: '5px',
     color: '#108ee9',
   },
+  topRated: {
+    marginTop: '15px',
+  },
 };
 
 export default styles;
