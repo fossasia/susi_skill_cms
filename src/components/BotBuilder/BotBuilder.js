@@ -4,8 +4,9 @@ import RaisedButton from 'material-ui/RaisedButton';
 import { Grid, Col, Row } from 'react-flexbox-grid';
 import PropTypes from 'prop-types';
 import { Card } from 'material-ui/Card';
-import { Paper } from 'material-ui';
+import ReactTooltip from 'react-tooltip';
 import Add from 'material-ui/svg-icons/content/add';
+import { FloatingActionButton, Paper } from 'material-ui';
 import colors from '../../Utils/colors';
 import './BotBuilder.css';
 import { Link } from 'react-router-dom';
@@ -73,23 +74,54 @@ class BotBuilder extends React.Component {
             className="botBuilder-page-card"
             zDepth={1}
           >
+            <div style={{ display: 'flex', flexDirection: 'row' }}>
+              <h1 style={{ padding: '5px 0 0 15px' }}>My bots</h1>
+              <div style={{ marginRight: '0', marginLeft: 'auto' }}>
+                <div style={styles.newBotBtn}>
+                  <Link to="/botbuilder/botwizard">
+                    <FloatingActionButton
+                      data-tip="Create a new bot"
+                      backgroundColor={colors.fabButton}
+                      style={styles.select}
+                    >
+                      <Add />
+                    </FloatingActionButton>
+                    <ReactTooltip effect="solid" place="bottom" />
+                  </Link>
+                </div>
+              </div>
+            </div>
             <Grid>
               <Row>
                 <Col xs={12} md={12}>
-                  <h1>My bots</h1>
                   <div className="bot-template-wrap">
-                    <Link to="/botbuilder/botwizard">
-                      <Card className="bot-template-card">
-                        <RaisedButton
-                          label={'Create new'}
-                          labelPosition="before"
-                          icon={<Add />}
-                          labelStyle={{ verticalAlign: 'middle' }}
-                          backgroundColor={colors.header}
-                          labelColor="#fff"
-                        />
-                      </Card>
-                    </Link>
+                    <Card className="bot-template-card">
+                      <RaisedButton
+                        label={'Sample Bot 1'}
+                        labelPosition="before"
+                        labelStyle={{ verticalAlign: 'middle' }}
+                        backgroundColor={colors.header}
+                        labelColor="#fff"
+                      />
+                    </Card>
+                    <Card className="bot-template-card">
+                      <RaisedButton
+                        label={'Sample Bot 2'}
+                        labelPosition="before"
+                        labelStyle={{ verticalAlign: 'middle' }}
+                        backgroundColor={colors.header}
+                        labelColor="#fff"
+                      />
+                    </Card>
+                    <Card className="bot-template-card">
+                      <RaisedButton
+                        label={'Sample Bot 3'}
+                        labelPosition="before"
+                        labelStyle={{ verticalAlign: 'middle' }}
+                        backgroundColor={colors.header}
+                        labelColor="#fff"
+                      />
+                    </Card>
                   </div>
                 </Col>
               </Row>
@@ -112,6 +144,7 @@ const styles = {
   paperStyle: {
     width: '100%',
     marginTop: '20px',
+    overflow: 'overlay',
   },
   tabStyle: {
     color: 'rgb(91, 91, 91)',
@@ -127,6 +160,9 @@ const styles = {
     marginBottom: '100px',
     fontSize: '50px',
     marginTop: '300px',
+  },
+  newBotBtn: {
+    padding: '10px 0px 10px 10px',
   },
 };
 
