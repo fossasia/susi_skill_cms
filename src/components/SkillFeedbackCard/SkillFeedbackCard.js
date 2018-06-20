@@ -231,7 +231,9 @@ class SkillFeedbackCard extends Component {
 
     return (
       <Paper className="margin-b-md margin-t-md">
-        <h1 className="title">Feedback</h1>
+        <div className="top-section">
+          <h1 className="title">Feedback</h1>
+        </div>
         {loggedIn && !userFeedbackCard ? (
           <div>
             <div className="subTitle">
@@ -264,6 +266,15 @@ class SkillFeedbackCard extends Component {
           <List>
             {userFeedbackCard}
             {feedbackCards}
+            {this.props.skill_feedback.length >= 5 ? (
+              <ListItem
+                className="display-all"
+                primaryText={`Show ${
+                  this.props.show_all_feedback ? 'less' : 'all'
+                } reviews`}
+                onClick={() => this.props.toggleShowAll()}
+              />
+            ) : null}
           </List>
         ) : (
           <div className="feedback-default-message">
@@ -305,6 +316,8 @@ SkillFeedbackCard.propTypes = {
   skill_feedback: PropTypes.array,
   postFeedback: PropTypes.func,
   deleteFeedback: PropTypes.func,
+  toggleShowAll: PropTypes.func,
+  show_all_feedback: PropTypes.bool,
 };
 
 export default SkillFeedbackCard;
