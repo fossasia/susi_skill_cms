@@ -1,30 +1,21 @@
-.title {
-  font-weight: normal
+.sub-title {
+  font-weight: normal;
+  font-size: 24px;
+  margin: 16px;
 }
 
-.usage-section {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    margin: 24px;
-}
-
-.skill-usage-chart {
-    flex: 3;
-    margin: 16px 32px 16px 16px;
+.time-chart {
+    margin: 16px 16px 16px 16px;
     padding: 20px;
 }
 
-.overall-usage div {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.device-usage {
+    margin: 16px 16px 16px 16px;
+    padding: 8px 8px 32px 8px;
 }
 
 .total-hits {
-  display: flex;
-  flex-direction: column;
+  text-align: center;
   padding: 24px 48px 24px 48px;
 }
 
@@ -39,4 +30,10 @@
   display: flex;
   justify-content: center;
   margin-bottom: 5px;
+}
+
+.pie-chart {
+  display: flex;
+  justify-content: center;
+  align-content: center;
 }

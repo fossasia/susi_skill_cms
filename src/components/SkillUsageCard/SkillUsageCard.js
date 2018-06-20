@@ -14,6 +14,7 @@ import {
   Cell,
 } from 'recharts';
 import { Paper } from 'material-ui';
+import CountryWiseSkillUsageCard from '../CountryWiseSkillUsageCard/CountryWiseSkillUsageCard';
 
 // Static assets
 import './SkillUsage.css';
@@ -64,9 +65,10 @@ class SkillUsageCard extends Component {
         <Paper className="margin-b-md margin-t-md">
           <h1 className="title">Skill Usage</h1>
           {totalSkillUsage > 0 ? (
-            <div className="usage-section">
-              <div className="overall-usage">
-                <div className="skill-usage-graph">
+            <div>
+              <div className="time-chart">
+                <div className="sub-title">Time wise Usage</div>
+                <div>
                   <LineChart
                     width={this.state.width}
                     height={300}
@@ -91,14 +93,14 @@ class SkillUsageCard extends Component {
                     />
                   </LineChart>
                 </div>
-                <div className="total-hits">
-                  <div className="large-text">{totalSkillUsage}</div>
-                  Hits this week
-                </div>
+              </div>
+              <div className="total-hits">
+                <div className="large-text">{totalSkillUsage}</div>
+                Hits this week
               </div>
               {this.props.device_usage_data !== [] ? (
                 <div className="device-usage">
-                  <h2 className="title">Device Usage</h2>
+                  <div className="sub-title">Device wise Usage</div>
                   <div className="pie-chart">
                     <PieChart width={600} height={350}>
                       <Pie
@@ -106,11 +108,11 @@ class SkillUsageCard extends Component {
                         activeShape={renderActiveShape}
                         data={this.props.device_usage_data}
                         cx={300}
-                        cy={200}
-                        innerRadius={50}
+                        cy={175}
+                        innerRadius={80}
                         nameKey="device_type"
                         dataKey="count"
-                        outerRadius={80}
+                        outerRadius={120}
                         fill="#8884d8"
                         onMouseEnter={this.onPieEnter}
                       >
@@ -134,6 +136,18 @@ class SkillUsageCard extends Component {
                       />
                     </PieChart>
                   </div>
+                </div>
+              ) : (
+                ''
+              )}
+              {this.props.country_wise_skill_usage !== [] ? (
+                <div className="device-usage">
+                  <div className="sub-title">Country wise Usage</div>
+                  <CountryWiseSkillUsageCard
+                    country_wise_skill_usage={
+                      this.props.country_wise_skill_usage
+                    }
+                  />
                 </div>
               ) : (
                 ''
@@ -240,6 +254,7 @@ renderActiveShape.propTypes = {
 SkillUsageCard.propTypes = {
   skill_usage: PropTypes.array,
   device_usage_data: PropTypes.array,
+  country_wise_skill_usage: PropTypes.array,
 };
 
 export default SkillUsageCard;
