@@ -89,8 +89,14 @@ class BotWizard extends React.Component {
             className="botBuilder-page-card"
             zDepth={1}
           >
-            <div style={{ display: 'flex', flexDirection: 'row' }}>
-              <div style={{ width: '100%', maxWidth: '100%', margin: 'auto' }}>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'flex-start',
+              }}
+            >
+              <div style={{ width: '100%', maxWidth: '100%' }}>
                 <Stepper activeStep={stepIndex} linear={false}>
                   <Step>
                     <StepButton onClick={() => this.setStep(0)}>
