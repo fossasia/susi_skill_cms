@@ -1,5 +1,6 @@
 import React from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
+import TextField from 'material-ui/TextField';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import { Step, Stepper, StepButton } from 'material-ui/Stepper';
 import { Grid, Col, Row } from 'react-flexbox-grid';
@@ -9,6 +10,7 @@ import PropTypes from 'prop-types';
 import Design from './BotBuilderPages/Design';
 import Configure from './BotBuilderPages/Configure';
 import Deploy from './BotBuilderPages/Deploy';
+import Snackbar from 'material-ui/Snackbar';
 import { Paper } from 'material-ui';
 import Cookies from 'universal-cookie';
 
@@ -30,8 +32,19 @@ class BotWizard extends React.Component {
       stepIndex: 0,
       startCode,
       themeSettingsString: '{}',
+      botName: '',
+      openSnackbar: false,
+      msgSnackbar: '',
     };
+    this.handleChange = this.handleChange.bind(this);
   }
+
+  handleChange(event) {
+    this.setState({
+      botName: event.target.value,
+    });
+  }
+
   getQueryStringValue = key => {
     return decodeURIComponent(
       window.location.search.replace(
@@ -79,9 +92,17 @@ class BotWizard extends React.Component {
     }
   }
 
+  noName() {
+    this.setState({
+      openSnackbar: true,
+      msgSnackbar: 'Please enter name of the bot.',
+    });
+  }
+
   setStep = stepIndex => {
     this.setState({ stepIndex });
   };
+
   render() {
     if (!cookies.get('loggedIn')) {
       return (
@@ -115,63 +136,99 @@ class BotWizard extends React.Component {
             <Grid fluid>
               <Row>
                 <Col xs={12} md={8}>
-                  <Stepper activeStep={stepIndex} linear={false}>
-                    <Step>
-                      <StepButton onClick={() => this.setStep(0)}>
-                        Build
-                      </StepButton>
-                    </Step>
-                    <Step>
-                      <StepButton onClick={() => this.setStep(1)}>
-                        Design
-                      </StepButton>
-                    </Step>
-                    <Step>
-                      <StepButton onClick={() => this.setStep(2)}>
-                        Configure
-                      </StepButton>
-                    </Step>
-                    <Step>
-                      <StepButton onClick={() => this.setStep(3)}>
-                        Deploy
-                      </StepButton>
-                    </Step>
-                  </Stepper>
-                  <div style={contentStyle}>
-                    <div>{this.getStepContent(stepIndex)}</div>
-                    <div style={{ marginTop: '20px' }}>
-                      <RaisedButton
-                        label="Back"
-                        disabled={stepIndex === 0}
-                        backgroundColor={colors.header}
-                        labelColor="#fff"
-                        onTouchTap={this.handlePrev}
-                        style={{ marginRight: 12 }}
-                      />
-                      {stepIndex < 3 ? (
-                        <RaisedButton
-                          label={stepIndex === 2 ? 'Finish' : 'Next'}
-                          backgroundColor={colors.header}
-                          labelColor="#fff"
-                          onTouchTap={this.handleNext}
-                        />
-                      ) : (
-                        <p
-                          style={{
-                            padding: '20px 0px 0px 0px',
-                            fontFamily: 'sans-serif',
-                            fontSize: '14px',
-                          }}
-                        >
-                          You&apos;re all done. Thanks for using SUSI Bot.
-                        </p>
-                      )}
+                  <div style={{ display: 'flex', flexDirection: 'row' }}>
+                    <TextField
+                      hintText="Enter name of the bot"
+                      floatingLabelText="Bot Name"
+                      onChange={this.handleChange}
+                      value={this.state.botName}
+                      style={{ paddingLeft: '20px' }}
+                    />
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'row' }}>
+                    <div
+                      style={{
+                        width: '100%',
+                        maxWidth: '100%',
+                        margin: 'auto',
+                      }}
+                    >
+                      <Stepper activeStep={stepIndex} linear={false}>
+                        <Step>
+                          <StepButton onClick={() => this.setStep(0)}>
+                            Build
+                          </StepButton>
+                        </Step>
+                        <Step>
+                          <StepButton onClick={() => this.setStep(1)}>
+                            Design
+                          </StepButton>
+                        </Step>
+                        <Step>
+                          <StepButton onClick={() => this.setStep(2)}>
+                            Configure
+                          </StepButton>
+                        </Step>
+                        <Step>
+                          <StepButton onClick={() => this.setStep(3)}>
+                            Deploy
+                          </StepButton>
+                        </Step>
+                      </Stepper>
+                      <div style={contentStyle}>
+                        <div>{this.getStepContent(stepIndex)}</div>
+                        <div style={{ marginTop: '20px' }}>
+                          <RaisedButton
+                            label="Back"
+                            disabled={stepIndex === 0}
+                            backgroundColor={colors.header}
+                            labelColor="#fff"
+                            onTouchTap={this.handlePrev}
+                            style={{ marginRight: 12 }}
+                          />
+                          {stepIndex < 3 ? (
+                            <RaisedButton
+                              label={stepIndex === 2 ? 'Finish' : 'Next'}
+                              backgroundColor={colors.header}
+                              labelColor="#fff"
+                              onTouchTap={this.handleNext}
+                            />
+                          ) : (
+                            <p
+                              style={{
+                                padding: '20px 0px 0px 0px',
+                                fontFamily: 'sans-serif',
+                                fontSize: '14px',
+                              }}
+                            >
+                              You&apos;re all done. Thanks for using SUSI Bot.
+                            </p>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </Col>
 
                 <Col xs={12} md={4}>
-                  <div style={{ padding: '20px 0 0 40px' }}>
+                  <div
+                    style={{
+                      padding: '20px 0 20px 0',
+                    }}
+                  >
+                    <RaisedButton
+                      label="Save and Deploy"
+                      backgroundColor={colors.header}
+                      labelColor="#fff"
+                      onClick={() =>
+                        this.state.botName !== ''
+                          ? this.setStep(3)
+                          : this.noName()
+                      }
+                      style={{ float: 'right' }}
+                    />
+                  </div>
+                  <div style={{ padding: '40px 0 0 40px' }}>
                     <br className="display-mobile-only" />
                     <h2 className="center">Preview</h2>
                     <br />
@@ -191,6 +248,14 @@ class BotWizard extends React.Component {
             </Grid>
           </Paper>
         </div>
+        <Snackbar
+          open={this.state.openSnackbar}
+          message={this.state.msgSnackbar}
+          autoHideDuration={2000}
+          onRequestClose={() => {
+            this.setState({ openSnackbar: false });
+          }}
+        />
       </div>
     );
   }
