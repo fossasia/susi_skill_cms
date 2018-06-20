@@ -248,7 +248,10 @@ class StaticAppBar extends Component {
                 verticalAlign: 'super',
               }}
             >
-              {cookies.get('username')}
+              {cookies.get('username') === '' ||
+              cookies.get('username') === 'undefined'
+                ? cookies.get('emailId')
+                : cookies.get('username')}
             </label>
           ) : (
             <label />
