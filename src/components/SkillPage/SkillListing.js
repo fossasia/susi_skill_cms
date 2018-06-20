@@ -210,7 +210,9 @@ class SkillListing extends Component {
         crossDomain: true,
         jsonp: 'callback',
         success: function(data) {
-          self.saveSkillUsage(data.skill_usage);
+          if (data.skill_usage) {
+            self.saveSkillUsage(data.skill_usage);
+          }
         },
         error: function(e) {
           self.saveSkillUsage();
@@ -222,7 +224,9 @@ class SkillListing extends Component {
         dataType: 'json',
         crossDomain: true,
         success: function(data) {
-          self.saveCountryWiseSkillUsage(data.skill_usage);
+          if (data.skill_usage) {
+            self.saveCountryWiseSkillUsage(data.skill_usage);
+          }
         },
         error: function(e) {
           self.saveCountryWiseSkillUsage();
@@ -235,7 +239,9 @@ class SkillListing extends Component {
         dataType: 'json',
         crossDomain: true,
         success: function(data) {
-          self.saveDeviceUsageData(data.skill_usage);
+          if (data.skill_usage) {
+            self.saveDeviceUsageData(data.skill_usage);
+          }
         },
         error: function(e) {
           self.saveDeviceUsageData();
@@ -266,8 +272,11 @@ class SkillListing extends Component {
 
   saveSkillUsage = (skill_usage = []) => {
     let data = skill_usage.map(usage => {
-      usage.count = parseInt(usage.count, 10);
-      return usage;
+      if (usage) {
+        usage.count = parseInt(usage.count, 10);
+        return usage;
+      }
+      return null;
     });
     this.setState({
       skill_usage: data,
