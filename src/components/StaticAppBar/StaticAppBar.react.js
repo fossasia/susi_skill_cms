@@ -331,7 +331,6 @@ class StaticAppBar extends Component {
       <div>
         <header className="nav-down" style={headerStyle} id="headerSection">
           <AppBar
-            className="topAppBar"
             id="appBar"
             title={
               <div id="rightIconButton">
@@ -354,7 +353,9 @@ class StaticAppBar extends Component {
               boxShadow: 'none',
               margin: '0 auto',
             }}
+            onLeftIconButtonTouchTap={this.props.toggleDrawer}
             iconStyleRight={{ marginTop: '-2px' }}
+            iconStyleLeft={{ marginTop: '-2px' }}
             iconElementRight={<TopRightMenu />}
           />
         </header>
@@ -409,6 +410,7 @@ class StaticAppBar extends Component {
 
 StaticAppBar.propTypes = {
   location: PropTypes.object,
+  toggleDrawer: PropTypes.func,
 };
 
 export default StaticAppBar;
