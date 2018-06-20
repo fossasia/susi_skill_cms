@@ -2,6 +2,7 @@ import React from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import { Step, Stepper, StepButton } from 'material-ui/Stepper';
+import { Grid, Col, Row } from 'react-flexbox-grid';
 import colors from '../../Utils/colors';
 import Build from './BotBuilderPages/Build';
 import Design from './BotBuilderPages/Design';
@@ -89,78 +90,83 @@ class BotWizard extends React.Component {
             className="botBuilder-page-card"
             zDepth={1}
           >
-            <div style={{ display: 'flex', flexDirection: 'row' }}>
-              <div style={{ width: '100%', maxWidth: '100%', margin: 'auto' }}>
-                <Stepper activeStep={stepIndex} linear={false}>
-                  <Step>
-                    <StepButton onClick={() => this.setStep(0)}>
-                      Build
-                    </StepButton>
-                  </Step>
-                  <Step>
-                    <StepButton onClick={() => this.setStep(1)}>
-                      Design
-                    </StepButton>
-                  </Step>
-                  <Step>
-                    <StepButton onClick={() => this.setStep(2)}>
-                      Configure
-                    </StepButton>
-                  </Step>
-                  <Step>
-                    <StepButton onClick={() => this.setStep(3)}>
-                      Deploy
-                    </StepButton>
-                  </Step>
-                </Stepper>
-                <div style={contentStyle}>
-                  <div>{this.getStepContent(stepIndex)}</div>
-                  <div style={{ marginTop: '20px' }}>
-                    <RaisedButton
-                      label="Back"
-                      disabled={stepIndex === 0}
-                      backgroundColor={colors.header}
-                      labelColor="#fff"
-                      onTouchTap={this.handlePrev}
-                      style={{ marginRight: 12 }}
-                    />
-                    {stepIndex < 3 ? (
+            <Grid fluid>
+              <Row>
+                <Col xs={12} md={8}>
+                  <Stepper activeStep={stepIndex} linear={false}>
+                    <Step>
+                      <StepButton onClick={() => this.setStep(0)}>
+                        Build
+                      </StepButton>
+                    </Step>
+                    <Step>
+                      <StepButton onClick={() => this.setStep(1)}>
+                        Design
+                      </StepButton>
+                    </Step>
+                    <Step>
+                      <StepButton onClick={() => this.setStep(2)}>
+                        Configure
+                      </StepButton>
+                    </Step>
+                    <Step>
+                      <StepButton onClick={() => this.setStep(3)}>
+                        Deploy
+                      </StepButton>
+                    </Step>
+                  </Stepper>
+                  <div style={contentStyle}>
+                    <div>{this.getStepContent(stepIndex)}</div>
+                    <div style={{ marginTop: '20px' }}>
                       <RaisedButton
-                        label={stepIndex === 2 ? 'Finish' : 'Next'}
+                        label="Back"
+                        disabled={stepIndex === 0}
                         backgroundColor={colors.header}
                         labelColor="#fff"
-                        onTouchTap={this.handleNext}
+                        onTouchTap={this.handlePrev}
+                        style={{ marginRight: 12 }}
                       />
-                    ) : (
-                      <p
-                        style={{
-                          padding: '20px 0px 0px 0px',
-                          fontFamily: 'sans-serif',
-                          fontSize: '14px',
-                        }}
-                      >
-                        You&apos;re all done. Thanks for using SUSI Bot.
-                      </p>
-                    )}
+                      {stepIndex < 3 ? (
+                        <RaisedButton
+                          label={stepIndex === 2 ? 'Finish' : 'Next'}
+                          backgroundColor={colors.header}
+                          labelColor="#fff"
+                          onTouchTap={this.handleNext}
+                        />
+                      ) : (
+                        <p
+                          style={{
+                            padding: '20px 0px 0px 0px',
+                            fontFamily: 'sans-serif',
+                            fontSize: '14px',
+                          }}
+                        >
+                          You&apos;re all done. Thanks for using SUSI Bot.
+                        </p>
+                      )}
+                    </div>
                   </div>
-                </div>
-              </div>
-              <div style={{ padding: '20px 0 0 40px' }}>
-                <br className="display-mobile-only" />
-                <h2 className="center">Preview</h2>
-                <br />
-                <div style={{ position: 'relative', overflow: 'hidden' }}>
-                  <iframe
-                    title="botPreview"
-                    name="frame-1"
-                    id="frame-1"
-                    src={locationBot}
-                    height="600"
-                    width="460"
-                  />
-                </div>
-              </div>
-            </div>
+                </Col>
+
+                <Col xs={12} md={4}>
+                  <div style={{ padding: '20px 0 0 40px' }}>
+                    <br className="display-mobile-only" />
+                    <h2 className="center">Preview</h2>
+                    <br />
+                    <div style={{ position: 'relative', overflow: 'hidden' }}>
+                      <iframe
+                        title="botPreview"
+                        name="frame-1"
+                        id="frame-1"
+                        src={locationBot}
+                        height="600"
+                        width="100%"
+                      />
+                    </div>
+                  </div>
+                </Col>
+              </Row>
+            </Grid>
           </Paper>
         </div>
       </div>
