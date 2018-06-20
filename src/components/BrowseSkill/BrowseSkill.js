@@ -2,14 +2,16 @@ import React from 'react';
 import styles from './SkillStyle';
 import ISO6391 from 'iso-639-1';
 import SelectField from 'material-ui/SelectField';
-import { Paper } from 'material-ui';
 // eslint-disable-next-line
 import { Card } from 'material-ui/Card';
 import * as $ from 'jquery';
 import { Link } from 'react-router-dom';
 import IconMenu from 'material-ui/IconMenu';
+import Drawer from 'material-ui/Drawer';
+import Menu from 'material-ui/Menu';
 import MenuItem from 'material-ui/MenuItem';
-import IconButton from 'material-ui/IconButton';
+import Subheader from 'material-ui/Subheader';
+import RaisedButton from 'material-ui/RaisedButton';
 import Add from 'material-ui/svg-icons/content/add';
 import Person from 'material-ui/svg-icons/social/person';
 import colors from '../../Utils/colors';
@@ -26,12 +28,14 @@ import Ratings from 'react-ratings-declarative';
 
 const groups = [];
 const languages = [];
+let squeeze = true;
 
 export default class BrowseSkill extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       cards: [],
+      openDrawer: false,
       modelValue: 'general',
       skillURL: null,
       groupValue: 'All',
@@ -46,6 +50,14 @@ export default class BrowseSkill extends React.Component {
       filter: '&applyFilter=true&filter_name=descending&filter_type=rating',
       searchQuery: '',
     };
+  }
+
+  componentWillMount() {
+    if (window.screen.width >= 800) {
+      this.setState({ openDrawer: true });
+    } else {
+      squeeze = false;
+    }
   }
 
   componentDidMount() {
@@ -66,7 +78,7 @@ export default class BrowseSkill extends React.Component {
     });
   };
 
-  handleGroupChange = (event, index, value) => {
+  handleGroupChange = (event, value) => {
     this.setState({ groupValue: value }, function() {
       // console.log(this.state);
       this.loadCards();
@@ -93,6 +105,9 @@ export default class BrowseSkill extends React.Component {
     });
   };
 
+  handleDrawerToggle = () =>
+    this.setState({ openDrawer: !this.state.openDrawer });
+
   loadGroups = () => {
     if (this.state.groups.length === 0) {
       $.ajax({
@@ -104,7 +119,14 @@ export default class BrowseSkill extends React.Component {
           data = data.groups;
           this.setState({ groups: data });
           data.sort();
-          groups.push(<MenuItem value="All" key="All" primaryText="All" />);
+          groups.push(
+            <MenuItem
+              value="All"
+              key="All"
+              primaryText="All"
+              onClick={event => this.handleGroupChange(event, 'All')}
+            />,
+          );
 
           for (let i = 0; i < data.length; i++) {
             groups.push(
@@ -112,6 +134,7 @@ export default class BrowseSkill extends React.Component {
                 value={data[i]}
                 key={data[i]}
                 primaryText={`${data[i]}`}
+                onClick={event => this.handleGroupChange(event, data[i])}
               />,
             );
           }
@@ -242,186 +265,177 @@ export default class BrowseSkill extends React.Component {
   };
 
   render() {
-    const style = {
-      width: '100%',
-      padding: '10px',
+    let contentStyle = {
+      margin: 'auto',
+      transition: 'margin-left 450ms cubic-bezier(0.23, 1, 0.32, 1)',
     };
-    const addButtonStyle = {
-      backgroundColor: colors.fabButton,
-      borderRadius: '50%',
-      height: '56px',
-      width: '56px',
-      boxShadow: '0px 3px 13px 1px rgba(0, 0, 0, 0.23)',
-    };
+
+    if (this.state.openDrawer && squeeze) {
+      contentStyle.marginLeft = 250;
+    }
 
     return (
       <div>
-        <StaticAppBar {...this.props} />
+        <StaticAppBar
+          {...this.props}
+          zDepth={1}
+          toggleDrawer={this.handleDrawerToggle}
+        />
 
-        {this.state.skills.length === 0 &&
-          !this.state.skillsLoaded && (
-            <h1 className="skill_loading_container">
-              <div className="center">
-                <CircularProgress size={62} color="#4285f5" />
-                <h4>Loading</h4>
-              </div>
-            </h1>
-          )}
-
-        {this.state.skillsLoaded ? (
-          <div style={styles.container}>
-            <Paper style={style} zDepth={1}>
-              <div style={styles.center}>
-                <SelectField
-                  disabled={this.state.groupSelect}
-                  floatingLabelText="Category"
-                  value={this.state.groupValue}
-                  floatingLabelFixed={false}
-                  onChange={this.handleGroupChange}
-                  style={styles.selection}
-                  listStyle={{
-                    top: '100px',
-                  }}
-                  selectedMenuItemStyle={{
-                    color: colors.header,
-                  }}
-                  underlineFocusStyle={{
-                    color: colors.header,
-                  }}
-                >
-                  {groups}
-                </SelectField>
-                <SelectField
-                  disabled={this.state.languageSelect}
-                  floatingLabelText="Language"
-                  value={this.state.languageValue}
-                  floatingLabelFixed={false}
-                  onChange={this.handleLanguageChange}
-                  style={styles.selection}
-                  listStyle={{
-                    top: '100px',
-                  }}
-                  selectedMenuItemStyle={{
-                    color: colors.header,
-                  }}
-                  underlineFocusStyle={{
-                    color: colors.header,
-                  }}
-                >
-                  {languages}
-                </SelectField>
-                <SelectField
-                  floatingLabelText="Sort by"
-                  value={this.state.filter}
-                  floatingLabelFixed={false}
-                  onChange={this.handleFilterChange}
-                  style={styles.selection}
-                  className="select"
-                  listStyle={{
-                    top: '100px',
-                  }}
-                  selectedMenuItemStyle={{
-                    color: colors.header,
-                  }}
-                  underlineFocusStyle={{
-                    color: colors.header,
-                  }}
-                >
-                  <MenuItem
-                    value={
-                      '&applyFilter=true&filter_name=ascending&filter_type=lexicographical'
-                    }
-                    key={
-                      '&applyFilter=true&filter_name=ascending&filter_type=lexicographical'
-                    }
-                    primaryText={'A-Z'}
-                    label={'Name (A-Z)'}
-                  />
-                  <MenuItem
-                    value={
-                      '&applyFilter=true&filter_name=descending&filter_type=lexicographical'
-                    }
-                    key={
-                      '&applyFilter=true&filter_name=descending&filter_type=lexicographical'
-                    }
-                    primaryText={'Z-A'}
-                    label={'Name (Z-A)'}
-                  />
-                  <MenuItem
-                    value={
-                      '&applyFilter=true&filter_name=descending&filter_type=rating'
-                    }
-                    key={
-                      '&applyFilter=true&filter_name=descending&filter_type=rating'
-                    }
-                    primaryText={'Top Rated'}
-                    label={'Top Rated'}
-                  />
-                  <MenuItem
-                    value={
-                      '&applyFilter=true&filter_name=descending&filter_type=feedback'
-                    }
-                    key={
-                      '&applyFilter=true&filter_name=descending&filter_type=feedback'
-                    }
-                    primaryText={'Feedback Count'}
-                    label={'Feedback Count'}
-                  />
-                </SelectField>
-
-                <div style={styles.newSkillBtn}>
-                  <IconMenu
-                    animated={false}
-                    anchorOrigin={{ vertical: 'bottom', horizontal: 'middle' }}
-                    iconButtonElement={
-                      <IconButton
-                        className="add-button"
-                        iconStyle={{ color: '#fff' }}
-                        style={addButtonStyle}
-                      >
-                        <Add />
-                      </IconButton>
-                    }
-                  >
-                    <Link to="/skillCreator">
-                      <MenuItem
-                        leftIcon={<Add />}
-                        primaryText="Create a Skill"
-                      />
-                    </Link>
-                    <Link to="/botbuilder">
-                      <MenuItem
-                        leftIcon={<Person />}
-                        primaryText="Create Skill bot"
-                      />
-                    </Link>
-                  </IconMenu>
-                </div>
-              </div>
-            </Paper>
-
-            <SearchBar
-              onChange={this.handleSearch}
-              onRequestSearch={() => console.log('Nothing to search')}
-              style={{
-                marginTop: '25px',
-                width: '50%',
+        <Drawer
+          docked={true}
+          autoWidth={true}
+          containerStyle={{ paddingTop: 50, display: 'block', zIndex: 2 }}
+          open={this.state.openDrawer}
+        >
+          <div style={styles.center}>
+            <SelectField
+              disabled={this.state.languageSelect}
+              floatingLabelText="Language"
+              value={this.state.languageValue}
+              floatingLabelFixed={false}
+              onChange={this.handleLanguageChange}
+              style={styles.selection}
+              listStyle={{
+                top: '100px',
               }}
-              value={this.state.searchQuery}
-            />
+              selectedMenuItemStyle={{
+                color: colors.header,
+              }}
+              underlineFocusStyle={{
+                color: colors.header,
+              }}
+            >
+              {languages}
+            </SelectField>
+            <SelectField
+              floatingLabelText="Sort by"
+              value={this.state.filter}
+              floatingLabelFixed={false}
+              onChange={this.handleFilterChange}
+              style={styles.selection}
+              className="select"
+              listStyle={{
+                top: '100px',
+              }}
+              selectedMenuItemStyle={{
+                color: colors.header,
+              }}
+              underlineFocusStyle={{
+                color: colors.header,
+              }}
+            >
+              <MenuItem
+                value={
+                  '&applyFilter=true&filter_name=ascending&filter_type=lexicographical'
+                }
+                key={
+                  '&applyFilter=true&filter_name=ascending&filter_type=lexicographical'
+                }
+                primaryText={'A-Z'}
+                label={'Name (A-Z)'}
+              />
+              <MenuItem
+                value={
+                  '&applyFilter=true&filter_name=descending&filter_type=lexicographical'
+                }
+                key={
+                  '&applyFilter=true&filter_name=descending&filter_type=lexicographical'
+                }
+                primaryText={'Z-A'}
+                label={'Name (Z-A)'}
+              />
+              <MenuItem
+                value={
+                  '&applyFilter=true&filter_name=descending&filter_type=rating'
+                }
+                key={
+                  '&applyFilter=true&filter_name=descending&filter_type=rating'
+                }
+                primaryText={'Top Rated'}
+                label={'Top Rated'}
+              />
+              <MenuItem
+                value={
+                  '&applyFilter=true&filter_name=descending&filter_type=feedback'
+                }
+                key={
+                  '&applyFilter=true&filter_name=descending&filter_type=feedback'
+                }
+                primaryText={'Feedback Count'}
+                label={'Feedback Count'}
+              />
+            </SelectField>
 
-            <SkillCardList
-              skills={this.state.skills}
-              modalValue={this.state.modalValue}
-              languageValue={this.state.languageValue}
-              skillUrl={this.state.skillUrl}
-            />
-            <Footer />
-            <a href="#top">
-              <center>Back to top</center>
-            </a>
+            <div style={styles.newSkillBtn}>
+              <IconMenu
+                animated={false}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'middle',
+                }}
+                iconButtonElement={
+                  <RaisedButton
+                    label="Create"
+                    icon={<Add />}
+                    backgroundColor="#4285f4"
+                    labelStyle={{ color: '#fff' }}
+                  />
+                }
+              >
+                <Link to="/skillCreator">
+                  <MenuItem leftIcon={<Add />} primaryText="Create a Skill" />
+                </Link>
+                <Link to="/botbuilder">
+                  <MenuItem
+                    leftIcon={<Person />}
+                    primaryText="Create Skill bot"
+                  />
+                </Link>
+              </IconMenu>
+            </div>
           </div>
-        ) : null}
+          <Menu desktop={true}>
+            <Subheader>Skill Categories</Subheader>
+            {groups}
+          </Menu>
+        </Drawer>
+        <div style={contentStyle}>
+          {this.state.skills.length === 0 &&
+            !this.state.skillsLoaded && (
+              <h1 className="skill_loading_container">
+                <div className="center">
+                  <CircularProgress size={62} color="#4285f5" />
+                  <h4>Loading</h4>
+                </div>
+              </h1>
+            )}
+
+          {this.state.skillsLoaded ? (
+            <div style={styles.container}>
+              <SearchBar
+                onChange={this.handleSearch}
+                onRequestSearch={() => console.log('Nothing to search')}
+                style={{
+                  marginTop: '25px',
+                  width: '50%',
+                }}
+                value={this.state.searchQuery}
+              />
+
+              <SkillCardList
+                skills={this.state.skills}
+                modalValue={this.state.modalValue}
+                languageValue={this.state.languageValue}
+                skillUrl={this.state.skillUrl}
+              />
+              <Footer />
+              <a href="#top">
+                <center>Back to top</center>
+              </a>
+            </div>
+          ) : null}
+        </div>
       </div>
     );
   }

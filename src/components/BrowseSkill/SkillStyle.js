@@ -44,7 +44,7 @@ const styles = {
     justifyContent: 'center',
     flexDirection: 'column',
     width: '100%',
-    padding: '80px 30px 30px',
+    padding: '80px 20px 20px',
   },
   propContainer: {
     width: 100,
@@ -94,7 +94,7 @@ const styles = {
   },
   selection: {
     margin: '0px 10px',
-    width: '300px',
+    width: '200px',
   },
   newSkillBtn: {
     padding: '10px 0px 10px 10px',
