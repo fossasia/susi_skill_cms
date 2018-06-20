@@ -13,7 +13,6 @@ import SkillEditor from './components/SkillEditor/SkillEditor';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import NotFound from './components/NotFound/NotFound';
 import Admin from './components/Admin/Admin';
-import BotBuilder from './components/BotBuilder/BotBuilder';
 import Dashboard from './components/Dashboard/Dashboard';
 import BrowseSkill from './components/BrowseSkill/BrowseSkill';
 import SkillListing from './components/SkillPage/SkillListing';
@@ -23,8 +22,7 @@ import CreateSkill from './components/CreateSkill/CreateSkill';
 import SkillVersion from './components/SkillVersion/SkillVersion';
 import SkillHistory from './components/SkillHistory/SkillHistory';
 import SkillRollBack from './components/SkillRollBack/SkillRollBack';
-import ContactBot from './components/BotBuilder/ContactBot';
-import BotWizard from './components/BotBuilder/BotWizard';
+import BotBuilderWrap from './components/BotBuilder/BotBuilderWrap';
 import Explore from './components/Explore/Explore';
 import setDefaults from './DefaultSettings';
 
@@ -56,9 +54,7 @@ class App extends React.Component {
               path="/:category/:skill/:lang"
               component={SkillListing}
             />
-            <Route exact path="/botbuilder/contactbot" component={ContactBot} />
-            <Route exact path="/botbuilder/botwizard" component={BotWizard} />
-            <Route exact path="/botbuilder" component={BotBuilder} />
+            <Route path="/botbuilder" component={BotBuilderWrap} />
             <Route exact path="/dashboard" component={Dashboard} />
             <Route exact path="/logout" component={Logout} />
             <Route exact path="/skillCreator" component={CreateSkill} />

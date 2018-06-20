@@ -5,11 +5,11 @@ import { Step, Stepper, StepButton } from 'material-ui/Stepper';
 import { Grid, Col, Row } from 'react-flexbox-grid';
 import colors from '../../Utils/colors';
 import Build from './BotBuilderPages/Build';
+import PropTypes from 'prop-types';
 import Design from './BotBuilderPages/Design';
 import Configure from './BotBuilderPages/Configure';
 import Deploy from './BotBuilderPages/Deploy';
 import { Paper } from 'material-ui';
-import './BotBuilder.css';
 import Cookies from 'universal-cookie';
 
 const cookies = new Cookies();
@@ -17,12 +17,34 @@ const cookies = new Cookies();
 class BotWizard extends React.Component {
   constructor(props) {
     super(props);
+    let startCode = '';
+    if (this.getQueryStringValue('template')) {
+      for (let template of this.props.templates) {
+        if (template.id === this.getQueryStringValue('template')) {
+          startCode = template.code;
+        }
+      }
+    }
     this.state = {
       finished: false,
       stepIndex: 0,
+      startCode,
       themeSettingsString: '{}',
     };
   }
+  getQueryStringValue = key => {
+    return decodeURIComponent(
+      window.location.search.replace(
+        new RegExp(
+          '^(?:.*[&\\?]' +
+            encodeURIComponent(key).replace(/[.+*]/g, '\\$&') +
+            '(?:\\=([^&]*))?)?.*$',
+          'i',
+        ),
+        '$1',
+      ),
+    );
+  };
 
   handleNext = () => {
     const { stepIndex } = this.state;
@@ -46,7 +68,7 @@ class BotWizard extends React.Component {
   getStepContent(stepIndex) {
     switch (stepIndex) {
       case 0:
-        return <Build />;
+        return <Build code={this.state.startCode} />;
       case 1:
         return <Design updateSettings={this.updateSettings} />;
       case 2:
@@ -197,6 +219,9 @@ const styles = {
     fontSize: '50px',
     marginTop: '300px',
   },
+};
+BotWizard.propTypes = {
+  templates: PropTypes.array,
 };
 
 export default BotWizard;
