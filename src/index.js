@@ -23,7 +23,6 @@ import SkillVersion from './components/SkillVersion/SkillVersion';
 import SkillHistory from './components/SkillHistory/SkillHistory';
 import SkillRollBack from './components/SkillRollBack/SkillRollBack';
 import BotBuilderWrap from './components/BotBuilder/BotBuilderWrap';
-import Explore from './components/Explore/Explore';
 import setDefaults from './DefaultSettings';
 
 setDefaults();
@@ -73,7 +72,6 @@ class App extends React.Component {
               path="/:category/:skill/edit/:lang/:latestid/:revertid"
               component={SkillRollBack}
             />
-            <Route exact path="/explore" component={Explore} />
             <Route exact path="/" component={BrowseSkill} />
             <Route exact path="*" component={NotFound} />
           </Switch>

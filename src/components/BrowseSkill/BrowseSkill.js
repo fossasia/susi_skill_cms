@@ -49,6 +49,7 @@ export default class BrowseSkill extends React.Component {
       skillsLoaded: false,
       filter: '&applyFilter=true&filter_name=descending&filter_type=rating',
       searchQuery: '',
+      topRatedSkills: [],
     };
   }
 
@@ -64,6 +65,7 @@ export default class BrowseSkill extends React.Component {
     this.loadLanguages();
     this.loadGroups();
     this.loadCards();
+    this.loadTopRated();
   }
 
   handleFilterChange = (event, index, value) => {
@@ -264,6 +266,68 @@ export default class BrowseSkill extends React.Component {
     });
   };
 
+  loadTopRated = () => {
+    let url;
+    url =
+      urls.API_URL +
+      '/cms/getSkillList.json?group=All&applyFilter=true&filter_name=descending&filter_type=rating';
+    let self = this;
+    $.ajax({
+      url: url,
+      dataType: 'jsonp',
+      jsonp: 'callback',
+      crossDomain: true,
+      success: function(data) {
+        if (self.state.searchQuery.length > 0) {
+          data.filteredData = data.filteredData.filter(function(i) {
+            let result = false;
+            if (i.skill_name) {
+              result = i.skill_name
+                .toLowerCase()
+                .match(self.state.searchQuery.toLowerCase());
+              if (result) {
+                return result;
+              }
+            }
+            if (i.descriptions) {
+              result = i.descriptions
+                .toLowerCase()
+                .match(self.state.searchQuery.toLowerCase());
+              if (result) {
+                return result;
+              }
+            }
+            if (i.author) {
+              result = i.author
+                .toLowerCase()
+                .match(self.state.searchQuery.toLowerCase());
+              if (result) {
+                return result;
+              }
+            }
+            if (i.examples && i.examples.length > 0) {
+              i.examples.map((el, j) => {
+                result = el
+                  .toLowerCase()
+                  .match(self.state.searchQuery.toLowerCase());
+                if (result) {
+                  return result;
+                }
+                return null;
+              });
+            }
+            return result;
+          });
+        }
+
+        console.log(data.filteredData);
+        self.setState({
+          topRatedSkills: data.filteredData.slice(0, 5),
+        });
+      },
+    });
+  };
+
   render() {
     let contentStyle = {
       margin: 'auto',
@@ -401,6 +465,9 @@ export default class BrowseSkill extends React.Component {
           </Menu>
         </Drawer>
         <div style={contentStyle}>
+          <div className="top-rated">
+            <h2>Top Rated Skills</h2>
+          </div>
           {this.state.skills.length === 0 &&
             !this.state.skillsLoaded && (
               <h1 className="skill_loading_container">
@@ -422,6 +489,16 @@ export default class BrowseSkill extends React.Component {
                 }}
                 value={this.state.searchQuery}
               />
+
+              <div style={styles.topRated}>
+                <h2>Top Rated Skills</h2>
+                <SkillCardList
+                  skills={this.state.topRatedSkills}
+                  modalValue={this.state.modalValue}
+                  languageValue={this.state.languageValue}
+                  skillUrl={this.state.skillUrl}
+                />
+              </div>
 
               <SkillCardList
                 skills={this.state.skills}
