@@ -6,25 +6,20 @@ const styles = {
     flexDirection: 'row',
     flexWrap: 'wrap',
   },
-  imageContainer: {
+  image: {
     position: 'relative',
-    height: '80px',
-    width: '80px',
+    height: '64px',
+    width: '64px',
     verticalAlign: 'top',
+    borderRadius: '50%',
   },
   name: {
     textAlign: 'left',
     fontSize: '15px',
     color: '#4285f4',
-    margin: '4px 0',
-  },
-  details: {
-    paddingLeft: '10px',
-    height: '100px',
-  },
-  image: {
-    maxWidth: '100%',
-    border: 0,
+    marginBottom: '6px',
+    border: '1px',
+    height: '20px',
   },
   feedback: {
     color: '#4285f4',
@@ -54,10 +49,10 @@ const styles = {
   propToggleHeader: {
     margin: '20px auto 10px',
   },
-  row: {
-    width: 280,
-    height: 270,
-    minHeight: '200px',
+  skillCard: {
+    width: 260,
+    height: 170,
+    minHeight: '150px',
     margin: '10px',
     overflow: 'hidden',
     justifyContent: 'center',
@@ -68,7 +63,7 @@ const styles = {
     borderRadius: '5px',
     backgroundColor: '#f4f6f6',
     border: '1px solid #eaeded',
-    padding: '4px',
+    padding: '5px',
   },
   scroll: {
     display: 'flex',
@@ -81,13 +76,14 @@ const styles = {
     margin: '10px',
     textAlign: 'center',
   },
-  right: {
+  imageContainer: {
     display: 'flex',
     alignItems: 'center',
     flexDirection: 'row',
-    padding: '8px',
+    padding: '10px',
     background: '#fff',
-    height: '130px',
+    height: '100px',
+    marginBottom: '6px',
   },
   select: {
     margin: '0px 10px',
@@ -99,21 +95,21 @@ const styles = {
   newSkillBtn: {
     padding: '10px 0px 10px 10px',
   },
-  titleStyle: {
-    textAlign: 'left',
+  example: {
+    textAlign: 'center',
     fontStyle: 'italic',
-    fontSize: '16px',
+    fontSize: '14px',
     textOverflow: 'ellipsis',
     overflow: 'hidden',
     width: '138px',
-    marginLeft: '15px',
+    padding: '10px',
     verticalAlign: 'middle',
     display: 'block',
     color: 'black',
+    maxHeight: '80px',
   },
   rating: {
     positive: 'relative',
-    marginLeft: '10px',
     float: 'left',
   },
   totalRating: {

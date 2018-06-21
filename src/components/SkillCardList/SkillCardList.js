@@ -35,7 +35,7 @@ class SkillCardList extends Component {
     let cards = [];
     Object.keys(this.state.skills).forEach(el => {
       let skill = this.state.skills[el];
-      let skill_name, examples, image, description;
+      let skill_name, examples, image; // , description;
       let average_rating = 0,
         total_rating = 0;
       if (skill.skill_name) {
@@ -63,21 +63,21 @@ class SkillCardList extends Component {
       } else {
         examples = null;
       }
-      if (skill.descriptions) {
-        if (skill.descriptions.length > 105) {
-          description = skill.descriptions.substring(0, 104) + '...';
-        } else {
-          description = skill.descriptions;
-        }
-      } else {
-        description = 'No description available';
-      }
+      // if (skill.descriptions) {
+      //   if (skill.descriptions.length > 105) {
+      //     description = skill.descriptions.substring(0, 104) + '...';
+      //   } else {
+      //     description = skill.descriptions;
+      //   }
+      // } else {
+      //   description = 'No description available';
+      // }
       if (skill.skill_rating) {
         average_rating = parseFloat(skill.skill_rating.stars.avg_star);
         total_rating = parseInt(skill.skill_rating.stars.total_star, 10);
       }
       cards.push(
-        <Card style={styles.row} key={el}>
+        <Card style={styles.skillCard} key={el}>
           <Link
             key={el}
             to={{
@@ -98,19 +98,18 @@ class SkillCardList extends Component {
               },
             }}
           >
-            <div style={styles.right} key={el}>
+            <div style={styles.imageContainer} key={el}>
               {image ? (
-                <div style={styles.imageContainer}>
+                <div style={styles.image}>
                   <img alt={skill_name} src={image} style={styles.image} />
                 </div>
               ) : (
                 <CircleImage name={el} size="48" />
               )}
-              <div style={styles.titleStyle}>&quot;{examples}&quot;</div>
+              <div style={styles.example}>&quot;{examples}&quot;</div>
             </div>
-            <div style={styles.details}>
-              <h3 style={styles.name}>{skill_name}</h3>
-              <p style={styles.description}>{description}</p>
+            <div style={styles.name}>
+              <span>{skill_name}</span>
             </div>
           </Link>
           <div style={styles.rating}>
