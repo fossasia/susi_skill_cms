@@ -1,6 +1,17 @@
 .initechNode{
-    display: inline-block
+    display: inline-block;
 }
+.initechNode .node-content{
+    background-color: #eee;
+    border-radius: 10px;
+    padding: 4px 8px;
+    font-size: 14px;
+}
+.initechNode .node-delete-icon{
+    vertical-align: middle;
+    cursor: pointer;
+}
+
 .reactOrgChart .orgNodeChildGroup .nodeGroupLineVerticalMiddle {
     border-right: 2px solid #9E9E9E;
 }

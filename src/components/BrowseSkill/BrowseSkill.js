@@ -53,7 +53,7 @@ export default class BrowseSkill extends React.Component {
     };
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     if (window.screen.width >= 800) {
       this.setState({ openDrawer: true });
     } else {
