@@ -45,6 +45,8 @@ class Build extends Component {
       name: 'Welcome!',
       children: [],
     };
+    let user_index = 0;
+    let bot_index = 0;
     var conversationData_new = {
       userQueries: [],
       botResponses: [],
@@ -104,19 +106,86 @@ class Build extends Component {
       }
       let queries = line_user.trim().split('|');
       conversationData_new.userQueries.push(queries);
+
       for (let query of queries) {
         let obj = {
           name: query.trim(),
           type: 'user',
-          children: bot_responses,
+          children: this.getChildren(bot_responses, bot_index),
+          id: 'u' + user_index++,
         };
+        bot_index += bot_responses.length;
         tree_children.push(obj);
       }
     }
     treeData_new.children = tree_children;
     this.setState({ ConversationData: conversationData_new });
     this.setState({ treeData: treeData_new });
-    console.log(conversationData_new);
+  };
+
+  getChildren = (bot_responses, bot_index) => {
+    var arr = [];
+    for (let i of bot_responses) {
+      arr.push({
+        ...i,
+        id: 'b' + bot_index++,
+      });
+    }
+    return arr;
+  };
+
+  handleDeleteNode = node => {
+    let { treeData } = this.state;
+    for (let i = 0; i < treeData.children.length; i++) {
+      let child = treeData.children[i];
+      if (child.id === node.id) {
+        treeData.children.splice(i, 1);
+        break;
+      }
+      if (child.children) {
+        for (let j = 0; j < child.children.length; j++) {
+          let childNode = child.children[j];
+          if (childNode.id === node.id) {
+            treeData.children[i].children.splice(j, 1);
+          }
+        }
+      }
+    }
+    this.setState({ treeData }, this.generateSkillCode());
+  };
+  generateSkillCode = () => {
+    let { skillCode, treeData } = this.state;
+    let lines = skillCode.split('\n');
+    let newSkillCode = '';
+    let i = 0;
+    for (i = 0; i < lines.length; i++) {
+      let line = lines[i];
+      // add meta data from top
+      if (
+        line === '' ||
+        line.startsWith('::') ||
+        line.startsWith('!') ||
+        line.startsWith('#')
+      ) {
+        newSkillCode += line + '\n';
+      } else {
+        break;
+      }
+    }
+    for (let j = 0; j < treeData.children.length; j++) {
+      let node = treeData.children[j];
+      newSkillCode += node.name + '\n';
+      if (node.children) {
+        for (let k = 0; k < node.children.length; k++) {
+          if (k !== node.children.length - 1) {
+            newSkillCode += node.children[k].name + ' | ';
+          } else {
+            newSkillCode += node.children[k].name + '\n';
+          }
+        }
+      }
+    }
+    this.setState({ skillCode: newSkillCode }, this.generateSkillData());
   };
   render() {
     return (
@@ -146,10 +215,15 @@ class Build extends Component {
             {this.state.value === 2 ? (
               <ConversationView
                 ConversationData={this.state.ConversationData}
+                treeData={this.state.treeData}
+                handleDeleteNode={this.handleDeleteNode}
               />
             ) : null}
             {this.state.value === 3 ? (
-              <TreeView treeData={this.state.treeData} />
+              <TreeView
+                treeData={this.state.treeData}
+                handleDeleteNode={this.handleDeleteNode}
+              />
             ) : null}
           </div>
         </div>
