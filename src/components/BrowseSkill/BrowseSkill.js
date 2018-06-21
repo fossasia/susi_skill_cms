@@ -429,6 +429,26 @@ export default class BrowseSkill extends React.Component {
                 primaryText={'Feedback Count'}
                 label={'Feedback Count'}
               />
+              <MenuItem
+                value={
+                  '&applyFilter=true&filter_name=descending&filter_type=usage&duration=7'
+                }
+                key={
+                  '&applyFilter=true&filter_name=descending&filter_type=usage&duration=7'
+                }
+                primaryText={'This Week Usage'}
+                label={'This Week Usage'}
+              />
+              <MenuItem
+                value={
+                  '&applyFilter=true&filter_name=descending&filter_type=usage&duration=30'
+                }
+                key={
+                  '&applyFilter=true&filter_name=descending&filter_type=usage&duration=30'
+                }
+                primaryText={'This Month Usage'}
+                label={'This Month Usage'}
+              />
             </SelectField>
 
             <div style={styles.newSkillBtn}>
