@@ -10,7 +10,6 @@ import AuthorSkills from '../AuthorSkills/AuthorSkills';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import SkillUsageCard from '../SkillUsageCard/SkillUsageCard';
 import SkillRatingCard from '../SkillRatingCard/SkillRatingCard';
-import CountryWiseSkillUsageCard from '../CountryWiseSkillUsageCard/CountryWiseSkillUsageCard';
 import SkillFeedbackCard from '../SkillFeedbackCard/SkillFeedbackCard';
 import { FloatingActionButton, Paper } from 'material-ui';
 import Divider from 'material-ui/Divider';
@@ -796,8 +795,6 @@ class SkillListing extends Component {
             <SkillUsageCard
               skill_usage={this.state.skill_usage}
               device_usage_data={this.state.device_usage_data}
-            />
-            <CountryWiseSkillUsageCard
               country_wise_skill_usage={this.state.country_wise_skill_usage}
             />
           </div>
