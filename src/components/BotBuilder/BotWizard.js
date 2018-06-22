@@ -92,11 +92,19 @@ class BotWizard extends React.Component {
     }
   }
 
-  noName() {
-    this.setState({
-      openSnackbar: true,
-      msgSnackbar: 'Please enter name of the bot.',
-    });
+  checkName() {
+    if (this.state.botName === '') {
+      this.setState({
+        openSnackbar: true,
+        msgSnackbar: 'Please enter a name for your bot.',
+      });
+    } else {
+      this.setState({
+        openSnackbar: true,
+        msgSnackbar: this.state.botName + ' is successfully deployed.',
+      });
+      this.handleNext();
+    }
   }
 
   setStep = stepIndex => {
@@ -188,10 +196,16 @@ class BotWizard extends React.Component {
                           />
                           {stepIndex < 3 ? (
                             <RaisedButton
-                              label={stepIndex === 2 ? 'Finish' : 'Next'}
+                              label={
+                                stepIndex === 2 ? 'Save and Deploy' : 'Next'
+                              }
                               backgroundColor={colors.header}
                               labelColor="#fff"
-                              onTouchTap={this.handleNext}
+                              onTouchTap={() =>
+                                this.state.stepIndex === 2
+                                  ? this.checkName()
+                                  : this.handleNext()
+                              }
                             />
                           ) : (
                             <p
@@ -211,23 +225,6 @@ class BotWizard extends React.Component {
                 </Col>
 
                 <Col xs={12} md={4}>
-                  <div
-                    style={{
-                      padding: '20px 0 20px 0',
-                    }}
-                  >
-                    <RaisedButton
-                      label="Save and Deploy"
-                      backgroundColor={colors.header}
-                      labelColor="#fff"
-                      onClick={() =>
-                        this.state.botName !== ''
-                          ? this.setStep(3)
-                          : this.noName()
-                      }
-                      style={{ float: 'right' }}
-                    />
-                  </div>
                   <div style={{ padding: '40px 0 0 40px' }}>
                     <br className="display-mobile-only" />
                     <h2 className="center">Preview</h2>
