@@ -302,12 +302,6 @@ class SkillListing extends Component {
   };
 
   saveDeviceUsageData = (device_usage_data = []) => {
-    // Sample data to test
-    device_usage_data = [
-      { device_type: 'Android', count: 2 },
-      { device_type: 'iOS', count: 1 },
-      { device_type: 'Web', count: 5 },
-    ];
     this.setState({
       device_usage_data,
     });
