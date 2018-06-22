@@ -319,8 +319,6 @@ export default class BrowseSkill extends React.Component {
             return result;
           });
         }
-
-        console.log(data.filteredData);
         self.setState({
           topRatedSkills: data.filteredData.slice(0, 5),
         });
@@ -372,6 +370,42 @@ export default class BrowseSkill extends React.Component {
             >
               {languages}
             </SelectField>
+
+            <div style={styles.newSkillBtn}>
+              <IconMenu
+                animated={false}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'middle',
+                }}
+                iconButtonElement={
+                  <RaisedButton
+                    label="Create"
+                    icon={<Add />}
+                    backgroundColor="#4285f4"
+                    labelStyle={{ color: '#fff' }}
+                  />
+                }
+              >
+                <Link to="/skillCreator">
+                  <MenuItem leftIcon={<Add />} primaryText="Create a Skill" />
+                </Link>
+                <Link to="/botbuilder">
+                  <MenuItem
+                    leftIcon={<Person />}
+                    primaryText="Create Skill bot"
+                  />
+                </Link>
+              </IconMenu>
+            </div>
+          </div>
+          <Menu desktop={true} disableAutoFocus={true}>
+            <Subheader>Skill Categories</Subheader>
+            {groups}
+          </Menu>
+        </Drawer>
+        <div style={contentStyle}>
+          <div style={styles.sortSelect} className="sort-select">
             <SelectField
               floatingLabelText="Sort by"
               value={this.state.filter}
@@ -450,43 +484,6 @@ export default class BrowseSkill extends React.Component {
                 label={'This Month Usage'}
               />
             </SelectField>
-
-            <div style={styles.newSkillBtn}>
-              <IconMenu
-                animated={false}
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'middle',
-                }}
-                iconButtonElement={
-                  <RaisedButton
-                    label="Create"
-                    icon={<Add />}
-                    backgroundColor="#4285f4"
-                    labelStyle={{ color: '#fff' }}
-                  />
-                }
-              >
-                <Link to="/skillCreator">
-                  <MenuItem leftIcon={<Add />} primaryText="Create a Skill" />
-                </Link>
-                <Link to="/botbuilder">
-                  <MenuItem
-                    leftIcon={<Person />}
-                    primaryText="Create Skill bot"
-                  />
-                </Link>
-              </IconMenu>
-            </div>
-          </div>
-          <Menu desktop={true} disableAutoFocus={true}>
-            <Subheader>Skill Categories</Subheader>
-            {groups}
-          </Menu>
-        </Drawer>
-        <div style={contentStyle}>
-          <div className="top-rated">
-            <h2>Top Rated Skills</h2>
           </div>
           {this.state.skills.length === 0 &&
             !this.state.skillsLoaded && (

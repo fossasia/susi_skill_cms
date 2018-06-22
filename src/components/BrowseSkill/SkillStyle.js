@@ -39,7 +39,7 @@ const styles = {
     justifyContent: 'center',
     flexDirection: 'column',
     width: '100%',
-    padding: '80px 20px 20px',
+    padding: '0px 20px 20px',
   },
   propContainer: {
     width: 100,
@@ -119,6 +119,12 @@ const styles = {
   },
   topRated: {
     marginTop: '15px',
+  },
+  sortSelect: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    marginTop: '40px',
+    marginRight: '10px',
   },
 };
 
