@@ -243,6 +243,11 @@ export default class CreateSkill extends React.Component {
     let groups = this.state.groups;
     let code = this.state.code;
     code = '::author_email ' + cookies.get('emailId') + '\n' + code;
+    if (this.props.botBuilder) {
+      code = '::protected Yes\n' + code;
+    } else {
+      code = '::protected No\n' + code;
+    }
     if (!cookies.get('loggedIn')) {
       notification.open({
         message: 'Not logged In',
