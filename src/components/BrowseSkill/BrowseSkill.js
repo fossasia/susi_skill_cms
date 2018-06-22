@@ -35,7 +35,7 @@ export default class BrowseSkill extends React.Component {
     super(props);
     this.state = {
       cards: [],
-      openDrawer: false,
+      openDrawer: true,
       modelValue: 'general',
       skillURL: null,
       groupValue: 'All',
@@ -106,9 +106,6 @@ export default class BrowseSkill extends React.Component {
       [event.target.name]: toggled,
     });
   };
-
-  handleDrawerToggle = () =>
-    this.setState({ openDrawer: !this.state.openDrawer });
 
   loadGroups = () => {
     if (this.state.groups.length === 0) {
