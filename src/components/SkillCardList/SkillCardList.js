@@ -138,15 +138,8 @@ class SkillCardList extends Component {
   };
 
   render() {
-    let skillDisplay;
-    if (!this.props.skills.length) {
-      skillDisplay = (
-        <div style={{ fontSize: 30 }}>
-          No Skills found. Be the first one to
-          <Link to="/skillCreator"> create</Link> a skill in this category
-        </div>
-      );
-    } else {
+    let skillDisplay = '';
+    if (this.props.skills.length) {
       skillDisplay = this.state.cards;
     }
     return (

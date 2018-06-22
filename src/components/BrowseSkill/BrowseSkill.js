@@ -520,12 +520,20 @@ export default class BrowseSkill extends React.Component {
                 />
               </div>
 
-              <SkillCardList
-                skills={this.state.skills}
-                modalValue={this.state.modalValue}
-                languageValue={this.state.languageValue}
-                skillUrl={this.state.skillUrl}
-              />
+              {this.state.skills.length ? (
+                <SkillCardList
+                  skills={this.state.skills}
+                  modalValue={this.state.modalValue}
+                  languageValue={this.state.languageValue}
+                  skillUrl={this.state.skillUrl}
+                />
+              ) : (
+                <div style={{ fontSize: 30 }}>
+                  No Skills found. Be the first one to
+                  <Link to="/skillCreator"> create</Link> a skill in this
+                  category
+                </div>
+              )}
               <Footer />
               <a href="#top">
                 <center>Back to top</center>
