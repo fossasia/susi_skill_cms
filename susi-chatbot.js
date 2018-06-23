@@ -16,6 +16,7 @@ headTag.appendChild(link);
 var script_tag = document.getElementById("susi-bot-script");
 var access_token = script_tag.getAttribute("data-token");
 var theme_settings = script_tag.getAttribute("data-theme")?script_tag.getAttribute("data-theme"):null;
+var botWindow = script_tag.getAttribute("data-bot-type")?(script_tag.getAttribute("data-bot-type")==="botWindow"?true:false):false;
 
 // custom theme variables
 var botbuilderBackgroundBody = "#ffffff";
@@ -113,7 +114,8 @@ function enableBot() {
 		var msgNumber = 0;//stores the message number to set id
 
 		// Add dynamic html bot content(Widget style)
-		var mybot = '<div id="susi-frame-container" class="susi-frame-container-active" style="display: none;">'+
+		let frameStyle=botWindow?"height:460px;top: inherit;":"";
+		var mybot = '<div id="susi-frame-container" class="susi-frame-container-active" style="display: none;'+frameStyle+'">'+
 				'<div id="susi-frame-wrap">'+
 				'<div id="susi">'+
 				    '<div id="susi-container" class="susi-container susi-reset">'+
@@ -144,8 +146,8 @@ function enableBot() {
 				    '</div>'+
 				'</div>'+
 			'</div>'+
+			'<div id="susi-launcher-close" title="Close" style="display: none;">'+'</div>'+
 			'</div>'+
-				'<div id="susi-launcher-close" title="Close" style="display: none;">'+'</div>'+
 			'<div id="susi-launcher-container" class="susi-flex-center susi-avatar-launcher susi-launcher-enabled">'+
 			'<div id="susi-avatar-text">'+'Hey there'+'</div>'+
 			'<div id="susi-launcher" class="susi-launcher susi-flex-center susi-launcher-active" style="background-color: rgb(91, 75, 159);">'+
@@ -168,7 +170,7 @@ function enableBot() {
 			$('#susi-avatar-text').toggle();
 			$('#susi-launcher-close').toggle();
 		});
-		
+
 
 		// on input/text enter
 		$('#susiTextMessage').on('keyup keypress', function(e) {

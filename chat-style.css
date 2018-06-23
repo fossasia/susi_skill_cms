@@ -87,7 +87,7 @@
 
 #susi-frame-container.susi-frame-container-active {
     display: block;
-    height: 70%;
+    height: 460px;
     width: 350px;
     -webkit-backface-visibility: hidden;
     -webkit-transform-style: preserve-3d;
@@ -104,7 +104,6 @@ screen and (max-width:450px) {
         left: 0;
         right: 0;
         top: 0;
-        bottom: 0;
         border-radius: 0;
         max-height: none
     }
@@ -324,9 +323,9 @@ screen and (max-width:450px) {
     background-size: 15px;
     background-repeat: no-repeat;
     background-position: 50%;
-    position: fixed;
-    bottom: calc(70% + 40px);
-    right: 35px;
+    position: absolute;
+    right: 15px;
+    top: 15px;
     width: 30px;
     height: 30px;
     background-color: #666;
