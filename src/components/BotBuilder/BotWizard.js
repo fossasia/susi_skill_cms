@@ -1,6 +1,5 @@
 import React from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
-import TextField from 'material-ui/TextField';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import { Step, Stepper, StepButton } from 'material-ui/Stepper';
 import { Grid, Col, Row } from 'react-flexbox-grid';
@@ -32,17 +31,9 @@ class BotWizard extends React.Component {
       stepIndex: 0,
       startCode,
       themeSettingsString: '{}',
-      botName: '',
       openSnackbar: false,
       msgSnackbar: '',
     };
-    this.handleChange = this.handleChange.bind(this);
-  }
-
-  handleChange(event) {
-    this.setState({
-      botName: event.target.value,
-    });
   }
 
   getQueryStringValue = key => {
@@ -92,21 +83,6 @@ class BotWizard extends React.Component {
     }
   }
 
-  checkName() {
-    if (this.state.botName === '') {
-      this.setState({
-        openSnackbar: true,
-        msgSnackbar: 'Please enter a name for your bot.',
-      });
-    } else {
-      this.setState({
-        openSnackbar: true,
-        msgSnackbar: this.state.botName + ' is successfully deployed.',
-      });
-      this.handleNext();
-    }
-  }
-
   setStep = stepIndex => {
     this.setState({ stepIndex });
   };
@@ -144,15 +120,6 @@ class BotWizard extends React.Component {
             <Grid fluid>
               <Row>
                 <Col xs={12} md={8}>
-                  <div style={{ display: 'flex', flexDirection: 'row' }}>
-                    <TextField
-                      hintText="Enter name of the bot"
-                      floatingLabelText="Bot Name"
-                      onChange={this.handleChange}
-                      value={this.state.botName}
-                      style={{ paddingLeft: '20px' }}
-                    />
-                  </div>
                   <div style={{ display: 'flex', flexDirection: 'row' }}>
                     <div
                       style={{
@@ -201,11 +168,7 @@ class BotWizard extends React.Component {
                               }
                               backgroundColor={colors.header}
                               labelColor="#fff"
-                              onTouchTap={() =>
-                                this.state.stepIndex === 2
-                                  ? this.checkName()
-                                  : this.handleNext()
-                              }
+                              onTouchTap={this.handleNext}
                             />
                           ) : (
                             <p

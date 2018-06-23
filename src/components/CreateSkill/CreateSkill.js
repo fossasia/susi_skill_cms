@@ -449,10 +449,12 @@ export default class CreateSkill extends React.Component {
                 </SelectField>
                 <TextField
                   disabled={this.state.expertSelect}
-                  floatingLabelText="Skill name"
+                  floatingLabelText={
+                    this.props.botBuilder ? 'Bot Name' : 'Skill Name'
+                  }
                   floatingLabelFixed={false}
                   value={this.state.expertValue}
-                  hintText="Skill name"
+                  hintText={this.props.botBuilder ? 'Bot Name' : 'Skill Name'}
                   style={{ marginLeft: 10, marginRight: 10 }}
                   onChange={this.handleExpertChange}
                 />
