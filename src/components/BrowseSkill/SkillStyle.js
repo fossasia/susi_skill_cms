@@ -1,4 +1,8 @@
 const styles = {
+  main: {
+    display: 'flex',
+    flexDirection: 'row',
+  },
   center: {
     display: 'flex',
     alignItems: 'center',
@@ -125,6 +129,27 @@ const styles = {
     justifyContent: 'flex-end',
     marginTop: '40px',
     marginRight: '10px',
+    float: 'right',
+  },
+  sidebar: {
+    width: 256,
+    paddingTop: 50,
+    display: 'block',
+    zIndex: 2,
+    border: '1px solid #ddd',
+  },
+  home: {
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    width: '100%',
+  },
+  loader: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginTop: 100,
   },
 };
 
