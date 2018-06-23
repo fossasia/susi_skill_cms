@@ -147,6 +147,11 @@ iframe{
 	height: 100%;
 	z-index: -1;
 }
+.chevron-arrow{
+	height: 35px;
+	width: 35px;
+}
+
 @media (min-width:769px){
 	.botbuilder-page-wrapper{
 		padding: 40px 30px 30px;
