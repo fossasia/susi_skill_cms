@@ -11,6 +11,8 @@ import Configure from './BotBuilderPages/Configure';
 import Deploy from './BotBuilderPages/Deploy';
 import Snackbar from 'material-ui/Snackbar';
 import { Paper } from 'material-ui';
+import ChevronLeft from 'material-ui/svg-icons/navigation/chevron-left';
+import ChevronRight from 'material-ui/svg-icons/navigation/chevron-right';
 import Cookies from 'universal-cookie';
 
 const cookies = new Cookies();
@@ -33,6 +35,9 @@ class BotWizard extends React.Component {
       themeSettingsString: '{}',
       openSnackbar: false,
       msgSnackbar: '',
+      slideState: 1, // 0 means preview full, 1 means in middle, 2 means preview collapsed
+      colBuild: 8,
+      colPreview: 4,
     };
   }
 
@@ -87,6 +92,39 @@ class BotWizard extends React.Component {
     this.setState({ stepIndex });
   };
 
+  handleBuildToggle = () => {
+    let { slideState } = this.state;
+    if (slideState === 0 || slideState === 2) {
+      this.setState({
+        slideState: 1,
+        colBuild: 8,
+        colPreview: 4,
+      });
+    } else if (slideState === 1) {
+      this.setState({
+        slideState: 0,
+        colBuild: 0,
+        colPreview: 12,
+      });
+    }
+  };
+  handlePreviewToggle = () => {
+    let { slideState } = this.state;
+    if (slideState === 0 || slideState === 2) {
+      this.setState({
+        slideState: 1,
+        colBuild: 8,
+        colPreview: 4,
+      });
+    } else if (slideState === 1) {
+      this.setState({
+        slideState: 2,
+        colBuild: 12,
+        colPreview: 0,
+      });
+    }
+  };
+
   render() {
     if (!cookies.get('loggedIn')) {
       return (
@@ -112,101 +150,121 @@ class BotWizard extends React.Component {
       <div>
         <StaticAppBar {...this.props} />
         <div style={styles.home} className="botbuilder-page-wrapper">
-          <Paper
-            style={styles.paperStyle}
-            className="botBuilder-page-card"
-            zDepth={1}
-          >
-            <Grid fluid>
-              <Row>
-                <Col xs={12} md={8}>
-                  <div style={{ display: 'flex', flexDirection: 'row' }}>
-                    <div
-                      style={{
-                        width: '100%',
-                        maxWidth: '100%',
-                        margin: 'auto',
-                      }}
-                    >
-                      <Stepper activeStep={stepIndex} linear={false}>
-                        <Step>
-                          <StepButton onClick={() => this.setStep(0)}>
-                            Build
-                          </StepButton>
-                        </Step>
-                        <Step>
-                          <StepButton onClick={() => this.setStep(1)}>
-                            Design
-                          </StepButton>
-                        </Step>
-                        <Step>
-                          <StepButton onClick={() => this.setStep(2)}>
-                            Configure
-                          </StepButton>
-                        </Step>
-                        <Step>
-                          <StepButton onClick={() => this.setStep(3)}>
-                            Deploy
-                          </StepButton>
-                        </Step>
-                      </Stepper>
-                      <div style={contentStyle}>
-                        <div>{this.getStepContent(stepIndex)}</div>
-                        <div style={{ marginTop: '20px' }}>
-                          <RaisedButton
-                            label="Back"
-                            disabled={stepIndex === 0}
-                            backgroundColor={colors.header}
-                            labelColor="#fff"
-                            onTouchTap={this.handlePrev}
-                            style={{ marginRight: 12 }}
-                          />
-                          {stepIndex < 3 ? (
-                            <RaisedButton
-                              label={
-                                stepIndex === 2 ? 'Save and Deploy' : 'Next'
-                              }
-                              backgroundColor={colors.header}
-                              labelColor="#fff"
-                              onTouchTap={this.handleNext}
-                            />
-                          ) : (
-                            <p
-                              style={{
-                                padding: '20px 0px 0px 0px',
-                                fontFamily: 'sans-serif',
-                                fontSize: '14px',
-                              }}
-                            >
-                              You&apos;re all done. Thanks for using SUSI Bot.
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </Col>
-
-                <Col xs={12} md={4}>
-                  <div style={{ padding: '40px 0 0 40px' }}>
-                    <br className="display-mobile-only" />
-                    <h2 className="center">Preview</h2>
-                    <br />
-                    <div style={{ position: 'relative', overflow: 'hidden' }}>
-                      <iframe
-                        title="botPreview"
-                        name="frame-1"
-                        id="frame-1"
-                        src={locationBot}
-                        height="600"
-                        width="100%"
+          <Grid fluid>
+            <Row>
+              <Col
+                className="botbuilder-col"
+                md={this.state.colBuild}
+                style={{
+                  overflowX: 'auto',
+                  display: this.state.colBuild === 0 ? 'none' : 'block',
+                }}
+              >
+                <Paper
+                  style={styles.paperStyle}
+                  className="botBuilder-page-card"
+                  zDepth={1}
+                >
+                  <span title="collapse builder">
+                    <ChevronLeft
+                      className="botbuilder-chevron"
+                      onClick={this.handleBuildToggle}
+                      style={styles.chevronBuild}
+                    />
+                  </span>
+                  <Stepper activeStep={stepIndex} linear={false}>
+                    <Step>
+                      <StepButton onClick={() => this.setStep(0)}>
+                        Build
+                      </StepButton>
+                    </Step>
+                    <Step>
+                      <StepButton onClick={() => this.setStep(1)}>
+                        Design
+                      </StepButton>
+                    </Step>
+                    <Step>
+                      <StepButton onClick={() => this.setStep(2)}>
+                        Configure
+                      </StepButton>
+                    </Step>
+                    <Step>
+                      <StepButton onClick={() => this.setStep(3)}>
+                        Deploy
+                      </StepButton>
+                    </Step>
+                  </Stepper>
+                  <div style={contentStyle}>
+                    <div>{this.getStepContent(stepIndex)}</div>
+                    <div style={{ marginTop: '20px' }}>
+                      <RaisedButton
+                        label="Back"
+                        disabled={stepIndex === 0}
+                        backgroundColor={colors.header}
+                        labelColor="#fff"
+                        onTouchTap={this.handlePrev}
+                        style={{ marginRight: 12 }}
                       />
+                      {stepIndex < 3 ? (
+                        <RaisedButton
+                          label={stepIndex === 2 ? 'Save and Deploy' : 'Next'}
+                          backgroundColor={colors.header}
+                          labelColor="#fff"
+                          onTouchTap={this.handleNext}
+                        />
+                      ) : (
+                        <p
+                          style={{
+                            padding: '20px 0px 0px 0px',
+                            fontFamily: 'sans-serif',
+                            fontSize: '14px',
+                          }}
+                        >
+                          You&apos;re all done. Thanks for using SUSI Bot.
+                        </p>
+                      )}
                     </div>
                   </div>
-                </Col>
-              </Row>
-            </Grid>
-          </Paper>
+                </Paper>
+              </Col>
+
+              <Col
+                className="botbuilder-col"
+                xs={12}
+                md={this.state.colPreview}
+                style={{
+                  display: this.state.colPreview === 0 ? 'none' : 'block',
+                }}
+              >
+                <Paper
+                  style={styles.paperStyle}
+                  className="botBuilder-page-card"
+                  zDepth={1}
+                >
+                  <span title="collapse preview">
+                    <ChevronRight
+                      className="botbuilder-chevron"
+                      onClick={this.handlePreviewToggle}
+                      style={styles.chevronPreview}
+                    />
+                  </span>
+                  <br className="display-mobile-only" />
+                  <h2 className="center">Preview</h2>
+                  <br />
+                  <div style={{ position: 'relative', overflow: 'hidden' }}>
+                    <iframe
+                      title="botPreview"
+                      name="frame-1"
+                      id="frame-1"
+                      src={locationBot}
+                      height="600"
+                      width="100%"
+                    />
+                  </div>
+                </Paper>
+              </Col>
+            </Row>
+          </Grid>
         </div>
         <Snackbar
           open={this.state.openSnackbar}
@@ -232,6 +290,7 @@ const styles = {
   paperStyle: {
     width: '100%',
     marginTop: '20px',
+    position: 'relative',
   },
   tabStyle: {
     color: 'rgb(91, 91, 91)',
@@ -243,6 +302,24 @@ const styles = {
     marginBottom: '100px',
     fontSize: '50px',
     marginTop: '300px',
+  },
+  chevronBuild: {
+    position: 'absolute',
+    right: '0',
+    top: '0',
+    width: '35px',
+    height: '35px',
+    cursor: 'pointer',
+    display: window.innerWidth < 769 ? 'none' : 'inherit',
+  },
+  chevronPreview: {
+    position: 'absolute',
+    left: '0',
+    top: '0',
+    width: '35px',
+    height: '35px',
+    cursor: 'pointer',
+    display: window.innerWidth < 769 ? 'none' : 'inherit',
   },
 };
 BotWizard.propTypes = {
