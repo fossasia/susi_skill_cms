@@ -52,6 +52,7 @@ export default class BrowseSkill extends React.Component {
       filter: '&applyFilter=true&filter_name=descending&filter_type=rating',
       searchQuery: '',
       topRatedSkills: [],
+      topUsedSkills: [],
       rating_refine: null,
     };
   }
@@ -66,6 +67,7 @@ export default class BrowseSkill extends React.Component {
       this.loadCards();
     } else {
       this.loadTopRated();
+      this.loadTopUsed();
     }
   }
 
@@ -278,7 +280,7 @@ export default class BrowseSkill extends React.Component {
     let url;
     url =
       urls.API_URL +
-      '/cms/getSkillList.json?group=All&applyFilter=true&filter_name=descending&filter_type=rating';
+      '/cms/getSkillList.json?group=All&applyFilter=true&filter_name=descending&filter_type=rating&count=10';
     let self = this;
     $.ajax({
       url: url,
@@ -286,11 +288,9 @@ export default class BrowseSkill extends React.Component {
       jsonp: 'callback',
       crossDomain: true,
       success: function(data) {
-        let cardsToDisplay = data.filteredData.length;
-        cardsToDisplay = cardsToDisplay < 10 ? cardsToDisplay : 10;
         self.setState({
-          topRatedSkills: data.filteredData.slice(0, cardsToDisplay),
           skillsLoaded: true,
+          topRatedSkills: data.filteredData,
         });
       },
       error: function(e) {
@@ -299,6 +299,31 @@ export default class BrowseSkill extends React.Component {
       },
     });
   };
+
+  loadTopUsed = () => {
+    let url;
+    url =
+      urls.API_URL +
+      '/cms/getSkillList.json?group=All&applyFilter=true&filter_name=descending&filter_type=usage&count=10';
+    let self = this;
+    $.ajax({
+      url: url,
+      dataType: 'jsonp',
+      jsonp: 'callback',
+      crossDomain: true,
+      success: function(data) {
+        self.setState({
+          skillsLoaded: true,
+          topUsedSkills: data.filteredData,
+        });
+      },
+      error: function(e) {
+        console.log('Error while fetching top used skills', e);
+        return self.loadTopUsed();
+      },
+    });
+  };
+
   handleRatingRefine = rating => {
     this.setState(
       {
@@ -646,19 +671,38 @@ export default class BrowseSkill extends React.Component {
 
             {this.state.skillsLoaded ? (
               <div style={styles.container}>
-                <div style={styles.topRated}>
-                  <h2 style={{ paddingLeft: 16 }}>{this.state.text}</h2>
-                  {/* Scroll Id must be unique for all instances of SkillCardList*/}
-                  {!this.props.routeType && (
-                    <SkillCardScrollList
-                      scrollId="topRated"
-                      skills={this.state.topRatedSkills}
-                      modalValue={this.state.modalValue}
-                      languageValue={this.state.languageValue}
-                      skillUrl={this.state.skillUrl}
-                    />
-                  )}
-                </div>
+                {this.state.topRatedSkills.length ? (
+                  <div style={styles.topSkills}>
+                    <h2 style={{ paddingLeft: 16 }}>{this.state.text}</h2>
+                    {/* Scroll Id must be unique for all instances of SkillCardList*/}
+                    {!this.props.routeType && (
+                      <SkillCardScrollList
+                        scrollId="topRated"
+                        skills={this.state.topRatedSkills}
+                        modalValue={this.state.modalValue}
+                        languageValue={this.state.languageValue}
+                        skillUrl={this.state.skillUrl}
+                      />
+                    )}
+                  </div>
+                ) : null}
+
+                {this.state.topUsedSkills.length ? (
+                  <div style={styles.topSkills}>
+                    <h2 style={{ paddingLeft: 16 }}>Top Used Skills</h2>
+                    {/* Scroll Id must be unique for all instances of SkillCardList*/}
+                    {!this.props.routeType && (
+                      <SkillCardScrollList
+                        scrollId="topUsed"
+                        skills={this.state.topUsedSkills}
+                        modalValue={this.state.modalValue}
+                        languageValue={this.state.languageValue}
+                        skillUrl={this.state.skillUrl}
+                      />
+                    )}
+                  </div>
+                ) : null}
+
                 {this.state.skills.length && this.props.routeType ? (
                   <div>
                     <SkillCardList
