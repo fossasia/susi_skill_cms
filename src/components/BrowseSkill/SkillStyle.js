@@ -151,6 +151,26 @@ const styles = {
     flexWrap: 'wrap',
     marginTop: 100,
   },
+  starRefine: {
+    display: 'flex',
+    flexDirection: 'column',
+    marginLeft: '12px',
+  },
+  ratingLabel: {
+    fontSize: '14px',
+    marginLeft: '4px',
+  },
+  singleRating: {
+    display: 'flex',
+    cursor: 'pointer',
+    width: 'fit-content',
+  },
+  clearButton: {
+    marginLeft: '12px',
+    cursor: 'pointer',
+    fontWeight: 'bold',
+    width: 'fit-content',
+  },
 };
 
 export default styles;

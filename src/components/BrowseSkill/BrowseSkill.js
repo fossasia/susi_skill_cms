@@ -25,6 +25,8 @@ import SearchBar from 'material-ui-search-bar';
 // eslint-disable-next-line
 import Ratings from 'react-ratings-declarative';
 
+import './custom.css';
+
 const groups = [];
 const languages = [];
 
@@ -47,6 +49,7 @@ export default class BrowseSkill extends React.Component {
       filter: '&applyFilter=true&filter_name=descending&filter_type=rating',
       searchQuery: '',
       topRatedSkills: [],
+      rating_refine: null,
     };
   }
 
@@ -241,6 +244,13 @@ export default class BrowseSkill extends React.Component {
           });
         }
 
+        if (self.state.rating_refine) {
+          data.filteredData = data.filteredData.filter(
+            skill =>
+              skill.skill_rating.stars.avg_star >= self.state.rating_refine,
+          );
+        }
+
         self.setState({
           skills: data.filteredData,
           // cards: cards,
@@ -312,6 +322,15 @@ export default class BrowseSkill extends React.Component {
     });
   };
 
+  handleRatingRefine = rating => {
+    this.setState(
+      {
+        rating_refine: rating,
+      },
+      this.loadCards(),
+    );
+  };
+
   render() {
     return (
       <div>
@@ -378,6 +397,126 @@ export default class BrowseSkill extends React.Component {
               </Subheader>
               {groups}
             </Menu>
+
+            {this.state.skillsLoaded ? (
+              <div className="refine-section">
+                <Menu desktop={true} disableAutoFocus={true}>
+                  <Subheader style={{ fontWeight: 'bold' }}>
+                    Refine by
+                  </Subheader>
+                  <h4 style={{ marginLeft: '12px', marginBottom: '4px' }}>
+                    Avg. Customer Review
+                  </h4>
+                  {this.state.rating_refine ? (
+                    <div
+                      className="clear-button"
+                      style={styles.clearButton}
+                      onClick={() => this.handleRatingRefine(null)}
+                    >
+                      Clear
+                    </div>
+                  ) : (
+                    ''
+                  )}
+                  <div style={styles.starRefine}>
+                    <div
+                      style={styles.singleRating}
+                      onClick={() => this.handleRatingRefine(4)}
+                    >
+                      <Ratings
+                        rating={4}
+                        widgetRatedColors="#ffbb28"
+                        widgetDimensions="20px"
+                        widgetSpacings="0px"
+                      >
+                        <Ratings.Widget />
+                        <Ratings.Widget />
+                        <Ratings.Widget />
+                        <Ratings.Widget />
+                        <Ratings.Widget />
+                      </Ratings>
+                      <div
+                        style={styles.ratingLabel}
+                        className={this.state.rating_refine === 4 ? 'bold' : ''}
+                      >
+                        & Up
+                      </div>
+                    </div>
+                    <div
+                      style={styles.singleRating}
+                      onClick={() => this.handleRatingRefine(3)}
+                    >
+                      <Ratings
+                        rating={3}
+                        widgetRatedColors="#ffbb28"
+                        widgetDimensions="20px"
+                        widgetSpacings="0px"
+                      >
+                        <Ratings.Widget />
+                        <Ratings.Widget />
+                        <Ratings.Widget />
+                        <Ratings.Widget />
+                        <Ratings.Widget />
+                      </Ratings>
+                      <div
+                        style={styles.ratingLabel}
+                        className={this.state.rating_refine === 3 ? 'bold' : ''}
+                      >
+                        & Up
+                      </div>
+                    </div>
+                    <div
+                      style={styles.singleRating}
+                      onClick={() => this.handleRatingRefine(2)}
+                    >
+                      <Ratings
+                        rating={2}
+                        widgetRatedColors="#ffbb28"
+                        widgetDimensions="20px"
+                        widgetSpacings="0px"
+                      >
+                        <Ratings.Widget />
+                        <Ratings.Widget />
+                        <Ratings.Widget />
+                        <Ratings.Widget />
+                        <Ratings.Widget />
+                      </Ratings>
+                      <div
+                        style={styles.ratingLabel}
+                        className={this.state.rating_refine === 2 ? 'bold' : ''}
+                      >
+                        & Up
+                      </div>
+                    </div>
+                    <div
+                      style={styles.singleRating}
+                      onClick={() => this.handleRatingRefine(1)}
+                    >
+                      <Ratings
+                        rating={1}
+                        widgetRatedColors="#ffbb28"
+                        widgetDimensions="20px"
+                        widgetSpacings="0px"
+                      >
+                        <Ratings.Widget />
+                        <Ratings.Widget />
+                        <Ratings.Widget />
+                        <Ratings.Widget />
+                        <Ratings.Widget />
+                      </Ratings>
+                      <div
+                        style={styles.ratingLabel}
+                        className={this.state.rating_refine === 1 ? 'bold' : ''}
+                      >
+                        & Up
+                      </div>
+                    </div>
+                  </div>
+                </Menu>
+              </div>
+            ) : (
+              ''
+            )}
           </div>
           <div style={styles.home}>
             <div style={styles.sortSelect} className="sort-select">
