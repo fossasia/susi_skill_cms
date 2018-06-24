@@ -83,6 +83,13 @@ export default class BrowseSkill extends React.Component {
     });
   };
 
+  handleArrivalTimeChange = (event, value) => {
+    this.setState({ filter: value }, function() {
+      // console.log(this.state);
+      this.loadCards();
+    });
+  };
+
   handleSearch = value => {
     this.setState({ searchQuery: value }, function() {
       // console.log(this.state);
@@ -373,6 +380,40 @@ export default class BrowseSkill extends React.Component {
               </div>
             </div>
             <Menu desktop={true} disableAutoFocus={true}>
+              <Subheader>New Arrivals</Subheader>
+              <MenuItem
+                value="&applyFilter=true&filter_name=descending&filter_type=date&duration=7"
+                key="Last 7 Days"
+                primaryText="Last 7 Days"
+                onClick={event =>
+                  this.handleArrivalTimeChange(
+                    event,
+                    '&applyFilter=true&filter_name=descending&filter_type=date&duration=7',
+                  )
+                }
+              />
+              <MenuItem
+                value="&applyFilter=true&filter_name=descending&filter_type=date&duration=30"
+                key="Last 30 Days"
+                primaryText="Last 30 Days"
+                onClick={event =>
+                  this.handleArrivalTimeChange(
+                    event,
+                    '&applyFilter=true&filter_name=descending&filter_type=date&duration=30',
+                  )
+                }
+              />
+              <MenuItem
+                value="&applyFilter=true&filter_name=descending&filter_type=date&duration=90"
+                key="Last 90 Days"
+                primaryText="Last 90 Days"
+                onClick={event =>
+                  this.handleArrivalTimeChange(
+                    event,
+                    '&applyFilter=true&filter_name=descending&filter_type=date&duration=90',
+                  )
+                }
+              />
               <Subheader style={{ fontWeight: 'bold' }}>
                 Skill Categories
               </Subheader>
