@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import Cookies from 'universal-cookie';
 import $ from 'jquery';
+import ISO6391 from 'iso-639-1';
 
 // Components
 import AuthorSkills from '../AuthorSkills/AuthorSkills';
@@ -728,11 +729,44 @@ class SkillListing extends Component {
                       </li>
                     )}
                   </ul>
-                  <div>
-                    <br />
-                    Last modified at -
-                    {` ${parseDate(this.state.last_modified_time)}`}
-                  </div>
+                </div>
+              </div>
+            </Paper>
+            <Paper className="margin-b-md margin-t-md">
+              <div className="desc margin-b-md margin-t-md">
+                <h1 className="title">Information</h1>
+                <div className="card-content">
+                  <table>
+                    <tr>
+                      <td>Category: </td>
+                      <td>
+                        <Link to={`/category/${this.groupValue}`}>
+                          {this.groupValue}
+                        </Link>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Language: </td>
+                      <td>
+                        <Link to={`/language/${this.languageValue}`}>
+                          {ISO6391.getNativeName(this.languageValue)}
+                        </Link>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Updated on: </td>
+                      <td>{` ${parseDate(this.state.last_modified_time)}`}</td>
+                    </tr>
+                    <tr>
+                      <td>Report: </td>
+                      <td>
+                        <Link to="/Report">Flag as inappropriate</Link>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Content Rating: </td> <td>4+ age</td>
+                    </tr>
+                  </table>
                 </div>
               </div>
             </Paper>

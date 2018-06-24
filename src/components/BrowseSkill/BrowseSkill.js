@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import styles from './SkillStyle';
 import ISO6391 from 'iso-639-1';
 import SelectField from 'material-ui/SelectField';
@@ -35,6 +36,7 @@ export default class BrowseSkill extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      text: 'Top skills',
       cards: [],
       modelValue: 'general',
       skillURL: null,
@@ -185,7 +187,30 @@ export default class BrowseSkill extends React.Component {
 
   loadCards = () => {
     let url;
-    if (this.state.languages.length > 0 && this.state.groups.length > 0) {
+    if (this.props.routeType === 'category') {
+      this.setState({
+        groupValue: this.props.routeValue,
+        text: this.props.routeTitle,
+      });
+      url =
+        urls.API_URL +
+        '/cms/getSkillList.json?group=' +
+        this.props.routeValue +
+        '&applyFilter=true&filter_name=ascending&filter_type=lexicographical';
+    } else if (this.props.routeType === 'language') {
+      this.setState({
+        languageValue: this.props.routeValue,
+        text: this.props.routeTitle,
+      });
+      url =
+        urls.API_URL +
+        '/cms/getSkillList.json?group=All&applyFilter=true&language=' +
+        this.props.routeValue +
+        '&filter_name=ascending&filter_type=lexicographical';
+    } else if (
+      this.state.languages.length > 0 &&
+      this.state.groups.length > 0
+    ) {
       url =
         urls.API_URL +
         '/cms/getSkillList.json?model=' +
@@ -530,17 +555,18 @@ export default class BrowseSkill extends React.Component {
             {this.state.skillsLoaded ? (
               <div style={styles.container}>
                 <div style={styles.topRated}>
-                  <h2 style={{ paddingLeft: 16 }}>Top Rated Skills</h2>
+                  <h2 style={{ paddingLeft: 16 }}>{this.state.text}</h2>
                   {/* Scroll Id must be unique for all instances of SkillCardList*/}
-                  <SkillCardScrollList
-                    scrollId="topRated"
-                    skills={this.state.topRatedSkills}
-                    modalValue={this.state.modalValue}
-                    languageValue={this.state.languageValue}
-                    skillUrl={this.state.skillUrl}
-                  />
+                  {!this.props.routeType && (
+                    <SkillCardScrollList
+                      scrollId="topRated"
+                      skills={this.state.topRatedSkills}
+                      modalValue={this.state.modalValue}
+                      languageValue={this.state.languageValue}
+                      skillUrl={this.state.skillUrl}
+                    />
+                  )}
                 </div>
-
                 {this.state.skills.length ? (
                   <div>
                     <SkillCardList
@@ -569,3 +595,9 @@ export default class BrowseSkill extends React.Component {
     );
   }
 }
+
+BrowseSkill.propTypes = {
+  routeType: PropTypes.string,
+  routeValue: PropTypes.string,
+  routeTitle: PropTypes.string,
+};
