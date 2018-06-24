@@ -124,12 +124,12 @@ const styles = {
   topRated: {
     marginTop: '15px',
   },
-  sortSelect: {
+  topBar: {
     display: 'flex',
-    justifyContent: 'flex-end',
+    justifyContent: 'flex-start',
     marginTop: '40px',
     marginRight: '10px',
-    float: 'right',
+    marginLeft: '20px',
   },
   sidebar: {
     width: 256,
@@ -144,12 +144,17 @@ const styles = {
     width: '100%',
   },
   loader: {
+    width: '100%',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
     flexWrap: 'wrap',
-    marginTop: 100,
+    marginTop: 200,
+  },
+  searchBar: {
+    width: '100%',
+    marginRight: '20px',
   },
 };
 
