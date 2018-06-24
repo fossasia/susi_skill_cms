@@ -324,26 +324,6 @@ export default class BrowseSkill extends React.Component {
         <div style={styles.main}>
           <div style={styles.sidebar}>
             <div style={styles.center}>
-              <SelectField
-                disabled={this.state.languageSelect}
-                floatingLabelText="Language"
-                value={this.state.languageValue}
-                floatingLabelFixed={false}
-                onChange={this.handleLanguageChange}
-                style={styles.selection}
-                listStyle={{
-                  top: '100px',
-                }}
-                selectedMenuItemStyle={{
-                  color: colors.header,
-                }}
-                underlineFocusStyle={{
-                  color: colors.header,
-                }}
-              >
-                {languages}
-              </SelectField>
-
               <div style={styles.newSkillBtn}>
                 <IconMenu
                   animated={false}
@@ -458,6 +438,25 @@ export default class BrowseSkill extends React.Component {
                   primaryText={'This Month Usage'}
                   label={'This Month Usage'}
                 />
+              </SelectField>
+              <SelectField
+                disabled={this.state.languageSelect}
+                floatingLabelText="Language"
+                value={this.state.languageValue}
+                floatingLabelFixed={false}
+                onChange={this.handleLanguageChange}
+                style={styles.selection}
+                listStyle={{
+                  top: '100px',
+                }}
+                selectedMenuItemStyle={{
+                  color: colors.header,
+                }}
+                underlineFocusStyle={{
+                  color: colors.header,
+                }}
+              >
+                {languages}
               </SelectField>
             </div>
             {this.state.skills.length === 0 &&

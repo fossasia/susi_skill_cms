@@ -144,12 +144,13 @@ const styles = {
     width: '100%',
   },
   loader: {
+    width: '100%',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
     flexWrap: 'wrap',
-    marginTop: 100,
+    marginTop: 200,
   },
 };
 
