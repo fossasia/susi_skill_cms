@@ -360,7 +360,16 @@ export default class BrowseSkill extends React.Component {
             </Menu>
           </div>
           <div style={styles.home}>
-            <div style={styles.sortSelect} className="sort-select">
+            <div style={styles.topBar} className="top-bar">
+              <div style={styles.searchBar} className="search-bar">
+                <SearchBar
+                  onChange={this.handleSearch}
+                  style={{
+                    marginTop: '25px',
+                  }}
+                  value={this.state.searchQuery}
+                />
+              </div>
               <SelectField
                 floatingLabelText="Sort by"
                 value={this.state.filter}
@@ -471,16 +480,6 @@ export default class BrowseSkill extends React.Component {
 
             {this.state.skillsLoaded ? (
               <div style={styles.container}>
-                <SearchBar
-                  onChange={this.handleSearch}
-                  onRequestSearch={() => console.log('Nothing to search')}
-                  style={{
-                    marginTop: '25px',
-                    width: '50%',
-                  }}
-                  value={this.state.searchQuery}
-                />
-
                 <div style={styles.topRated}>
                   <h2>Top Rated Skills</h2>
                   <SkillCardList
