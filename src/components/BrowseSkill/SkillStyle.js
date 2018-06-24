@@ -2,6 +2,7 @@ const styles = {
   main: {
     display: 'flex',
     flexDirection: 'row',
+    overflowX: 'hidden',
   },
   center: {
     display: 'flex',
@@ -38,12 +39,11 @@ const styles = {
     width: '100%',
   },
   container: {
+    marginTop: '15px',
     display: 'flex',
-    alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'column',
     width: '100%',
-    padding: '0px 20px 20px',
   },
   propContainer: {
     width: 100,
@@ -69,15 +69,9 @@ const styles = {
     border: '1px solid #eaeded',
     padding: '5px',
   },
-  scroll: {
-    display: 'flex',
-    flexWrap: 'nowrap',
-    width: '100%',
-  },
   gridList: {
     flexWrap: 'wrap',
     flexDirection: 'row',
-    margin: '10px',
     textAlign: 'center',
   },
   imageContainer: {
@@ -122,14 +116,15 @@ const styles = {
     color: '#108ee9',
   },
   topRated: {
-    marginTop: '15px',
+    width: '1090px',
+    margin: 10,
   },
-  sortSelect: {
+  topBar: {
     display: 'flex',
-    justifyContent: 'flex-end',
+    justifyContent: 'flex-start',
     marginTop: '40px',
     marginRight: '10px',
-    float: 'right',
+    marginLeft: '20px',
   },
   sidebar: {
     width: 256,
@@ -138,18 +133,23 @@ const styles = {
     zIndex: 2,
     border: '1px solid #ddd',
   },
+  searchBar: {
+    width: '100%',
+    marginRight: '20px',
+  },
   home: {
-    marginLeft: 'auto',
-    marginRight: 'auto',
+    display: 'flex',
+    flexDirection: 'column',
     width: '100%',
   },
   loader: {
+    width: '100%',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
     flexWrap: 'wrap',
-    marginTop: 100,
+    marginTop: 200,
   },
   starRefine: {
     display: 'flex',

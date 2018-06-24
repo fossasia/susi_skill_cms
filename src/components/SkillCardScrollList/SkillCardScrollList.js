@@ -4,10 +4,15 @@ import { Link } from 'react-router-dom';
 import { Card } from 'material-ui/Card';
 import PropTypes from 'prop-types';
 import CircleImage from '../CircleImage/CircleImage';
+import FloatingActionButton from 'material-ui/FloatingActionButton';
+import NavigationChevronLeft from 'material-ui/svg-icons/navigation/chevron-left';
+import NavigationChevronRight from 'material-ui/svg-icons/navigation/chevron-right';
 
-import styles from '../BrowseSkill/SkillStyle';
+import styles from './ScrollStyle';
 
-class SkillCardList extends Component {
+import $ from 'jquery';
+
+class SkillCardScrollList extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -30,6 +35,22 @@ class SkillCardList extends Component {
       );
     }
   }
+
+  scrollLeft = () => {
+    let parentEle = document.getElementById(this.props.scrollId);
+    let scrollValue = $(parentEle).scrollLeft() - 200;
+    $(parentEle)
+      .stop()
+      .animate({ scrollLeft: scrollValue }, 100);
+  };
+
+  scrollRight = () => {
+    let parentEle = document.getElementById(this.props.scrollId);
+    let scrollValue = $(parentEle).scrollLeft() + 200;
+    $(parentEle)
+      .stop()
+      .animate({ scrollLeft: scrollValue }, 100);
+  };
 
   loadSkillCards = () => {
     let cards = [];
@@ -63,15 +84,6 @@ class SkillCardList extends Component {
       } else {
         examples = null;
       }
-      // if (skill.descriptions) {
-      //   if (skill.descriptions.length > 105) {
-      //     description = skill.descriptions.substring(0, 104) + '...';
-      //   } else {
-      //     description = skill.descriptions;
-      //   }
-      // } else {
-      //   description = 'No description available';
-      // }
       if (skill.skill_rating) {
         average_rating = parseFloat(skill.skill_rating.stars.avg_star);
         total_rating = parseInt(skill.skill_rating.stars.total_star, 10);
@@ -114,7 +126,6 @@ class SkillCardList extends Component {
           </Link>
           <div style={styles.rating}>
             <Ratings
-              style={{ display: 'flex' }}
               rating={average_rating || 0}
               widgetRatedColors="#ffbb28"
               widgetDimensions="20px"
@@ -139,10 +150,10 @@ class SkillCardList extends Component {
   };
 
   render() {
-    let skillDisplay = '';
-    if (this.props.skills.length) {
-      skillDisplay = this.state.cards;
-    }
+    // let skillDisplay = '';
+    // if (this.props.skills.length) {
+    //   skillDisplay = ;
+    // }
     return (
       <div
         style={{
@@ -154,18 +165,41 @@ class SkillCardList extends Component {
         }}
       >
         <div>
-          <div style={styles.gridList}>{skillDisplay}</div>
+          <div
+            id={this.props.scrollId}
+            className="scrolling-wrapper"
+            style={styles.gridList}
+          >
+            <FloatingActionButton
+              mini={true}
+              backgroundColor={'#4285f4'}
+              style={styles.leftFab}
+              onClick={this.scrollLeft}
+            >
+              <NavigationChevronLeft />
+            </FloatingActionButton>
+            {this.state.cards}
+            <FloatingActionButton
+              mini={true}
+              backgroundColor={'#4285f4'}
+              style={styles.rightFab}
+              onClick={this.scrollRight}
+            >
+              <NavigationChevronRight />
+            </FloatingActionButton>
+          </div>
         </div>
       </div>
     );
   }
 }
 
-SkillCardList.propTypes = {
+SkillCardScrollList.propTypes = {
+  scrollId: PropTypes.string.isRequired,
   skills: PropTypes.array,
   languageValue: PropTypes.string,
   skillUrl: PropTypes.string,
   modelValue: PropTypes.string,
 };
 
-export default SkillCardList;
+export default SkillCardScrollList;

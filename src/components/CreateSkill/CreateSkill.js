@@ -299,6 +299,9 @@ export default class CreateSkill extends React.Component {
     form.append('content', code);
     form.append('image_name', this.state.imageUrl.replace('images/', ''));
     form.append('access_token', cookies.get('loggedIn'));
+    if (this.props.botBuilder) {
+      form.append('private', '1');
+    }
 
     let settings = {
       async: true,
