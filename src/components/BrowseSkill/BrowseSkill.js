@@ -19,11 +19,14 @@ import CircleImage from '../CircleImage/CircleImage';
 import CircularProgress from 'material-ui/CircularProgress';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import SkillCardList from '../SkillCardList/SkillCardList';
+import SkillCardScrollList from '../SkillCardScrollList/SkillCardScrollList';
 import urls from '../../Utils/urls';
 import Footer from '../Footer/Footer.react';
 import SearchBar from 'material-ui-search-bar';
 // eslint-disable-next-line
 import Ratings from 'react-ratings-declarative';
+
+import './custom.css';
 
 const groups = [];
 const languages = [];
@@ -305,8 +308,10 @@ export default class BrowseSkill extends React.Component {
             return result;
           });
         }
+        let cardsToDisplay = data.filteredData.length;
+        cardsToDisplay = cardsToDisplay < 10 ? cardsToDisplay : 10;
         self.setState({
-          topRatedSkills: data.filteredData.slice(0, 5),
+          topRatedSkills: data.filteredData.slice(0, cardsToDisplay),
         });
       },
     });
@@ -468,21 +473,36 @@ export default class BrowseSkill extends React.Component {
                 {languages}
               </SelectField>
             </div>
+            <div style={styles.searchBar}>
+              <SearchBar
+                onChange={this.handleSearch}
+                onRequestSearch={() => console.log('Nothing to search')}
+                style={{
+                  marginTop: '25px',
+                  width: '50%',
+                }}
+                value={this.state.searchQuery}
+              />
+            </div>
             {this.state.skills.length === 0 &&
               !this.state.skillsLoaded && (
-                <h1 style={styles.loader}>
-                  <div>
-                    <CircularProgress size={62} color="#4285f5" />
-                    <h4>Loading</h4>
-                  </div>
-                </h1>
+                <div>
+                  <h1 style={styles.loader}>
+                    <div>
+                      <CircularProgress size={62} color="#4285f5" />
+                      <h4>Loading</h4>
+                    </div>
+                  </h1>
+                </div>
               )}
 
             {this.state.skillsLoaded ? (
               <div style={styles.container}>
                 <div style={styles.topRated}>
-                  <h2>Top Rated Skills</h2>
-                  <SkillCardList
+                  <h2 style={{ paddingLeft: 16 }}>Top Rated Skills</h2>
+                  {/* Scroll Id must be unique for all instances of SkillCardList*/}
+                  <SkillCardScrollList
+                    scrollId="topRated"
                     skills={this.state.topRatedSkills}
                     modalValue={this.state.modalValue}
                     languageValue={this.state.languageValue}
@@ -491,12 +511,14 @@ export default class BrowseSkill extends React.Component {
                 </div>
 
                 {this.state.skills.length ? (
-                  <SkillCardList
-                    skills={this.state.skills}
-                    modalValue={this.state.modalValue}
-                    languageValue={this.state.languageValue}
-                    skillUrl={this.state.skillUrl}
-                  />
+                  <div>
+                    <SkillCardList
+                      skills={this.state.skills}
+                      modalValue={this.state.modalValue}
+                      languageValue={this.state.languageValue}
+                      skillUrl={this.state.skillUrl}
+                    />
+                  </div>
                 ) : (
                   <div style={{ fontSize: 30 }}>
                     No Skills found. Be the first one to

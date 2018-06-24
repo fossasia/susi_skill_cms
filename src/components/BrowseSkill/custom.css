@@ -17,3 +17,7 @@
     background-color: #555;
     opacity: 1.0;
  }
+
+div.scrolling-wrapper::-webkit-scrollbar {
+        display: none;
+}

@@ -2,6 +2,7 @@ const styles = {
   main: {
     display: 'flex',
     flexDirection: 'row',
+    overflowX: 'hidden',
   },
   center: {
     display: 'flex',
@@ -38,12 +39,11 @@ const styles = {
     width: '100%',
   },
   container: {
+    marginTop: '15px',
     display: 'flex',
-    alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'column',
     width: '100%',
-    padding: '0px 20px 20px',
   },
   propContainer: {
     width: 100,
@@ -69,15 +69,9 @@ const styles = {
     border: '1px solid #eaeded',
     padding: '5px',
   },
-  scroll: {
-    display: 'flex',
-    flexWrap: 'nowrap',
-    width: '100%',
-  },
   gridList: {
     flexWrap: 'wrap',
     flexDirection: 'row',
-    margin: '10px',
     textAlign: 'center',
   },
   imageContainer: {
@@ -122,7 +116,8 @@ const styles = {
     color: '#108ee9',
   },
   topRated: {
-    marginTop: '15px',
+    width: '1090px',
+    margin: 10,
   },
   topBar: {
     display: 'flex',
@@ -138,9 +133,15 @@ const styles = {
     zIndex: 2,
     border: '1px solid #ddd',
   },
+  searchBar: {
+    display: 'flex',
+    justifyContent: 'center',
+    marginTop: '40px',
+    marginRight: '10px',
+  },
   home: {
-    marginLeft: 'auto',
-    marginRight: 'auto',
+    display: 'flex',
+    flexDirection: 'column',
     width: '100%',
   },
   loader: {
