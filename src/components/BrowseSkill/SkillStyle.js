@@ -134,10 +134,8 @@ const styles = {
     border: '1px solid #ddd',
   },
   searchBar: {
-    display: 'flex',
-    justifyContent: 'center',
-    marginTop: '40px',
-    marginRight: '10px',
+    width: '100%',
+    marginRight: '20px',
   },
   home: {
     display: 'flex',
@@ -152,10 +150,6 @@ const styles = {
     flexDirection: 'row',
     flexWrap: 'wrap',
     marginTop: 200,
-  },
-  searchBar: {
-    width: '100%',
-    marginRight: '20px',
   },
 };
 

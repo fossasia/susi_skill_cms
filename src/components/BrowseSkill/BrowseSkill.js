@@ -369,6 +369,7 @@ export default class BrowseSkill extends React.Component {
               <div style={styles.searchBar} className="search-bar">
                 <SearchBar
                   onChange={this.handleSearch}
+                  onRequestSearch={() => console.log('Nothing to search')}
                   style={{
                     marginTop: '25px',
                   }}
@@ -472,17 +473,6 @@ export default class BrowseSkill extends React.Component {
               >
                 {languages}
               </SelectField>
-            </div>
-            <div style={styles.searchBar}>
-              <SearchBar
-                onChange={this.handleSearch}
-                onRequestSearch={() => console.log('Nothing to search')}
-                style={{
-                  marginTop: '25px',
-                  width: '50%',
-                }}
-                value={this.state.searchQuery}
-              />
             </div>
             {this.state.skills.length === 0 &&
               !this.state.skillsLoaded && (
