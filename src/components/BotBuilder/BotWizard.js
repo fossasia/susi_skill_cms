@@ -38,6 +38,8 @@ class BotWizard extends React.Component {
       slideState: 1, // 0 means preview full, 1 means in middle, 2 means preview collapsed
       colBuild: 8,
       colPreview: 4,
+      designCode:
+        '!Write the hex color codes of Body background, User message box background, User message text color, Bot message box background, Bot message text color and Bot Icon respectively below.\n::design #ffffff, #0077e5, #ffffff, #f8f8f8, #455a64, #000000',
     };
   }
 
@@ -79,7 +81,12 @@ class BotWizard extends React.Component {
       case 0:
         return <Build code={this.state.startCode} />;
       case 1:
-        return <Design updateSettings={this.updateSettings} />;
+        return (
+          <Design
+            updateSettings={this.updateSettings}
+            code={this.state.designCode}
+          />
+        );
       case 2:
         return <Configure />;
       case 3:
