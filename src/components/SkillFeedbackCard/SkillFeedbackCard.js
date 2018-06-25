@@ -42,6 +42,7 @@ class SkillFeedbackCard extends Component {
       openEditDialog: false,
       openDeleteDialog: false,
       errorText: '',
+      show_all_feedback: false,
     };
   }
 
@@ -63,6 +64,12 @@ class SkillFeedbackCard extends Component {
   handleDeleteClose = () => {
     this.setState({
       openDeleteDialog: false,
+    });
+  };
+
+  toggleShowAll = () => {
+    this.setState({
+      show_all_feedback: !this.state.show_all_feedback,
     });
   };
 
@@ -199,6 +206,14 @@ class SkillFeedbackCard extends Component {
       }
     });
 
+    if (!this.state.show_all_feedback) {
+      if (userFeedbackCard) {
+        feedbackCards.splice(4);
+      } else {
+        feedbackCards.splice(5);
+      }
+    }
+
     return (
       <Paper className="margin-b-md margin-t-md">
         <div className="top-section">
@@ -236,13 +251,14 @@ class SkillFeedbackCard extends Component {
           <List>
             {userFeedbackCard}
             {feedbackCards}
-            {this.props.skill_feedback.length >= 5 ? (
+            {(userFeedbackCard && this.props.skill_feedback.length >= 4) ||
+            this.props.skill_feedback.length >= 5 ? (
               <ListItem
                 className="display-all"
                 primaryText={`Show ${
-                  this.props.show_all_feedback ? 'less' : 'all'
+                  this.state.show_all_feedback ? 'less' : 'all'
                 } reviews`}
-                onClick={() => this.props.toggleShowAll()}
+                onClick={this.toggleShowAll}
               />
             ) : null}
           </List>
@@ -286,8 +302,6 @@ SkillFeedbackCard.propTypes = {
   skill_feedback: PropTypes.array,
   postFeedback: PropTypes.func,
   deleteFeedback: PropTypes.func,
-  toggleShowAll: PropTypes.func,
-  show_all_feedback: PropTypes.bool,
 };
 
 export default SkillFeedbackCard;
