@@ -1,11 +1,11 @@
 import React from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
-import TextField from 'material-ui/TextField';
 import * as $ from 'jquery';
 import Cookies from 'universal-cookie';
 import Snackbar from 'material-ui/Snackbar';
 import TiTick from 'react-icons/lib/ti/tick';
 import CircularProgress from 'material-ui/CircularProgress';
+import Close from 'material-ui/svg-icons/navigation/close';
 import PropTypes from 'prop-types';
 import ColorPicker from 'material-ui-color-picker';
 import colors from '../../../Utils/colors';
@@ -32,6 +32,10 @@ class Design extends React.Component {
       msgSnackbar: '',
       loadedSettings: false,
       resetting: false,
+      uploadingBodyBackgroundImg: false,
+      botbuilderBodyBackgroundImgName: '',
+      botbuilderIconImgName: '',
+      uploadingBotbuilderIconImg: false,
     };
     this.getSettings();
   }
@@ -62,24 +66,121 @@ class Design extends React.Component {
   };
 
   handleChangeBodyBackgroundImage = botbuilderBodyBackgroundImg => {
-    this.setState({ botbuilderBodyBackgroundImg }, () => this.updateSettings());
+    let files = botbuilderBodyBackgroundImg.target.files;
+    if (files.length === 0) {
+      this.handleRemoveUrlBody();
+    } else {
+      this.uploadImageBodyBackground(files[0]);
+    }
+  };
+
+  uploadImageBodyBackground = file => {
+    let form = new FormData();
+    form.append('image', file);
+    form.append('access_token', cookies.get('loggedIn'));
+    form.append('image_name', file.name);
+    let settings = {
+      async: true,
+      crossDomain: true,
+      url: 'https://api.susi.ai/cms/uploadImage.json',
+      method: 'POST',
+      processData: false,
+      contentType: false,
+      mimeType: 'multipart/form-data',
+      data: form,
+    };
+    this.setState({ uploadingBodyBackgroundImg: true });
+    let self = this;
+    $.ajax(settings)
+      .done(function(response) {
+        response = JSON.parse(response);
+        self.setState(
+          {
+            uploadingBodyBackgroundImg: false,
+            botbuilderBodyBackgroundImg: response.image_path,
+            botbuilderBodyBackgroundImgName: response.image_path.substring(
+              response.image_path.indexOf('_') + 1,
+            ),
+          },
+          () => self.updateSettings(),
+        );
+      })
+      .fail(function(jqXHR, textStatus) {
+        self.setState({
+          uploadingBodyBackgroundImg: false,
+          openSnackbar: true,
+          msgSnackbar: "Error! Couldn't upload image",
+        });
+      });
+  };
+
+  uploadImageIcon = file => {
+    console.log(file);
+    let form = new FormData();
+    form.append('access_token', cookies.get('loggedIn'));
+    form.append('image_name', file.name);
+    form.append('image', file);
+    let settings = {
+      async: true,
+      crossDomain: true,
+      url: 'https://api.susi.ai/cms/uploadImage.json',
+      method: 'POST',
+      processData: false,
+      contentType: false,
+      mimeType: 'multipart/form-data',
+      data: form,
+    };
+    this.setState({ uploadingBotbuilderIconImg: true });
+    let self = this;
+    $.ajax(settings)
+      .done(function(response) {
+        response = JSON.parse(response);
+        self.setState(
+          {
+            uploadingBotbuilderIconImg: false,
+            iconSelected: null,
+            botbuilderIconImg: response.image_path,
+            botbuilderIconImgName: response.image_path.substring(
+              response.image_path.indexOf('_') + 1,
+            ),
+          },
+          () => self.updateSettings(),
+        );
+      })
+      .fail(function(jqXHR, textStatus) {
+        self.setState({
+          uploadingBotbuilderIconImg: false,
+          openSnackbar: true,
+          msgSnackbar: "Error! Couldn't upload image",
+        });
+      });
   };
   handleRemoveUrlBody = () => {
-    this.setState({ botbuilderBodyBackgroundImg: '' }, () =>
-      this.updateSettings(),
-    );
-  };
-  handleChangeIconImage = botbuilderIconImg => {
     this.setState(
       {
-        botbuilderIconImg,
-        iconSelected: null,
+        botbuilderBodyBackgroundImg: '',
+        botbuilderBodyBackgroundImgName: '',
       },
       () => this.updateSettings(),
     );
   };
+  handleChangeIconImage = botbuilderIconImg => {
+    let files = botbuilderIconImg.target.files;
+    if (files.length === 0) {
+      this.handleRemoveUrlIcon();
+    } else {
+      this.uploadImageIcon(files[0]);
+    }
+    this.setState({ botbuilderIconImg }, () => this.updateSettings());
+  };
   handleRemoveUrlIcon = () => {
-    this.setState({ botbuilderIconImg: '' }, () => this.updateSettings());
+    this.setState(
+      {
+        botbuilderIconImg: '',
+        botbuilderIconImgName: '',
+      },
+      () => this.updateSettings(),
+    );
   };
 
   handleSave = () => {
@@ -98,6 +199,10 @@ class Design extends React.Component {
       {
         key: 'botbuilderBodyBackgroundImg',
         value: this.state.botbuilderBodyBackgroundImg,
+      },
+      {
+        key: 'botbuilderBodyBackgroundImgName',
+        value: this.state.botbuilderBodyBackgroundImgName,
       },
       {
         key: 'botbuilderUserMessageBackground',
@@ -122,6 +227,10 @@ class Design extends React.Component {
       {
         key: 'botbuilderIconImg',
         value: this.state.botbuilderIconImg,
+      },
+      {
+        key: 'botbuilderIconImgName',
+        value: this.state.botbuilderIconImgName,
       },
     ];
     let url =
@@ -195,6 +304,12 @@ class Design extends React.Component {
                 botbuilderBodyBackgroundImg: img,
               });
             }
+            if (settings.botbuilderBodyBackgroundImgName) {
+              this.setState({
+                botbuilderBodyBackgroundImgName:
+                  settings.botbuilderBodyBackgroundImgName,
+              });
+            }
             if (settings.botbuilderUserMessageBackground) {
               this.setState({
                 botbuilderUserMessageBackground:
@@ -227,6 +342,11 @@ class Design extends React.Component {
             if (settings.botbuilderIconImg) {
               this.setState({
                 botbuilderIconImg: settings.botbuilderIconImg,
+              });
+            }
+            if (settings.botbuilderIconImgName) {
+              this.setState({
+                botbuilderIconImgName: settings.botbuilderIconImgName,
               });
             }
 
@@ -275,6 +395,10 @@ class Design extends React.Component {
         value: '',
       },
       {
+        key: 'botbuilderBodyBackgroundImgName',
+        value: '',
+      },
+      {
         key: 'botbuilderUserMessageBackground',
         value: '',
       },
@@ -296,6 +420,10 @@ class Design extends React.Component {
       },
       {
         key: 'botbuilderIconImg',
+        value: '',
+      },
+      {
+        key: 'botbuilderIconImgName',
         value: '',
       },
     ];
@@ -350,6 +478,7 @@ class Design extends React.Component {
         {
           iconSelected: null,
           botbuilderIconImg: '',
+          botbuilderIconImgName: '',
         },
         () => this.updateSettings(),
       );
@@ -358,6 +487,7 @@ class Design extends React.Component {
         {
           iconSelected: icon.id,
           botbuilderIconImg: icon.url,
+          botbuilderIconImgName: '',
         },
         () => this.updateSettings(),
       );
@@ -417,42 +547,70 @@ class Design extends React.Component {
           </div>
           {component.component === 'botbuilderBackgroundBody' && (
             <div>
-              <TextField
-                name="backgroundImg"
-                onChange={(e, value) =>
-                  this.handleChangeBodyBackgroundImage(value)
-                }
-                value={this.state.botbuilderBodyBackgroundImg}
-                floatingLabelText="Body Background Image URL"
-              />
-              <RaisedButton
-                name="removeBackgroundBody"
-                key={'RemoveBody'}
-                backgroundColor={colors.header}
-                style={{ marginLeft: '15px' }}
-                label="Remove URL"
-                labelColor="#fff"
-                onTouchTap={this.handleRemoveUrlBody}
-              />
+              <br />
+              <form style={{ display: 'inline-block' }}>
+                {this.state.botbuilderBodyBackgroundImg && (
+                  <h3 style={{ marginBottom: '5px' }}>
+                    {this.state.botbuilderBodyBackgroundImgName}
+                  </h3>
+                )}
+                <label
+                  className="file-upload-btn"
+                  title="Upload Background Image"
+                >
+                  <input
+                    disabled={this.state.uploadingBodyBackgroundImg}
+                    type="file"
+                    onChange={this.handleChangeBodyBackgroundImage}
+                    accept="image/x-png,image/gif,image/jpeg"
+                  />
+                  {this.state.uploadingBodyBackgroundImg ? (
+                    <CircularProgress color="#ffffff" size={32} />
+                  ) : (
+                    'Upload Image'
+                  )}
+                </label>
+              </form>
+              {this.state.botbuilderBodyBackgroundImg && (
+                <span title="Remove image">
+                  <Close
+                    className="remove-icon"
+                    onTouchTap={this.handleRemoveUrlBody}
+                  />
+                </span>
+              )}
             </div>
           )}
           {component.component === 'botbuilderIconColor' && (
             <div>
-              <TextField
-                name="iconImg"
-                onChange={(e, value) => this.handleChangeIconImage(value)}
-                value={this.state.botbuilderIconImg}
-                floatingLabelText="Icon URL"
-              />
-              <RaisedButton
-                name="removeIconUrl"
-                key={'RemoveIconUrl'}
-                backgroundColor={colors.header}
-                style={{ marginLeft: '15px' }}
-                label="Remove URL"
-                labelColor="#fff"
-                onTouchTap={this.handleRemoveUrlIcon}
-              />
+              <form style={{ display: 'inline-block' }}>
+                {this.state.botbuilderIconImgName && (
+                  <h3 style={{ marginBottom: '5px' }}>
+                    {this.state.botbuilderIconImgName}
+                  </h3>
+                )}
+                <label className="file-upload-btn">
+                  <input
+                    disabled={this.state.uploadingBotbuilderIconImg}
+                    type="file"
+                    onChange={this.handleChangeIconImage}
+                    accept="image/x-png,image/gif,image/jpeg"
+                  />
+                  {this.state.uploadingBotbuilderIconImg ? (
+                    <CircularProgress color="#ffffff" size={32} />
+                  ) : (
+                    'Upload Image'
+                  )}
+                </label>
+              </form>
+              {this.state.botbuilderIconImgName && (
+                <span title="Remove image">
+                  <Close
+                    className="remove-icon"
+                    onTouchTap={this.handleRemoveUrlIcon}
+                  />
+                </span>
+              )}
               <br />
               <br />
               {avatars.map(icon => {
@@ -506,6 +664,10 @@ class Design extends React.Component {
             <RaisedButton
               name="save"
               style={{ marginLeft: '15px' }}
+              disabled={
+                this.state.uploadingBodyBackgroundImg ||
+                this.state.uploadingBotbuilderIconImg
+              }
               backgroundColor={colors.header}
               onTouchTap={this.handleSave}
               labelColor="#fff"
