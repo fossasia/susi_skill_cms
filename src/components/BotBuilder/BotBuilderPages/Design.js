@@ -2,6 +2,7 @@ import React from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
 import * as $ from 'jquery';
 import Cookies from 'universal-cookie';
+import AceEditor from 'react-ace';
 import Snackbar from 'material-ui/Snackbar';
 import TiTick from 'react-icons/lib/ti/tick';
 import CircularProgress from 'material-ui/CircularProgress';
@@ -36,6 +37,8 @@ class Design extends React.Component {
       botbuilderBodyBackgroundImgName: '',
       botbuilderIconImgName: '',
       uploadingBotbuilderIconImg: false,
+      editorTheme: 'github',
+      fontSizeCode: 14,
     };
     this.getSettings();
   }
@@ -43,10 +46,12 @@ class Design extends React.Component {
   componentDidMount() {
     this.updateSettings();
   }
+
   updateSettings = () => {
     let settingsString = JSON.stringify(this.state);
     this.props.updateSettings(settingsString);
   };
+
   handleChangeColor = (component, color) => {
     if (component === 'botbuilderIconColor') {
       this.setState(
@@ -642,53 +647,70 @@ class Design extends React.Component {
       );
     });
     return (
-      <div className="center menu-page">
-        {!this.state.loadedSettings ? (
-          <div className="center">
-            <CircularProgress size={62} color="#4285f5" />
-            <h4>Loading</h4>
-          </div>
-        ) : (
-          <div className="design-box">
-            {this.state.loadedSettings && customizeComponents}
-            <RaisedButton
-              label={
-                this.state.resetting ? (
-                  <CircularProgress color={colors.header} size={32} />
-                ) : (
-                  'Reset'
-                )
-              }
-              onTouchTap={this.handleReset}
-            />
-            <RaisedButton
-              name="save"
-              style={{ marginLeft: '15px' }}
-              disabled={
-                this.state.uploadingBodyBackgroundImg ||
-                this.state.uploadingBotbuilderIconImg
-              }
-              backgroundColor={colors.header}
-              onTouchTap={this.handleSave}
-              labelColor="#fff"
-              label={
-                this.state.saving ? (
-                  <CircularProgress color="#ffffff" size={32} />
-                ) : (
-                  'Save Changes'
-                )
-              }
-            />
-          </div>
-        )}
-        <Snackbar
-          open={this.state.openSnackbar}
-          message={this.state.msgSnackbar}
-          autoHideDuration={2000}
-          onRequestClose={() => {
-            this.setState({ openSnackbar: false });
-          }}
-        />
+      <div>
+        <div style={{ padding: '20px 10px 0 10px' }}>
+          <AceEditor
+            mode="java"
+            theme={this.state.editorTheme}
+            width="100%"
+            fontSize={this.state.fontSizeCode}
+            height="200px"
+            value={this.props.code}
+            showPrintMargin={false}
+            name="skill_code_editor"
+            scrollPastEnd={false}
+            wrapEnabled={true}
+            editorProps={{ $blockScrolling: true }}
+          />
+        </div>
+        <div className="center menu-page">
+          {!this.state.loadedSettings ? (
+            <div className="center">
+              <CircularProgress size={62} color="#4285f5" />
+              <h4>Loading</h4>
+            </div>
+          ) : (
+            <div className="design-box">
+              {this.state.loadedSettings && customizeComponents}
+              <RaisedButton
+                label={
+                  this.state.resetting ? (
+                    <CircularProgress color={colors.header} size={32} />
+                  ) : (
+                    'Reset'
+                  )
+                }
+                onTouchTap={this.handleReset}
+              />
+              <RaisedButton
+                name="save"
+                style={{ marginLeft: '15px' }}
+                disabled={
+                  this.state.uploadingBodyBackgroundImg ||
+                  this.state.uploadingBotbuilderIconImg
+                }
+                backgroundColor={colors.header}
+                onTouchTap={this.handleSave}
+                labelColor="#fff"
+                label={
+                  this.state.saving ? (
+                    <CircularProgress color="#ffffff" size={32} />
+                  ) : (
+                    'Save Changes'
+                  )
+                }
+              />
+            </div>
+          )}
+          <Snackbar
+            open={this.state.openSnackbar}
+            message={this.state.msgSnackbar}
+            autoHideDuration={2000}
+            onRequestClose={() => {
+              this.setState({ openSnackbar: false });
+            }}
+          />
+        </div>
       </div>
     );
   }
@@ -696,6 +718,7 @@ class Design extends React.Component {
 
 Design.propTypes = {
   updateSettings: PropTypes.func,
+  code: PropTypes.string,
 };
 
 export default Design;
