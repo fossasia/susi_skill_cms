@@ -114,6 +114,7 @@ class SkillCardList extends Component {
           </Link>
           <div style={styles.rating}>
             <Ratings
+              style={{ display: 'flex' }}
               rating={average_rating || 0}
               widgetRatedColors="#ffbb28"
               widgetDimensions="20px"

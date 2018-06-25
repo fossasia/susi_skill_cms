@@ -18,6 +18,14 @@
     opacity: 1.0;
  }
 
+.bold {
+    font-weight: bold;
+}
+
 div.scrolling-wrapper::-webkit-scrollbar {
         display: none;
+}
+
+.clear-button:hover {
+    color: #c45500;
 }
