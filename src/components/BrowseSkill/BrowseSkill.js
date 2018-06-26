@@ -234,6 +234,10 @@ export default class BrowseSkill extends React.Component {
         '/cms/getSkillList.json?group=All&applyFilter=true&filter_name=descending&filter_type=rating';
     }
 
+    if (this.state.searchQuery.length > 0) {
+      url = url + '&q=' + this.state.searchQuery;
+    }
+
     let self = this;
     $.ajax({
       url: url,
@@ -241,55 +245,12 @@ export default class BrowseSkill extends React.Component {
       jsonp: 'callback',
       crossDomain: true,
       success: function(data) {
-        if (self.state.searchQuery.length > 0) {
-          data.filteredData = data.filteredData.filter(function(i) {
-            let result = false;
-            if (i.skill_name) {
-              result = i.skill_name
-                .toLowerCase()
-                .match(self.state.searchQuery.toLowerCase());
-              if (result) {
-                return result;
-              }
-            }
-            if (i.descriptions) {
-              result = i.descriptions
-                .toLowerCase()
-                .match(self.state.searchQuery.toLowerCase());
-              if (result) {
-                return result;
-              }
-            }
-            if (i.author) {
-              result = i.author
-                .toLowerCase()
-                .match(self.state.searchQuery.toLowerCase());
-              if (result) {
-                return result;
-              }
-            }
-            if (i.examples && i.examples.length > 0) {
-              i.examples.map((el, j) => {
-                result = el
-                  .toLowerCase()
-                  .match(self.state.searchQuery.toLowerCase());
-                if (result) {
-                  return result;
-                }
-                return null;
-              });
-            }
-            return result;
-          });
-        }
-
         if (self.state.rating_refine) {
           data.filteredData = data.filteredData.filter(
             skill =>
               skill.skill_rating.stars.avg_star >= self.state.rating_refine,
           );
         }
-
         self.setState({
           skills: data.filteredData,
           // cards: cards,
@@ -316,47 +277,6 @@ export default class BrowseSkill extends React.Component {
       jsonp: 'callback',
       crossDomain: true,
       success: function(data) {
-        if (self.state.searchQuery.length > 0) {
-          data.filteredData = data.filteredData.filter(function(i) {
-            let result = false;
-            if (i.skill_name) {
-              result = i.skill_name
-                .toLowerCase()
-                .match(self.state.searchQuery.toLowerCase());
-              if (result) {
-                return result;
-              }
-            }
-            if (i.descriptions) {
-              result = i.descriptions
-                .toLowerCase()
-                .match(self.state.searchQuery.toLowerCase());
-              if (result) {
-                return result;
-              }
-            }
-            if (i.author) {
-              result = i.author
-                .toLowerCase()
-                .match(self.state.searchQuery.toLowerCase());
-              if (result) {
-                return result;
-              }
-            }
-            if (i.examples && i.examples.length > 0) {
-              i.examples.map((el, j) => {
-                result = el
-                  .toLowerCase()
-                  .match(self.state.searchQuery.toLowerCase());
-                if (result) {
-                  return result;
-                }
-                return null;
-              });
-            }
-            return result;
-          });
-        }
         let cardsToDisplay = data.filteredData.length;
         cardsToDisplay = cardsToDisplay < 10 ? cardsToDisplay : 10;
         self.setState({
@@ -368,7 +288,6 @@ export default class BrowseSkill extends React.Component {
       },
     });
   };
-
   handleRatingRefine = rating => {
     this.setState(
       {
@@ -584,7 +503,7 @@ export default class BrowseSkill extends React.Component {
               <div style={styles.searchBar} className="search-bar">
                 <SearchBar
                   onChange={this.handleSearch}
-                  onRequestSearch={() => console.log('Nothing to search')}
+                  onRequestSearch={this.loadCards}
                   style={{
                     marginTop: '25px',
                   }}
