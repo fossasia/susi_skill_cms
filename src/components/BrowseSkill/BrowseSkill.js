@@ -140,6 +140,9 @@ export default class BrowseSkill extends React.Component {
             );
           }
         }.bind(this),
+        error: function(e) {
+          console.log('Error while fetching groups', e);
+        },
       });
     }
   };
@@ -182,6 +185,9 @@ export default class BrowseSkill extends React.Component {
             }
           }
         }.bind(this),
+        error: function(e) {
+          console.log('Error while fetching languages', e);
+        },
       });
     }
   };
@@ -292,6 +298,9 @@ export default class BrowseSkill extends React.Component {
         });
         // console.log(self.state)
       },
+      error: function(e) {
+        console.log('Error while fetching skills', e);
+      },
     });
   };
 
@@ -353,6 +362,9 @@ export default class BrowseSkill extends React.Component {
         self.setState({
           topRatedSkills: data.filteredData.slice(0, cardsToDisplay),
         });
+      },
+      error: function(e) {
+        console.log('Error while fetching top rated skills', e);
       },
     });
   };
