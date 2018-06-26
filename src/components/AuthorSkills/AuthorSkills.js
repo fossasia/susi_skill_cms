@@ -117,6 +117,9 @@ class AuthorSkills extends Component {
         });
         this.setState({ skills: skills });
       }.bind(this),
+      error: function(e) {
+        console.log('Error while fetching author skills', e);
+      },
     });
   };
 

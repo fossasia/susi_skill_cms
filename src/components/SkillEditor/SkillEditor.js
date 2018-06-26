@@ -139,6 +139,9 @@ class SkillEditor extends Component {
             );
           }
         },
+        error: function(e) {
+          console.log('Error while fetching groups', e);
+        },
       });
     }
   }
@@ -173,6 +176,9 @@ class SkillEditor extends Component {
             }
           }
         }.bind(this),
+        error: function(e) {
+          console.log('Error while fetching languages', e);
+        },
       });
     }
   }
@@ -238,6 +244,9 @@ class SkillEditor extends Component {
         success: function(data) {
           self.updateData(data.skill_metadata);
         },
+        error: function(e) {
+          console.log('Error while fetching skill metadata', e);
+        },
       });
       return 0;
     }
@@ -296,6 +305,9 @@ class SkillEditor extends Component {
             });
           }
         }.bind(this),
+        error: function(e) {
+          console.log('Error while fetching skill', e);
+        },
       },
     );
   }
@@ -349,6 +361,9 @@ class SkillEditor extends Component {
             );
           }
         },
+        error: function(e) {
+          console.log('Error while fetching groups', e);
+        },
       });
     }
   };
@@ -401,6 +416,9 @@ class SkillEditor extends Component {
             }
           }
         }.bind(this),
+        error: function(e) {
+          console.log('Error while fetching languages', e);
+        },
       });
     }
   };
@@ -485,6 +503,9 @@ class SkillEditor extends Component {
           });
         }
       }.bind(this),
+      error: function(e) {
+        console.log('Error while deleting skill', e);
+      },
     });
   };
 

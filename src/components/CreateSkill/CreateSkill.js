@@ -138,6 +138,9 @@ export default class CreateSkill extends React.Component {
             this.setState({ groups });
           }
         }.bind(this),
+        error: function(e) {
+          console.log('Error while fetching groups', e);
+        },
       });
     }
   }
@@ -216,6 +219,9 @@ export default class CreateSkill extends React.Component {
             return 0;
           });
         }.bind(this),
+        error: function(e) {
+          console.log('Error while fetching languages', e);
+        },
       });
     }
   };
