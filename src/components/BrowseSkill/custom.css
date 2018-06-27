@@ -23,9 +23,25 @@
 }
 
 div.scrolling-wrapper::-webkit-scrollbar {
-        display: none;
+    display: none;
 }
 
 .clear-button:hover {
     color: #c45500;
+}
+
+.index-link-sidebar {
+    font-size: 15px;
+    width: fit-content;
+    color: black;   
+}
+
+.index-link-sidebar:hover {
+    color: #284779;
+}
+
+.category-sidebar-section {
+    margin-top: 15px;
+    margin-left: 12px;
+    width: fit-content;
 }

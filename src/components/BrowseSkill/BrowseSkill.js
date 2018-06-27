@@ -372,10 +372,23 @@ export default class BrowseSkill extends React.Component {
                   )
                 }
               />
-              <Subheader style={{ fontWeight: 'bold' }}>
-                Skill Categories
-              </Subheader>
-              {groups}
+              {this.props.routeType === 'category' ? (
+                <div className="category-sidebar-section">
+                  <Link to="/">
+                    <div className="index-link-sidebar">{'< SUSI Skills'}</div>
+                  </Link>
+                  <div style={{ marginLeft: '10px', fontWeight: 'bold' }}>
+                    {this.props.routeValue}
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <Subheader style={{ fontWeight: 'bold' }}>
+                    SUSI Skills
+                  </Subheader>
+                  {groups}
+                </div>
+              )}
             </Menu>
 
             {this.state.skillsLoaded ? (
