@@ -287,7 +287,7 @@ class SkillListing extends Component {
   saveCountryWiseSkillUsage = (country_wise_skill_usage = []) => {
     // Add sample data to test
     let data = country_wise_skill_usage.map(country => [
-      country.country_name,
+      country.country_code,
       parseInt(country.count, 10),
     ]);
 
