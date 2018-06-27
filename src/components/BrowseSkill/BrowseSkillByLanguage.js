@@ -5,8 +5,12 @@ import ISO6391 from 'iso-639-1';
 
 export default class BrowseSkillByCategory extends React.Component {
   render() {
-    let language = this.props.location.pathname.split('/')[2];
-    let text = `Language: ${ISO6391.getNativeName(language)}`;
+    let language = '';
+    let text = '';
+    if (this.props.location) {
+      language = this.props.location.pathname.split('/')[2];
+      text = `Language: ${ISO6391.getNativeName(language)}`;
+    }
     return (
       <BrowseSkill
         routeType="language"

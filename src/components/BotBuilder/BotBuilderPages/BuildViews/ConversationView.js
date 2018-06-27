@@ -155,19 +155,22 @@ class ConversationView extends Component {
   render() {
     let treeData = this.props.treeData;
     let conversationsData = [];
-    for (let i of treeData.children) {
-      conversationsData.push({
-        type: 'user',
-        name: i.name,
-        id: i.id,
-      });
-      if (i.children) {
-        for (let j of i.children) {
-          conversationsData.push({
-            type: 'bot',
-            name: j.name,
-            id: j.id,
-          });
+    if (treeData) {
+      for (let i of treeData.children) {
+        conversationsData.push({
+          type: 'user',
+          name: i.name,
+          id: i.id,
+        });
+
+        if (i.children) {
+          for (let j of i.children) {
+            conversationsData.push({
+              type: 'bot',
+              name: j.name,
+              id: j.id,
+            });
+          }
         }
       }
     }

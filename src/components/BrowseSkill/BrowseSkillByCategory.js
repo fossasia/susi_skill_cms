@@ -4,8 +4,13 @@ import PropTypes from 'prop-types';
 
 export default class BrowseSkillByCategory extends React.Component {
   render() {
-    let category = this.props.location.pathname.split('/')[2];
-    let text = `Category: ${category}`;
+    let category = '';
+    let text = '';
+    if (this.props.location) {
+      category = this.props.location.pathname.split('/')[2];
+      text = `Category: ${category}`;
+    }
+
     return (
       <BrowseSkill
         routeType="category"

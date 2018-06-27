@@ -143,11 +143,52 @@ class SkillFeedbackCard extends Component {
     let userFeedbackCard = null;
     let emailId = cookies.get('emailId');
     let loggedIn = cookies.get('loggedIn');
-    let feedbackCards = this.props.skill_feedback.map((data, index) => {
-      if (loggedIn && emailId && data.email === emailId) {
-        userFeedback = data.feedback;
-        userFeedbackCard = (
-          <div key={index}>
+    let feedbackCards;
+    if (this.props.skill_feedback) {
+      feedbackCards = this.props.skill_feedback.map((data, index) => {
+        if (loggedIn && emailId && data.email === emailId) {
+          userFeedback = data.feedback;
+          userFeedbackCard = (
+            <div key={index}>
+              <ListItem
+                key={index}
+                leftAvatar={
+                  <CircleImage name={data.email.toUpperCase()} size="40" />
+                }
+                primaryText={
+                  <div>
+                    <div>{data.email}</div>
+                    <div className="feedback-timestamp">
+                      {this.formatDate(parseDate(data.timestamp))}
+                    </div>
+                  </div>
+                }
+                rightIconButton={
+                  <IconMenu iconButtonElement={iconButtonElement}>
+                    <MenuItem
+                      onClick={this.handleEditOpen}
+                      leftIcon={<EditBtn />}
+                    >
+                      Edit
+                    </MenuItem>
+                    <MenuItem
+                      onClick={this.handleDeleteOpen}
+                      leftIcon={<Delete />}
+                    >
+                      Delete
+                    </MenuItem>
+                  </IconMenu>
+                }
+                secondaryText={<p>{data.feedback}</p>}
+              />
+              <Divider inset={true} />
+            </div>
+          );
+          return null;
+        }
+        // eslint-disable-next-line
+        else {
+          return (
             <ListItem
               key={index}
               leftAvatar={
@@ -161,52 +202,14 @@ class SkillFeedbackCard extends Component {
                   </div>
                 </div>
               }
-              rightIconButton={
-                <IconMenu iconButtonElement={iconButtonElement}>
-                  <MenuItem
-                    onClick={this.handleEditOpen}
-                    leftIcon={<EditBtn />}
-                  >
-                    Edit
-                  </MenuItem>
-                  <MenuItem
-                    onClick={this.handleDeleteOpen}
-                    leftIcon={<Delete />}
-                  >
-                    Delete
-                  </MenuItem>
-                </IconMenu>
-              }
               secondaryText={<p>{data.feedback}</p>}
             />
-            <Divider inset={true} />
-          </div>
-        );
-        return null;
-      }
-      // eslint-disable-next-line
-      else {
-        return (
-          <ListItem
-            key={index}
-            leftAvatar={
-              <CircleImage name={data.email.toUpperCase()} size="40" />
-            }
-            primaryText={
-              <div>
-                <div>{data.email}</div>
-                <div className="feedback-timestamp">
-                  {this.formatDate(parseDate(data.timestamp))}
-                </div>
-              </div>
-            }
-            secondaryText={<p>{data.feedback}</p>}
-          />
-        );
-      }
-    });
+          );
+        }
+      });
+    }
 
-    if (!this.state.show_all_feedback) {
+    if (!this.state.show_all_feedback && feedbackCards) {
       if (userFeedbackCard) {
         feedbackCards.splice(4);
       } else {
@@ -247,26 +250,27 @@ class SkillFeedbackCard extends Component {
             </div>
           </div>
         ) : null}
-        {feedbackCards.length > 0 ? (
-          <List>
-            {userFeedbackCard}
-            {feedbackCards}
-            {(userFeedbackCard && this.props.skill_feedback.length >= 4) ||
-            this.props.skill_feedback.length >= 5 ? (
-              <ListItem
-                className="display-all"
-                primaryText={`Show ${
-                  this.state.show_all_feedback ? 'less' : 'all'
-                } reviews`}
-                onClick={this.toggleShowAll}
-              />
-            ) : null}
-          </List>
-        ) : (
-          <div className="feedback-default-message">
-            No feedback present for this skill!
-          </div>
-        )}
+        {feedbackCards &&
+          (feedbackCards.length > 0 ? (
+            <List>
+              {userFeedbackCard}
+              {feedbackCards}
+              {(userFeedbackCard && this.props.skill_feedback.length >= 4) ||
+              this.props.skill_feedback.length >= 5 ? (
+                <ListItem
+                  className="display-all"
+                  primaryText={`Show ${
+                    this.state.show_all_feedback ? 'less' : 'all'
+                  } reviews`}
+                  onClick={this.toggleShowAll}
+                />
+              ) : null}
+            </List>
+          ) : (
+            <div className="feedback-default-message">
+              No feedback present for this skill!
+            </div>
+          ))}
         <Dialog
           title="Edit Feedback"
           actions={editActions}
