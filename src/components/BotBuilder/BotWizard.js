@@ -40,6 +40,8 @@ class BotWizard extends React.Component {
       colPreview: 4,
       designCode:
         '!Write the hex color codes of Body background, User message box background, User message text color, Bot message box background, Bot message text color and Bot Icon respectively below.\n::design #ffffff, #0077e5, #ffffff, #f8f8f8, #455a64, #000000',
+      configCode:
+        '!Write the status of each website you want to enable or disable the bot below.\n::sites_enabled website1.com, website2.com\n::sites_disabled website3.com',
     };
   }
 
@@ -88,7 +90,7 @@ class BotWizard extends React.Component {
           />
         );
       case 2:
-        return <Configure />;
+        return <Configure code={this.state.configCode} />;
       case 3:
         return <Deploy />;
       default:
