@@ -261,6 +261,7 @@ export default class BrowseSkill extends React.Component {
       },
       error: function(e) {
         console.log('Error while fetching skills', e);
+        return self.loadCards();
       },
     });
   };
@@ -285,6 +286,7 @@ export default class BrowseSkill extends React.Component {
       },
       error: function(e) {
         console.log('Error while fetching top rated skills', e);
+        return self.loadTopRated();
       },
     });
   };
