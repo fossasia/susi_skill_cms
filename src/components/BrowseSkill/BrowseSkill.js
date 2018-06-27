@@ -121,22 +121,24 @@ export default class BrowseSkill extends React.Component {
           this.setState({ groups: data });
           data.sort();
           groups.push(
-            <MenuItem
-              value="All"
-              key="All"
-              primaryText="All"
-              onClick={event => this.handleGroupChange(event, 'All')}
-            />,
+            <Link to="/category/All" key="All">
+              <MenuItem
+                value="All"
+                primaryText="All"
+                style={{ minHeight: '32px', lineHeight: '32px' }}
+              />
+            </Link>,
           );
 
           for (let i = 0; i < data.length; i++) {
             groups.push(
-              <MenuItem
-                value={data[i]}
-                key={data[i]}
-                primaryText={`${data[i]}`}
-                onClick={event => this.handleGroupChange(event, data[i])}
-              />,
+              <Link to={'/category/' + data[i]} key={data[i]}>
+                <MenuItem
+                  value={data[i]}
+                  primaryText={`${data[i]}`}
+                  style={{ minHeight: '32px', lineHeight: '32px' }}
+                />
+              </Link>,
             );
           }
         }.bind(this),
