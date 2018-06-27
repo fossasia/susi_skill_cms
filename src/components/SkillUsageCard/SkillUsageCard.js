@@ -131,9 +131,7 @@ class SkillUsageCard extends Component {
                           />
                         ))}
                       </Pie>
-                      <Legend
-                        margin={{ top: 10, left: 0, right: 0, bottom: 10 }}
-                      />
+                      <Legend wrapperStyle={{ position: 'relative' }} />
                     </PieChart>
                   </div>
                 </div>
