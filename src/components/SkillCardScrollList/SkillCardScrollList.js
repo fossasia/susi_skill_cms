@@ -38,7 +38,7 @@ class SkillCardScrollList extends Component {
 
   scrollLeft = () => {
     let parentEle = document.getElementById(this.props.scrollId);
-    let scrollValue = $(parentEle).scrollLeft() - 200;
+    let scrollValue = $(parentEle).scrollLeft() - 275;
     $(parentEle)
       .stop()
       .animate({ scrollLeft: scrollValue }, 100);
@@ -46,7 +46,7 @@ class SkillCardScrollList extends Component {
 
   scrollRight = () => {
     let parentEle = document.getElementById(this.props.scrollId);
-    let scrollValue = $(parentEle).scrollLeft() + 200;
+    let scrollValue = $(parentEle).scrollLeft() + 275;
     $(parentEle)
       .stop()
       .animate({ scrollLeft: scrollValue }, 100);
@@ -150,10 +150,13 @@ class SkillCardScrollList extends Component {
   };
 
   render() {
-    // let skillDisplay = '';
-    // if (this.props.skills.length) {
-    //   skillDisplay = ;
-    // }
+    let leftFabStyle = styles.leftFab;
+    let rightFabStyle = styles.rightFab;
+    if (window.innerWidth < 430) {
+      leftFabStyle.display = 'none';
+      rightFabStyle.display = 'none';
+    }
+
     return (
       <div
         style={{
@@ -173,7 +176,7 @@ class SkillCardScrollList extends Component {
             <FloatingActionButton
               mini={true}
               backgroundColor={'#4285f4'}
-              style={styles.leftFab}
+              style={leftFabStyle}
               onClick={this.scrollLeft}
             >
               <NavigationChevronLeft />
@@ -182,7 +185,7 @@ class SkillCardScrollList extends Component {
             <FloatingActionButton
               mini={true}
               backgroundColor={'#4285f4'}
-              style={styles.rightFab}
+              style={rightFabStyle}
               onClick={this.scrollRight}
             >
               <NavigationChevronRight />

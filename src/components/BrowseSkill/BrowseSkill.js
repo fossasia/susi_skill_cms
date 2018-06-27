@@ -11,6 +11,7 @@ import IconMenu from 'material-ui/IconMenu';
 import Menu from 'material-ui/Menu';
 import MenuItem from 'material-ui/MenuItem';
 import Subheader from 'material-ui/Subheader';
+import Divider from 'material-ui/Divider';
 import RaisedButton from 'material-ui/RaisedButton';
 import Add from 'material-ui/svg-icons/content/add';
 import Person from 'material-ui/svg-icons/social/person';
@@ -340,6 +341,25 @@ export default class BrowseSkill extends React.Component {
   };
 
   render() {
+    let sidebarStyle = styles.sidebar;
+    let topBarStyle = styles.topBar;
+    let groupsMobile = null;
+    let backToHome = null;
+    if (window.innerWidth < 430) {
+      sidebarStyle.display = 'none';
+      topBarStyle.flexDirection = 'column';
+      groupsMobile = groups;
+      backToHome = (
+        <MenuItem
+          value="Back to SUSI Skills"
+          key="Back to SUSI Skills"
+          primaryText="Back to SUSI Skills"
+          containerElement={<Link to="/" />}
+          style={{ minHeight: '48px', textAlign: 'center', lineHeight: '48px' }}
+        />
+      );
+    }
+
     return (
       <div>
         <StaticAppBar
@@ -688,7 +708,7 @@ export default class BrowseSkill extends React.Component {
               <div style={styles.container}>
                 {this.state.topRatedSkills.length ? (
                   <div style={styles.topSkills}>
-                    <h2 style={{ paddingLeft: 16 }}>{this.state.text}</h2>
+                    <h2 style={{ paddingLeft: 16 }}>Top Rated Skills</h2>
                     {/* Scroll Id must be unique for all instances of SkillCardList*/}
                     {!this.props.routeType && (
                       <SkillCardScrollList
@@ -740,6 +760,10 @@ export default class BrowseSkill extends React.Component {
                     )}
                   </div>
                 )}
+                <Divider />
+                {this.props.routeType === 'category'
+                  ? backToHome
+                  : groupsMobile}
               </div>
             ) : null}
           </div>
