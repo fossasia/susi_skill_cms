@@ -59,8 +59,14 @@ export default class BrowseSkill extends React.Component {
   componentDidMount() {
     this.loadLanguages();
     this.loadGroups();
-    this.loadCards();
-    this.loadTopRated();
+    if (
+      this.props.routeType ||
+      ['category', 'language'].includes(window.location.href.split('/')[3])
+    ) {
+      this.loadCards();
+    } else {
+      this.loadTopRated();
+    }
   }
 
   handleFilterChange = (event, index, value) => {
@@ -284,6 +290,7 @@ export default class BrowseSkill extends React.Component {
         cardsToDisplay = cardsToDisplay < 10 ? cardsToDisplay : 10;
         self.setState({
           topRatedSkills: data.filteredData.slice(0, cardsToDisplay),
+          skillsLoaded: true,
         });
       },
       error: function(e) {
@@ -652,7 +659,7 @@ export default class BrowseSkill extends React.Component {
                     />
                   )}
                 </div>
-                {this.state.skills.length ? (
+                {this.state.skills.length && this.props.routeType ? (
                   <div>
                     <SkillCardList
                       skills={this.state.skills}
@@ -662,10 +669,16 @@ export default class BrowseSkill extends React.Component {
                     />
                   </div>
                 ) : (
-                  <div style={{ fontSize: 30 }}>
-                    No Skills found. Be the first one to
-                    <Link to="/skillCreator"> create</Link> a skill in this
-                    category
+                  <div>
+                    {this.props.routeType ? (
+                      <div style={{ fontSize: 30 }}>
+                        No Skills found. Be the first one to
+                        <Link to="/skillCreator"> create</Link> a skill in this
+                        category
+                      </div>
+                    ) : (
+                      ''
+                    )}
                   </div>
                 )}
                 <Footer />
