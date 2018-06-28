@@ -24,6 +24,7 @@ import SkillCardScrollList from '../SkillCardScrollList/SkillCardScrollList';
 import urls from '../../Utils/urls';
 import Footer from '../Footer/Footer.react';
 import SearchBar from 'material-ui-search-bar';
+import _ from 'lodash';
 // eslint-disable-next-line
 import Ratings from 'react-ratings-declarative';
 
@@ -552,7 +553,7 @@ export default class BrowseSkill extends React.Component {
             <div style={styles.topBar} className="top-bar">
               <div style={styles.searchBar} className="search-bar">
                 <SearchBar
-                  onChange={this.handleSearch}
+                  onChange={_.debounce(this.handleSearch, 500)}
                   onRequestSearch={this.loadCards}
                   style={{
                     marginTop: '25px',
