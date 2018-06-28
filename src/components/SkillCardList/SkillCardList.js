@@ -140,9 +140,10 @@ class SkillCardList extends Component {
 
   render() {
     let skillDisplay = '';
-    if (this.props.skills.length) {
+    if (this.props.skills && this.props.skills.length) {
       skillDisplay = this.state.cards;
     }
+
     return (
       <div
         style={{
