@@ -29,7 +29,7 @@ import Ratings from 'react-ratings-declarative';
 
 import './custom.css';
 
-const groups = [];
+let groups = [];
 const languages = [];
 
 export default class BrowseSkill extends React.Component {
@@ -117,6 +117,8 @@ export default class BrowseSkill extends React.Component {
 
   loadGroups = () => {
     if (this.state.groups.length === 0) {
+      // Clear any group data already present
+      groups = [];
       $.ajax({
         url: urls.API_URL + '/cms/getGroups.json',
         dataType: 'jsonp',
@@ -127,24 +129,23 @@ export default class BrowseSkill extends React.Component {
           this.setState({ groups: data });
           data.sort();
           groups.push(
-            <Link to="/category/All" key="All">
-              <MenuItem
-                value="All"
-                primaryText="All"
-                style={{ minHeight: '32px', lineHeight: '32px' }}
-              />
-            </Link>,
+            <MenuItem
+              value="All"
+              key="All"
+              primaryText="All"
+              containerElement={<Link to="/category/All" />}
+              style={{ minHeight: '32px', lineHeight: '32px' }}
+            />,
           );
-
           for (let i = 0; i < data.length; i++) {
             groups.push(
-              <Link to={'/category/' + data[i]} key={data[i]}>
-                <MenuItem
-                  value={data[i]}
-                  primaryText={`${data[i]}`}
-                  style={{ minHeight: '32px', lineHeight: '32px' }}
-                />
-              </Link>,
+              <MenuItem
+                value={data[i]}
+                key={data[i]}
+                primaryText={`${data[i]}`}
+                style={{ minHeight: '32px', lineHeight: '32px' }}
+                containerElement={<Link to={'/category/' + data[i]} />}
+              />,
             );
           }
         }.bind(this),
