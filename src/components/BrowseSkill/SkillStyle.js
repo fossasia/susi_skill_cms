@@ -115,7 +115,7 @@ const styles = {
     paddingLeft: '5px',
     color: '#108ee9',
   },
-  topRated: {
+  topSkills: {
     width: '1090px',
     margin: 10,
   },

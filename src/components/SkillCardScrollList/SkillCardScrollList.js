@@ -157,8 +157,8 @@ class SkillCardScrollList extends Component {
     return (
       <div
         style={{
-          marginTop: '20px',
-          marginBottom: '40px',
+          marginTop: '10px',
+          marginBottom: '10px',
           textAlign: 'justify',
           fontSize: '0.1px',
           width: '100%',
