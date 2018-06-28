@@ -67,8 +67,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "lint-js": "eslint *.js \"src/**/*.js\"",
-    "lint": "npm run lint-js",
+    "lint": "eslint *.js \"src/**/*.js\"",
     "precommit": "lint-staged",
     "format": "prettier --write \"src/**/*.js\"",
     "prepush": "npm run lint",
@@ -79,9 +78,9 @@
   },
   "lint-staged": {
     "src/**/*.js": [
-      "eslint src --ext .js",
       "prettier --write",
-      "git add"
+      "eslint --fix",
+      "git add ."
     ]
   }
 }
