@@ -350,34 +350,40 @@ export default class BrowseSkill extends React.Component {
 
         <div style={styles.main}>
           <div style={styles.sidebar}>
-            <div style={styles.center}>
-              <div style={styles.newSkillBtn}>
-                <IconMenu
-                  animated={false}
-                  anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'middle',
-                  }}
-                  iconButtonElement={
-                    <RaisedButton
-                      label="Create"
-                      icon={<Add />}
-                      backgroundColor="#4285f4"
-                      labelStyle={{ color: '#fff' }}
-                    />
-                  }
-                >
-                  <Link to="/skillCreator">
-                    <MenuItem leftIcon={<Add />} primaryText="Create a Skill" />
-                  </Link>
-                  <Link to="/botbuilder">
-                    <MenuItem
-                      leftIcon={<Person />}
-                      primaryText="Create Skill bot"
-                    />
-                  </Link>
-                </IconMenu>
-              </div>
+            <div style={styles.newSkillBtn}>
+              <IconMenu
+                style={{ width: '100%' }}
+                animated={false}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'middle',
+                }}
+                iconButtonElement={
+                  <RaisedButton
+                    className="create-button"
+                    style={{ width: '100%' }}
+                    buttonStyle={{
+                      width: '100%',
+                      display: 'flex',
+                      justifyContent: 'center',
+                    }}
+                    label="Create"
+                    icon={<Add />}
+                    backgroundColor="#4285f4"
+                    labelStyle={{ color: '#fff' }}
+                  />
+                }
+              >
+                <Link to="/skillCreator">
+                  <MenuItem leftIcon={<Add />} primaryText="Create a Skill" />
+                </Link>
+                <Link to="/botbuilder">
+                  <MenuItem
+                    leftIcon={<Person />}
+                    primaryText="Create Skill bot"
+                  />
+                </Link>
+              </IconMenu>
             </div>
             <Menu desktop={true} disableAutoFocus={true}>
               <Subheader>New Arrivals</Subheader>
