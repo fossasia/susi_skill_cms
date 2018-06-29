@@ -1,8 +1,15 @@
 import { Component } from 'react';
 import PropTypes from 'prop-types';
 
-var deleteCookie = function(name) {
-  document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+var deleteCookie = function(name, options = {}) {
+  let cookieString = `${name}=;expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
+  if (options.domain) {
+    cookieString = `${cookieString}domain=${options.domain};`;
+  }
+  if (options.path) {
+    cookieString = `${cookieString}path=${options.path};`;
+  }
+  document.cookie = cookieString;
 };
 
 class Logout extends Component {
@@ -15,11 +22,11 @@ class Logout extends Component {
   }
 
   componentDidMount() {
-    deleteCookie('loggedIn');
-    deleteCookie('serverUrl');
-    deleteCookie('email');
-    deleteCookie('showAdmin');
-    deleteCookie('username');
+    deleteCookie('loggedIn', { domain: '.susi.ai', path: '/' });
+    deleteCookie('serverUrl', { domain: '.susi.ai', path: '/' });
+    deleteCookie('emailId', { domain: '.susi.ai', path: '/' });
+    deleteCookie('showAdmin', { path: '/' });
+    deleteCookie('username', { domain: '.susi.ai', path: '/' });
     this.props.history.push('/');
     window.location.reload();
   }

@@ -87,7 +87,9 @@ class StaticAppBar extends Component {
         crossDomain: true,
         success: function(newResponse) {
           let ShowAdmin = newResponse.showAdmin;
-          cookies.set('showAdmin', ShowAdmin);
+          cookies.set('showAdmin', ShowAdmin, {
+            path: '/',
+          });
           this.setState({
             showAdmin: ShowAdmin,
           });
@@ -109,7 +111,10 @@ class StaticAppBar extends Component {
         crossDomain: true,
         success: function(data) {
           let userName = data.settings.userName;
-          cookies.set('username', userName);
+          cookies.set('username', userName, {
+            path: '/',
+            domain: '.susi.ai',
+          });
         },
         error: function(errorThrown) {
           console.log(errorThrown);
