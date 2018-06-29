@@ -2,6 +2,7 @@ import React from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
 import * as $ from 'jquery';
 import Cookies from 'universal-cookie';
+import { Grid, Col, Row } from 'react-flexbox-grid';
 import AceEditor from 'react-ace';
 import Snackbar from 'material-ui/Snackbar';
 import TiTick from 'react-icons/lib/ti/tick';
@@ -532,24 +533,37 @@ class Design extends React.Component {
     const customizeComponents = customiseOptionsList.map(component => {
       return (
         <div key={component.id} className="circleChoose">
-          <h2>Color of {component.name}</h2>
-          <div className="color-picker-wrap">
-            <ColorPicker
-              className="color-picker"
-              style={{ display: 'inline-block', float: 'left' }}
-              name="color"
-              id={'colorPicker' + component.id}
-              defaultValue={this.state[component.component]}
-              onChange={color =>
-                this.handleChangeColor(component.component, color)
-              }
-            />
-            <span
-              className="color-box"
-              onClick={() => this.handleClickColorBox(component.id)}
-              style={{ backgroundColor: this.state[component.component] }}
-            />
-          </div>
+          <Grid>
+            <Row>
+              <Col xs={12} md={6} lg={6}>
+                <h2>Color of {component.name}</h2>
+              </Col>
+              <Col xs={12} md={6} lg={6}>
+                <div style={{ display: 'flex', flexDirection: 'row' }}>
+                  <div className="color-picker-wrap">
+                    <ColorPicker
+                      className="color-picker"
+                      style={{ display: 'inline-block', float: 'left' }}
+                      name="color"
+                      id={'colorPicker' + component.id}
+                      defaultValue={this.state[component.component]}
+                      onChange={color =>
+                        this.handleChangeColor(component.component, color)
+                      }
+                    />
+                    <span
+                      className="color-box"
+                      onClick={() => this.handleClickColorBox(component.id)}
+                      style={{
+                        backgroundColor: this.state[component.component],
+                      }}
+                    />
+                  </div>
+                </div>
+              </Col>
+            </Row>
+          </Grid>
+
           {component.component === 'botbuilderBackgroundBody' && (
             <div>
               <br />
