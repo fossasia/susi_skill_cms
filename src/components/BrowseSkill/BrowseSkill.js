@@ -215,7 +215,9 @@ export default class BrowseSkill extends React.Component {
         urls.API_URL +
         '/cms/getSkillList.json?group=' +
         this.props.routeValue +
-        '&applyFilter=true&filter_name=ascending&filter_type=lexicographical';
+        '&language=' +
+        this.state.languageValue +
+        this.state.filter;
     } else if (this.props.routeType === 'language') {
       this.setState({
         languageValue: this.props.routeValue,
@@ -223,9 +225,11 @@ export default class BrowseSkill extends React.Component {
       });
       url =
         urls.API_URL +
-        '/cms/getSkillList.json?group=All&applyFilter=true&language=' +
+        '/cms/getSkillList.json?group=' +
+        this.state.groupValue +
+        '&applyFilter=true&language=' +
         this.props.routeValue +
-        '&filter_name=ascending&filter_type=lexicographical';
+        this.state.filter;
     } else if (
       this.state.languages.length > 0 &&
       this.state.groups.length > 0
