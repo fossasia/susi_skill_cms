@@ -3,8 +3,7 @@ import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import RaisedButton from 'material-ui/RaisedButton';
 import { Grid, Col, Row } from 'react-flexbox-grid';
 import PropTypes from 'prop-types';
-import { Card } from 'material-ui/Card';
-import ReactTooltip from 'react-tooltip';
+import { Card, CardText } from 'material-ui/Card';
 import Add from 'material-ui/svg-icons/content/add';
 import { FloatingActionButton, Paper } from 'material-ui';
 import colors from '../../Utils/colors';
@@ -74,27 +73,32 @@ class BotBuilder extends React.Component {
             className="botBuilder-page-card"
             zDepth={1}
           >
-            <div style={{ display: 'flex', flexDirection: 'row' }}>
-              <h1 style={{ padding: '5px 0 0 15px' }}>My bots</h1>
-              <div style={{ marginRight: '0', marginLeft: 'auto' }}>
-                <div style={styles.newBotBtn}>
-                  <Link to="/botbuilder/botwizard">
-                    <FloatingActionButton
-                      data-tip="Create a new bot"
-                      backgroundColor={colors.fabButton}
-                      style={styles.select}
-                    >
-                      <Add />
-                    </FloatingActionButton>
-                    <ReactTooltip effect="solid" place="bottom" />
-                  </Link>
-                </div>
-              </div>
-            </div>
             <Grid>
               <Row>
                 <Col xs={12} md={12}>
+                  <h1>My bots</h1>
                   <div className="bot-template-wrap">
+                    <Link to="/botbuilder/botwizard">
+                      <Card className="bot-template-card">
+                        <FloatingActionButton
+                          backgroundColor={colors.fabButton}
+                          mini={true}
+                          style={{
+                            boxShadow:
+                              'rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px',
+                          }}
+                        >
+                          <Add
+                            style={{
+                              height: '40px',
+                            }}
+                          />
+                        </FloatingActionButton>
+                        <CardText style={styles.newBotBtn}>
+                          Create a new bot
+                        </CardText>
+                      </Card>
+                    </Link>
                     <Card className="bot-template-card">
                       <RaisedButton
                         label={'Sample Bot 1'}
@@ -162,7 +166,10 @@ const styles = {
     marginTop: '300px',
   },
   newBotBtn: {
-    padding: '10px 0px 10px 10px',
+    color: 'white',
+    fontFamily: 'Helvetica',
+    fontSize: '16px',
+    paddingTop: '20px',
   },
 };
 
