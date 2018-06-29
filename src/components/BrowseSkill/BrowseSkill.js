@@ -740,14 +740,11 @@ export default class BrowseSkill extends React.Component {
                     )}
                   </div>
                 )}
-                <Footer />
-                <a href="#top">
-                  <center>Back to top</center>
-                </a>
               </div>
             ) : null}
           </div>
         </div>
+        <Footer />
       </div>
     );
   }
