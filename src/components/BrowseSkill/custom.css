@@ -45,3 +45,8 @@ div.scrolling-wrapper::-webkit-scrollbar {
     margin-left: 12px;
     width: fit-content;
 }
+
+.create-button button div div {
+    display: flex;
+    align-items: center;
+}
