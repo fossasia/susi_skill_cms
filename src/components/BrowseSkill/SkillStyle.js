@@ -123,7 +123,7 @@ const styles = {
   topBar: {
     display: 'flex',
     justifyContent: 'flex-start',
-    marginTop: '40px',
+    marginTop: '45px',
     marginRight: '10px',
     marginLeft: '20px',
   },

@@ -363,6 +363,7 @@ export default class BrowseSkill extends React.Component {
                     className="create-button"
                     style={{ width: '100%' }}
                     buttonStyle={{
+                      height: '48px',
                       width: '100%',
                       display: 'flex',
                       justifyContent: 'center',
@@ -566,7 +567,7 @@ export default class BrowseSkill extends React.Component {
                   onChange={_.debounce(this.handleSearch, 500)}
                   onRequestSearch={this.loadCards}
                   style={{
-                    marginTop: '25px',
+                    marginTop: '17px',
                   }}
                   value={this.state.searchQuery}
                 />
