@@ -578,6 +578,7 @@ export default class BrowseSkill extends React.Component {
                 onChange={this.handleFilterChange}
                 style={styles.selection}
                 className="select"
+                autoWidth
                 listStyle={{
                   top: '100px',
                 }}
@@ -650,6 +651,7 @@ export default class BrowseSkill extends React.Component {
                 />
               </SelectField>
               <SelectField
+                autoWidth
                 disabled={this.state.languageSelect}
                 floatingLabelText="Language"
                 value={this.state.languageValue}
