@@ -564,40 +564,42 @@ export default class CreateSkill extends React.Component {
               marginTop: 10,
             }}
           >
-            <Paper
-              style={{
-                width: '100%',
-                padding: 10,
-                display: 'flex',
-                alignItems: 'center',
-                textAlign: 'center',
-                justifyContent: 'center',
-              }}
-              zDepth={1}
-            >
-              <TextField
-                floatingLabelText="Commit message"
-                floatingLabelFixed={true}
-                hintText="Enter Commit Message"
-                style={{ width: '80%' }}
-                onChange={this.handleCommitMessageChange}
-              />
-              <RaisedButton
-                label="Save"
-                backgroundColor={colors.header}
-                labelColor="#fff"
-                style={{ marginLeft: 10 }}
-                onTouchTap={this.saveClick}
-              />
-              <Link to="/">
+            {!this.props.botBuilder && (
+              <Paper
+                style={{
+                  width: '100%',
+                  padding: 10,
+                  display: 'flex',
+                  alignItems: 'center',
+                  textAlign: 'center',
+                  justifyContent: 'center',
+                }}
+                zDepth={1}
+              >
+                <TextField
+                  floatingLabelText="Commit message"
+                  floatingLabelFixed={true}
+                  hintText="Enter Commit Message"
+                  style={{ width: '80%' }}
+                  onChange={this.handleCommitMessageChange}
+                />
                 <RaisedButton
-                  label="Cancel"
+                  label="Save"
                   backgroundColor={colors.header}
                   labelColor="#fff"
                   style={{ marginLeft: 10 }}
+                  onTouchTap={this.saveClick}
                 />
-              </Link>
-            </Paper>
+                <Link to="/">
+                  <RaisedButton
+                    label="Cancel"
+                    backgroundColor={colors.header}
+                    labelColor="#fff"
+                    style={{ marginLeft: 10 }}
+                  />
+                </Link>
+              </Paper>
+            )}
           </div>
         </div>
       </div>

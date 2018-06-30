@@ -7,10 +7,11 @@ import colors from '../../Utils/colors';
 import Build from './BotBuilderPages/Build';
 import PropTypes from 'prop-types';
 import Design from './BotBuilderPages/Design';
+import { Link } from 'react-router-dom';
 import Configure from './BotBuilderPages/Configure';
 import Deploy from './BotBuilderPages/Deploy';
 import Snackbar from 'material-ui/Snackbar';
-import { Paper } from 'material-ui';
+import { Paper, TextField } from 'material-ui';
 import ChevronLeft from 'material-ui/svg-icons/navigation/chevron-left';
 import ChevronRight from 'material-ui/svg-icons/navigation/chevron-right';
 import Cookies from 'universal-cookie';
@@ -134,6 +135,16 @@ class BotWizard extends React.Component {
     }
   };
 
+  handleCommitMessageChange = event => {
+    this.setState({
+      commitMessage: event.target.value,
+    });
+  };
+
+  saveClick = () => {
+    // save the skill on the server
+  };
+
   render() {
     if (!cookies.get('loggedIn')) {
       return (
@@ -205,35 +216,58 @@ class BotWizard extends React.Component {
                   </Stepper>
                   <div style={contentStyle}>
                     <div>{this.getStepContent(stepIndex)}</div>
-                    <div style={{ marginTop: '20px' }}>
-                      <RaisedButton
-                        label="Back"
-                        disabled={stepIndex === 0}
-                        backgroundColor={colors.header}
-                        labelColor="#fff"
-                        onTouchTap={this.handlePrev}
-                        style={{ marginRight: 12 }}
-                      />
-                      {stepIndex < 3 ? (
-                        <RaisedButton
-                          label={stepIndex === 2 ? 'Save and Deploy' : 'Next'}
-                          backgroundColor={colors.header}
-                          labelColor="#fff"
-                          onTouchTap={this.handleNext}
-                        />
-                      ) : (
-                        <p
-                          style={{
-                            padding: '20px 0px 0px 0px',
-                            fontFamily: 'sans-serif',
-                            fontSize: '14px',
-                          }}
-                        >
-                          You&apos;re all done. Thanks for using SUSI Bot.
-                        </p>
-                      )}
-                    </div>
+                    <div style={{ marginTop: '20px' }} />
                   </div>
+                </Paper>
+                <Paper
+                  style={styles.paperStyle}
+                  className="botBuilder-page-card"
+                  zDepth={1}
+                >
+                  <RaisedButton
+                    label="Back"
+                    disabled={stepIndex === 0}
+                    backgroundColor={colors.header}
+                    labelColor="#fff"
+                    onTouchTap={this.handlePrev}
+                    style={{ marginRight: 12 }}
+                  />
+                  {stepIndex < 3 ? (
+                    <RaisedButton
+                      label={stepIndex === 2 ? 'Save and Deploy' : 'Next'}
+                      backgroundColor={colors.header}
+                      labelColor="#fff"
+                      onTouchTap={this.handleNext}
+                    />
+                  ) : (
+                    <p
+                      style={{
+                        padding: '20px 0px 0px 0px',
+                        fontFamily: 'sans-serif',
+                        fontSize: '14px',
+                      }}
+                    >
+                      You&apos;re all done. Thanks for using SUSI Bot.
+                    </p>
+                  )}
+                  <TextField
+                    floatingLabelText="Commit message"
+                    floatingLabelFixed={true}
+                    hintText="Enter Commit Message"
+                    style={{ width: '80%' }}
+                    onChange={this.handleCommitMessageChange}
+                  />
+                  <br />
+                  <Link to="/botbuilder">
+                    <RaisedButton label="Cancel" />
+                  </Link>
+                  <RaisedButton
+                    label="Save"
+                    backgroundColor={colors.header}
+                    labelColor="#fff"
+                    style={{ marginLeft: 10 }}
+                    onTouchTap={this.saveClick}
+                  />
                 </Paper>
               </Col>
 
