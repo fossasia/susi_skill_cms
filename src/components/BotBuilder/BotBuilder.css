@@ -190,6 +190,13 @@ iframe{
 input[type=file]{
 	display: none;
 }
+.tooltipSkill {
+	pointer-events: auto;
+}
+.tooltipSkill:hover {
+	visibility: visible;
+	opacity: 1;
+}
 
 @media (min-width:769px){
 	.botbuilder-page-wrapper{
