@@ -8,6 +8,10 @@ import {
   XAxis,
   YAxis,
   Tooltip,
+  LineChart,
+  Line,
+  Legend,
+  ResponsiveContainer,
 } from 'recharts';
 import { Paper } from 'material-ui';
 import Ratings from 'react-ratings-declarative';
@@ -144,6 +148,40 @@ class SkillRatingCard extends Component {
               <div className="large-text">{this.props.total_star || 0}</div>
               Total Ratings
             </div>
+            {this.props.ratings_over_time.length ? (
+              <div className="time-chart">
+                <div className="sub-title" style={{ alignSelf: 'flex-start' }}>
+                  Rating over time
+                </div>
+                <div>
+                  <ResponsiveContainer height={300} width={800} debounce={1}>
+                    <LineChart
+                      data={this.props.ratings_over_time}
+                      margin={{
+                        top: 5,
+                        right: 30,
+                        left: 20,
+                        bottom: 5,
+                      }}
+                    >
+                      <XAxis dataKey="timestamp" padding={{ right: 20 }} />
+                      <YAxis dataKey="rating" />
+                      <Tooltip wrapperStyle={{ height: '60px' }} />
+                      <Legend />
+                      <Line
+                        name="Average rating"
+                        type="monotone"
+                        dataKey="rating"
+                        stroke="#82ca9d"
+                        activeDot={{ r: 8 }}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+            ) : (
+              ''
+            )}
           </div>
         ) : (
           <div className="ratings-default-message">
@@ -162,6 +200,7 @@ SkillRatingCard.propTypes = {
   avg_rating: PropTypes.number,
   total_star: PropTypes.number,
   changeRating: PropTypes.func,
+  ratings_over_time: PropTypes.array,
 };
 
 export default SkillRatingCard;
