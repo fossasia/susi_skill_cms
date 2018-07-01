@@ -529,6 +529,7 @@ class Design extends React.Component {
         name: "Bot's message text color",
       },
       { id: 6, component: 'botbuilderIconColor', name: 'Bot Icon' },
+      { id: 7, component: 'botbuilderAvatar', name: 'Choose your bot avatar' },
     ];
     const customizeComponents = customiseOptionsList.map(component => {
       return (
@@ -536,102 +537,81 @@ class Design extends React.Component {
           <Grid>
             <Row>
               <Col xs={12} md={6} lg={6}>
-                <h2>Color of {component.name}</h2>
+                {component.id === 7 ? (
+                  <h2>{component.name}</h2>
+                ) : (
+                  <h2>Color of {component.name}</h2>
+                )}
               </Col>
               <Col xs={12} md={6} lg={6}>
-                <div style={{ display: 'flex', flexDirection: 'row' }}>
-                  <div className="color-picker-wrap">
-                    <ColorPicker
-                      className="color-picker"
-                      style={{ display: 'inline-block', float: 'left' }}
-                      name="color"
-                      id={'colorPicker' + component.id}
-                      defaultValue={this.state[component.component]}
-                      onChange={color =>
-                        this.handleChangeColor(component.component, color)
-                      }
-                    />
-                    <span
-                      className="color-box"
-                      onClick={() => this.handleClickColorBox(component.id)}
-                      style={{
-                        backgroundColor: this.state[component.component],
-                      }}
-                    />
+                {component.id !== 7 ? (
+                  <div style={{ display: 'flex', flexDirection: 'row' }}>
+                    <div className="color-picker-wrap">
+                      <ColorPicker
+                        className="color-picker"
+                        style={{ display: 'inline-block', float: 'left' }}
+                        name="color"
+                        id={'colorPicker' + component.id}
+                        defaultValue={this.state[component.component]}
+                        onChange={color =>
+                          this.handleChangeColor(component.component, color)
+                        }
+                      />
+                      <span
+                        className="color-box"
+                        onClick={() => this.handleClickColorBox(component.id)}
+                        style={{
+                          backgroundColor: this.state[component.component],
+                        }}
+                      />
+                    </div>
                   </div>
-                </div>
+                ) : null}
+                {component.component === 'botbuilderBackgroundBody' && (
+                  <div>
+                    <br />
+                    <form style={{ display: 'inline-block' }}>
+                      <label
+                        className="file-upload-btn"
+                        title="Upload Background Image"
+                      >
+                        <input
+                          disabled={this.state.uploadingBodyBackgroundImg}
+                          type="file"
+                          onChange={this.handleChangeBodyBackgroundImage}
+                          accept="image/x-png,image/gif,image/jpeg"
+                        />
+                        {this.state.uploadingBodyBackgroundImg ? (
+                          <CircularProgress color="#ffffff" size={32} />
+                        ) : (
+                          'Upload Image'
+                        )}
+                      </label>
+                    </form>
+                    {this.state.botbuilderBodyBackgroundImg && (
+                      <div
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'row',
+                          marginTop: '10px',
+                        }}
+                      >
+                        <h3>{this.state.botbuilderBodyBackgroundImgName}</h3>
+                        <span title="Remove image">
+                          <Close
+                            className="remove-icon"
+                            onTouchTap={this.handleRemoveUrlBody}
+                          />
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                )}
               </Col>
             </Row>
           </Grid>
-
-          {component.component === 'botbuilderBackgroundBody' && (
-            <div>
-              <br />
-              <form style={{ display: 'inline-block' }}>
-                {this.state.botbuilderBodyBackgroundImg && (
-                  <h3 style={{ marginBottom: '5px' }}>
-                    {this.state.botbuilderBodyBackgroundImgName}
-                  </h3>
-                )}
-                <label
-                  className="file-upload-btn"
-                  title="Upload Background Image"
-                >
-                  <input
-                    disabled={this.state.uploadingBodyBackgroundImg}
-                    type="file"
-                    onChange={this.handleChangeBodyBackgroundImage}
-                    accept="image/x-png,image/gif,image/jpeg"
-                  />
-                  {this.state.uploadingBodyBackgroundImg ? (
-                    <CircularProgress color="#ffffff" size={32} />
-                  ) : (
-                    'Upload Image'
-                  )}
-                </label>
-              </form>
-              {this.state.botbuilderBodyBackgroundImg && (
-                <span title="Remove image">
-                  <Close
-                    className="remove-icon"
-                    onTouchTap={this.handleRemoveUrlBody}
-                  />
-                </span>
-              )}
-            </div>
-          )}
-          {component.component === 'botbuilderIconColor' && (
-            <div>
-              <form style={{ display: 'inline-block' }}>
-                {this.state.botbuilderIconImgName && (
-                  <h3 style={{ marginBottom: '5px' }}>
-                    {this.state.botbuilderIconImgName}
-                  </h3>
-                )}
-                <label className="file-upload-btn">
-                  <input
-                    disabled={this.state.uploadingBotbuilderIconImg}
-                    type="file"
-                    onChange={this.handleChangeIconImage}
-                    accept="image/x-png,image/gif,image/jpeg"
-                  />
-                  {this.state.uploadingBotbuilderIconImg ? (
-                    <CircularProgress color="#ffffff" size={32} />
-                  ) : (
-                    'Upload Image'
-                  )}
-                </label>
-              </form>
-              {this.state.botbuilderIconImgName && (
-                <span title="Remove image">
-                  <Close
-                    className="remove-icon"
-                    onTouchTap={this.handleRemoveUrlIcon}
-                  />
-                </span>
-              )}
-              <br />
-              <br />
+          {component.component === 'botbuilderAvatar' && (
+            <div style={{ padding: '25px  0 25px 0' }}>
               {avatars.map(icon => {
                 return (
                   <span
@@ -653,6 +633,44 @@ class Design extends React.Component {
                   </span>
                 );
               })}
+            </div>
+          )}
+          {component.component === 'botbuilderAvatar' && (
+            <div>
+              <h2>OR</h2>
+              <br />
+              <div style={{ display: 'flex', flexDirection: 'row' }}>
+                <h2 style={{ paddingRight: '20px' }}>
+                  Upload your own bot avatar
+                </h2>
+                <form style={{ display: 'inline-block' }}>
+                  <label className="file-upload-btn">
+                    <input
+                      disabled={this.state.uploadingBotbuilderIconImg}
+                      type="file"
+                      onChange={this.handleChangeIconImage}
+                      accept="image/x-png,image/gif,image/jpeg"
+                    />
+                    {this.state.uploadingBotbuilderIconImg ? (
+                      <CircularProgress color="#ffffff" size={32} />
+                    ) : (
+                      'Upload Image'
+                    )}
+                  </label>
+                </form>
+              </div>
+              <br />
+              {this.state.botbuilderIconImgName && (
+                <div style={{ display: 'flex', flexDirection: 'row' }}>
+                  <h3>{this.state.botbuilderIconImgName}</h3>
+                  <span title="Remove image">
+                    <Close
+                      className="remove-icon"
+                      onTouchTap={this.handleRemoveUrlIcon}
+                    />
+                  </span>
+                </div>
+              )}
             </div>
           )}
 
