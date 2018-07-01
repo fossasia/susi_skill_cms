@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import DropDownMenu from 'material-ui/DropDownMenu';
-import MenuItem from 'material-ui/MenuItem';
+import IconButton from 'material-ui/IconButton';
+import Code from 'material-ui/svg-icons/action/code';
+import QA from 'material-ui/svg-icons/action/question-answer';
+import Timeline from 'material-ui/svg-icons/action/timeline';
 import CodeView from './BuildViews/CodeView';
 import PropTypes from 'prop-types';
 import ConversationView from './BuildViews/ConversationView';
@@ -14,7 +16,6 @@ class Build extends Component {
       skillCode = this.props.code;
     }
     this.state = {
-      value: 1,
       treeData: {
         name: 'Welcome!',
         children: [],
@@ -24,12 +25,11 @@ class Build extends Component {
         botResponses: [],
       },
       skillCode,
+      codeView: true,
+      conversationView: false,
+      treeView: false,
     };
   }
-
-  handleChange = (event, index, value) => {
-    this.setState({ value });
-  };
 
   componentDidMount() {
     this.generateSkillData();
@@ -153,6 +153,7 @@ class Build extends Component {
     }
     this.setState({ treeData }, this.generateSkillCode());
   };
+
   generateSkillCode = () => {
     let { skillCode, treeData } = this.state;
     let lines = skillCode.split('\n');
@@ -187,24 +188,54 @@ class Build extends Component {
     }
     this.setState({ skillCode: newSkillCode }, this.generateSkillData());
   };
+
   render() {
     return (
       <div className="menu-page">
         <div>
-          <h2>Add a new skill to your bot</h2>
-          <br />
-          <DropDownMenu
-            value={this.state.value}
-            onChange={this.handleChange}
-            style={styles.customWidth}
-            autoWidth={false}
-          >
-            <MenuItem value={1} primaryText="Code View" />
-            <MenuItem value={2} primaryText="Conversation View" />
-            <MenuItem value={3} primaryText="Tree View" />
-          </DropDownMenu>
+          <div style={{ display: 'flex', flexDirection: 'row' }}>
+            <h2 style={{ lineHeight: '50px' }}>Add a new skill to your bot</h2>
+            <div style={{ marginLeft: 'auto', marginRight: '0px' }}>
+              <IconButton
+                tooltip="Code View"
+                onTouchTap={() => {
+                  this.setState({
+                    codeView: true,
+                    conversationView: false,
+                    treeView: false,
+                  });
+                }}
+              >
+                <Code />
+              </IconButton>
+              <IconButton
+                tooltip="Conversation View"
+                onTouchTap={() => {
+                  this.setState({
+                    codeView: false,
+                    conversationView: true,
+                    treeView: false,
+                  });
+                }}
+              >
+                <QA />
+              </IconButton>
+              <IconButton
+                tooltip="Tree View"
+                onTouchTap={() => {
+                  this.setState({
+                    codeView: false,
+                    conversationView: false,
+                    treeView: true,
+                  });
+                }}
+              >
+                <Timeline />
+              </IconButton>
+            </div>
+          </div>
           <div style={{ paddingTop: 20 }}>
-            {this.state.value === 1 ? (
+            {this.state.codeView ? (
               <CodeView
                 botBuilder={{
                   onSkillChange: this.onSkillChange,
@@ -212,14 +243,14 @@ class Build extends Component {
                 }}
               />
             ) : null}
-            {this.state.value === 2 ? (
+            {this.state.conversationView ? (
               <ConversationView
                 ConversationData={this.state.ConversationData}
                 treeData={this.state.treeData}
                 handleDeleteNode={this.handleDeleteNode}
               />
             ) : null}
-            {this.state.value === 3 ? (
+            {this.state.treeView ? (
               <TreeView
                 treeData={this.state.treeData}
                 handleDeleteNode={this.handleDeleteNode}
@@ -232,11 +263,6 @@ class Build extends Component {
   }
 }
 
-const styles = {
-  customWidth: {
-    width: 250,
-  },
-};
 Build.propTypes = {
   code: PropTypes.string,
 };
