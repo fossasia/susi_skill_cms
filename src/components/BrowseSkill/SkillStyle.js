@@ -91,7 +91,7 @@ const styles = {
     width: '200px',
   },
   newSkillBtn: {
-    padding: '10px 0px 10px 24px',
+    padding: '10px 0px 0px 16px',
     marginRight: '24px',
   },
   example: {
