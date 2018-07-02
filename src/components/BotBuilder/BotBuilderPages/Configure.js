@@ -10,6 +10,8 @@ import {
 } from 'material-ui/Table';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
+import Info from 'material-ui/svg-icons/action/info';
+import ReactTooltip from 'react-tooltip';
 import PropTypes from 'prop-types';
 
 // static config data for demostration
@@ -39,8 +41,18 @@ class Configure extends Component {
     this.state = {
       editorTheme: 'github',
       fontSizeCode: 14,
+      lastActiveInfo: false,
     };
   }
+
+  handleOpenLastActiveInfo = () => {
+    this.setState({ lastActiveInfo: true });
+  };
+
+  handleCloseLastActiveInfo = () => {
+    this.setState({ lastActiveInfo: false });
+  };
+
   render() {
     return (
       <div className="menu-page">
@@ -64,7 +76,18 @@ class Configure extends Component {
             <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
               <TableRow>
                 <TableHeaderColumn>Website</TableHeaderColumn>
-                <TableHeaderColumn>Last active</TableHeaderColumn>
+                <TableHeaderColumn>
+                  <Info
+                    style={styles.helpIcon}
+                    onMouseEnter={this.handleOpenLastActiveInfo}
+                    onMouseLeave={this.handleCloseLastActiveInfo}
+                    data-tip="Last time the bot was used"
+                  />
+                  {this.state.lastActiveInfo ? (
+                    <ReactTooltip effect="solid" place="bottom" />
+                  ) : null}
+                  Last active
+                </TableHeaderColumn>
                 <TableHeaderColumn>Status</TableHeaderColumn>
               </TableRow>
             </TableHeader>
@@ -99,6 +122,17 @@ class Configure extends Component {
     );
   }
 }
+const styles = {
+  helpIcon: {
+    position: 'absolute',
+    top: '18px',
+    right: '10px',
+    height: '20px',
+    width: '20px',
+    cursor: 'pointer',
+    color: 'rgb(158, 158, 158)',
+  },
+};
 Configure.propTypes = {
   updateSettings: PropTypes.func,
   code: PropTypes.string,
