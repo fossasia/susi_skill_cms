@@ -17,6 +17,7 @@ import Extension from 'material-ui/svg-icons/action/extension';
 import Assessment from 'material-ui/svg-icons/action/assessment';
 import LoginIcon from 'material-ui/svg-icons/action/account-circle';
 import Info from 'material-ui/svg-icons/action/info';
+import Settings from 'material-ui/svg-icons/action/settings';
 import Chat from 'material-ui/svg-icons/communication/chat';
 import SKillIcon from 'material-ui/svg-icons/action/dashboard';
 import MenuItem from 'material-ui/MenuItem';
@@ -303,6 +304,14 @@ class StaticAppBar extends Component {
                 containerElement={<Link to="/botbuilder" />}
                 rightIcon={<Extension />}
               />
+            ) : null}
+            {cookies.get('loggedIn') ? (
+              <MenuItem
+                href="https://accounts.susi.ai/settings"
+                rightIcon={<Settings />}
+              >
+                Settings
+              </MenuItem>
             ) : null}
             {cookies.get('loggedIn') ? (
               <MenuItem
