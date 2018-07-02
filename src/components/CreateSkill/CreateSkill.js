@@ -3,6 +3,7 @@ import Icon from 'antd/lib/icon';
 import MenuItem from 'material-ui/MenuItem';
 import PropTypes from 'prop-types';
 import SelectField from 'material-ui/SelectField';
+import ReactTooltip from 'react-tooltip';
 import ISO6391 from 'iso-639-1';
 import { Paper, RaisedButton, TextField } from 'material-ui';
 import AceEditor from 'react-ace';
@@ -22,6 +23,7 @@ import 'brace/theme/solarized_light';
 import 'brace/theme/terminal';
 import * as $ from 'jquery';
 import notification from 'antd/lib/notification';
+import Info from 'material-ui/svg-icons/action/info';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import LinearProgress from 'material-ui/LinearProgress';
 import colors from '../../Utils/colors';
@@ -414,6 +416,7 @@ export default class CreateSkill extends React.Component {
     const style = {
       width: '100%',
       padding: '10px',
+      position: 'relative',
     };
     if (!cookies.get('loggedIn')) {
       return (
@@ -434,7 +437,21 @@ export default class CreateSkill extends React.Component {
             padding: this.props.botBuilder ? '0px' : '80px 30px 30px',
           }}
         >
+          <ReactTooltip
+            effect="solid"
+            place="bottom"
+            className="tooltipSkill"
+            delayHide={500}
+            html={true}
+          />
           <Paper style={style} zDepth={1}>
+            <Info
+              style={styles.helpIcon}
+              isCapture={true}
+              data-tip={
+                'Know more about <a href="https://github.com/fossasia/susi_skill_cms/blob/master/docs/Skill_Tutorial.md" rel="noopener noreferrer" target="_blank" >SUSI Skill Language</a>'
+              }
+            />
             <div style={styles.center}>
               <div style={styles.dropdownDiv}>
                 <SelectField
@@ -661,6 +678,15 @@ const styles = {
     left: 0,
     width: '100%',
     opacity: 0,
+  },
+  helpIcon: {
+    position: 'absolute',
+    top: '10px',
+    right: '10px',
+    height: '20px',
+    width: '20px',
+    cursor: 'pointer',
+    color: 'rgb(158, 158, 158)',
   },
 };
 CreateSkill.propTypes = {
