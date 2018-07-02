@@ -592,85 +592,87 @@ export default class BrowseSkill extends React.Component {
                   value={this.state.searchQuery}
                 />
               </div>
-              <SelectField
-                floatingLabelText="Sort by"
-                value={this.state.filter}
-                floatingLabelFixed={false}
-                onChange={this.handleFilterChange}
-                style={styles.selection}
-                className="select"
-                autoWidth
-                listStyle={{
-                  top: '100px',
-                }}
-                selectedMenuItemStyle={{
-                  color: colors.header,
-                }}
-                underlineFocusStyle={{
-                  color: colors.header,
-                }}
-              >
-                <MenuItem
-                  value={
-                    '&applyFilter=true&filter_name=ascending&filter_type=lexicographical'
-                  }
-                  key={
-                    '&applyFilter=true&filter_name=ascending&filter_type=lexicographical'
-                  }
-                  primaryText={'A-Z'}
-                  label={'Name (A-Z)'}
-                />
-                <MenuItem
-                  value={
-                    '&applyFilter=true&filter_name=descending&filter_type=lexicographical'
-                  }
-                  key={
-                    '&applyFilter=true&filter_name=descending&filter_type=lexicographical'
-                  }
-                  primaryText={'Z-A'}
-                  label={'Name (Z-A)'}
-                />
-                <MenuItem
-                  value={
-                    '&applyFilter=true&filter_name=descending&filter_type=rating'
-                  }
-                  key={
-                    '&applyFilter=true&filter_name=descending&filter_type=rating'
-                  }
-                  primaryText={'Top Rated'}
-                  label={'Top Rated'}
-                />
-                <MenuItem
-                  value={
-                    '&applyFilter=true&filter_name=descending&filter_type=feedback'
-                  }
-                  key={
-                    '&applyFilter=true&filter_name=descending&filter_type=feedback'
-                  }
-                  primaryText={'Feedback Count'}
-                  label={'Feedback Count'}
-                />
-                <MenuItem
-                  value={
-                    '&applyFilter=true&filter_name=descending&filter_type=usage&duration=7'
-                  }
-                  key={
-                    '&applyFilter=true&filter_name=descending&filter_type=usage&duration=7'
-                  }
-                  primaryText={'This Week Usage'}
-                  label={'This Week Usage'}
-                />
-                <MenuItem
-                  value={
-                    '&applyFilter=true&filter_name=descending&filter_type=usage&duration=30'
-                  }
-                  key={
-                    '&applyFilter=true&filter_name=descending&filter_type=usage&duration=30'
-                  }
-                  primaryText={'This Month Usage'}
-                  label={'This Month Usage'}
-                />
-              </SelectField>
+              {this.props.routeType && (
+                <SelectField
+                  floatingLabelText="Sort by"
+                  value={this.state.filter}
+                  floatingLabelFixed={false}
+                  onChange={this.handleFilterChange}
+                  style={styles.selection}
+                  className="select"
+                  autoWidth
+                  listStyle={{
+                    top: '100px',
+                  }}
+                  selectedMenuItemStyle={{
+                    color: colors.header,
+                  }}
+                  underlineFocusStyle={{
+                    color: colors.header,
+                  }}
+                >
+                  <MenuItem
+                    value={
+                      '&applyFilter=true&filter_name=ascending&filter_type=lexicographical'
+                    }
+                    key={
+                      '&applyFilter=true&filter_name=ascending&filter_type=lexicographical'
+                    }
+                    primaryText={'A-Z'}
+                    label={'Name (A-Z)'}
+                  />
+                  <MenuItem
+                    value={
+                      '&applyFilter=true&filter_name=descending&filter_type=lexicographical'
+                    }
+                    key={
+                      '&applyFilter=true&filter_name=descending&filter_type=lexicographical'
+                    }
+                    primaryText={'Z-A'}
+                    label={'Name (Z-A)'}
+                  />
+                  <MenuItem
+                    value={
+                      '&applyFilter=true&filter_name=descending&filter_type=rating'
+                    }
+                    key={
+                      '&applyFilter=true&filter_name=descending&filter_type=rating'
+                    }
+                    primaryText={'Top Rated'}
+                    label={'Top Rated'}
+                  />
+                  <MenuItem
+                    value={
+                      '&applyFilter=true&filter_name=descending&filter_type=feedback'
+                    }
+                    key={
+                      '&applyFilter=true&filter_name=descending&filter_type=feedback'
+                    }
+                    primaryText={'Feedback Count'}
+                    label={'Feedback Count'}
+                  />
+                  <MenuItem
+                    value={
+                      '&applyFilter=true&filter_name=descending&filter_type=usage&duration=7'
+                    }
+                    key={
+                      '&applyFilter=true&filter_name=descending&filter_type=usage&duration=7'
+                    }
+                    primaryText={'This Week Usage'}
+                    label={'This Week Usage'}
+                  />
+                  <MenuItem
+                    value={
+                      '&applyFilter=true&filter_name=descending&filter_type=usage&duration=30'
+                    }
+                    key={
+                      '&applyFilter=true&filter_name=descending&filter_type=usage&duration=30'
+                    }
+                    primaryText={'This Month Usage'}
+                    label={'This Month Usage'}
+                  />
+                </SelectField>
+              )}
               <SelectField
                 autoWidth
                 disabled={this.state.languageSelect}
