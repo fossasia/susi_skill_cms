@@ -32,7 +32,7 @@ import Ratings from 'react-ratings-declarative';
 import './custom.css';
 
 let groups = [];
-const languages = [];
+let languages = [];
 
 export default class BrowseSkill extends React.Component {
   constructor(props) {
@@ -172,13 +172,10 @@ export default class BrowseSkill extends React.Component {
           if (data) {
             data.sort();
             this.setState({ languages: data });
+            languages = [];
             for (let i = 0; i < data.length; i++) {
               if (ISO6391.getNativeName(data[i])) {
                 let languageName = ISO6391.getNativeName(data[i]);
-                if (ISO6391.getName(data[i])) {
-                  languageName =
-                    languageName + ' (' + ISO6391.getName(data[i]) + ')';
-                }
                 languages.push(
                   <MenuItem
                     value={data[i]}
