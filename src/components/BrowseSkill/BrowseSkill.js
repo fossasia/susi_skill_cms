@@ -372,7 +372,7 @@ export default class BrowseSkill extends React.Component {
           <div style={styles.sidebar}>
             <div style={styles.newSkillBtn}>
               <IconMenu
-                style={{ width: '100%' }}
+                style={{ width: '60%' }}
                 animated={false}
                 anchorOrigin={{
                   vertical: 'bottom',
