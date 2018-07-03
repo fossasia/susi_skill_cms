@@ -18,12 +18,38 @@ class SkillCardScrollList extends Component {
     this.state = {
       cards: [],
       skills: this.props.skills,
+      scrollCards: 4,
     };
   }
 
-  componentDidMount() {
+  componentDidMount = () => {
     this.loadSkillCards();
-  }
+    this.updateWindowDimensions();
+    window.addEventListener('resize', this.updateWindowDimensions);
+  };
+
+  componentWillUnmount = () => {
+    window.removeEventListener('resize', this.updateWindowDimensions);
+  };
+
+  updateWindowDimensions = () => {
+    let scrollCards = 1;
+    switch (true) {
+      case window.innerWidth >= 1400:
+        scrollCards = 4;
+        break;
+      case window.innerWidth >= 1120:
+        scrollCards = 3;
+        break;
+      case window.innerWidth >= 840:
+        scrollCards = 2;
+        break;
+    }
+
+    this.setState({
+      scrollCards: scrollCards,
+    });
+  };
 
   componentDidUpdate() {
     if (this.props.skills !== this.state.skills) {
@@ -38,7 +64,7 @@ class SkillCardScrollList extends Component {
 
   scrollLeft = () => {
     let parentEle = document.getElementById(this.props.scrollId);
-    let scrollValue = $(parentEle).scrollLeft() - 275;
+    let scrollValue = $(parentEle).scrollLeft() - 280 * this.state.scrollCards;
     $(parentEle)
       .stop()
       .animate({ scrollLeft: scrollValue }, 100);
@@ -46,7 +72,7 @@ class SkillCardScrollList extends Component {
 
   scrollRight = () => {
     let parentEle = document.getElementById(this.props.scrollId);
-    let scrollValue = $(parentEle).scrollLeft() + 275;
+    let scrollValue = $(parentEle).scrollLeft() + 280 * this.state.scrollCards;
     $(parentEle)
       .stop()
       .animate({ scrollLeft: scrollValue }, 100);
