@@ -53,3 +53,18 @@
   justify-content: center;
   padding-bottom: 10px;
 }
+
+.sub-title {
+  font-weight: normal;
+  font-size: 24px;
+  margin: 16px;
+}
+
+.time-chart {
+  margin: 16px 16px 16px 16px;
+  padding: 20px;
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+}

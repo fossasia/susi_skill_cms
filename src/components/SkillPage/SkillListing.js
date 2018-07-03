@@ -88,6 +88,7 @@ class SkillListing extends Component {
       snackMessage: '',
       skill_feedback: [],
       device_usage_data: [],
+      ratings_over_time: [],
     };
 
     let clickedSkill = this.props.location.pathname.split('/')[2];
@@ -113,6 +114,7 @@ class SkillListing extends Component {
       let baseUrl = urls.API_URL + '/cms/getSkillMetadata.json';
       let userSkillRatingUrl = `${urls.API_URL}/cms/getRatingByUser.json`;
       let skillUsageUrl = `${urls.API_URL}/cms/getSkillUsage.json`;
+      let ratingOverTimeUrl = `${urls.API_URL}/cms/getRatingsOverTime.json`;
       let deviceUsageUrl = `${urls.API_URL}/cms/getDeviceWiseSkillUsage.json`;
       let countryWiseSkillUsageUrl = `${
         urls.API_URL
@@ -166,6 +168,16 @@ class SkillListing extends Component {
         this.name;
       deviceUsageUrl =
         deviceUsageUrl +
+        '?model=' +
+        modelValue +
+        '&group=' +
+        this.groupValue +
+        '&language=' +
+        this.languageValue +
+        '&skill=' +
+        this.name;
+      ratingOverTimeUrl =
+        ratingOverTimeUrl +
         '?model=' +
         modelValue +
         '&group=' +
@@ -250,6 +262,32 @@ class SkillListing extends Component {
         },
       });
 
+      // Fetch the skill ratings over time
+      $.ajax({
+        url: ratingOverTimeUrl,
+        dataType: 'json',
+        crossDomain: true,
+        success: function(data) {
+          if (data.ratings_over_time) {
+            const ratingData = data.ratings_over_time.map(item => {
+              return {
+                rating: item.rating,
+                count: item.count,
+                timestamp: parseDate(item.timestamp)
+                  .split(' ')
+                  .slice(2, 4)
+                  .join(' '),
+              };
+            });
+            self.saveRatingOverTime(ratingData);
+          }
+        },
+        error: function(e) {
+          console.log(e);
+          self.saveRatingOverTime();
+        },
+      });
+
       this.getFeedback();
     }
   }
@@ -306,6 +344,13 @@ class SkillListing extends Component {
   saveDeviceUsageData = (device_usage_data = []) => {
     this.setState({
       device_usage_data,
+    });
+  };
+
+  // Save ratings over time data in the component state
+  saveRatingOverTime = (ratings_over_time = []) => {
+    this.setState({
+      ratings_over_time,
     });
   };
 
@@ -766,6 +811,7 @@ class SkillListing extends Component {
               avg_rating={this.state.avg_rating}
               total_star={this.state.total_star}
               changeRating={this.changeRating}
+              ratings_over_time={this.state.ratings_over_time}
             />
             <SkillFeedbackCard
               skill_name={this.state.skill_name}
