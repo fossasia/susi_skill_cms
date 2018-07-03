@@ -172,6 +172,9 @@ const styles = {
     fontWeight: 'bold',
     width: 'fit-content',
   },
+  metricsHeader: {
+    paddingLeft: 16,
+  },
 };
 
 export default styles;

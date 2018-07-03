@@ -57,3 +57,12 @@ div.scrolling-wrapper::-webkit-scrollbar {
     width: 100%;
 }
 
+.metrics-header {
+    font-size: 21px;
+}
+
+@media screen and (max-width: 418px) {
+    .metrics-header {
+        font-size: 15px;    
+    }
+}
