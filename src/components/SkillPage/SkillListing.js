@@ -212,7 +212,8 @@ class SkillListing extends Component {
         jsonp: 'callback',
         success: function(data) {
           if (data.skill_usage) {
-            self.saveSkillUsage(data.skill_usage);
+            const skillUsage = data.skill_usage.filter(day => day != undefined);
+            self.saveSkillUsage(skillUsage);
           }
         },
         error: function(e) {
