@@ -8,7 +8,7 @@
 
 .footer{
     background: #f6f6f6;
-    padding:  8px 30px;
+    padding: 30px 50px;
     margin-top:0px;
     min-height: 20px;
     max-width: 100%;
@@ -31,7 +31,7 @@
 
 .footer li a{
     text-decoration: none;
-    font-size: 1em;
+    font-size: 16px;
     font-weight: 300;
     font-family: 'Roboto', sans-serif;
     cursor: pointer;
@@ -58,9 +58,38 @@
     color:#3367d6;
 }
 
+.susi-logo{
+    height: 30px;
+    vertical-align: middle;
+    max-width: 100px;
+    margin: 10px 48px 10px 0;
+}
+
+.footer-left {
+    display: -ms-flexbox;
+    display: -webkit-box;
+    display: flex;
+    -ms-flex-pack: justify;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-flow: row wrap;
+    flex-flow: row wrap;
+    -webkit-box-pack: justify;
+    justify-content: space-between;
+}
+
 @media only screen and (max-width: 530px){
 
     .footer {
         justify-content: center;
+    }
+
+    .footer-left {
+        display: block;
+        text-align: center;
+    }
+
+    .susi-logo{
+        text-align: center;
     }
 }
