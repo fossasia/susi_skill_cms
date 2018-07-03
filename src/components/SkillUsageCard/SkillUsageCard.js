@@ -55,11 +55,11 @@ class SkillUsageCard extends Component {
       // eslint-disable-next-line
       totalSkillUsage = this.props.skill_usage.reduce((totalCount, day) => {
         if (day) {
-          return parseInt(totalCount, 10) + parseInt(day.count, 10);
+          return totalCount + day.count;
         }
+        return totalCount;
       }, 0);
     }
-
     return (
       <div>
         <Paper className="margin-b-md margin-t-md">
