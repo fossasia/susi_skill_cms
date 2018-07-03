@@ -33,7 +33,6 @@ injectTapEventPlugin();
 
 class App extends React.Component {
   render() {
-    document.body.style.backgroundColor = '#eee';
     return (
       <Router>
         <MuiThemeProvider>
