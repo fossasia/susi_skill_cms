@@ -97,7 +97,7 @@ class SkillCardScrollList extends Component {
                 '/' +
                 skill.group +
                 '/' +
-                skill_name.toLowerCase().replace(/ /g, '_') +
+                skill.skill_tag +
                 '/' +
                 this.props.languageValue,
               state: {
