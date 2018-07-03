@@ -352,7 +352,7 @@ export default class BrowseSkill extends React.Component {
           key="Back to SUSI Skills"
           primaryText="Back to SUSI Skills"
           containerElement={<Link to="/" />}
-          style={{ minHeight: '48px', textAlign: 'center', lineHeight: '48px' }}
+          style={{ minHeight: '32px', textAlign: 'center', lineHeight: '32px' }}
         />
       );
     }
@@ -378,7 +378,7 @@ export default class BrowseSkill extends React.Component {
                 iconButtonElement={
                   <RaisedButton
                     className="create-button"
-                    style={{ width: '100%' }}
+                    style={{ width: '100%', height: 48 }}
                     buttonStyle={{
                       height: '48px',
                       width: '100%',
@@ -769,7 +769,8 @@ export default class BrowseSkill extends React.Component {
                     )}
                   </div>
                 )}
-                <Divider />
+                {/* Check if mobile view is currently active*/}
+                {groupsMobile ? <Divider style={{ marginBottom: 8 }} /> : null}
                 {this.props.routeType === 'category'
                   ? backToHome
                   : groupsMobile}
