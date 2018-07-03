@@ -35,8 +35,9 @@ class Build extends Component {
     this.generateSkillData();
   }
 
-  onSkillChange = skillCode => {
-    this.setState({ skillCode });
+  sendInfoToProps = values => {
+    this.setState({ skillCode: values.code });
+    this.props.sendInfoToProps(values);
     this.generateSkillData();
   };
 
@@ -207,8 +208,9 @@ class Build extends Component {
             {this.state.value === 1 ? (
               <CodeView
                 botBuilder={{
-                  onSkillChange: this.onSkillChange,
+                  sendInfoToProps: this.sendInfoToProps,
                   code: this.state.skillCode,
+                  onSkillInfoChange: this.onSkillInfoChange,
                 }}
               />
             ) : null}
@@ -239,6 +241,7 @@ const styles = {
 };
 Build.propTypes = {
   code: PropTypes.string,
+  sendInfoToProps: PropTypes.func,
 };
 
 export default Build;
