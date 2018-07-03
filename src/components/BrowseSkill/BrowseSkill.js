@@ -710,7 +710,10 @@ export default class BrowseSkill extends React.Component {
               <div style={styles.container}>
                 {this.state.topRatedSkills.length ? (
                   <div style={styles.topSkills}>
-                    <div style={{ paddingLeft: 16, fontSize: 21 }}>
+                    <div
+                      style={styles.metricsHeader}
+                      className="metrics-header"
+                    >
                       {'"SUSI, What are your highest rated skills?"'}
                     </div>
                     {/* Scroll Id must be unique for all instances of SkillCardList*/}
@@ -728,7 +731,10 @@ export default class BrowseSkill extends React.Component {
 
                 {this.state.topUsedSkills.length ? (
                   <div style={styles.topSkills}>
-                    <div style={{ paddingLeft: 16, fontSize: 21 }}>
+                    <div
+                      style={styles.metricsHeader}
+                      className="metrics-header"
+                    >
                       {'"SUSI, what are your most used skills?"'}
                     </div>
                     {/* Scroll Id must be unique for all instances of SkillCardList*/}
