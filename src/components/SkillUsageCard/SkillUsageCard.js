@@ -12,6 +12,7 @@ import {
   Pie,
   Sector,
   Cell,
+  ResponsiveContainer,
 } from 'recharts';
 import { Paper } from 'material-ui';
 import CountryWiseSkillUsageCard from '../CountryWiseSkillUsageCard/CountryWiseSkillUsageCard';
@@ -69,29 +70,29 @@ class SkillUsageCard extends Component {
               <div className="time-chart">
                 <div className="sub-title">Time wise Usage</div>
                 <div>
-                  <LineChart
-                    width={this.state.width}
-                    height={300}
-                    data={this.props.skill_usage}
-                    margin={{
-                      top: 5,
-                      right: 30,
-                      left: 20,
-                      bottom: 5,
-                    }}
-                  >
-                    <XAxis dataKey="date" padding={{ right: 20 }} />
-                    <YAxis />
-                    <Tooltip wrapperStyle={{ height: '60px' }} />
-                    <Legend />
-                    <Line
-                      name="Skill usage count"
-                      type="monotone"
-                      dataKey="count"
-                      stroke="#82ca9d"
-                      activeDot={{ r: 8 }}
-                    />
-                  </LineChart>
+                  <ResponsiveContainer width={this.state.width} height={300}>
+                    <LineChart
+                      data={this.props.skill_usage}
+                      margin={{
+                        top: 5,
+                        right: 30,
+                        left: 20,
+                        bottom: 5,
+                      }}
+                    >
+                      <XAxis dataKey="date" padding={{ right: 20 }} />
+                      <YAxis />
+                      <Tooltip wrapperStyle={{ height: '60px' }} />
+                      <Legend />
+                      <Line
+                        name="Skill usage count"
+                        type="monotone"
+                        dataKey="count"
+                        stroke="#82ca9d"
+                        activeDot={{ r: 8 }}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
                 </div>
               </div>
               <div className="total-hits">
@@ -102,37 +103,39 @@ class SkillUsageCard extends Component {
                 <div className="device-usage">
                   <div className="sub-title">Device wise Usage</div>
                   <div className="pie-chart">
-                    <PieChart width={600} height={350}>
-                      <Pie
-                        activeIndex={this.state.activePieIndex}
-                        activeShape={renderActiveShape}
-                        data={this.props.device_usage_data}
-                        cx={300}
-                        cy={175}
-                        innerRadius={80}
-                        nameKey="device_type"
-                        dataKey="count"
-                        outerRadius={120}
-                        fill="#8884d8"
-                        onMouseEnter={this.onPieEnter}
-                      >
-                        {this.props.device_usage_data.map((entry, index) => (
-                          <Cell
-                            key={index}
-                            fill={
-                              [
-                                '#0088FE',
-                                '#00C49F',
-                                '#FFBB28',
-                                '#FF8042',
-                                '#EA4335',
-                              ][index % 5]
-                            }
-                          />
-                        ))}
-                      </Pie>
-                      <Legend wrapperStyle={{ position: 'relative' }} />
-                    </PieChart>
+                    <ResponsiveContainer width={600} height={350}>
+                      <PieChart>
+                        <Pie
+                          activeIndex={this.state.activePieIndex}
+                          activeShape={renderActiveShape}
+                          data={this.props.device_usage_data}
+                          cx={300}
+                          cy={175}
+                          innerRadius={80}
+                          nameKey="device_type"
+                          dataKey="count"
+                          outerRadius={120}
+                          fill="#8884d8"
+                          onMouseEnter={this.onPieEnter}
+                        >
+                          {this.props.device_usage_data.map((entry, index) => (
+                            <Cell
+                              key={index}
+                              fill={
+                                [
+                                  '#0088FE',
+                                  '#00C49F',
+                                  '#FFBB28',
+                                  '#FF8042',
+                                  '#EA4335',
+                                ][index % 5]
+                              }
+                            />
+                          ))}
+                        </Pie>
+                        <Legend wrapperStyle={{ position: 'relative' }} />
+                      </PieChart>
+                    </ResponsiveContainer>
                   </div>
                 </div>
               ) : (
