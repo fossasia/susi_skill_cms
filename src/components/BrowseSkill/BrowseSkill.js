@@ -705,7 +705,8 @@ export default class BrowseSkill extends React.Component {
 
             {this.state.skillsLoaded ? (
               <div style={styles.container}>
-                {this.state.topRatedSkills.length ? (
+                {this.state.topRatedSkills.length &&
+                !this.state.searchQuery.length ? (
                   <div style={styles.topSkills}>
                     <div
                       style={styles.metricsHeader}
@@ -726,7 +727,8 @@ export default class BrowseSkill extends React.Component {
                   </div>
                 ) : null}
 
-                {this.state.topUsedSkills.length ? (
+                {this.state.topUsedSkills.length &&
+                !this.state.searchQuery.length ? (
                   <div style={styles.topSkills}>
                     <div
                       style={styles.metricsHeader}
@@ -747,7 +749,8 @@ export default class BrowseSkill extends React.Component {
                   </div>
                 ) : null}
 
-                {this.state.skills.length && this.props.routeType ? (
+                {(this.state.skills.length && this.props.routeType) ||
+                (this.state.searchQuery.length && this.state.skills.length) ? (
                   <div>
                     <SkillCardList
                       skills={this.state.skills}
@@ -758,7 +761,8 @@ export default class BrowseSkill extends React.Component {
                   </div>
                 ) : (
                   <div>
-                    {this.props.routeType ? (
+                    {this.props.routeType ||
+                    this.state.searchQuery.length > 0 ? (
                       <div style={{ fontSize: 30 }}>
                         No Skills found. Be the first one to
                         <Link to="/skillCreator"> create</Link> a skill in this
