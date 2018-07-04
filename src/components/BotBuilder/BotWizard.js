@@ -7,13 +7,18 @@ import colors from '../../Utils/colors';
 import Build from './BotBuilderPages/Build';
 import PropTypes from 'prop-types';
 import Design from './BotBuilderPages/Design';
+import CircularProgress from 'material-ui/CircularProgress';
 import { Link } from 'react-router-dom';
 import Configure from './BotBuilderPages/Configure';
+import notification from 'antd/lib/notification';
 import Deploy from './BotBuilderPages/Deploy';
 import Snackbar from 'material-ui/Snackbar';
 import { Paper, TextField } from 'material-ui';
 import ChevronLeft from 'material-ui/svg-icons/navigation/chevron-left';
 import ChevronRight from 'material-ui/svg-icons/navigation/chevron-right';
+import urls from '../../Utils/urls';
+import Icon from 'antd/lib/icon';
+import * as $ from 'jquery';
 import Cookies from 'universal-cookie';
 
 const cookies = new Cookies();
@@ -39,6 +44,7 @@ class BotWizard extends React.Component {
       slideState: 1, // 0 means preview full, 1 means in middle, 2 means preview collapsed
       colBuild: 8,
       colPreview: 4,
+      savingSkill: false,
       designCode:
         '::design\n  color\n    bodyBackground #ffffff,\n    userMessageBoxBackground #0077e5,\n    userMessageTextColor #ffffff,\n    botMessageBoxBackground #f8f8f8,\n    botMessageTextColor #455a64,\n    botIconColor #000000',
       configCode:
@@ -79,10 +85,19 @@ class BotWizard extends React.Component {
     this.setState({ themeSettingsString });
   };
 
+  sendInfoToProps = values => {
+    this.setState({ ...values });
+  };
+
   getStepContent(stepIndex) {
     switch (stepIndex) {
       case 0:
-        return <Build code={this.state.startCode} />;
+        return (
+          <Build
+            sendInfoToProps={this.sendInfoToProps}
+            code={this.state.startCode}
+          />
+        );
       case 1:
         return (
           <Design
@@ -143,6 +158,95 @@ class BotWizard extends React.Component {
 
   saveClick = () => {
     // save the skill on the server
+    let self = this;
+    let code = this.state.code;
+    code = self.state.configCode + '\n' + self.state.designCode + '\n' + code;
+    code = '::author_email ' + cookies.get('emailId') + '\n' + code;
+    code = '::protected Yes\n' + code;
+    if (!cookies.get('loggedIn')) {
+      notification.open({
+        message: 'Not logged In',
+        description: 'Please login and then try to create/edit a skill',
+        icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
+      });
+      return 0;
+    }
+
+    if (!new RegExp(/.+\.\w+/g).test(self.state.imageUrl)) {
+      notification.open({
+        message: 'Error Processing your Request',
+        description: 'image must be in format of images/imageName.jpg',
+        icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
+      });
+      return 0;
+    }
+    if (this.state.file === null) {
+      notification.open({
+        message: 'Error Processing your Request',
+        description: 'Image Not Given',
+        icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
+      });
+      return 0;
+    }
+
+    this.setState({
+      savingSkill: true,
+    });
+
+    let form = new FormData();
+    form.append('group', this.state.groupValue);
+    form.append('language', this.state.languageValue);
+    form.append('skill', this.state.expertValue.trim().replace(/\s/g, '_'));
+    form.append('image', this.state.file);
+    form.append('content', code);
+    form.append('image_name', this.state.imageUrl.replace('images/', ''));
+    form.append('access_token', cookies.get('loggedIn'));
+    form.append('private', '1');
+
+    let settings = {
+      async: true,
+      crossDomain: true,
+      url: urls.API_URL + '/cms/createSkill.json',
+      method: 'POST',
+      processData: false,
+      contentType: false,
+      mimeType: 'multipart/form-data',
+      data: form,
+    };
+
+    $.ajax(settings)
+      .done(function(response) {
+        self.setState({
+          savingSkill: false,
+        });
+        let data = JSON.parse(response);
+        if (data.accepted === true) {
+          notification.open({
+            message: 'Accepted',
+            description: 'Your Skill has been saved',
+            icon: <Icon type="check-circle" style={{ color: '#00C853' }} />,
+          });
+        } else {
+          self.setState({
+            loading: false,
+          });
+          notification.open({
+            message: 'Error Processing your Request',
+            description: String(data.message),
+            icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
+          });
+        }
+      })
+      .fail(function(jqXHR, textStatus) {
+        self.setState({
+          loading: false,
+        });
+        notification.open({
+          message: 'Error Processing your Request',
+          description: String(textStatus),
+          icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
+        });
+      });
   };
 
   render() {
@@ -262,7 +366,13 @@ class BotWizard extends React.Component {
                     <RaisedButton label="Cancel" />
                   </Link>
                   <RaisedButton
-                    label="Save"
+                    label={
+                      this.state.savingSkill ? (
+                        <CircularProgress color="#ffffff" size={32} />
+                      ) : (
+                        'Save'
+                      )
+                    }
                     backgroundColor={colors.header}
                     labelColor="#fff"
                     style={{ marginLeft: 10 }}

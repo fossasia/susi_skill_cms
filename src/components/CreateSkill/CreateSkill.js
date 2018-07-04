@@ -103,15 +103,21 @@ export default class CreateSkill extends React.Component {
     const nameMatch = newValue.match(/^::name\s(.*)$/m);
 
     if (nameMatch) {
-      self.setState({
-        expertValue: nameMatch[1],
-      });
+      self.setState(
+        {
+          expertValue: nameMatch[1],
+        },
+        () => self.sendInfoToProps(),
+      );
     }
 
     if (match !== null) {
-      self.setState({
-        imageUrl: match[1],
-      });
+      self.setState(
+        {
+          imageUrl: match[1],
+        },
+        () => self.sendInfoToProps(),
+      );
     }
     self.updateCode(newValue);
   }
@@ -148,12 +154,12 @@ export default class CreateSkill extends React.Component {
   }
 
   updateCode = newCode => {
-    this.setState({
-      code: newCode,
-    });
-    if (this.props.botBuilder) {
-      this.props.botBuilder.onSkillChange(newCode);
-    }
+    this.setState(
+      {
+        code: newCode,
+      },
+      () => self.sendInfoToProps(),
+    );
   };
 
   handleExpertChange = event => {
@@ -162,24 +168,33 @@ export default class CreateSkill extends React.Component {
       /^::name\s(.*)$/m,
       `::name ${expertValue}`,
     );
-    this.setState({
-      expertValue,
-      code,
-    });
+    this.setState(
+      {
+        expertValue,
+        code,
+      },
+      () => self.sendInfoToProps(),
+    );
   };
 
   handleCommitMessageChange = event => {
-    this.setState({
-      commitMessage: event.target.value,
-    });
+    this.setState(
+      {
+        commitMessage: event.target.value,
+      },
+      () => self.sendInfoToProps(),
+    );
   };
 
   handleGroupChange = (event, index, value) => {
-    this.setState({
-      groupValue: value,
-      groupSelect: false,
-      languageSelect: false,
-    });
+    this.setState(
+      {
+        groupValue: value,
+        groupSelect: false,
+        languageSelect: false,
+      },
+      () => self.sendInfoToProps(),
+    );
     if (languages.length === 0) {
       $.ajax({
         url: urls.API_URL + '/cms/getAllLanguages.json',
@@ -229,10 +244,13 @@ export default class CreateSkill extends React.Component {
   };
 
   handleLanguageChange = (event, index, value) => {
-    this.setState({
-      languageValue: value,
-      expertSelect: false,
-    });
+    this.setState(
+      {
+        languageValue: value,
+        expertSelect: false,
+      },
+      () => self.sendInfoToProps(),
+    );
   };
 
   handleFontChange = (event, index, value) => {
@@ -245,6 +263,19 @@ export default class CreateSkill extends React.Component {
     this.setState({
       editorTheme: value,
     });
+  };
+
+  sendInfoToProps = () => {
+    if (this.props.botBuilder) {
+      this.props.botBuilder.sendInfoToProps({
+        code: this.state.code,
+        expertValue: this.state.expertValue,
+        imageUrl: this.state.imageUrl,
+        groupValue: this.state.groupValue,
+        languageValue: this.state.languageValue,
+        file: this.state.file,
+      });
+    }
   };
 
   saveClick = () => {
@@ -396,14 +427,20 @@ export default class CreateSkill extends React.Component {
         showImage: true,
       });
     }
-    this.setState({
-      file: file,
-    });
+    this.setState(
+      {
+        file: file,
+      },
+      () => this.sendInfoToProps(),
+    );
     // console.log(file) // Would see a path?
     let imgUrl = file.name;
-    this.setState({
-      imageUrl: imgUrl,
-    });
+    this.setState(
+      {
+        imageUrl: imgUrl,
+      },
+      () => this.sendInfoToProps(),
+    );
     // console.log(this.state.imageUrl);
     const pattern = /^::image\s(.*)$/m;
     const code = this.state.code.replace(pattern, `::image images/${imgUrl}`);
