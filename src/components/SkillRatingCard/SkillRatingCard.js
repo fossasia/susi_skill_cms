@@ -104,45 +104,49 @@ class SkillRatingCard extends Component {
               Average Rating
             </div>
             <div className="rating-bar-chart">
-              <BarChart
-                layout="vertical"
-                width={this.state.width}
-                height={200}
-                margin={{ right: 48 }}
-                data={this.props.skill_ratings}
-              >
-                <XAxis type="number" hide={true} />
-                <YAxis
-                  dataKey="name"
-                  type="category"
-                  axisLine={false}
-                  tickLine={false}
-                />
-                <Tooltip cursor={false} wrapperStyle={{ height: '30px' }} />
-                <Bar
-                  name="Skill Rating"
-                  background={true}
-                  barSize={32}
-                  maxBarSize={100}
-                  dataKey="value"
+              <ResponsiveContainer width={this.state.width} height={200}>
+                <BarChart
+                  layout="vertical"
+                  margin={{ right: 48 }}
+                  data={this.props.skill_ratings}
                 >
-                  <LabelList
-                    position="insideLeft"
-                    offset={this.state.offset}
-                    fill="#666666"
+                  <XAxis type="number" hide={true} />
+                  <YAxis
+                    dataKey="name"
+                    type="category"
+                    axisLine={false}
+                    tickLine={false}
                   />
-                  {this.props.skill_ratings.map((entry, index) => (
-                    <Cell
-                      key={index}
-                      fill={
-                        ['#81C784', '#AED581', '#FFF176', '#FFB74D', '#E57373'][
-                          index % 5
-                        ]
-                      }
+                  <Tooltip cursor={false} wrapperStyle={{ height: '30px' }} />
+                  <Bar
+                    name="Skill Rating"
+                    background={true}
+                    barSize={32}
+                    maxBarSize={100}
+                    dataKey="value"
+                  >
+                    <LabelList
+                      position="insideLeft"
+                      offset={this.state.offset}
+                      fill="#666666"
                     />
-                  ))}
-                </Bar>
-              </BarChart>
+                    {this.props.skill_ratings.map((entry, index) => (
+                      <Cell
+                        key={index}
+                        fill={
+                          [
+                            '#81C784',
+                            '#AED581',
+                            '#FFF176',
+                            '#FFB74D',
+                            '#E57373',
+                          ][index % 5]
+                        }
+                      />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
             </div>
             <div className="total-rating">
               <div className="large-text">{this.props.total_star || 0}</div>
