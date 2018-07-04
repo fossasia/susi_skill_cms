@@ -308,7 +308,7 @@ export default class BrowseSkill extends React.Component {
     let url;
     url =
       urls.API_URL +
-      '/cms/getSkillList.json?group=All&applyFilter=true&filter_name=descending&filter_type=usage&count=10';
+      '/cms/getSkillList.json?group=All&applyFilter=true&filter_name=descending&filter_type=usage&count=10&duration=30';
     let self = this;
     $.ajax({
       url: url,
