@@ -44,6 +44,8 @@ class SkillCardScrollList extends Component {
       case window.innerWidth >= 840:
         scrollCards = 2;
         break;
+      default:
+        scrollCards = 1;
     }
 
     this.setState({
