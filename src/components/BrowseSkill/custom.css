@@ -1,23 +1,3 @@
-/* Scroll to top */
-#scrollToTop {
-    position: fixed;
-    bottom: 20px;
-    right: 30px;
-    z-index: 5;
-    opacity: 0.5;
-    border: none;
-    outline: none;
-    background-color: aqua;
-    color: blue;
-    cursor: pointer;
-    padding: 15px;
-    border-radius: 10px;
-}
-#scrollToTop:hover {
-    background-color: #555;
-    opacity: 1.0;
- }
-
 .bold {
     font-weight: bold;
 }
@@ -38,6 +18,7 @@ div.scrolling-wrapper::-webkit-scrollbar {
 
 .index-link-sidebar:hover {
     color: #284779;
+    cursor: pointer;
 }
 
 .category-sidebar-section {
