@@ -2,6 +2,8 @@ import React from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import { Step, Stepper, StepButton } from 'material-ui/Stepper';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import { Grid, Col, Row } from 'react-flexbox-grid';
 import colors from '../../Utils/colors';
 import Build from './BotBuilderPages/Build';
@@ -250,6 +252,11 @@ class BotWizard extends React.Component {
   };
 
   render() {
+    const muiTheme = getMuiTheme({
+      stepper: {
+        iconColor: 'rgb(66, 133, 244)',
+      },
+    });
     if (!cookies.get('loggedIn')) {
       return (
         <div>
@@ -296,28 +303,30 @@ class BotWizard extends React.Component {
                       style={styles.chevronBuild}
                     />
                   </span>
-                  <Stepper activeStep={stepIndex} linear={false}>
-                    <Step>
-                      <StepButton onClick={() => this.setStep(0)}>
-                        Build
-                      </StepButton>
-                    </Step>
-                    <Step>
-                      <StepButton onClick={() => this.setStep(1)}>
-                        Design
-                      </StepButton>
-                    </Step>
-                    <Step>
-                      <StepButton onClick={() => this.setStep(2)}>
-                        Configure
-                      </StepButton>
-                    </Step>
-                    <Step>
-                      <StepButton onClick={() => this.setStep(3)}>
-                        Deploy
-                      </StepButton>
-                    </Step>
-                  </Stepper>
+                  <MuiThemeProvider muiTheme={muiTheme}>
+                    <Stepper activeStep={stepIndex} linear={false}>
+                      <Step>
+                        <StepButton onClick={() => this.setStep(0)}>
+                          Build
+                        </StepButton>
+                      </Step>
+                      <Step>
+                        <StepButton onClick={() => this.setStep(1)}>
+                          Design
+                        </StepButton>
+                      </Step>
+                      <Step>
+                        <StepButton onClick={() => this.setStep(2)}>
+                          Configure
+                        </StepButton>
+                      </Step>
+                      <Step>
+                        <StepButton onClick={() => this.setStep(3)}>
+                          Deploy
+                        </StepButton>
+                      </Step>
+                    </Stepper>
+                  </MuiThemeProvider>
                   <div style={contentStyle}>
                     <div>{this.getStepContent(stepIndex)}</div>
                     <div style={{ marginTop: '20px' }} />
