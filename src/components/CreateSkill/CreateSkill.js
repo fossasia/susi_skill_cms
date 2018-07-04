@@ -60,7 +60,7 @@ export default class CreateSkill extends React.Component {
       languageValue: null,
       expertValue: '',
       code:
-        '::name <Skill_name>\n::author <author_name>\n::author_url <author_url>\n::description <description> \n::dynamic_content <Yes/No>\n::developer_privacy_policy <link>\n::image <image_url>\n::terms_of_use <link>\n\n\nUser query1|query2|quer3....\n!example:<The question that should be shown in public skill displays>\n!expect:<The answer expected for the above example>\nAnswer for the user query',
+        '::name <Skill_name>\n::category <Category>\n::language <Language>\n::author <author_name>\n::author_url <author_url>\n::description <description> \n::dynamic_content <Yes/No>\n::developer_privacy_policy <link>\n::image <image_url>\n::terms_of_use <link>\n\n\nUser query1|query2|quer3....\n!example:<The question that should be shown in public skill displays>\n!expect:<The answer expected for the above example>\nAnswer for the user query',
       fontSizeCode: 14,
       editorTheme: 'github',
       groups: [],
@@ -101,11 +101,31 @@ export default class CreateSkill extends React.Component {
   onChange(newValue) {
     const match = newValue.match(/^::image\s(.*)$/m);
     const nameMatch = newValue.match(/^::name\s(.*)$/m);
+    const categoryMatch = newValue.match(/^::category\s(.*)$/m);
+    const languageMatch = newValue.match(/^::language\s(.*)$/m);
 
     if (nameMatch) {
       self.setState(
         {
           expertValue: nameMatch[1],
+        },
+        () => self.sendInfoToProps(),
+      );
+    }
+
+    if (categoryMatch) {
+      self.setState(
+        {
+          groupValue: categoryMatch[1],
+        },
+        () => self.sendInfoToProps(),
+      );
+    }
+
+    if (languageMatch) {
+      self.setState(
+        {
+          languageValue: languageMatch[1],
         },
         () => self.sendInfoToProps(),
       );
@@ -187,11 +207,16 @@ export default class CreateSkill extends React.Component {
   };
 
   handleGroupChange = (event, index, value) => {
+    const code = this.state.code.replace(
+      /^::category\s(.*)$/m,
+      `::category ${value}`,
+    );
     this.setState(
       {
         groupValue: value,
         groupSelect: false,
         languageSelect: false,
+        code,
       },
       () => self.sendInfoToProps(),
     );
@@ -223,7 +248,8 @@ export default class CreateSkill extends React.Component {
               );
             }
             if (data[i] === 'en') {
-              this.setState({ languageValue: 'en', expertSelect: false });
+              this.handleLanguageChange(null, 0, 'en');
+              this.setState({ expertSelect: false });
             }
           }
           languages.sort(function(a, b) {
@@ -244,10 +270,16 @@ export default class CreateSkill extends React.Component {
   };
 
   handleLanguageChange = (event, index, value) => {
+    const code = this.state.code.replace(
+      /^::language\s(.*)$/m,
+      `::language ${value}`,
+    );
+
     this.setState(
       {
         languageValue: value,
         expertSelect: false,
+        code,
       },
       () => self.sendInfoToProps(),
     );
