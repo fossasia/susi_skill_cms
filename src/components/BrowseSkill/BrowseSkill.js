@@ -71,10 +71,7 @@ export default class BrowseSkill extends React.Component {
     ) {
       this.loadCards();
     } else {
-      this.loadTopRated();
-      this.loadTopUsed();
-      this.loadTopFeedback();
-      this.loadLatestSkills();
+      this.loadMetricsSkills();
     }
   }
 
@@ -289,11 +286,9 @@ export default class BrowseSkill extends React.Component {
     });
   };
 
-  loadTopRated = () => {
+  loadMetricsSkills = () => {
     let url;
-    url =
-      urls.API_URL +
-      '/cms/getSkillList.json?group=All&applyFilter=true&filter_name=descending&filter_type=rating&count=10';
+    url = urls.API_URL + '/cms/getSkillMetricsData.json';
     let self = this;
     $.ajax({
       url: url,
@@ -303,36 +298,15 @@ export default class BrowseSkill extends React.Component {
       success: function(data) {
         self.setState({
           skillsLoaded: true,
-          topRatedSkills: data.filteredData,
+          topRatedSkills: data.metrics.rating,
+          topUsedSkills: data.metrics.usage,
+          latestSkills: data.metrics.latest,
+          topFeedbackSkills: data.metrics.feedback,
         });
       },
       error: function(e) {
-        console.log('Error while fetching top rated skills', e);
-        return self.loadTopRated();
-      },
-    });
-  };
-
-  loadTopUsed = () => {
-    let url;
-    url =
-      urls.API_URL +
-      '/cms/getSkillList.json?group=All&applyFilter=true&filter_name=descending&filter_type=usage&count=10&duration=30';
-    let self = this;
-    $.ajax({
-      url: url,
-      dataType: 'jsonp',
-      jsonp: 'callback',
-      crossDomain: true,
-      success: function(data) {
-        self.setState({
-          skillsLoaded: true,
-          topUsedSkills: data.filteredData,
-        });
-      },
-      error: function(e) {
-        console.log('Error while fetching top used skills', e);
-        return self.loadTopUsed();
+        console.log('Error while fetching skills based on top metrics', e);
+        return self.loadMetricsSkills();
       },
     });
   };
@@ -375,54 +349,6 @@ export default class BrowseSkill extends React.Component {
       />
     ));
   }
-
-  loadTopFeedback = () => {
-    let url;
-    url =
-      urls.API_URL +
-      '/cms/getSkillList.json?group=All&applyFilter=true&filter_name=descending&filter_type=feedback&count=10';
-    let self = this;
-    $.ajax({
-      url: url,
-      dataType: 'jsonp',
-      jsonp: 'callback',
-      crossDomain: true,
-      success: function(data) {
-        self.setState({
-          skillsLoaded: true,
-          topFeedbackSkills: data.filteredData,
-        });
-      },
-      error: function(e) {
-        console.log('Error while fetching top feedback skills', e);
-        return self.loadTopFeedback();
-      },
-    });
-  };
-
-  loadLatestSkills = () => {
-    let url;
-    url =
-      urls.API_URL +
-      '/cms/getSkillList.json?group=All&applyFilter=true&filter_name=descending&filter_type=date&count=10&duration=30';
-    let self = this;
-    $.ajax({
-      url: url,
-      dataType: 'jsonp',
-      jsonp: 'callback',
-      crossDomain: true,
-      success: function(data) {
-        self.setState({
-          skillsLoaded: true,
-          latestSkills: data.filteredData,
-        });
-      },
-      error: function(e) {
-        console.log('Error while fetching latest skills', e);
-        return self.loadLatestSkills();
-      },
-    });
-  };
 
   render() {
     let { languageValue } = this.state;
