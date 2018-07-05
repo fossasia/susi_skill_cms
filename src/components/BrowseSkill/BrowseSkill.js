@@ -107,6 +107,7 @@ export default class BrowseSkill extends React.Component {
           filter: `&applyFilter=true&filter_name=descending
             &filter_type=date&duration=${value}`,
           timeFilter: value,
+          skillsLoaded: false,
         },
         function() {
           this.loadCards();
@@ -117,6 +118,7 @@ export default class BrowseSkill extends React.Component {
         {
           filter: '&applyFilter=true&filter_name=descending&filter_type=rating',
           timeFilter: null,
+          skillsLoaded: false,
         },
         function() {
           this.loadCards();
@@ -725,7 +727,8 @@ export default class BrowseSkill extends React.Component {
               <div style={styles.container}>
                 {this.state.topRatedSkills.length &&
                 !this.state.searchQuery.length &&
-                !this.state.rating_refine ? (
+                !this.state.rating_refine &&
+                !this.state.timeFilter ? (
                   <div style={styles.topSkills}>
                     <div
                       style={styles.metricsHeader}
@@ -748,7 +751,8 @@ export default class BrowseSkill extends React.Component {
 
                 {this.state.topUsedSkills.length &&
                 !this.state.searchQuery.length &&
-                !this.state.rating_refine ? (
+                !this.state.rating_refine &&
+                !this.state.timeFilter ? (
                   <div style={styles.topSkills}>
                     <div
                       style={styles.metricsHeader}
@@ -771,7 +775,8 @@ export default class BrowseSkill extends React.Component {
 
                 {(this.state.skills.length && this.props.routeType) ||
                 (this.state.searchQuery.length && this.state.skills.length) ||
-                this.state.rating_refine ? (
+                this.state.rating_refine ||
+                (this.state.timeFilter && this.state.skills.length) ? (
                   <div>
                     <SkillCardList
                       skills={this.state.skills}
@@ -783,7 +788,8 @@ export default class BrowseSkill extends React.Component {
                 ) : (
                   <div>
                     {this.props.routeType ||
-                    this.state.searchQuery.length > 0 ? (
+                    this.state.searchQuery.length ||
+                    this.state.timeFilter ? (
                       <div style={{ fontSize: 30 }}>
                         No Skills found. Be the first one to
                         <Link to="/skillCreator"> create</Link> a skill in this
