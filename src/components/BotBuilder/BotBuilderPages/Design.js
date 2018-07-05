@@ -41,8 +41,10 @@ class Design extends React.Component {
       uploadingBotbuilderIconImg: false,
       editorTheme: 'github',
       fontSizeCode: 14,
+      code: this.props.code,
     };
     this.getSettings();
+    this.handleChangeCode = this.handleChangeCode.bind(this);
   }
 
   componentDidMount() {
@@ -55,22 +57,129 @@ class Design extends React.Component {
   };
 
   handleChangeColor = (component, color) => {
-    if (component === 'botbuilderIconColor') {
+    if (component === 'botbuilderBackgroundBody') {
       this.setState(
         {
+          code: this.state.code.replace(
+            'bodyBackground ' + this.state.botbuilderBackgroundBody,
+            'bodyBackground ' + color,
+          ),
           [component]: color,
         },
         () => this.updateSettings(),
       );
-    } else {
+    } else if (component === 'botbuilderUserMessageBackground') {
       this.setState(
         {
+          code: this.state.code.replace(
+            'userMessageBoxBackground ' +
+              this.state.botbuilderUserMessageBackground,
+            'userMessageBoxBackground ' + color,
+          ),
+          [component]: color,
+        },
+        () => this.updateSettings(),
+      );
+    } else if (component === 'botbuilderUserMessageTextColor') {
+      this.setState(
+        {
+          code: this.state.code.replace(
+            'userMessageTextColor ' + this.state.botbuilderUserMessageTextColor,
+            'userMessageTextColor ' + color,
+          ),
+          [component]: color,
+        },
+        () => this.updateSettings(),
+      );
+    } else if (component === 'botbuilderBotMessageBackground') {
+      this.setState(
+        {
+          code: this.state.code.replace(
+            'botMessageBoxBackground ' +
+              this.state.botbuilderBotMessageBackground,
+            'botMessageBoxBackground ' + color,
+          ),
+          [component]: color,
+        },
+        () => this.updateSettings(),
+      );
+    } else if (component === 'botbuilderBotMessageTextColor') {
+      this.setState(
+        {
+          code: this.state.code.replace(
+            'botMessageTextColor ' + this.state.botbuilderBotMessageTextColor,
+            'botMessageTextColor ' + color,
+          ),
+          [component]: color,
+        },
+        () => this.updateSettings(),
+      );
+    } else if (component === 'botbuilderIconColor') {
+      this.setState(
+        {
+          code: this.state.code.replace(
+            'botIconColor ' + this.state.botbuilderIconColor,
+            'botIconColor ' + color,
+          ),
           [component]: color,
         },
         () => this.updateSettings(),
       );
     }
   };
+
+  handleChangeCode(event) {
+    let updatedCode = event;
+    let backgroundBodyIndexNo =
+      updatedCode.indexOf('bodyBackground ') + 'bodyBackground '.length;
+    let userMessageBackgroundIndexNo =
+      updatedCode.indexOf('userMessageBoxBackground ') +
+      'userMessageBoxBackground '.length;
+    let userMessageTextColorIndexNo =
+      updatedCode.indexOf('userMessageTextColor ') +
+      'userMessageTextColor '.length;
+    let botMessageBackgroundIndexNo =
+      updatedCode.indexOf('botMessageBoxBackground ') +
+      'botMessageBoxBackground '.length;
+    let botMessageTextColorIndexNo =
+      updatedCode.indexOf('botMessageTextColor ') +
+      'botMessageTextColor '.length;
+    let iconColorIndexNo =
+      updatedCode.indexOf('botIconColor ') + 'botIconColor '.length;
+    let backgroundBody = updatedCode.substring(
+      backgroundBodyIndexNo,
+      backgroundBodyIndexNo + 7,
+    );
+    let userMessageBackground = updatedCode.substring(
+      userMessageBackgroundIndexNo,
+      userMessageBackgroundIndexNo + 7,
+    );
+    let userMessageTextColor = updatedCode.substring(
+      userMessageTextColorIndexNo,
+      userMessageTextColorIndexNo + 7,
+    );
+    let botMessageBackground = updatedCode.substring(
+      botMessageBackgroundIndexNo,
+      botMessageBackgroundIndexNo + 7,
+    );
+    let botMessageTextColor = updatedCode.substring(
+      botMessageTextColorIndexNo,
+      botMessageTextColorIndexNo + 7,
+    );
+    let iconColor = updatedCode.substring(
+      iconColorIndexNo,
+      iconColorIndexNo + 7,
+    );
+    this.setState({
+      botbuilderBackgroundBody: backgroundBody,
+      botbuilderUserMessageBackground: userMessageBackground,
+      botbuilderUserMessageTextColor: userMessageTextColor,
+      botbuilderBotMessageBackground: botMessageBackground,
+      botbuilderBotMessageTextColor: botMessageTextColor,
+      botbuilderIconColor: iconColor,
+      code: updatedCode,
+    });
+  }
 
   handleChangeBodyBackgroundImage = botbuilderBodyBackgroundImg => {
     let files = botbuilderBodyBackgroundImg.target.files;
@@ -123,7 +232,6 @@ class Design extends React.Component {
   };
 
   uploadImageIcon = file => {
-    console.log(file);
     let form = new FormData();
     form.append('access_token', cookies.get('loggedIn'));
     form.append('image_name', file.name);
@@ -690,7 +798,8 @@ class Design extends React.Component {
             width="100%"
             fontSize={this.state.fontSizeCode}
             height="200px"
-            value={this.props.code}
+            value={this.state.code}
+            onChange={this.handleChangeCode}
             showPrintMargin={false}
             name="skill_code_editor"
             scrollPastEnd={false}
