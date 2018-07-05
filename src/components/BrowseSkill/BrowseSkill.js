@@ -790,7 +790,7 @@ export default class BrowseSkill extends React.Component {
                     {this.props.routeType ||
                     this.state.searchQuery.length ||
                     this.state.timeFilter ? (
-                      <div style={{ fontSize: 30 }}>
+                      <div style={styles.noSkill}>
                         No Skills found. Be the first one to
                         <Link to="/skillCreator"> create</Link> a skill in this
                         category
