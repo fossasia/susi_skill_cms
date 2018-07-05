@@ -178,6 +178,12 @@ class ConversationView extends Component {
       <div style={{ padding: '10px 10px 20px 10px' }}>
         <Paper id="message-container" style={styles.paperStyle} zDepth={1}>
           {conversationsData.map(item => {
+            let text = item.name;
+            let messageArr = text.match(/.{1,28}/g);
+            let message = [];
+            for (let i = 0; i < messageArr.length; i++) {
+              message.push(<div>{messageArr[i]}</div>);
+            }
             if (item.type === 'user') {
               return (
                 <div
@@ -188,7 +194,7 @@ class ConversationView extends Component {
                     style={styles.deleteUser}
                     onClick={() => this.handleDeleteNode(item)}
                   />
-                  <div className="user-text-box">{item.name}</div>
+                  <div className="user-text-box">{message}</div>
                   <Person style={{ height: '40px' }} />
                 </div>
               );
@@ -203,7 +209,7 @@ class ConversationView extends Component {
                   alt="bot icon"
                   style={styles.botIcon}
                 />
-                <div className="bot-text-box">{item.name}</div>
+                <div className="bot-text-box">{message}</div>
                 <Delete
                   style={styles.deleteBot}
                   onClick={() => this.handleDeleteNode(item)}
