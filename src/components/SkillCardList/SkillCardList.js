@@ -149,7 +149,7 @@ class SkillCardList extends Component {
         style={{
           marginTop: '20px',
           marginBottom: '40px',
-          textAlign: 'justify',
+          textAlign: 'center',
           fontSize: '0.1px',
           width: '100%',
         }}
