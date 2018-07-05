@@ -56,6 +56,7 @@ export default class BrowseSkill extends React.Component {
       topRatedSkills: [],
       topUsedSkills: [],
       rating_refine: null,
+      timeFilter: null,
     };
   }
 
@@ -99,11 +100,29 @@ export default class BrowseSkill extends React.Component {
     });
   };
 
-  handleArrivalTimeChange = (event, value) => {
-    this.setState({ filter: value }, function() {
-      // console.log(this.state);
-      this.loadCards();
-    });
+  handleArrivalTimeChange = value => {
+    if (value) {
+      this.setState(
+        {
+          filter: `&applyFilter=true&filter_name=descending
+            &filter_type=date&duration=${value}`,
+          timeFilter: value,
+        },
+        function() {
+          this.loadCards();
+        },
+      );
+    } else {
+      this.setState(
+        {
+          filter: '&applyFilter=true&filter_name=descending&filter_type=rating',
+          timeFilter: null,
+        },
+        function() {
+          this.loadCards();
+        },
+      );
+    }
   };
 
   handleSearch = value => {
@@ -405,39 +424,43 @@ export default class BrowseSkill extends React.Component {
             </div>
             <Menu desktop={true} disableAutoFocus={true}>
               <Subheader>New Arrivals</Subheader>
-              <MenuItem
-                value="&applyFilter=true&filter_name=descending&filter_type=date&duration=7"
-                key="Last 7 Days"
-                primaryText="Last 7 Days"
-                onClick={event =>
-                  this.handleArrivalTimeChange(
-                    event,
-                    '&applyFilter=true&filter_name=descending&filter_type=date&duration=7',
-                  )
-                }
-              />
-              <MenuItem
-                value="&applyFilter=true&filter_name=descending&filter_type=date&duration=30"
-                key="Last 30 Days"
-                primaryText="Last 30 Days"
-                onClick={event =>
-                  this.handleArrivalTimeChange(
-                    event,
-                    '&applyFilter=true&filter_name=descending&filter_type=date&duration=30',
-                  )
-                }
-              />
-              <MenuItem
-                value="&applyFilter=true&filter_name=descending&filter_type=date&duration=90"
-                key="Last 90 Days"
-                primaryText="Last 90 Days"
-                onClick={event =>
-                  this.handleArrivalTimeChange(
-                    event,
-                    '&applyFilter=true&filter_name=descending&filter_type=date&duration=90',
-                  )
-                }
-              />
+              {this.state.timeFilter && (
+                <div className="category-sidebar-section">
+                  <div
+                    className="index-link-sidebar"
+                    onClick={() => this.handleArrivalTimeChange(null)}
+                  >
+                    {'< Any release'}
+                  </div>
+                  <div style={{ marginLeft: '10px', fontWeight: 'bold' }}>
+                    {`Last ${this.state.timeFilter} Days`}
+                  </div>
+                </div>
+              )}
+              {!this.state.timeFilter && (
+                <MenuItem
+                  value="&applyFilter=true&filter_name=descending&filter_type=date&duration=7"
+                  key="Last 7 Days"
+                  primaryText="Last 7 Days"
+                  onClick={() => this.handleArrivalTimeChange(7)}
+                />
+              )}
+              {!this.state.timeFilter && (
+                <MenuItem
+                  value="&applyFilter=true&filter_name=descending&filter_type=date&duration=30"
+                  key="Last 30 Days"
+                  primaryText="Last 30 Days"
+                  onClick={() => this.handleArrivalTimeChange(30)}
+                />
+              )}
+              {!this.state.timeFilter && (
+                <MenuItem
+                  value="&applyFilter=true&filter_name=descending&filter_type=date&duration=90"
+                  key="Last 90 Days"
+                  primaryText="Last 90 Days"
+                  onClick={() => this.handleArrivalTimeChange(90)}
+                />
+              )}
               {this.props.routeType === 'category' ? (
                 <div className="category-sidebar-section">
                   <Link to="/">
