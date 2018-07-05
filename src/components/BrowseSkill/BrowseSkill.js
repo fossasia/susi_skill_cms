@@ -347,13 +347,8 @@ export default class BrowseSkill extends React.Component {
     });
   };
 
-  handleRatingRefine = rating => {
-    this.setState(
-      {
-        rating_refine: rating,
-      },
-      this.loadCards(),
-    );
+  handleRatingRefine = rating_refine => {
+    this.setState({ rating_refine }, this.loadCards());
   };
 
   render() {
@@ -729,7 +724,8 @@ export default class BrowseSkill extends React.Component {
             {this.state.skillsLoaded ? (
               <div style={styles.container}>
                 {this.state.topRatedSkills.length &&
-                !this.state.searchQuery.length ? (
+                !this.state.searchQuery.length &&
+                !this.state.rating_refine ? (
                   <div style={styles.topSkills}>
                     <div
                       style={styles.metricsHeader}
@@ -751,7 +747,8 @@ export default class BrowseSkill extends React.Component {
                 ) : null}
 
                 {this.state.topUsedSkills.length &&
-                !this.state.searchQuery.length ? (
+                !this.state.searchQuery.length &&
+                !this.state.rating_refine ? (
                   <div style={styles.topSkills}>
                     <div
                       style={styles.metricsHeader}
@@ -773,7 +770,8 @@ export default class BrowseSkill extends React.Component {
                 ) : null}
 
                 {(this.state.skills.length && this.props.routeType) ||
-                (this.state.searchQuery.length && this.state.skills.length) ? (
+                (this.state.searchQuery.length && this.state.skills.length) ||
+                this.state.rating_refine ? (
                   <div>
                     <SkillCardList
                       skills={this.state.skills}
