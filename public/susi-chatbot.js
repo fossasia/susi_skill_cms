@@ -88,7 +88,7 @@ function applyTheme(){
 	// body background
 	$(".susi-sheet-content-container").css("background-color",botbuilderBackgroundBody);
 	if(botbuilderBodyBackgroundImg){
-		$(".susi-sheet-content-container").css("background-image","url("+botbuilderBodyBackgroundImg+")");
+		$(".susi-sheet-content-container").css("background-image","url('"+botbuilderBodyBackgroundImg+"')");
 	}
 	// user message container
 	$(".susi-comment-by-user .susi-comment-body-container").css("background-color",botbuilderUserMessageBackground);
@@ -101,8 +101,8 @@ function applyTheme(){
 	$(".susi-launcher-button").css("background-color",botbuilderIconColor);
 	$(".susi-comment-avatar").css("background-color",botbuilderIconColor);
 	if(botbuilderIconImg){
-		$(".susi-launcher-button").css("background-image","url("+botbuilderIconImg+")");
-		$(".susi-comment-avatar").css("background-image","url("+botbuilderIconImg+")");
+		$(".susi-launcher-button").css("background-image","url('"+botbuilderIconImg+"')");
+		$(".susi-comment-avatar").css("background-image","url('"+botbuilderIconImg+"')");
 	}
 }
 
@@ -122,7 +122,7 @@ function enableBot() {
 				        '<div id="susi-chatbox" class="susi-chatbox">'+
 				            '<div id="susi-conversation" class="susi-conversation susi-sheet susi-sheet-active susi-active">'+
 				                '<div class="susi-sheet-content">'+
-				                    '<div class="susi-sheet-content-container" style="background-color:'+botbuilderBackgroundBody+'">'+
+				                    '<div class="susi-sheet-content-container" style="background-color:'+botbuilderBackgroundBody+';background-image:url(\''+botbuilderBodyBackgroundImg+'\')">'+
 				                        '<div class="susi-conversation-parts-container">'+
 				                            '<div id="susi-message" class="susi-conversation-parts">'+
 				                            '</div>'+
@@ -151,7 +151,7 @@ function enableBot() {
 			'<div id="susi-launcher-container" class="susi-flex-center susi-avatar-launcher susi-launcher-enabled">'+
 			'<div id="susi-avatar-text">'+'Hey there'+'</div>'+
 			'<div id="susi-launcher" class="susi-launcher susi-flex-center susi-launcher-active" style="background-color: rgb(91, 75, 159);">'+
-			'<div id="susi-launcher-button" class="susi-launcher-button" style="background-image: url('+ botbuilderIconImg +');">'+'</div>'+
+			'<div id="susi-launcher-button" class="susi-launcher-button" style="background-image: url(\''+ botbuilderIconImg +'\');">'+'</div>'+
 			'</div>'+
 			'</div>';
 
