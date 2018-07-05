@@ -16,6 +16,7 @@ import avatars from '../../../Utils/avatars';
 
 const cookies = new Cookies();
 let BASE_URL = urls.API_URL;
+let IMAGE_GET_URL = 'https://api.susi.ai/cms/getImage.png?image=';
 
 class Design extends React.Component {
   constructor(props) {
@@ -100,10 +101,11 @@ class Design extends React.Component {
     $.ajax(settings)
       .done(function(response) {
         response = JSON.parse(response);
+        let img_url = IMAGE_GET_URL + response.image_path;
         self.setState(
           {
             uploadingBodyBackgroundImg: false,
-            botbuilderBodyBackgroundImg: response.image_path,
+            botbuilderBodyBackgroundImg: img_url,
             botbuilderBodyBackgroundImgName: response.image_path.substring(
               response.image_path.indexOf('_') + 1,
             ),
@@ -141,11 +143,12 @@ class Design extends React.Component {
     $.ajax(settings)
       .done(function(response) {
         response = JSON.parse(response);
+        let img_url = IMAGE_GET_URL + response.image_path;
         self.setState(
           {
             uploadingBotbuilderIconImg: false,
             iconSelected: null,
-            botbuilderIconImg: response.image_path,
+            botbuilderIconImg: img_url,
             botbuilderIconImgName: response.image_path.substring(
               response.image_path.indexOf('_') + 1,
             ),
