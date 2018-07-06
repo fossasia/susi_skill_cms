@@ -40,10 +40,10 @@ const styles = {
   },
   container: {
     marginTop: '15px',
+    width: '100%',
     display: 'flex',
     justifyContent: 'center',
     flexDirection: 'column',
-    width: '100%',
   },
   propContainer: {
     width: 100,
@@ -174,6 +174,12 @@ const styles = {
   },
   metricsHeader: {
     paddingLeft: 16,
+  },
+  noSkill: {
+    textAlign: 'center',
+    fontSize: 16,
+    marginTop: 24,
+    padding: 16,
   },
 };
 
