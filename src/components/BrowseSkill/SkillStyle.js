@@ -57,7 +57,7 @@ const styles = {
     width: 260,
     height: 170,
     minHeight: '150px',
-    margin: '10px',
+    margin: '10px 0 0 10px',
     overflow: 'hidden',
     justifyContent: 'center',
     fontSize: '10px',
