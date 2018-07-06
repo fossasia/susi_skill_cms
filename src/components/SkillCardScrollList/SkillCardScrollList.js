@@ -26,6 +26,14 @@ class SkillCardScrollList extends Component {
     this.loadSkillCards();
     this.updateWindowDimensions();
     window.addEventListener('resize', this.updateWindowDimensions);
+
+    let width = window.innerWidth - 304;
+
+    if (window.innerWidth >= 430) {
+      $('.scrolling-wrapper').css({ width: width });
+    } else {
+      $('.scrolling-wrapper').css({ width: window.innerWidth - 46 });
+    }
   };
 
   componentWillUnmount = () => {
@@ -47,10 +55,16 @@ class SkillCardScrollList extends Component {
       default:
         scrollCards = 1;
     }
-
+    let width = window.innerWidth - 304;
     this.setState({
       scrollCards: scrollCards,
     });
+
+    if (window.innerWidth >= 430) {
+      $('.scrolling-wrapper').css({ width: width });
+    } else {
+      $('.scrolling-wrapper').css({ width: window.innerWidth - 46 });
+    }
   };
 
   componentDidUpdate() {
