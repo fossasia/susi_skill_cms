@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
+import RaisedButton from 'material-ui/RaisedButton';
 import AceEditor from 'react-ace';
+import colors from '../../../Utils/colors';
 import {
   Table,
   TableBody,
@@ -8,6 +10,7 @@ import {
   TableRow,
   TableRowColumn,
 } from 'material-ui/Table';
+import Snackbar from 'material-ui/Snackbar';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import Info from 'material-ui/svg-icons/action/info';
@@ -15,7 +18,7 @@ import ReactTooltip from 'react-tooltip';
 import PropTypes from 'prop-types';
 
 // static config data for demostration
-const configData = [
+let configData = [
   {
     id: '1',
     name: 'website1.com',
@@ -35,6 +38,7 @@ const configData = [
     status: 2,
   },
 ];
+
 class Configure extends Component {
   constructor(props) {
     super(props);
@@ -42,8 +46,45 @@ class Configure extends Component {
       editorTheme: 'github',
       fontSizeCode: 14,
       lastActiveInfo: false,
+      code: this.props.code,
+      openSnackbar: false,
+      msgSnackbar: '',
     };
+    this.handleChangeCode = this.handleChangeCode.bind(this);
   }
+
+  handleChangeCode(event) {
+    this.setState({ code: event });
+  }
+
+  generateConfigData = () => {
+    configData = [];
+    let newCode = this.state.code;
+    let websiteData = newCode
+      .split('::sites_enabled')[1]
+      .split('::sites_disabled');
+    let enabledSites = websiteData[0].split(',');
+    let noOfEnabledSites = enabledSites.length;
+    let disabledSites = websiteData[1].split(',');
+    let noOfDisabledSites = disabledSites.length;
+    console.log(enabledSites);
+    console.log(disabledSites);
+    for (let i = 1; i <= noOfEnabledSites + noOfDisabledSites; i++) {
+      configData[i - 1] = {
+        id: i.toString(),
+        name:
+          i <= noOfEnabledSites
+            ? enabledSites[i - 1].trim()
+            : disabledSites[i - noOfEnabledSites - 1].trim(),
+        last: 'Feb 19, 2018 13:00 hrs',
+        status: i <= noOfEnabledSites ? 1 : 2,
+      };
+    }
+    this.setState({
+      openSnackbar: true,
+      msgSnackbar: 'Settings successfully saved!',
+    });
+  };
 
   handleOpenLastActiveInfo = () => {
     this.setState({ lastActiveInfo: true });
@@ -63,12 +104,20 @@ class Configure extends Component {
             width="100%"
             fontSize={this.state.fontSizeCode}
             height="200px"
-            value={this.props.code}
+            value={this.state.code}
+            onChange={this.handleChangeCode}
             showPrintMargin={false}
             name="skill_code_editor"
             scrollPastEnd={false}
             wrapEnabled={true}
             editorProps={{ $blockScrolling: true }}
+          />
+          <br />
+          <RaisedButton
+            label="Save"
+            backgroundColor={colors.header}
+            labelColor="#fff"
+            onTouchTap={this.generateConfigData}
           />
         </div>
         <div className="table-wrap">
@@ -118,6 +167,14 @@ class Configure extends Component {
             </TableBody>
           </Table>
         </div>
+        <Snackbar
+          open={this.state.openSnackbar}
+          message={this.state.msgSnackbar}
+          autoHideDuration={2000}
+          onRequestClose={() => {
+            this.setState({ openSnackbar: false });
+          }}
+        />
       </div>
     );
   }
