@@ -84,7 +84,10 @@ class Login extends Component {
         crossDomain: true,
         success: function(response) {
           if (response.accepted) {
-            cookies.set('serverUrl', BASE_URL, { path: '/' });
+            cookies.set('serverUrl', BASE_URL, {
+              path: '/',
+              domain: '.susi.ai',
+            });
             console.log(cookies.get('serverUrl'));
             let accessToken = response.access_token;
             let state = this.state;
@@ -163,8 +166,16 @@ class Login extends Component {
   handleOnSubmit = (email, loggedIn, showAdmin, time) => {
     let state = this.state;
     if (state.success) {
-      cookies.set('loggedIn', loggedIn, { path: '/', maxAge: time });
-      cookies.set('emailId', this.state.email, { path: '/', maxAge: time });
+      cookies.set('loggedIn', loggedIn, {
+        path: '/',
+        maxAge: time,
+        domain: '.susi.ai',
+      });
+      cookies.set('emailId', this.state.email, {
+        path: '/',
+        maxAge: time,
+        domain: '.susi.ai',
+      });
       this.props.history.push('/', { showLogin: false });
       window.location.reload();
     } else {
