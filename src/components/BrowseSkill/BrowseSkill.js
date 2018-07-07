@@ -159,7 +159,11 @@ export default class BrowseSkill extends React.Component {
               key="All"
               primaryText="All"
               containerElement={<Link to="/category/All" />}
-              style={{ minHeight: '32px', lineHeight: '32px' }}
+              style={{
+                minHeight: '32px',
+                lineHeight: '32px',
+                fontSize: '15px',
+              }}
             />,
           );
           for (let i = 0; i < data.length; i++) {
@@ -168,7 +172,11 @@ export default class BrowseSkill extends React.Component {
                 value={data[i]}
                 key={data[i]}
                 primaryText={`${data[i]}`}
-                style={{ minHeight: '32px', lineHeight: '32px' }}
+                style={{
+                  minHeight: '32px',
+                  lineHeight: '32px',
+                  fontSize: '15px',
+                }}
                 containerElement={<Link to={'/category/' + data[i]} />}
               />,
             );
@@ -420,7 +428,9 @@ export default class BrowseSkill extends React.Component {
               </IconMenu>
             </div>
             <Menu desktop={true} disableAutoFocus={true}>
-              <Subheader>New Arrivals</Subheader>
+              <Subheader style={{ fontWeight: 'bold', fontSize: '16px' }}>
+                New Arrivals
+              </Subheader>
               {this.state.timeFilter && (
                 <div className="category-sidebar-section">
                   <div
@@ -429,7 +439,13 @@ export default class BrowseSkill extends React.Component {
                   >
                     {'< Any release'}
                   </div>
-                  <div style={{ marginLeft: '10px', fontWeight: 'bold' }}>
+                  <div
+                    style={{
+                      marginLeft: '10px',
+                      fontWeight: 'bold',
+                      fontSize: '15px',
+                    }}
+                  >
                     {`Last ${this.state.timeFilter} Days`}
                   </div>
                 </div>
@@ -469,10 +485,10 @@ export default class BrowseSkill extends React.Component {
                 </div>
               ) : (
                 <div>
-                  <Subheader style={{ fontWeight: 'bold' }}>
+                  <Subheader style={{ fontWeight: 'bold', fontSize: '16px' }}>
                     SUSI Skills
                   </Subheader>
-                  {groups}
+                  <div style={{ paddingLeft: '8px' }}>{groups}</div>
                 </div>
               )}
             </Menu>
@@ -480,10 +496,10 @@ export default class BrowseSkill extends React.Component {
             {this.state.skillsLoaded ? (
               <div className="refine-section">
                 <Menu desktop={true} disableAutoFocus={true}>
-                  <Subheader style={{ fontWeight: 'bold' }}>
+                  <Subheader style={{ fontWeight: 'bold', fontSize: '16px' }}>
                     Refine by
                   </Subheader>
-                  <h4 style={{ marginLeft: '12px', marginBottom: '4px' }}>
+                  <h4 style={{ marginLeft: '24px', marginBottom: '4px' }}>
                     Avg. Customer Review
                   </h4>
                   {this.state.rating_refine ? (
