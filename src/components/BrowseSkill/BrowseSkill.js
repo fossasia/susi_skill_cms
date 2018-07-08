@@ -485,127 +485,119 @@ export default class BrowseSkill extends React.Component {
                   <div style={{ paddingLeft: '8px' }}>{groups}</div>
                 </div>
               )}
-            </Menu>
-
-            {this.state.skillsLoaded ? (
-              <div className="refine-section">
-                <Menu desktop={true} disableAutoFocus={true}>
-                  <Subheader style={{ fontWeight: 'bold', fontSize: '16px' }}>
-                    Refine by
-                  </Subheader>
-                  <h4 style={{ marginLeft: '24px', marginBottom: '4px' }}>
-                    Avg. Customer Review
-                  </h4>
-                  {this.state.rating_refine ? (
-                    <div
-                      className="clear-button"
-                      style={styles.clearButton}
-                      onClick={() => this.handleRatingRefine(null)}
-                    >
-                      Clear
-                    </div>
-                  ) : (
-                    ''
-                  )}
-                  <div style={styles.starRefine}>
-                    <div
-                      style={styles.singleRating}
-                      onClick={() => this.handleRatingRefine(4)}
-                    >
-                      <Ratings
-                        rating={4}
-                        widgetRatedColors="#ffbb28"
-                        widgetDimensions="20px"
-                        widgetSpacings="0px"
-                      >
-                        <Ratings.Widget />
-                        <Ratings.Widget />
-                        <Ratings.Widget />
-                        <Ratings.Widget />
-                        <Ratings.Widget />
-                      </Ratings>
-                      <div
-                        style={styles.ratingLabel}
-                        className={this.state.rating_refine === 4 ? 'bold' : ''}
-                      >
-                        & Up
-                      </div>
-                    </div>
-                    <div
-                      style={styles.singleRating}
-                      onClick={() => this.handleRatingRefine(3)}
-                    >
-                      <Ratings
-                        rating={3}
-                        widgetRatedColors="#ffbb28"
-                        widgetDimensions="20px"
-                        widgetSpacings="0px"
-                      >
-                        <Ratings.Widget />
-                        <Ratings.Widget />
-                        <Ratings.Widget />
-                        <Ratings.Widget />
-                        <Ratings.Widget />
-                      </Ratings>
-                      <div
-                        style={styles.ratingLabel}
-                        className={this.state.rating_refine === 3 ? 'bold' : ''}
-                      >
-                        & Up
-                      </div>
-                    </div>
-                    <div
-                      style={styles.singleRating}
-                      onClick={() => this.handleRatingRefine(2)}
-                    >
-                      <Ratings
-                        rating={2}
-                        widgetRatedColors="#ffbb28"
-                        widgetDimensions="20px"
-                        widgetSpacings="0px"
-                      >
-                        <Ratings.Widget />
-                        <Ratings.Widget />
-                        <Ratings.Widget />
-                        <Ratings.Widget />
-                        <Ratings.Widget />
-                      </Ratings>
-                      <div
-                        style={styles.ratingLabel}
-                        className={this.state.rating_refine === 2 ? 'bold' : ''}
-                      >
-                        & Up
-                      </div>
-                    </div>
-                    <div
-                      style={styles.singleRating}
-                      onClick={() => this.handleRatingRefine(1)}
-                    >
-                      <Ratings
-                        rating={1}
-                        widgetRatedColors="#ffbb28"
-                        widgetDimensions="20px"
-                        widgetSpacings="0px"
-                      >
-                        <Ratings.Widget />
-                        <Ratings.Widget />
-                        <Ratings.Widget />
-                        <Ratings.Widget />
-                        <Ratings.Widget />
-                      </Ratings>
-                      <div
-                        style={styles.ratingLabel}
-                        className={this.state.rating_refine === 1 ? 'bold' : ''}
-                      >
-                        & Up
-                      </div>
-                    </div>
+              {/* Refine by rating section*/}
+              <Subheader style={{ fontWeight: 'bold', fontSize: '16px' }}>
+                Refine by
+              </Subheader>
+              <h4 style={{ marginLeft: '24px', marginBottom: '4px' }}>
+                Avg. Customer Review
+              </h4>
+              {this.state.rating_refine ? (
+                <div
+                  className="clear-button"
+                  style={styles.clearButton}
+                  onClick={() => this.handleRatingRefine(null)}
+                >
+                  Clear
+                </div>
+              ) : (
+                ''
+              )}
+              <div style={styles.starRefine}>
+                <div
+                  style={styles.singleRating}
+                  onClick={() => this.handleRatingRefine(4)}
+                >
+                  <Ratings
+                    rating={4}
+                    widgetRatedColors="#ffbb28"
+                    widgetDimensions="20px"
+                    widgetSpacings="0px"
+                  >
+                    <Ratings.Widget />
+                    <Ratings.Widget />
+                    <Ratings.Widget />
+                    <Ratings.Widget />
+                    <Ratings.Widget />
+                  </Ratings>
+                  <div
+                    style={styles.ratingLabel}
+                    className={this.state.rating_refine === 4 ? 'bold' : ''}
+                  >
+                    & Up
                   </div>
-                </Menu>
+                </div>
+                <div
+                  style={styles.singleRating}
+                  onClick={() => this.handleRatingRefine(3)}
+                >
+                  <Ratings
+                    rating={3}
+                    widgetRatedColors="#ffbb28"
+                    widgetDimensions="20px"
+                    widgetSpacings="0px"
+                  >
+                    <Ratings.Widget />
+                    <Ratings.Widget />
+                    <Ratings.Widget />
+                    <Ratings.Widget />
+                    <Ratings.Widget />
+                  </Ratings>
+                  <div
+                    style={styles.ratingLabel}
+                    className={this.state.rating_refine === 3 ? 'bold' : ''}
+                  >
+                    & Up
+                  </div>
+                </div>
+                <div
+                  style={styles.singleRating}
+                  onClick={() => this.handleRatingRefine(2)}
+                >
+                  <Ratings
+                    rating={2}
+                    widgetRatedColors="#ffbb28"
+                    widgetDimensions="20px"
+                    widgetSpacings="0px"
+                  >
+                    <Ratings.Widget />
+                    <Ratings.Widget />
+                    <Ratings.Widget />
+                    <Ratings.Widget />
+                    <Ratings.Widget />
+                  </Ratings>
+                  <div
+                    style={styles.ratingLabel}
+                    className={this.state.rating_refine === 2 ? 'bold' : ''}
+                  >
+                    & Up
+                  </div>
+                </div>
+                <div
+                  style={styles.singleRating}
+                  onClick={() => this.handleRatingRefine(1)}
+                >
+                  <Ratings
+                    rating={1}
+                    widgetRatedColors="#ffbb28"
+                    widgetDimensions="20px"
+                    widgetSpacings="0px"
+                  >
+                    <Ratings.Widget />
+                    <Ratings.Widget />
+                    <Ratings.Widget />
+                    <Ratings.Widget />
+                    <Ratings.Widget />
+                  </Ratings>
+                  <div
+                    style={styles.ratingLabel}
+                    className={this.state.rating_refine === 1 ? 'bold' : ''}
+                  >
+                    & Up
+                  </div>
+                </div>
               </div>
-            ) : (
-              ''
-            )}
+            </Menu>
           </div>
           <div style={styles.home}>
             <div style={styles.topBar} className="top-bar">
