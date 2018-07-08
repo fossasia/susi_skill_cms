@@ -75,26 +75,26 @@ export default class BrowseSkill extends React.Component {
   }
 
   handleFilterChange = (event, index, value) => {
-    this.setState({ filter: value }, function() {
+    this.setState({ filter: value, skillsLoaded: false }, function() {
       this.loadCards();
     });
   };
 
   handleModelChange = (event, index) => {
-    this.setState({ groupSelect: false }, function() {
+    this.setState({ groupSelect: false, skillsLoaded: false }, function() {
       this.loadCards();
     });
   };
 
   handleGroupChange = (event, value) => {
-    this.setState({ groupValue: value }, function() {
+    this.setState({ groupValue: value, skillsLoaded: false }, function() {
       // console.log(this.state);
       this.loadCards();
     });
   };
 
   handleLanguageChange = (event, index, value) => {
-    this.setState({ languageValue: value }, function() {
+    this.setState({ languageValue: value, skillsLoaded: false }, function() {
       // console.log(this.state);
       this.loadCards();
     });
@@ -128,15 +128,9 @@ export default class BrowseSkill extends React.Component {
   };
 
   handleSearch = value => {
-    this.setState({ searchQuery: value }, function() {
+    this.setState({ searchQuery: value, skillsLoaded: false }, function() {
       // console.log(this.state);
       this.loadCards();
-    });
-  };
-
-  handleToggle = (event, toggled) => {
-    this.setState({
-      [event.target.name]: toggled,
     });
   };
 
@@ -727,17 +721,16 @@ export default class BrowseSkill extends React.Component {
                 {languages}
               </SelectField>
             </div>
-            {this.state.skills.length === 0 &&
-              !this.state.skillsLoaded && (
-                <div>
-                  <h1 style={styles.loader}>
-                    <div>
-                      <CircularProgress size={62} color="#4285f5" />
-                      <h4>Loading</h4>
-                    </div>
-                  </h1>
-                </div>
-              )}
+            {!this.state.skillsLoaded && (
+              <div>
+                <h1 style={styles.loader}>
+                  <div>
+                    <CircularProgress size={62} color="#4285f5" />
+                    <h4>Loading</h4>
+                  </div>
+                </h1>
+              </div>
+            )}
 
             {this.state.skillsLoaded ? (
               <div style={styles.container}>
