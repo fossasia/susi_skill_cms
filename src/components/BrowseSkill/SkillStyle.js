@@ -155,7 +155,7 @@ const styles = {
   starRefine: {
     display: 'flex',
     flexDirection: 'column',
-    marginLeft: '12px',
+    marginLeft: '24px',
   },
   ratingLabel: {
     fontSize: '14px',
@@ -167,7 +167,7 @@ const styles = {
     width: 'fit-content',
   },
   clearButton: {
-    marginLeft: '12px',
+    marginLeft: '24px',
     cursor: 'pointer',
     fontWeight: 'bold',
     width: 'fit-content',
