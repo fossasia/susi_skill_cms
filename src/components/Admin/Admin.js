@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import './Admin.css';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
-import Dialog from 'material-ui/Dialog';
 import $ from 'jquery';
 import Cookies from 'universal-cookie';
-import FlatButton from 'material-ui/FlatButton';
 import PropTypes from 'prop-types';
 import Paper from 'material-ui/Paper';
 import Tabs from 'antd/lib/tabs';
@@ -22,7 +20,7 @@ class Admin extends Component {
 
     this.state = {
       tabPosition: 'top',
-      showNotAdminDialog: false,
+      isAdmin: false,
     };
   }
 
@@ -38,20 +36,20 @@ class Admin extends Component {
       jsonp: 'callback',
       crossDomain: true,
       success: function(response) {
-        // console.log(response.showAdmin);
-        if (response.showAdmin !== true) {
+        console.log(response.showAdmin);
+        if (response.showAdmin) {
           this.setState({
-            showNotAdminDialog: true,
+            isAdmin: true,
           });
         } else {
           this.setState({
-            showNotAdminDialog: false,
+            isAdmin: false,
           });
         }
       }.bind(this),
       error: function(errorThrown) {
         this.setState({
-          showNotAdminDialog: false,
+          isAdmin: false,
         });
         console.log(errorThrown);
       }.bind(this),
@@ -64,57 +62,58 @@ class Admin extends Component {
   };
 
   render() {
-    const actions = [
-      <FlatButton
-        key={1}
-        label="Ok"
-        primary={true}
-        onTouchTap={this.handleClose}
-      />,
-    ];
-
-    const tabStyle = {
-      width: '100%',
-      animated: false,
-      textAlign: 'center',
-      display: 'inline-block',
-    };
-
     return (
       <div>
-        <div className="heading">
-          <StaticAppBar {...this.props} />
-          <h1 className="h1">SUSI.AI Admin Panel</h1>
-        </div>
-        <div>
-          <Dialog
-            title="Permission Denied"
-            actions={actions}
-            modal={true}
-            open={this.state.showNotAdminDialog}
-          >
-            You do not have permissions to access this page!! :(
-          </Dialog>
-        </div>
-        <div className="tabs">
-          <Paper style={tabStyle} zDepth={0}>
-            <Tabs tabPosition={this.state.tabPosition} animated={false}>
-              <TabPane tab="Admin" key="1">
-                Tab for Admin Content
-              </TabPane>
-              <TabPane tab="Users" key="2">
-                <ListUser />
-              </TabPane>
-              <TabPane tab="Permissions" key="3">
-                Permission Content Tab
-              </TabPane>
-            </Tabs>
-          </Paper>
-        </div>
+        {this.state.isAdmin ? (
+          <div>
+            <div className="heading">
+              <StaticAppBar {...this.props} />
+              <h1 className="h1">SUSI.AI Admin Panel</h1>
+            </div>
+            <div className="tabs">
+              <Paper style={styles.tabStyle} zDepth={0}>
+                <Tabs tabPosition={this.state.tabPosition} animated={false}>
+                  <TabPane tab="Admin" key="1">
+                    Tab for Admin Content
+                  </TabPane>
+                  <TabPane tab="Users" key="2">
+                    <ListUser />
+                  </TabPane>
+                  <TabPane tab="Permissions" key="3">
+                    Permission Content Tab
+                  </TabPane>
+                </Tabs>
+              </Paper>
+            </div>
+          </div>
+        ) : (
+          <div>
+            <StaticAppBar {...this.props} />
+            <div>
+              <h1 style={styles.notAllowed}>404 :(</h1>
+              <h2 style={{ textAlign: 'center' }}>Not Found</h2>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
 }
+
+const styles = {
+  tabStyle: {
+    width: '100%',
+    animated: false,
+    textAlign: 'center',
+    display: 'inline-block',
+  },
+  notAllowed: {
+    lineHeight: '90px',
+    textAlign: 'center',
+    fontSize: '80px',
+    padding: '100px 30px 30px',
+  },
+};
 
 Admin.propTypes = {
   history: PropTypes.object,
