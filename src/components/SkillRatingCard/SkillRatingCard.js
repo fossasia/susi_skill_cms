@@ -170,14 +170,19 @@ class SkillRatingCard extends Component {
                     <LineChart
                       data={this.props.ratings_over_time}
                       margin={{
-                        top: 5,
+                        top: 10,
                         right: 30,
                         left: 20,
                         bottom: 5,
                       }}
                     >
                       <XAxis dataKey="timestamp" padding={{ right: 20 }} />
-                      <YAxis dataKey="rating" />
+                      <YAxis
+                        dataKey="rating"
+                        type="number"
+                        domain={[0, 5]}
+                        ticks={[0, 1, 2, 3, 4, 5]}
+                      />
                       <Tooltip wrapperStyle={{ height: '60px' }} />
                       <Legend />
                       <Line
