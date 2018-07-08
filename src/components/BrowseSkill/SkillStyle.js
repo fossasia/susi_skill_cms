@@ -89,6 +89,7 @@ const styles = {
   selection: {
     margin: '0px 10px',
     width: '200px',
+    overflowY: 'hidden',
   },
   newSkillBtn: {
     padding: '10px 0px 0px 16px',
