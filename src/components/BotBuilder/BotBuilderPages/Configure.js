@@ -67,8 +67,6 @@ class Configure extends Component {
     let noOfEnabledSites = enabledSites.length;
     let disabledSites = websiteData[1].split(',');
     let noOfDisabledSites = disabledSites.length;
-    console.log(enabledSites);
-    console.log(disabledSites);
     for (let i = 1; i <= noOfEnabledSites + noOfDisabledSites; i++) {
       configData[i - 1] = {
         id: i.toString(),

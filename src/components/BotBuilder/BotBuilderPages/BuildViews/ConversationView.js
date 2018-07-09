@@ -100,7 +100,6 @@ class ConversationView extends Component {
         }
       }
     }
-    console.log(conversation_from_code);
     this.handleLoad();
   };
 
@@ -147,8 +146,6 @@ class ConversationView extends Component {
     }
   };
   handleDeleteNode = node => {
-    console.log('delete:');
-    console.log(node);
     this.props.handleDeleteNode(node);
   };
 
