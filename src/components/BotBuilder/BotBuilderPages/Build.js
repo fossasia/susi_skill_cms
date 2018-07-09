@@ -242,6 +242,7 @@ class Build extends Component {
                   sendInfoToProps: this.sendInfoToProps,
                   code: this.state.skillCode,
                   onSkillInfoChange: this.onSkillInfoChange,
+                  onImageChange: this.props.onImageChange,
                 }}
               />
             ) : null}
@@ -268,6 +269,7 @@ class Build extends Component {
 Build.propTypes = {
   code: PropTypes.string,
   sendInfoToProps: PropTypes.func,
+  onImageChange: PropTypes.func,
 };
 
 export default Build;
