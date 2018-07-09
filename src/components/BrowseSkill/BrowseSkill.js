@@ -55,8 +55,9 @@ export default class BrowseSkill extends React.Component {
       searchQuery: '',
       topRatedSkills: [],
       topUsedSkills: [],
-      ratingRefine: null,
       topFeedbackSkills: [],
+      latestSkills: [],
+      ratingRefine: null,
       timeFilter: null,
     };
   }
@@ -73,6 +74,7 @@ export default class BrowseSkill extends React.Component {
       this.loadTopRated();
       this.loadTopUsed();
       this.loadTopFeedback();
+      this.loadLatestSkills();
     }
   }
 
@@ -396,6 +398,30 @@ export default class BrowseSkill extends React.Component {
       error: function(e) {
         console.log('Error while fetching top feedback skills', e);
         return self.loadTopFeedback();
+      },
+    });
+  };
+
+  loadLatestSkills = () => {
+    let url;
+    url =
+      urls.API_URL +
+      '/cms/getSkillList.json?group=All&applyFilter=true&filter_name=descending&filter_type=date&count=10&duration=30';
+    let self = this;
+    $.ajax({
+      url: url,
+      dataType: 'jsonp',
+      jsonp: 'callback',
+      crossDomain: true,
+      success: function(data) {
+        self.setState({
+          skillsLoaded: true,
+          latestSkills: data.filteredData,
+        });
+      },
+      error: function(e) {
+        console.log('Error while fetching latest skills', e);
+        return self.loadLatestSkills();
       },
     });
   };
@@ -787,7 +813,7 @@ export default class BrowseSkill extends React.Component {
                       <SkillCardScrollList
                         scrollId="topRated"
                         skills={this.state.topRatedSkills}
-                        modalValue={this.state.modalValue}
+                        modelValue={this.state.modelValue}
                         languageValue={this.state.languageValue}
                         skillUrl={this.state.skillUrl}
                       />
@@ -811,7 +837,31 @@ export default class BrowseSkill extends React.Component {
                       <SkillCardScrollList
                         scrollId="topUsed"
                         skills={this.state.topUsedSkills}
-                        modalValue={this.state.modalValue}
+                        modelValue={this.state.modelValue}
+                        languageValue={this.state.languageValue}
+                        skillUrl={this.state.skillUrl}
+                      />
+                    )}
+                  </div>
+                ) : null}
+
+                {this.state.latestSkills.length &&
+                !this.state.searchQuery.length &&
+                !this.state.ratingRefine &&
+                !this.state.timeFilter ? (
+                  <div style={styles.topSkills}>
+                    <div
+                      style={styles.metricsHeader}
+                      className="metrics-header"
+                    >
+                      {'"SUSI, what are the latest skills?"'}
+                    </div>
+                    {/* Scroll Id must be unique for all instances of SkillCardList*/}
+                    {!this.props.routeType && (
+                      <SkillCardScrollList
+                        scrollId="latestSkills"
+                        skills={this.state.latestSkills}
+                        modelValue={this.state.modelValue}
                         languageValue={this.state.languageValue}
                         skillUrl={this.state.skillUrl}
                       />
@@ -821,7 +871,7 @@ export default class BrowseSkill extends React.Component {
 
                 {this.state.topFeedbackSkills.length &&
                 !this.state.searchQuery.length &&
-                !this.state.rating_refine &&
+                !this.state.ratingRefine &&
                 !this.state.timeFilter ? (
                   <div style={styles.topSkills}>
                     <div
@@ -850,7 +900,7 @@ export default class BrowseSkill extends React.Component {
                   <div>
                     <SkillCardList
                       skills={this.state.skills}
-                      modalValue={this.state.modalValue}
+                      modelValue={this.state.modelValue}
                       languageValue={this.state.languageValue}
                       skillUrl={this.state.skillUrl}
                     />
