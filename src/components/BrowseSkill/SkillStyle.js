@@ -3,6 +3,7 @@ const styles = {
     display: 'flex',
     flexDirection: 'row',
     overflowX: 'hidden',
+    flex: '1 0 auto',
   },
   center: {
     display: 'flex',
@@ -181,6 +182,11 @@ const styles = {
     fontSize: 16,
     marginTop: 24,
     padding: 16,
+  },
+  browseSkillRoot: {
+    height: '100vh',
+    display: 'flex',
+    flexDirection: 'column',
   },
 };
 

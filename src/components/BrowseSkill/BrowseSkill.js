@@ -421,7 +421,7 @@ export default class BrowseSkill extends React.Component {
     }
 
     return (
-      <div>
+      <div style={styles.browseSkillRoot}>
         <StaticAppBar
           {...this.props}
           zDepth={1}
