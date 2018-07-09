@@ -1,9 +1,9 @@
 // Packages
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { GeoChart } from 'react-chartkick';
 
-class CountryWiseSkillUsageCard extends Component {
+class CountryWiseSkillUsageCard extends PureComponent {
   render() {
     return (
       <div>
