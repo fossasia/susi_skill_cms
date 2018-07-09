@@ -47,6 +47,9 @@ class BotWizard extends React.Component {
       colBuild: 8,
       colPreview: 4,
       savingSkill: false,
+      savedSkillOld: {}, // contains skill meta data information for last saved skill
+      updateSkillNow: false,
+      imageChanged: false,
       designCode:
         '::design\n  color\n    bodyBackground #ffffff,\n    userMessageBoxBackground #0077e5,\n    userMessageTextColor #ffffff,\n    botMessageBoxBackground #f8f8f8,\n    botMessageTextColor #455a64,\n    botIconColor #000000',
       configCode:
@@ -98,6 +101,7 @@ class BotWizard extends React.Component {
           <Build
             sendInfoToProps={this.sendInfoToProps}
             code={this.state.startCode}
+            onImageChange={() => this.setState({ imageChanged: true })}
           />
         );
       case 1:
@@ -196,19 +200,41 @@ class BotWizard extends React.Component {
     });
 
     let form = new FormData();
-    form.append('group', this.state.groupValue);
-    form.append('language', this.state.languageValue);
-    form.append('skill', this.state.expertValue.trim().replace(/\s/g, '_'));
+    if (this.state.updateSkillNow) {
+      form.append('OldGroup', this.state.savedSkillOld.OldGroup);
+      form.append('OldLanguage', this.state.savedSkillOld.OldLanguage);
+      form.append('OldSkill', this.state.savedSkillOld.OldSkill);
+      form.append('old_image_name', this.state.savedSkillOld.old_image_name);
+
+      form.append('NewGroup', this.state.groupValue);
+      form.append('NewLanguage', this.state.languageValue);
+      form.append(
+        'NewSkill',
+        this.state.expertValue.trim().replace(/\s/g, '_'),
+      );
+
+      form.append('changelog', this.state.commitMessage);
+      form.append('imageChanged', this.state.imageChanged);
+      form.append('new_image_name', this.state.imageUrl.replace('images/', ''));
+      form.append('image_name_changed', this.state.imageChanged);
+    } else {
+      form.append('group', this.state.groupValue);
+      form.append('language', this.state.languageValue);
+      form.append('skill', this.state.expertValue.trim().replace(/\s/g, '_'));
+      form.append('image_name', this.state.imageUrl.replace('images/', ''));
+    }
     form.append('image', this.state.file);
     form.append('content', code);
-    form.append('image_name', this.state.imageUrl.replace('images/', ''));
     form.append('access_token', cookies.get('loggedIn'));
     form.append('private', '1');
 
     let settings = {
       async: true,
       crossDomain: true,
-      url: urls.API_URL + '/cms/createSkill.json',
+      url:
+        urls.API_URL +
+        '/cms/' +
+        (this.state.updateSkillNow ? 'modifySkill.json' : 'createSkill.json'),
       method: 'POST',
       processData: false,
       contentType: false,
@@ -218,8 +244,17 @@ class BotWizard extends React.Component {
 
     $.ajax(settings)
       .done(function(response) {
+        let savedSkillOld = {
+          OldGroup: self.state.groupValue,
+          OldLanguage: self.state.languageValue,
+          OldSkill: self.state.expertValue.trim().replace(/\s/g, '_'),
+          old_image_name: self.state.imageUrl.replace('images/', ''),
+        };
         self.setState({
           savingSkill: false,
+          savedSkillOld,
+          updateSkillNow: true,
+          imageChanged: false,
         });
         let data = JSON.parse(response);
         if (data.accepted === true) {
@@ -250,6 +285,8 @@ class BotWizard extends React.Component {
         });
       });
   };
+
+  updateSkill = () => {};
 
   render() {
     const muiTheme = getMuiTheme({
@@ -380,6 +417,19 @@ class BotWizard extends React.Component {
                         <CircularProgress color="#ffffff" size={32} />
                       ) : (
                         'Save'
+                      )
+                    }
+                    backgroundColor={colors.header}
+                    labelColor="#fff"
+                    style={{ marginLeft: 10 }}
+                    onTouchTap={this.saveClick}
+                  />
+                  <RaisedButton
+                    label={
+                      this.state.savingSkill ? (
+                        <CircularProgress color="#ffffff" size={32} />
+                      ) : (
+                        'Update'
                       )
                     }
                     backgroundColor={colors.header}

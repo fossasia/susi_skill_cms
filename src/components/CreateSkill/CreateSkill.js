@@ -448,6 +448,9 @@ export default class CreateSkill extends React.Component {
 
   _onChange = event => {
     // Assuming only image
+    if (this.props.botBuilder) {
+      this.props.botBuilder.onImageChange();
+    }
     let file = this.file.files[0];
     if (event.target.files && event.target.files[0]) {
       let reader = new FileReader();
