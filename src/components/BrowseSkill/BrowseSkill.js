@@ -55,7 +55,7 @@ export default class BrowseSkill extends React.Component {
       searchQuery: '',
       topRatedSkills: [],
       topUsedSkills: [],
-      rating_refine: null,
+      ratingRefine: null,
       timeFilter: null,
     };
   }
@@ -282,10 +282,10 @@ export default class BrowseSkill extends React.Component {
       jsonp: 'callback',
       crossDomain: true,
       success: function(data) {
-        if (self.state.rating_refine) {
-          data.filteredData = data.filteredData.filter(
-            skill =>
-              skill.skill_rating.stars.avg_star >= self.state.rating_refine,
+        if (self.state.ratingRefine) {
+          data.filteredData = self.refineByRating(
+            data.filteredData,
+            self.state.ratingRefine,
           );
         }
         self.setState({
@@ -351,8 +351,27 @@ export default class BrowseSkill extends React.Component {
     });
   };
 
-  handleRatingRefine = rating_refine => {
-    this.setState({ rating_refine }, this.loadCards());
+  handleRatingRefine = ratingRefine => {
+    let prevRatingRefine = this.state.ratingRefine;
+    this.setState({ ratingRefine, skillsLoaded: false });
+    if (
+      (!prevRatingRefine || ratingRefine > prevRatingRefine) &&
+      this.state.skills.length > 0
+    ) {
+      let refinedSkills = this.refineByRating(this.state.skills, ratingRefine);
+      this.setState({
+        skills: refinedSkills,
+        skillsLoaded: true,
+      });
+    } else {
+      this.loadCards();
+    }
+  };
+
+  refineByRating = (skills, ratingRefine) => {
+    return skills.filter(
+      skill => skill.skill_rating.stars.avg_star >= ratingRefine,
+    );
   };
 
   render() {
@@ -492,7 +511,7 @@ export default class BrowseSkill extends React.Component {
               <h4 style={{ marginLeft: '24px', marginBottom: '4px' }}>
                 Avg. Customer Review
               </h4>
-              {this.state.rating_refine ? (
+              {this.state.ratingRefine ? (
                 <div
                   className="clear-button"
                   style={styles.clearButton}
@@ -522,7 +541,7 @@ export default class BrowseSkill extends React.Component {
                   </Ratings>
                   <div
                     style={styles.ratingLabel}
-                    className={this.state.rating_refine === 4 ? 'bold' : ''}
+                    className={this.state.ratingRefine === 4 ? 'bold' : ''}
                   >
                     & Up
                   </div>
@@ -545,7 +564,7 @@ export default class BrowseSkill extends React.Component {
                   </Ratings>
                   <div
                     style={styles.ratingLabel}
-                    className={this.state.rating_refine === 3 ? 'bold' : ''}
+                    className={this.state.ratingRefine === 3 ? 'bold' : ''}
                   >
                     & Up
                   </div>
@@ -568,7 +587,7 @@ export default class BrowseSkill extends React.Component {
                   </Ratings>
                   <div
                     style={styles.ratingLabel}
-                    className={this.state.rating_refine === 2 ? 'bold' : ''}
+                    className={this.state.ratingRefine === 2 ? 'bold' : ''}
                   >
                     & Up
                   </div>
@@ -591,7 +610,7 @@ export default class BrowseSkill extends React.Component {
                   </Ratings>
                   <div
                     style={styles.ratingLabel}
-                    className={this.state.rating_refine === 1 ? 'bold' : ''}
+                    className={this.state.ratingRefine === 1 ? 'bold' : ''}
                   >
                     & Up
                   </div>
@@ -728,7 +747,7 @@ export default class BrowseSkill extends React.Component {
               <div style={styles.container}>
                 {this.state.topRatedSkills.length &&
                 !this.state.searchQuery.length &&
-                !this.state.rating_refine &&
+                !this.state.ratingRefine &&
                 !this.state.timeFilter ? (
                   <div style={styles.topSkills}>
                     <div
@@ -752,7 +771,7 @@ export default class BrowseSkill extends React.Component {
 
                 {this.state.topUsedSkills.length &&
                 !this.state.searchQuery.length &&
-                !this.state.rating_refine &&
+                !this.state.ratingRefine &&
                 !this.state.timeFilter ? (
                   <div style={styles.topSkills}>
                     <div
@@ -776,7 +795,7 @@ export default class BrowseSkill extends React.Component {
 
                 {(this.state.skills.length && this.props.routeType) ||
                 (this.state.searchQuery.length && this.state.skills.length) ||
-                this.state.rating_refine ||
+                this.state.ratingRefine ||
                 (this.state.timeFilter && this.state.skills.length) ? (
                   <div>
                     <SkillCardList
