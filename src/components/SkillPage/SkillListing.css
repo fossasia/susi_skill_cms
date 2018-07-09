@@ -9,7 +9,7 @@ abbr[title] {
 }
 
 .avatar-meta {
-    min-height: 200px;
+    min-height: 150px;
 }
 
 .avatar {
@@ -44,11 +44,11 @@ abbr[title] {
 }
 
 .margin-b-md {
-    margin-bottom: 24px;
+    margin-bottom: 16px;
 }
 
 .margin-t-md {
-    margin-top: 24px;
+    margin-top: 16px;
 }
 
 .skill_listing_container {
