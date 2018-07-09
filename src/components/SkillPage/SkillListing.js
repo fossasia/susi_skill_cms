@@ -724,34 +724,41 @@ class SkillListing extends Component {
               <div className="desc margin-b-md margin-t-md">
                 <h1 className="title">Description</h1>
                 <p className="card-content">{this.state.descriptions}</p>
-                <div className="card-content">
-                  <ul>
-                    {this.state.dynamic_content ? (
+
+                {this.state.dynamic_content ? (
+                  <div className="card-content">
+                    <ul>
                       <li>
                         The Skill Contains content Dynamic Content that is
                         updated real-time based on inputs from the User.
                       </li>
-                    ) : (
-                      <li>Skill details are not available yet.</li>
-                    )}
+                    </ul>
+                  </div>
+                ) : null}
 
-                    {this.state.terms_of_use == null ? (
-                      ''
-                    ) : (
+                {this.state.terms_of_use == null ? (
+                  ''
+                ) : (
+                  <div className="card-content">
+                    <ul>
                       <li>
                         <a
                           href={this.state.terms_of_use}
                           target="_blank"
                           rel="noopener noreferrer"
                         >
-                          Term & Condition
+                          Terms & Conditions
                         </a>
                       </li>
-                    )}
+                    </ul>
+                  </div>
+                )}
 
-                    {this.state.terms_of_use == null ? (
-                      ''
-                    ) : (
+                {this.state.terms_of_use == null ? (
+                  ''
+                ) : (
+                  <div className="card-content">
+                    <ul>
                       <li>
                         <a
                           href={this.state.developer_privacy_policy}
@@ -761,9 +768,9 @@ class SkillListing extends Component {
                           Developer Privacy Policy
                         </a>
                       </li>
-                    )}
-                  </ul>
-                </div>
+                    </ul>
+                  </div>
+                )}
               </div>
             </Paper>
             <Paper className="margin-b-md margin-t-md">
