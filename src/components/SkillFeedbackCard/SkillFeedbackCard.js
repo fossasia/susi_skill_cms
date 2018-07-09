@@ -241,7 +241,6 @@ class SkillFeedbackCard extends Component {
                 />
                 <RaisedButton
                   label="Post"
-                  primary={true}
                   backgroundColor={'#4285f4'}
                   style={{ margin: 10 }}
                   onClick={this.postFeedback}
