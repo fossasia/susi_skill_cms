@@ -43,7 +43,7 @@ export default class BrowseSkill extends React.Component {
       modelValue: 'general',
       skillURL: null,
       groupValue: 'All',
-      languageValue: 'en',
+      languageValue: ['en'],
       expertValue: null,
       skills: [],
       groups: [],
@@ -95,9 +95,8 @@ export default class BrowseSkill extends React.Component {
     });
   };
 
-  handleLanguageChange = (event, index, value) => {
-    this.setState({ languageValue: value, skillsLoaded: false }, function() {
-      // console.log(this.state);
+  handleLanguageChange = (event, index, values) => {
+    this.setState({ languageValue: values }, function() {
       this.loadCards();
     });
   };
@@ -199,24 +198,7 @@ export default class BrowseSkill extends React.Component {
             this.setState({ languages: data });
             languages = [];
             for (let i = 0; i < data.length; i++) {
-              if (ISO6391.getNativeName(data[i])) {
-                let languageName = ISO6391.getNativeName(data[i]);
-                languages.push(
-                  <MenuItem
-                    value={data[i]}
-                    key={data[i]}
-                    primaryText={languageName}
-                  />,
-                );
-              } else {
-                languages.push(
-                  <MenuItem
-                    value={data[i]}
-                    key={data[i]}
-                    primaryText={'Universal'}
-                  />,
-                );
-              }
+              languages.push(data[i]);
             }
           }
         }.bind(this),
@@ -376,6 +358,22 @@ export default class BrowseSkill extends React.Component {
     );
   };
 
+  languageMenuItems(values) {
+    return languages.map(name => (
+      <MenuItem
+        key={name}
+        insetChildren={true}
+        checked={values && values.indexOf(name) > -1}
+        value={name}
+        primaryText={
+          ISO6391.getNativeName(name)
+            ? ISO6391.getNativeName(name)
+            : 'Universal'
+        }
+      />
+    ));
+  }
+
   loadTopFeedback = () => {
     let url;
     url =
@@ -401,6 +399,7 @@ export default class BrowseSkill extends React.Component {
   };
 
   render() {
+    let { languageValue } = this.state;
     let sidebarStyle = styles.sidebar;
     let topBarStyle = styles.topBar;
     let groupsMobile = null;
@@ -739,11 +738,8 @@ export default class BrowseSkill extends React.Component {
               )}
               <SelectField
                 autoWidth
-                disabled={this.state.languageSelect}
-                floatingLabelText="Language"
-                value={this.state.languageValue}
+                floatingLabelText="Languages"
                 floatingLabelFixed={false}
-                onChange={this.handleLanguageChange}
                 style={styles.selection}
                 listStyle={{
                   top: '100px',
@@ -754,8 +750,12 @@ export default class BrowseSkill extends React.Component {
                 underlineFocusStyle={{
                   color: colors.header,
                 }}
+                multiple={true}
+                hintText="Languages"
+                value={languageValue}
+                onChange={this.handleLanguageChange}
               >
-                {languages}
+                {this.languageMenuItems(languageValue)}
               </SelectField>
             </div>
             {!this.state.skillsLoaded && (
