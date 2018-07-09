@@ -56,6 +56,7 @@ export default class BrowseSkill extends React.Component {
       topRatedSkills: [],
       topUsedSkills: [],
       ratingRefine: null,
+      topFeedbackSkills: [],
       timeFilter: null,
     };
   }
@@ -71,6 +72,7 @@ export default class BrowseSkill extends React.Component {
     } else {
       this.loadTopRated();
       this.loadTopUsed();
+      this.loadTopFeedback();
     }
   }
 
@@ -372,6 +374,30 @@ export default class BrowseSkill extends React.Component {
     return skills.filter(
       skill => skill.skill_rating.stars.avg_star >= ratingRefine,
     );
+  };
+
+  loadTopFeedback = () => {
+    let url;
+    url =
+      urls.API_URL +
+      '/cms/getSkillList.json?group=All&applyFilter=true&filter_name=descending&filter_type=feedback&count=10';
+    let self = this;
+    $.ajax({
+      url: url,
+      dataType: 'jsonp',
+      jsonp: 'callback',
+      crossDomain: true,
+      success: function(data) {
+        self.setState({
+          skillsLoaded: true,
+          topFeedbackSkills: data.filteredData,
+        });
+      },
+      error: function(e) {
+        console.log('Error while fetching top feedback skills', e);
+        return self.loadTopFeedback();
+      },
+    });
   };
 
   render() {
@@ -786,6 +812,30 @@ export default class BrowseSkill extends React.Component {
                         scrollId="topUsed"
                         skills={this.state.topUsedSkills}
                         modalValue={this.state.modalValue}
+                        languageValue={this.state.languageValue}
+                        skillUrl={this.state.skillUrl}
+                      />
+                    )}
+                  </div>
+                ) : null}
+
+                {this.state.topFeedbackSkills.length &&
+                !this.state.searchQuery.length &&
+                !this.state.rating_refine &&
+                !this.state.timeFilter ? (
+                  <div style={styles.topSkills}>
+                    <div
+                      style={styles.metricsHeader}
+                      className="metrics-header"
+                    >
+                      {'"SUSI, what are the skills with most feedback?"'}
+                    </div>
+                    {/* Scroll Id must be unique for all instances of SkillCardList*/}
+                    {!this.props.routeType && (
+                      <SkillCardScrollList
+                        scrollId="topFeedback"
+                        skills={this.state.topFeedbackSkills}
+                        modelValue={this.state.modelValue}
                         languageValue={this.state.languageValue}
                         skillUrl={this.state.skillUrl}
                       />
