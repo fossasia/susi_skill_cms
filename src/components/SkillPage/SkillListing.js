@@ -13,7 +13,6 @@ import SkillUsageCard from '../SkillUsageCard/SkillUsageCard';
 import SkillRatingCard from '../SkillRatingCard/SkillRatingCard';
 import SkillFeedbackCard from '../SkillFeedbackCard/SkillFeedbackCard';
 import { FloatingActionButton, Paper } from 'material-ui';
-import Divider from 'material-ui/Divider';
 import CircularProgress from 'material-ui/CircularProgress';
 import Snackbar from 'material-ui/Snackbar';
 import Chip from 'material-ui/Chip';
@@ -721,7 +720,6 @@ class SkillListing extends Component {
                 </div>
               </div>
             </div>
-            <Divider />
             <Paper className="margin-b-md margin-t-md">
               <div className="desc margin-b-md margin-t-md">
                 <h1 className="title">Description</h1>
