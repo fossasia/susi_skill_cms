@@ -544,7 +544,13 @@ export default class BrowseSkill extends React.Component {
                   <Link to="/">
                     <div className="index-link-sidebar">{'< SUSI Skills'}</div>
                   </Link>
-                  <div style={{ marginLeft: '10px', fontWeight: 'bold' }}>
+                  <div
+                    style={{
+                      marginLeft: '10px',
+                      fontWeight: 'bold',
+                      fontSize: '15px',
+                    }}
+                  >
                     {this.props.routeValue}
                   </div>
                 </div>
