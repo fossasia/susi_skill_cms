@@ -206,6 +206,7 @@ class Build extends Component {
                     treeView: false,
                   });
                 }}
+                disabled={this.state.codeView}
               >
                 <Code />
               </IconButton>
@@ -218,6 +219,7 @@ class Build extends Component {
                     treeView: false,
                   });
                 }}
+                disabled={this.state.conversationView}
               >
                 <QA />
               </IconButton>
@@ -230,6 +232,7 @@ class Build extends Component {
                     treeView: true,
                   });
                 }}
+                disabled={this.state.treeView}
               >
                 <Timeline />
               </IconButton>
