@@ -11,12 +11,15 @@ import Cookies from 'universal-cookie';
 import urls from '../../../Utils/urls';
 import CircularProgress from 'material-ui/CircularProgress';
 import colors from '../../../Utils/colors';
+import { isProduction } from '../../../Utils/helperFunctions';
 import Dialog from 'material-ui/Dialog';
 const cookies = new Cookies();
 
 const urlPropsQueryConfig = {
   token: { type: UrlQueryParamTypes.string },
 };
+
+const cookieDomain = isProduction() ? '.susi.ai' : '';
 
 class Login extends Component {
   static propTypes = {
@@ -86,7 +89,7 @@ class Login extends Component {
           if (response.accepted) {
             cookies.set('serverUrl', BASE_URL, {
               path: '/',
-              domain: '.susi.ai',
+              domain: cookieDomain,
             });
             console.log(cookies.get('serverUrl'));
             let accessToken = response.access_token;
@@ -169,12 +172,12 @@ class Login extends Component {
       cookies.set('loggedIn', loggedIn, {
         path: '/',
         maxAge: time,
-        domain: '.susi.ai',
+        domain: cookieDomain,
       });
       cookies.set('emailId', this.state.email, {
         path: '/',
         maxAge: time,
-        domain: '.susi.ai',
+        domain: cookieDomain,
       });
       this.props.history.push('/', { showLogin: false });
       window.location.reload();
