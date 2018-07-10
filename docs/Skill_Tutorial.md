@@ -354,6 +354,8 @@ The following action types are available:
 * rss
 * websearch
 * map
+* image
+* video
 
 Clients which render SUSI action results must render _all_ actions in the order as they are provided.
 
