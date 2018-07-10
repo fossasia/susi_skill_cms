@@ -411,32 +411,35 @@ class BotWizard extends React.Component {
                   <Link to="/botbuilder">
                     <RaisedButton label="Cancel" />
                   </Link>
-                  <RaisedButton
-                    label={
-                      this.state.savingSkill ? (
-                        <CircularProgress color="#ffffff" size={32} />
-                      ) : (
-                        'Save'
-                      )
-                    }
-                    backgroundColor={colors.header}
-                    labelColor="#fff"
-                    style={{ marginLeft: 10 }}
-                    onTouchTap={this.saveClick}
-                  />
-                  <RaisedButton
-                    label={
-                      this.state.savingSkill ? (
-                        <CircularProgress color="#ffffff" size={32} />
-                      ) : (
-                        'Update'
-                      )
-                    }
-                    backgroundColor={colors.header}
-                    labelColor="#fff"
-                    style={{ marginLeft: 10 }}
-                    onTouchTap={this.saveClick}
-                  />
+                  {this.state.updateSkillNow ? (
+                    <RaisedButton
+                      label={
+                        this.state.savingSkill ? (
+                          <CircularProgress color="#ffffff" size={32} />
+                        ) : (
+                          'Update'
+                        )
+                      }
+                      backgroundColor={colors.header}
+                      labelColor="#fff"
+                      style={{ marginLeft: 10 }}
+                      onTouchTap={this.saveClick}
+                    />
+                  ) : (
+                    <RaisedButton
+                      label={
+                        this.state.savingSkill ? (
+                          <CircularProgress color="#ffffff" size={32} />
+                        ) : (
+                          'Save'
+                        )
+                      }
+                      backgroundColor={colors.header}
+                      labelColor="#fff"
+                      style={{ marginLeft: 10 }}
+                      onTouchTap={this.saveClick}
+                    />
+                  )}
                 </Paper>
               </Col>
 
