@@ -35,7 +35,9 @@ class Dashboard extends React.Component {
         <div style={styles.home} className="botbuilder-page-wrapper">
           <br />
           <br />
-          <h1 className="center">My Dashboard</h1>
+          <h1 className="center" style={{ color: 'black' }}>
+            My Dashboard
+          </h1>
           <br />
           <Paper
             style={styles.paperStyle}
