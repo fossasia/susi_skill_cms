@@ -565,6 +565,7 @@ class SkillListing extends Component {
   render() {
     const authorStyle = {
       cursor: 'pointer',
+      textTransform: 'capitalize',
     };
 
     const styles = {
@@ -691,7 +692,7 @@ class SkillListing extends Component {
                     .join(' ')}
               </h1>
               <h4>
-                author:{' '}
+                by{' '}
                 <span style={authorStyle} onClick={this.openAuthorSkills}>
                   {this.state.author}
                 </span>
