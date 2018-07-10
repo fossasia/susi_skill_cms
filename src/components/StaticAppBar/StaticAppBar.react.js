@@ -132,8 +132,9 @@ class StaticAppBar extends Component {
       showAdmin: cookies.get('showAdmin'),
     });
     var navbarHeight = $('header').outerHeight();
-    $(window).scroll(function(event) {
+    $(window).scroll(event => {
       didScroll = true;
+      this.setState({ showOptions: false });
     });
 
     setInterval(function() {
