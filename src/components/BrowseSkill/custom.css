@@ -11,9 +11,10 @@ div.scrolling-wrapper::-webkit-scrollbar {
 }
 
 .index-link-sidebar {
-    font-size: 15px;
+    color: rgba(0, 0, 0, 0.54);
+    font-size: 16px;
+    font-weight: bold;
     width: fit-content;
-    color: black;   
 }
 
 .index-link-sidebar:hover {
