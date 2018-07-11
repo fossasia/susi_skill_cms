@@ -1,5 +1,8 @@
 import { Component } from 'react';
 import PropTypes from 'prop-types';
+import { isProduction } from '../../Utils/helperFunctions';
+
+const cookieDomain = isProduction() ? '.susi.ai' : '';
 
 var deleteCookie = function(name, options = {}) {
   let cookieString = `${name}=;expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
@@ -22,11 +25,11 @@ class Logout extends Component {
   }
 
   componentDidMount() {
-    deleteCookie('loggedIn', { domain: '.susi.ai', path: '/' });
-    deleteCookie('serverUrl', { domain: '.susi.ai', path: '/' });
-    deleteCookie('emailId', { domain: '.susi.ai', path: '/' });
+    deleteCookie('loggedIn', { domain: cookieDomain, path: '/' });
+    deleteCookie('serverUrl', { domain: cookieDomain, path: '/' });
+    deleteCookie('emailId', { domain: cookieDomain, path: '/' });
     deleteCookie('showAdmin', { path: '/' });
-    deleteCookie('username', { domain: '.susi.ai', path: '/' });
+    deleteCookie('username', { domain: cookieDomain, path: '/' });
     this.props.history.push('/');
     window.location.reload();
   }

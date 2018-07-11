@@ -25,9 +25,12 @@ import { Link } from 'react-router-dom';
 import susiWhite from '../images/SUSIAI-white.png';
 import colors from '../../Utils/colors';
 import urls from '../../Utils/urls';
+import { isProduction } from '../../Utils/helperFunctions';
 import $ from 'jquery';
 import './StaticAppBar.css';
 // import ListUser from '../Admin/ListUser/ListUser';
+
+const cookieDomain = isProduction() ? '.susi.ai' : '';
 
 const cookies = new Cookies();
 
@@ -116,7 +119,7 @@ class StaticAppBar extends Component {
           }
           cookies.set('username', userName, {
             path: '/',
-            domain: '.susi.ai',
+            domain: cookieDomain,
           });
         },
         error: function(errorThrown) {
