@@ -70,7 +70,9 @@ class SkillRatingCard extends Component {
 
     return (
       <Paper className="margin-b-md margin-t-md">
-        <h1 className="title">Ratings</h1>
+        <h1 className="title" id="rating">
+          Ratings
+        </h1>
         {cookies.get('loggedIn') ? (
           <div>
             <div className="subTitle">

@@ -16,6 +16,7 @@ import { FloatingActionButton, Paper } from 'material-ui';
 import CircularProgress from 'material-ui/CircularProgress';
 import Snackbar from 'material-ui/Snackbar';
 import Chip from 'material-ui/Chip';
+import Ratings from 'react-ratings-declarative';
 
 // Static Assets
 import 'brace/mode/markdown';
@@ -697,6 +698,21 @@ class SkillListing extends Component {
                   {this.state.author}
                 </span>
               </h4>
+              <a className="singleRating" href="#rating">
+                <Ratings
+                  rating={this.state.avg_rating}
+                  widgetRatedColors="#ffbb28"
+                  widgetDimensions="20px"
+                  widgetSpacings="0px"
+                >
+                  <Ratings.Widget />
+                  <Ratings.Widget />
+                  <Ratings.Widget />
+                  <Ratings.Widget />
+                  <Ratings.Widget />
+                </Ratings>
+                <div className="ratingLabel">{this.state.total_star}</div>
+              </a>
               <div className="avatar-meta margin-b-md">
                 <div className="examples">
                   {typeof this.state.examples === 'undefined' ||

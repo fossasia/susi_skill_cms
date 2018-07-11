@@ -136,3 +136,15 @@ abbr[title] {
   padding-left: 20px;
   padding-bottom: 20px;
 }
+
+.singleRating {
+  display: flex;
+  cursor: pointer;
+  width: fit-content;
+}
+
+.ratingLabel {
+  fontSize: 14px;
+  margin-left: 4px;
+  font-weight: bold;
+}
