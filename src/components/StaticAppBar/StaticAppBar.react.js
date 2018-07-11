@@ -60,7 +60,6 @@ class StaticAppBar extends Component {
       showOptions: false,
       showAdmin: false,
       anchorEl: null,
-      leftGap: '0px',
     };
   }
 
@@ -172,12 +171,6 @@ class StaticAppBar extends Component {
   }
 
   showOptions = event => {
-    var p = $('#rightIconButton').width();
-    var screenWidth = $(window).width();
-    this.setState({
-      leftGap:
-        (screenWidth - p) / 2 + p - (cookies.get('loggedIn') ? 170 : 130),
-    });
     event.preventDefault();
     this.setState({
       showOptions: true,
@@ -240,7 +233,6 @@ class StaticAppBar extends Component {
       top: '10px',
       cursor: 'pointer',
     };
-    var leftGap = this.state.leftGap;
 
     const bodyStyle = {
       padding: 0,
@@ -287,7 +279,7 @@ class StaticAppBar extends Component {
               float: 'right',
               position: 'relative',
               marginTop: '46px',
-              marginLeft: leftGap,
+              marginRight: '8px',
             }}
             open={this.state.showOptions}
             anchorEl={this.state.anchorEl}
