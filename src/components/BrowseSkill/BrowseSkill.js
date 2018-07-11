@@ -492,10 +492,7 @@ export default class BrowseSkill extends React.Component {
               </IconMenu>
             </div>
             <Menu desktop={true} disableAutoFocus={true}>
-              <Subheader style={{ fontWeight: 'bold', fontSize: '16px' }}>
-                New Arrivals
-              </Subheader>
-              {this.state.timeFilter && (
+              {this.state.timeFilter ? (
                 <div className="category-sidebar-section">
                   <div
                     className="index-link-sidebar"
@@ -513,6 +510,10 @@ export default class BrowseSkill extends React.Component {
                     {`Last ${this.state.timeFilter} Days`}
                   </div>
                 </div>
+              ) : (
+                <Subheader style={{ fontWeight: 'bold', fontSize: '16px' }}>
+                  New Arrivals
+                </Subheader>
               )}
               {!this.state.timeFilter && (
                 <MenuItem
