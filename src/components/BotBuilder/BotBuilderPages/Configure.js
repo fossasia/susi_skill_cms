@@ -140,26 +140,28 @@ class Configure extends Component {
             </TableHeader>
             <TableBody displayRowCheckbox={false}>
               {configData.map((item, index) => {
-                return (
-                  <TableRow key={index}>
-                    <TableRowColumn style={{ fontSize: '16px' }}>
-                      {item.name}
-                    </TableRowColumn>
-                    <TableRowColumn style={{ fontSize: '16px' }}>
-                      {item.last}
-                    </TableRowColumn>
-                    <TableRowColumn>
-                      <SelectField
-                        floatingLabelText="Status"
-                        fullWidth={true}
-                        value={item.status}
-                      >
-                        <MenuItem value={1} primaryText="Enable" />
-                        <MenuItem value={2} primaryText="Disable" />
-                      </SelectField>
-                    </TableRowColumn>
-                  </TableRow>
-                );
+                if (item.name) {
+                  return (
+                    <TableRow key={index}>
+                      <TableRowColumn style={{ fontSize: '16px' }}>
+                        {item.name}
+                      </TableRowColumn>
+                      <TableRowColumn style={{ fontSize: '16px' }}>
+                        {item.last}
+                      </TableRowColumn>
+                      <TableRowColumn>
+                        <SelectField
+                          floatingLabelText="Status"
+                          fullWidth={true}
+                          value={item.status}
+                        >
+                          <MenuItem value={1} primaryText="Enable" />
+                          <MenuItem value={2} primaryText="Disable" />
+                        </SelectField>
+                      </TableRowColumn>
+                    </TableRow>
+                  );
+                }
               })}
               <TableRow />
             </TableBody>
