@@ -776,7 +776,7 @@ class SkillListing extends Component {
             </Paper>
             <Paper className="margin-b-md margin-t-md">
               <div className="desc margin-b-md margin-t-md">
-                <h1 className="title">Information</h1>
+                <h1 className="title">Skill Details</h1>
                 <div className="card-content">
                   <table>
                     <tr>
