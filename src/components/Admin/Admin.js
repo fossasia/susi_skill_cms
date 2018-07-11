@@ -7,8 +7,8 @@ import PropTypes from 'prop-types';
 import Paper from 'material-ui/Paper';
 import Tabs from 'antd/lib/tabs';
 import ListUser from './ListUser/ListUser';
+import ListSkills from './ListSkills/ListSkills';
 import urls from '../../Utils/urls';
-// import ListUser from './ListUser/ListUser';
 
 const cookies = new Cookies();
 
@@ -79,7 +79,10 @@ class Admin extends Component {
                   <TabPane tab="Users" key="2">
                     <ListUser />
                   </TabPane>
-                  <TabPane tab="Permissions" key="3">
+                  <TabPane tab="Skills" key="3">
+                    <ListSkills />
+                  </TabPane>
+                  <TabPane tab="Permissions" key="4">
                     Permission Content Tab
                   </TabPane>
                 </Tabs>
