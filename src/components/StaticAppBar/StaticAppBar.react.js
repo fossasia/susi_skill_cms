@@ -292,13 +292,6 @@ class StaticAppBar extends Component {
             targetOrigin={{ horizontal: 'right', vertical: 'top' }}
             onRequestClose={this.closeOptions}
           >
-            {this.state.showAdmin === true ? (
-              <MenuItem
-                primaryText="Admin"
-                containerElement={<Link to="/admin" />}
-                rightIcon={<List />}
-              />
-            ) : null}
             {cookies.get('loggedIn') ? (
               <MenuItem
                 primaryText="Dashboard"
@@ -329,6 +322,13 @@ class StaticAppBar extends Component {
               >
                 About
               </MenuItem>
+            ) : null}
+            {this.state.showAdmin === true ? (
+              <MenuItem
+                primaryText="Admin"
+                containerElement={<Link to="/admin" />}
+                rightIcon={<List />}
+              />
             ) : null}
             {cookies.get('loggedIn') ? (
               <MenuItem
