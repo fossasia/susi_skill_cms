@@ -12,12 +12,6 @@
     padding: 20px;
 }
 
-.ratings-section div {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
 .average {
   display: flex;
   flex-direction: column;

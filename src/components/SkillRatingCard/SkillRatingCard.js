@@ -119,7 +119,15 @@ class SkillRatingCard extends Component {
                     axisLine={false}
                     tickLine={false}
                   />
-                  <Tooltip cursor={false} wrapperStyle={{ height: '30px' }} />
+                  <Tooltip
+                    cursor={false}
+                    wrapperStyle={{
+                      height: '30px',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  />
                   <Bar
                     name="Skill Rating"
                     background={true}
