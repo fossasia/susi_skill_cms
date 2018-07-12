@@ -136,6 +136,16 @@ const styles = {
     zIndex: 2,
     border: '1px solid #ddd',
   },
+  sidebarMenuItem: {
+    minHeight: '24px',
+    lineHeight: '24px',
+    fontSize: '14px',
+  },
+  sidebarSubheader: {
+    fontWeight: 700,
+    lineHeight: '28px',
+    fontSize: '14px',
+  },
   searchBar: {
     width: '100%',
     marginRight: '20px',
@@ -158,6 +168,7 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     marginLeft: '24px',
+    fontSize: 12,
   },
   ratingLabel: {
     fontSize: '14px',
@@ -173,6 +184,7 @@ const styles = {
     cursor: 'pointer',
     fontWeight: 'bold',
     width: 'fit-content',
+    fontSize: 12,
   },
   metricsHeader: {
     paddingLeft: 16,
