@@ -12,15 +12,19 @@ import Menu from 'material-ui/Menu';
 import MenuItem from 'material-ui/MenuItem';
 import Subheader from 'material-ui/Subheader';
 import Divider from 'material-ui/Divider';
+import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import Add from 'material-ui/svg-icons/content/add';
 import Person from 'material-ui/svg-icons/social/person';
+import ActionViewModule from 'material-ui/svg-icons/action/view-module';
+import ActionViewStream from 'material-ui/svg-icons/action/view-stream';
 import colors from '../../Utils/colors';
 // eslint-disable-next-line
 import CircleImage from '../CircleImage/CircleImage';
 import CircularProgress from 'material-ui/CircularProgress';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import SkillCardList from '../SkillCardList/SkillCardList';
+import SkillCardGrid from '../SkillCardGrid/SkillCardGrid';
 import SkillCardScrollList from '../SkillCardScrollList/SkillCardScrollList';
 import urls from '../../Utils/urls';
 import Footer from '../Footer/Footer.react';
@@ -59,6 +63,7 @@ export default class BrowseSkill extends React.Component {
       latestSkills: [],
       ratingRefine: null,
       timeFilter: null,
+      viewType: 'list',
     };
   }
 
@@ -99,6 +104,10 @@ export default class BrowseSkill extends React.Component {
     this.setState({ languageValue: values }, function() {
       this.loadCards();
     });
+  };
+
+  handleViewChange = (event, value) => {
+    this.setState({ viewType: value });
   };
 
   handleArrivalTimeChange = value => {
@@ -725,6 +734,34 @@ export default class BrowseSkill extends React.Component {
               >
                 {this.languageMenuItems(languageValue)}
               </SelectField>
+              {this.props.routeType && (
+                <RadioButtonGroup
+                  name="view_type"
+                  defaultSelected="list"
+                  style={{ display: 'flex', marginTop: 34 }}
+                  valueSelected={this.state.viewType}
+                  onChange={this.handleViewChange}
+                >
+                  <RadioButton
+                    value="list"
+                    label="List view"
+                    labelStyle={{ display: 'none' }}
+                    checkedIcon={
+                      <ActionViewStream style={{ color: '#4285f4' }} />
+                    }
+                    uncheckedIcon={<ActionViewStream />}
+                  />
+                  <RadioButton
+                    value="grid"
+                    label="Grid view"
+                    labelStyle={{ display: 'none' }}
+                    checkedIcon={
+                      <ActionViewModule style={{ color: '#4285f4' }} />
+                    }
+                    uncheckedIcon={<ActionViewModule />}
+                  />
+                </RadioButtonGroup>
+              )}
             </div>
             {!this.state.skillsLoaded && (
               <div>
@@ -842,12 +879,21 @@ export default class BrowseSkill extends React.Component {
                 this.state.ratingRefine ||
                 (this.state.timeFilter && this.state.skills.length) ? (
                   <div>
-                    <SkillCardList
-                      skills={this.state.skills}
-                      modelValue={this.state.modelValue}
-                      languageValue={this.state.languageValue}
-                      skillUrl={this.state.skillUrl}
-                    />
+                    {this.state.viewType === 'list' ? (
+                      <SkillCardList
+                        skills={this.state.skills}
+                        modelValue={this.state.modelValue}
+                        languageValue={this.state.languageValue}
+                        skillUrl={this.state.skillUrl}
+                      />
+                    ) : (
+                      <SkillCardGrid
+                        skills={this.state.skills}
+                        modelValue={this.state.modelValue}
+                        languageValue={this.state.languageValue}
+                        skillUrl={this.state.skillUrl}
+                      />
+                    )}
                   </div>
                 ) : (
                   <div>
