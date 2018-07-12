@@ -162,6 +162,7 @@ class Configure extends Component {
                     </TableRow>
                   );
                 }
+                return null;
               })}
               <TableRow />
             </TableBody>

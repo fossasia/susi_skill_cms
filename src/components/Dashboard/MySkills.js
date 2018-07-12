@@ -96,7 +96,7 @@ class MySkills extends Component {
     let skillsData = this.state.skillsData.filter(item => {
       if (
         !this.state.showMySkills ||
-        item.author_email === cookies.get('loggedIn')
+        item.author_email === cookies.get('emailId')
       ) {
         return item;
       }
