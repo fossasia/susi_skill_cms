@@ -65,6 +65,7 @@ export default class BrowseSkill extends React.Component {
   componentDidMount() {
     this.loadLanguages();
     this.loadGroups();
+
     if (
       this.props.routeType ||
       ['category', 'language'].includes(window.location.href.split('/')[3])
@@ -348,6 +349,12 @@ export default class BrowseSkill extends React.Component {
     let topBarStyle = styles.topBar;
     let groupsMobile = null;
     let backToHome = null;
+
+    let metricsContainerStyle = {
+      width: '1090px',
+      margin: window.innerWidth >= 430 ? '10px' : '10px 0px 10px 0px',
+    };
+
     if (window.innerWidth < 430) {
       sidebarStyle.display = 'none';
       topBarStyle.flexDirection = 'column';
@@ -736,7 +743,7 @@ export default class BrowseSkill extends React.Component {
                 !this.state.searchQuery.length &&
                 !this.state.ratingRefine &&
                 !this.state.timeFilter ? (
-                  <div style={styles.topSkills}>
+                  <div style={metricsContainerStyle}>
                     <div
                       style={styles.metricsHeader}
                       className="metrics-header"
@@ -760,7 +767,7 @@ export default class BrowseSkill extends React.Component {
                 !this.state.searchQuery.length &&
                 !this.state.ratingRefine &&
                 !this.state.timeFilter ? (
-                  <div style={styles.topSkills}>
+                  <div style={metricsContainerStyle}>
                     <div
                       style={styles.metricsHeader}
                       className="metrics-header"
@@ -784,7 +791,7 @@ export default class BrowseSkill extends React.Component {
                 !this.state.searchQuery.length &&
                 !this.state.ratingRefine &&
                 !this.state.timeFilter ? (
-                  <div style={styles.topSkills}>
+                  <div style={metricsContainerStyle}>
                     <div
                       style={styles.metricsHeader}
                       className="metrics-header"
@@ -808,7 +815,7 @@ export default class BrowseSkill extends React.Component {
                 !this.state.searchQuery.length &&
                 !this.state.ratingRefine &&
                 !this.state.timeFilter ? (
-                  <div style={styles.topSkills}>
+                  <div style={metricsContainerStyle}>
                     <div
                       style={styles.metricsHeader}
                       className="metrics-header"

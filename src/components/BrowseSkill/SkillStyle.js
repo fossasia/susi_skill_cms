@@ -118,10 +118,6 @@ const styles = {
     paddingLeft: '5px',
     color: '#108ee9',
   },
-  topSkills: {
-    width: '1090px',
-    margin: 10,
-  },
   topBar: {
     display: 'flex',
     justifyContent: 'flex-start',
