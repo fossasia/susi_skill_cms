@@ -815,12 +815,14 @@ class SkillListing extends Component {
                       <td>Updated on: </td>
                       <td>{` ${parseDate(this.state.last_modified_time)}`}</td>
                     </tr>
-                    <tr>
-                      <td>Report: </td>
-                      <td>
-                        <Link to="/Report">Flag as inappropriate</Link>
-                      </td>
-                    </tr>
+                    {/*
+                      <tr>
+                        <td>Report: </td>
+                        <td>
+                          <Link to="/Report">Flag as inappropriate</Link>
+                        </td>
+                      </tr>
+                    */}
                     <tr>
                       <td>Content Rating: </td> <td>4+ age</td>
                     </tr>
