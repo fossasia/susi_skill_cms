@@ -41,6 +41,7 @@ const styles = {
     height: '20px',
   },
   example: {
+    whiteSpace: 'normal',
     textAlign: 'center',
     fontStyle: 'italic',
     fontSize: '14px',
