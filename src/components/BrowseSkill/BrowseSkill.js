@@ -153,11 +153,7 @@ export default class BrowseSkill extends React.Component {
               key="All"
               primaryText="All"
               containerElement={<Link to="/category/All" />}
-              style={{
-                minHeight: '32px',
-                lineHeight: '32px',
-                fontSize: '15px',
-              }}
+              style={styles.sidebarMenuItem}
             />,
           );
           for (let i = 0; i < data.length; i++) {
@@ -166,11 +162,7 @@ export default class BrowseSkill extends React.Component {
                 value={data[i]}
                 key={data[i]}
                 primaryText={`${data[i]}`}
-                style={{
-                  minHeight: '32px',
-                  lineHeight: '32px',
-                  fontSize: '15px',
-                }}
+                style={styles.sidebarMenuItem}
                 containerElement={<Link to={'/category/' + data[i]} />}
               />,
             );
@@ -430,14 +422,14 @@ export default class BrowseSkill extends React.Component {
                     style={{
                       marginLeft: '10px',
                       fontWeight: 'bold',
-                      fontSize: '15px',
+                      fontSize: '14px',
                     }}
                   >
                     {`Last ${this.state.timeFilter} Days`}
                   </div>
                 </div>
               ) : (
-                <Subheader style={{ fontWeight: 'bold', fontSize: '16px' }}>
+                <Subheader style={styles.sidebarSubheader}>
                   New Arrivals
                 </Subheader>
               )}
@@ -447,6 +439,7 @@ export default class BrowseSkill extends React.Component {
                   key="Last 7 Days"
                   primaryText="Last 7 Days"
                   onClick={() => this.handleArrivalTimeChange(7)}
+                  style={styles.sidebarMenuItem}
                 />
               )}
               {!this.state.timeFilter && (
@@ -455,6 +448,7 @@ export default class BrowseSkill extends React.Component {
                   key="Last 30 Days"
                   primaryText="Last 30 Days"
                   onClick={() => this.handleArrivalTimeChange(30)}
+                  style={styles.sidebarMenuItem}
                 />
               )}
               {!this.state.timeFilter && (
@@ -463,8 +457,11 @@ export default class BrowseSkill extends React.Component {
                   key="Last 90 Days"
                   primaryText="Last 90 Days"
                   onClick={() => this.handleArrivalTimeChange(90)}
+                  style={styles.sidebarMenuItem}
                 />
               )}
+              <Divider style={{ margin: '8px 0' }} />
+
               {this.props.routeType === 'category' ? (
                 <div className="category-sidebar-section">
                   <Link to="/">
@@ -474,7 +471,7 @@ export default class BrowseSkill extends React.Component {
                     style={{
                       marginLeft: '10px',
                       fontWeight: 'bold',
-                      fontSize: '15px',
+                      fontSize: '14px',
                     }}
                   >
                     {this.props.routeValue}
@@ -482,17 +479,22 @@ export default class BrowseSkill extends React.Component {
                 </div>
               ) : (
                 <div>
-                  <Subheader style={{ fontWeight: 'bold', fontSize: '16px' }}>
+                  <Subheader style={styles.sidebarSubheader}>
                     SUSI Skills
                   </Subheader>
                   <div style={{ paddingLeft: '8px' }}>{groups}</div>
                 </div>
               )}
+              <Divider style={{ margin: '8px 0' }} />
               {/* Refine by rating section*/}
-              <Subheader style={{ fontWeight: 'bold', fontSize: '16px' }}>
-                Refine by
-              </Subheader>
-              <h4 style={{ marginLeft: '24px', marginBottom: '4px' }}>
+              <Subheader style={styles.sidebarSubheader}>Refine by</Subheader>
+              <h4
+                style={{
+                  marginLeft: '24px',
+                  marginBottom: '4px',
+                  fontSize: 14,
+                }}
+              >
                 Avg. Customer Review
               </h4>
               {this.state.ratingRefine ? (
@@ -501,7 +503,7 @@ export default class BrowseSkill extends React.Component {
                   style={styles.clearButton}
                   onClick={() => this.handleRatingRefine(null)}
                 >
-                  Clear
+                  {'< Clear'}
                 </div>
               ) : (
                 ''
@@ -739,7 +741,7 @@ export default class BrowseSkill extends React.Component {
                       style={styles.metricsHeader}
                       className="metrics-header"
                     >
-                      {'"SUSI, What are your highest rated skills?"'}
+                      <h4>{'"SUSI, What are your highest rated skills?"'}</h4>
                     </div>
                     {/* Scroll Id must be unique for all instances of SkillCardList*/}
                     {!this.props.routeType && (
@@ -763,7 +765,7 @@ export default class BrowseSkill extends React.Component {
                       style={styles.metricsHeader}
                       className="metrics-header"
                     >
-                      {'"SUSI, what are your most used skills?"'}
+                      <h4>{'"SUSI, what are your most used skills?"'}</h4>
                     </div>
                     {/* Scroll Id must be unique for all instances of SkillCardList*/}
                     {!this.props.routeType && (
@@ -787,7 +789,7 @@ export default class BrowseSkill extends React.Component {
                       style={styles.metricsHeader}
                       className="metrics-header"
                     >
-                      {'"SUSI, what are the latest skills?"'}
+                      <h4>{'"SUSI, what are the latest skills?"'}</h4>
                     </div>
                     {/* Scroll Id must be unique for all instances of SkillCardList*/}
                     {!this.props.routeType && (
@@ -811,7 +813,9 @@ export default class BrowseSkill extends React.Component {
                       style={styles.metricsHeader}
                       className="metrics-header"
                     >
-                      {'"SUSI, what are the skills with most feedback?"'}
+                      <h4>
+                        {'"SUSI, what are the skills with most feedback?"'}
+                      </h4>
                     </div>
                     {/* Scroll Id must be unique for all instances of SkillCardList*/}
                     {!this.props.routeType && (

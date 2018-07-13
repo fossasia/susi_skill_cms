@@ -12,7 +12,7 @@ div.scrolling-wrapper::-webkit-scrollbar {
 
 .index-link-sidebar {
     color: rgba(0, 0, 0, 0.54);
-    font-size: 16px;
+    font-size: 14px;
     font-weight: bold;
     width: fit-content;
 }
@@ -40,11 +40,11 @@ div.scrolling-wrapper::-webkit-scrollbar {
 }
 
 .metrics-header {
-    font-size: 21px;
+    font-size: 20px;
 }
 
 @media screen and (max-width: 418px) {
     .metrics-header {
-        font-size: 15px;    
+        font-size: 16px;
     }
 }
