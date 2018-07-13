@@ -720,7 +720,7 @@ export default class BrowseSkill extends React.Component {
             {!this.state.skillsLoaded && (
               <div>
                 <h1 style={styles.loader}>
-                  <div>
+                  <div className="center">
                     <CircularProgress size={62} color="#4285f5" />
                     <h4>Loading</h4>
                   </div>
