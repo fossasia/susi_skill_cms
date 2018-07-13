@@ -32,7 +32,10 @@ class SkillCardScrollList extends Component {
     if (window.innerWidth >= 430) {
       $('.scrolling-wrapper').css({ width: width });
     } else {
-      $('.scrolling-wrapper').css({ width: window.innerWidth - 46 });
+      $('.scrolling-wrapper').css({
+        width: window.innerWidth,
+        margin: '10px 0px 10px 0px',
+      });
     }
   };
 
@@ -63,7 +66,10 @@ class SkillCardScrollList extends Component {
     if (window.innerWidth >= 430) {
       $('.scrolling-wrapper').css({ width: width });
     } else {
-      $('.scrolling-wrapper').css({ width: window.innerWidth - 46 });
+      $('.scrolling-wrapper').css({
+        width: window.innerWidth,
+        margin: '10px 0px 10px 0px',
+      });
     }
   };
 
