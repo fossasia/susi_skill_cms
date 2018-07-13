@@ -252,7 +252,7 @@ class SkillFeedbackCard extends Component {
         ) : null}
         {feedbackCards &&
           (feedbackCards.length > 0 ? (
-            <List>
+            <List style={{ padding: '8px 0px 0px 0px' }}>
               {userFeedbackCard}
               {feedbackCards}
               {(userFeedbackCard && this.props.skill_feedback.length >= 4) ||
