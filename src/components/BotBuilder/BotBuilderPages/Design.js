@@ -399,7 +399,6 @@ class Design extends React.Component {
         '/aaa/listUserSettings.json?' +
         '&access_token=' +
         cookies.get('loggedIn');
-
       $.ajax({
         url: url,
         jsonpCallback: 'p',
@@ -466,13 +465,7 @@ class Design extends React.Component {
                 botbuilderIconImgName: settings.botbuilderIconImgName,
               });
             }
-
-            this.setState(
-              {
-                loadedSettings: true,
-              },
-              () => this.updateSettings(),
-            );
+            this.setState(() => this.updateSettings());
             let botbuilderIconImg = settings.botbuilderIconImg;
             if (botbuilderIconImg) {
               for (let icon of avatars) {
@@ -483,6 +476,9 @@ class Design extends React.Component {
               }
             }
           }
+          this.setState({
+            loadedSettings: true,
+          });
         }.bind(this),
         error: function(error) {
           this.setState({
