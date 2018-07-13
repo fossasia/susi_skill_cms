@@ -27,8 +27,22 @@
     margin-left: 21px;
 }
 
+.h2{
+    padding-top: 65px;
+    font-size: 35px;
+    margin-left: 23px;
+}
+
 .containerPaper{
     margin-top: -68px;
     margin-left: 60px;
     margin-right: 40px;
+}
+
+.ant-tabs-tab-prev {
+    display: none;
+}
+
+.ant-tabs-tab-next {
+    display: none;
 }

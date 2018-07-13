@@ -68,11 +68,15 @@ class Admin extends Component {
           <div>
             <div className="heading">
               <StaticAppBar {...this.props} />
-              <h1 className="h1">SUSI.AI Admin Panel</h1>
+              <h2 className="h2">Admin Panel</h2>
             </div>
             <div className="tabs">
               <Paper style={styles.tabStyle} zDepth={0}>
-                <Tabs tabPosition={this.state.tabPosition} animated={false}>
+                <Tabs
+                  tabPosition={this.state.tabPosition}
+                  animated={false}
+                  type="card"
+                >
                   <TabPane tab="Admin" key="1">
                     Tab for Admin Content
                   </TabPane>
