@@ -244,20 +244,20 @@ class BotWizard extends React.Component {
 
     $.ajax(settings)
       .done(function(response) {
-        let savedSkillOld = {
-          OldGroup: self.state.groupValue,
-          OldLanguage: self.state.languageValue,
-          OldSkill: self.state.expertValue.trim().replace(/\s/g, '_'),
-          old_image_name: self.state.imageUrl.replace('images/', ''),
-        };
-        self.setState({
-          savingSkill: false,
-          savedSkillOld,
-          updateSkillNow: true,
-          imageChanged: false,
-        });
         let data = JSON.parse(response);
         if (data.accepted === true) {
+          let savedSkillOld = {
+            OldGroup: self.state.groupValue,
+            OldLanguage: self.state.languageValue,
+            OldSkill: self.state.expertValue.trim().replace(/\s/g, '_'),
+            old_image_name: self.state.imageUrl.replace('images/', ''),
+          };
+          self.setState({
+            savingSkill: false,
+            savedSkillOld,
+            updateSkillNow: true,
+            imageChanged: false,
+          });
           notification.open({
             message: 'Accepted',
             description: 'Your Skill has been saved',
