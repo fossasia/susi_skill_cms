@@ -4,16 +4,80 @@ import RaisedButton from 'material-ui/RaisedButton';
 import { Grid, Col, Row } from 'react-flexbox-grid';
 import PropTypes from 'prop-types';
 import { Card, CardText } from 'material-ui/Card';
+import Snackbar from 'material-ui/Snackbar';
 import Add from 'material-ui/svg-icons/content/add';
 import { FloatingActionButton, Paper } from 'material-ui';
 import colors from '../../Utils/colors';
 import './BotBuilder.css';
+import urls from '../../Utils/urls';
 import { Link } from 'react-router-dom';
 import Cookies from 'universal-cookie';
+import * as $ from 'jquery';
 
 const cookies = new Cookies();
+let BASE_URL = urls.API_URL;
 
 class BotBuilder extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      chatbots: [],
+      openSnackbar: false,
+      msgSnackbar: '',
+    };
+    this.getChatbots();
+  }
+
+  getChatbots = () => {
+    if (cookies.get('loggedIn')) {
+      let url =
+        BASE_URL +
+        '/cms/getSkillList.json?' +
+        'private=1&access_token=' +
+        cookies.get('loggedIn');
+      $.ajax({
+        url: url,
+        jsonpCallback: 'p',
+        dataType: 'jsonp',
+        jsonp: 'callback',
+        crossDomain: true,
+        success: function(data) {
+          this.showChatbots(data.chatbots);
+        }.bind(this),
+        error: function(error) {
+          console.log(error);
+          this.setState({
+            openSnackbar: true,
+            msgSnackbar: "Couldn't get your chatbots. Please reload the page.",
+          });
+        }.bind(this),
+      });
+    }
+  };
+
+  showChatbots = bots => {
+    let chatbots = [];
+    this.setState({
+      chatbots: [],
+    });
+    bots.map(bot => {
+      chatbots.push(
+        <Card className="bot-template-card">
+          <RaisedButton
+            label={bot.name}
+            labelPosition="before"
+            labelStyle={{ verticalAlign: 'middle' }}
+            backgroundColor={colors.header}
+            labelColor="#fff"
+          />
+        </Card>,
+      );
+    });
+    this.setState({
+      chatbots: chatbots,
+    });
+  };
+
   render() {
     if (!cookies.get('loggedIn')) {
       return (
@@ -99,39 +163,21 @@ class BotBuilder extends React.Component {
                         </CardText>
                       </Card>
                     </Link>
-                    <Card className="bot-template-card">
-                      <RaisedButton
-                        label={'Sample Bot 1'}
-                        labelPosition="before"
-                        labelStyle={{ verticalAlign: 'middle' }}
-                        backgroundColor={colors.header}
-                        labelColor="#fff"
-                      />
-                    </Card>
-                    <Card className="bot-template-card">
-                      <RaisedButton
-                        label={'Sample Bot 2'}
-                        labelPosition="before"
-                        labelStyle={{ verticalAlign: 'middle' }}
-                        backgroundColor={colors.header}
-                        labelColor="#fff"
-                      />
-                    </Card>
-                    <Card className="bot-template-card">
-                      <RaisedButton
-                        label={'Sample Bot 3'}
-                        labelPosition="before"
-                        labelStyle={{ verticalAlign: 'middle' }}
-                        backgroundColor={colors.header}
-                        labelColor="#fff"
-                      />
-                    </Card>
+                    {this.state.chatbots}
                   </div>
                 </Col>
               </Row>
             </Grid>
           </Paper>
         </div>
+        <Snackbar
+          open={this.state.openSnackbar}
+          message={this.state.msgSnackbar}
+          autoHideDuration={2000}
+          onRequestClose={() => {
+            this.setState({ openSnackbar: false });
+          }}
+        />
       </div>
     );
   }
