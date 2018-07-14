@@ -51,7 +51,7 @@ class BotWizard extends React.Component {
       updateSkillNow: false,
       imageChanged: false,
       designCode:
-        '::design\n  color\n    bodyBackground #ffffff,\n    userMessageBoxBackground #0077e5,\n    userMessageTextColor #ffffff,\n    botMessageBoxBackground #f8f8f8,\n    botMessageTextColor #455a64,\n    botIconColor #000000',
+        '::bodyBackground #ffffff\n::bodyBackgroundImage \n::userMessageBoxBackground #0077e5\n::userMessageTextColor #ffffff\n::botMessageBoxBackground #f8f8f8\n::botMessageTextColor #455a64\n::botIconColor #000000\n::botIconImage ',
       configCode:
         '!Write the status of each website you want to enable or disable the bot below.\n::sites_enabled website1.com, website2.com\n::sites_disabled website3.com',
     };
@@ -265,7 +265,7 @@ class BotWizard extends React.Component {
           });
         } else {
           self.setState({
-            loading: false,
+            savingSkill: false,
           });
           notification.open({
             message: 'Error Processing your Request',
@@ -276,7 +276,7 @@ class BotWizard extends React.Component {
       })
       .fail(function(jqXHR, textStatus) {
         self.setState({
-          loading: false,
+          savingSkill: false,
         });
         notification.open({
           message: 'Error Processing your Request',
