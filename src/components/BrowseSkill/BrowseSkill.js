@@ -370,6 +370,12 @@ export default class BrowseSkill extends React.Component {
       );
     }
 
+    let showSortBy =
+      this.props.routeType ||
+      this.state.searchQuery.length > 0 ||
+      this.state.ratingRefine ||
+      this.state.timeFilter;
+
     return (
       <div style={styles.browseSkillRoot}>
         <StaticAppBar
@@ -623,7 +629,7 @@ export default class BrowseSkill extends React.Component {
                   value={this.state.searchQuery}
                 />
               </div>
-              {this.props.routeType && (
+              {showSortBy && (
                 <SelectField
                   floatingLabelText="Sort by"
                   value={this.state.filter}
