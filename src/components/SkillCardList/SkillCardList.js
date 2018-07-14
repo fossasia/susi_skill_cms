@@ -164,7 +164,7 @@ class SkillCardList extends Component {
 
 SkillCardList.propTypes = {
   skills: PropTypes.array,
-  languageValue: PropTypes.string,
+  languageValue: PropTypes.array,
   skillUrl: PropTypes.string,
   modelValue: PropTypes.string,
 };

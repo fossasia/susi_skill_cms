@@ -248,7 +248,7 @@ class SkillCardScrollList extends Component {
 SkillCardScrollList.propTypes = {
   scrollId: PropTypes.string.isRequired,
   skills: PropTypes.array,
-  languageValue: PropTypes.string,
+  languageValue: PropTypes.array,
   skillUrl: PropTypes.string,
   modelValue: PropTypes.string,
 };
