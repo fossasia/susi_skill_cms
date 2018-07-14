@@ -38,7 +38,7 @@ To stop testing your new SUSI Skills, write `stop dreaming`.
 ::name <Skill_name>
 ::author <author_name>
 ::author_url <author_url>
-::description <description> 
+::description <description>
 ::dynamic_content <Yes/No>
 ::developer_privacy_policy <link>
 ::image <image_url>
@@ -119,7 +119,7 @@ Yes you may.
 
 ### Tutorial Level 4: Using Query-Patterns in Answers
 It would be nice if we could use the content of the text which matched with the query patterns.
-Every pattern that matched has a pattern number: the first pattern has the number 1 and if 
+Every pattern that matched has a pattern number: the first pattern has the number 1 and if
 we want to use that pattern in the result, we can denote that with the term `$1$`:
 ```
 May I get a *?
@@ -276,14 +276,14 @@ One of these attributes has the name 'text' and that attribute is selected with 
 Note that the bang definition part until the eol line must be given in JSON.
 
 #### Test Cases for Values of "path"
-1. JSON Format :- 
+1. JSON Format:-
 ```
 {
-  "test" : {"text":"abc"}
+  "test": {"text":"abc"}
 }
 ```
-Here **path:"$.test.text"** will put first element **"abc"** in $object$ 
-To print the value **abc** , put $object$ in console  :-
+Here **path:"$.test.text"** will put first element **"abc"** in $object$
+To print the value **abc** , put $object$ in console:-
 ```
 !console:$object$
 ```
@@ -294,7 +294,7 @@ To print the value **abc** , put $object$ in console  :-
   "test": { "text": ["abc", "def"] , "next": {"a":1, "b":2}}
 }
 ```
-Here **path: "$.test.next.a"** will put **1** in $object$ 
+Here **path: "$.test.next.a"** will put **1** in $object$
 
 
 3. JSON Format
@@ -303,7 +303,7 @@ Here **path: "$.test.next.a"** will put **1** in $object$
   "test": { "text": ["abc", "def"] , "next": {"a":1, "b":2}}
 }
 ```
-Here **path: "$.test.text.[1]"** will put **"def"** in $object$ 
+Here **path: "$.test.text.[1]"** will put **"def"** in $object$
 
 
 4. JSON Format
@@ -318,7 +318,7 @@ Here **path: "$.test.text.[1]"** will put **"def"** in $object$
   }
 }
 ```
-Here **"path": "$.query.text[0]"** will put **"a"** in $object$ 
+Here **"path": "$.query.text[0]"** will put **"a"** in $object$
 
 
 ### Tutorial Level 12: More Action Types
@@ -344,7 +344,7 @@ and the result in something like
 ```
 Here check the "actions" object: it contains a list of action objects, each with a "type" attribute.
 The "actions" array may contain more than one action and they may be of a different type than "answer".
-This tutorial chapter is of the other different types. 
+This tutorial chapter is of the other different types.
 Such non-answer actions my get their content using console rules.
 
 The following action types are available:
@@ -361,7 +361,7 @@ Clients which render SUSI action results must render _all_ actions in the order 
 
 #### Table actions:
 
-A table is defined by the names of the colums. The rows of the table are taken 
+A table is defined by the names of the colums. The rows of the table are taken
 from the "data" object. The following example shows a console rule which produces only one action, which
 shall be rendered as table:
 
@@ -423,8 +423,8 @@ The client then should create a table out of the data object where the column na
 ```
 
 Now let us say that if a skill developer wants only top 5 rows to be displayed at a time (as at times, APIs send large number JSONArray
-encoded responses.). For that we have an attribute "length" in table action type. Now if you want only top n rows should be displayed, 
-then modify the skill accordingly : 
+encoded responses.). For that we have an attribute "length" in table action type. Now if you want only top n rows should be displayed,
+then modify the skill accordingly:
 
 ```
 ...
@@ -440,6 +440,69 @@ eol
 This will send first n elements of the JSONArray it is parsing.
 
 Different clients may render tables in a different way.
+
+#### Websearch actions:
+
+Websearch provides results from external API. The search has to be done by the client side with the query returned by the server. The following example shows a console rule which produces only one action, which shall be rendered as websearch results:
+
+```
+search for cat
+!console:Here is a websearch result:
+{
+    "url":"http://api.duckduckgo.com/?q=$1$&format=json&pretty=1",
+    "path":"$",
+    "actions":[{
+    "type":"websearch",
+    "query":$1$
+    }]
+}
+eol
+```
+
+This action can be performed by doing a web search on the client side:
+
+```
+{
+  "query": "Oh freddled gruntbuggly",
+  "answers": [{
+    "data": [],
+    "metadata": {"count": 0},
+    "actions": [
+      {"type": "answer", "expression": "I found this on the web:"},
+      {
+      "type": "websearch",
+      "query": "Oh freddled gruntbuggly",
+      "count": 3
+      }
+    ]
+  }],
+}
+```
+
+A websearch action is usually combined with an answer action type which introduces the web search result as a headline. The query attribute for the web search can be found in the query object. Like in table actions, the count object denotes the maximum number of results. -1 means unlimited, meaning that all the results from the web search results are used. The API for the web search can be choosen by the client. A typical rendering of such a search results has three lines:
+
+* a Headline
+* a Snippet or Description line (showing the content of the found document where the searched word appears)
+* a link.
+
+A rendering would look like:
+
+```
+<ul>
+  <li class="title">Vogon poetry | Hitchhikers | Fandom powered by Wikia</li>
+  <li class="link">http://hitchhikers.wikia.com/wiki/Vogon_poetry</li>
+  <li class="description">Oh freddled gruntbuggly,: Thy micturations are to me,: As plurdled gabbleblotchits,: On a lurgid bee,: That mordiously hath blurted out,: Its earted jurtles,: Into a ...</li>
+</ul>
+
+.
+.
+.
+... (more search hits as <ul></ul> tags)
+```
+
+The actual presentation can differ from this, i.e. using anchor tags it should be possible to click on the title or description and link to the given link content.
+
+
 
 Please be aware that a Susi answer may contain more than one action as answer.
 
@@ -458,7 +521,7 @@ Backtracking is the ability of a program to revert a already made setting and ta
 
 ### Tutorial Level 15: Intent Reflection
 
-We are able to set variable content and read them in skills. But we must also be able to read skills in the same way as we read variables. We should be able to answer questions like 'we cannot solve this because there is no rule for that', or 'we have several rules, which one is preferred'. 
+We are able to set variable content and read them in skills. But we must also be able to read skills in the same way as we read variables. We should be able to answer questions like 'we cannot solve this because there is no rule for that', or 'we have several rules, which one is preferred'.
 
 (to be implemented)
 
@@ -477,10 +540,10 @@ We will learn here how to connect those instances to each other so they can talk
 
 #### Adding Example to a Skill
 
-Every skill can be given an example query using the bang-notion which always starts with a '!' followed by 'example:' and then the example query for the skill :
+Every skill can be given an example query using the bang-notion which always starts with a '!' followed by 'example:' and then the example query for the skill:
 
 ```
-what is your name ? | What's your name ? | Who are you ?| what should i call you ? | do you have a name 
+what is your name ? | What's your name ? | Who are you ?| what should i call you ? | do you have a name
 !example:what is your name?
 My name is SUSI.
 ```
