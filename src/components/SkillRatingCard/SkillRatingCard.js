@@ -25,7 +25,7 @@ const cookies = new Cookies();
 class SkillRatingCard extends Component {
   constructor(props) {
     super(props);
-    this.state = { width: 0 };
+    this.state = { width: 0, ratingsOverTimeWidth: 0 };
   }
 
   componentDidMount = () => {
@@ -40,6 +40,8 @@ class SkillRatingCard extends Component {
   updateWindowDimensions = () => {
     this.setState({
       width: window.innerWidth * 0.8 > 500 ? 400 : window.innerWidth * 0.8,
+      ratingsOverTimeWidth:
+        window.innerWidth * 0.8 > 800 ? 800 : window.innerWidth * 0.8,
       /* eslint-disable no-nested-ternary */
       offset:
         window.innerWidth * 0.8 > 500
@@ -170,11 +172,7 @@ class SkillRatingCard extends Component {
                 <div>
                   <ResponsiveContainer
                     height={300}
-                    width={
-                      window.innerWidth < 660
-                        ? this.state.width
-                        : this.state.width * 1.5
-                    }
+                    width={this.state.ratingsOverTimeWidth}
                     debounce={1}
                   >
                     <LineChart
