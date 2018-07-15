@@ -18,6 +18,7 @@ import Add from 'material-ui/svg-icons/content/add';
 import Person from 'material-ui/svg-icons/social/person';
 import ActionViewModule from 'material-ui/svg-icons/action/view-module';
 import ActionViewStream from 'material-ui/svg-icons/action/view-stream';
+import ChevronRight from 'material-ui/svg-icons/navigation/chevron-right';
 import colors from '../../Utils/colors';
 // eslint-disable-next-line
 import CircleImage from '../CircleImage/CircleImage';
@@ -37,6 +38,32 @@ import './custom.css';
 
 let groups = [];
 let languages = [];
+
+function createCategoryMenuItem(categoryName) {
+  const mobileView = window.innerWidth < 430;
+  const linkValue = '/category/' + categoryName;
+  if (mobileView) {
+    return (
+      <MenuItem
+        value={categoryName}
+        key={categoryName}
+        primaryText={categoryName}
+        containerElement={<Link to={linkValue} />}
+        style={styles.mobileMenuItem}
+        rightIcon={<ChevronRight style={{ top: -8 }} />}
+      />
+    );
+  }
+  return (
+    <MenuItem
+      value={categoryName}
+      key={categoryName}
+      primaryText={categoryName}
+      containerElement={<Link to={linkValue} />}
+      style={styles.sidebarMenuItem}
+    />
+  );
+}
 
 export default class BrowseSkill extends React.Component {
   constructor(props) {
@@ -157,25 +184,9 @@ export default class BrowseSkill extends React.Component {
           data = data.groups;
           this.setState({ groups: data });
           data.sort();
-          groups.push(
-            <MenuItem
-              value="All"
-              key="All"
-              primaryText="All"
-              containerElement={<Link to="/category/All" />}
-              style={styles.sidebarMenuItem}
-            />,
-          );
+          groups.push(createCategoryMenuItem('All'));
           for (let i = 0; i < data.length; i++) {
-            groups.push(
-              <MenuItem
-                value={data[i]}
-                key={data[i]}
-                primaryText={`${data[i]}`}
-                style={styles.sidebarMenuItem}
-                containerElement={<Link to={'/category/' + data[i]} />}
-              />,
-            );
+            groups.push(createCategoryMenuItem(data[i]));
           }
         }.bind(this),
         error: function(e) {
@@ -917,10 +928,11 @@ export default class BrowseSkill extends React.Component {
                   </div>
                 )}
                 {/* Check if mobile view is currently active*/}
-                {groupsMobile ? <Divider style={{ marginBottom: 8 }} /> : null}
-                {this.props.routeType === 'category'
-                  ? backToHome
-                  : groupsMobile}
+                <div className="category-mobile-section">
+                  {this.props.routeType === 'category'
+                    ? backToHome
+                    : groupsMobile}
+                </div>
               </div>
             ) : null}
           </div>
