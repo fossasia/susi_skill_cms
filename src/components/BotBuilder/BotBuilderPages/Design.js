@@ -57,70 +57,78 @@ class Design extends React.Component {
   };
 
   handleChangeColor = (component, color) => {
+    if (!color.startsWith('#')) {
+      color = '#' + color;
+    }
+    let code = '';
     if (component === 'botbuilderBackgroundBody') {
+      code = this.state.code.replace(
+        /^::bodyBackground\s(.*)$/m,
+        `::bodyBackground ${color}`,
+      );
       this.setState(
         {
-          code: this.state.code.replace(
-            'bodyBackground ' + this.state.botbuilderBackgroundBody,
-            'bodyBackground ' + color,
-          ),
+          code,
           [component]: color,
         },
         () => this.updateSettings(),
       );
     } else if (component === 'botbuilderUserMessageBackground') {
+      code = this.state.code.replace(
+        /^::userMessageBoxBackground\s(.*)$/m,
+        `::userMessageBoxBackground ${color}`,
+      );
       this.setState(
         {
-          code: this.state.code.replace(
-            'userMessageBoxBackground ' +
-              this.state.botbuilderUserMessageBackground,
-            'userMessageBoxBackground ' + color,
-          ),
+          code,
           [component]: color,
         },
         () => this.updateSettings(),
       );
     } else if (component === 'botbuilderUserMessageTextColor') {
+      code = this.state.code.replace(
+        /^::userMessageTextColor\s(.*)$/m,
+        `::userMessageTextColor ${color}`,
+      );
       this.setState(
         {
-          code: this.state.code.replace(
-            'userMessageTextColor ' + this.state.botbuilderUserMessageTextColor,
-            'userMessageTextColor ' + color,
-          ),
+          code,
           [component]: color,
         },
         () => this.updateSettings(),
       );
     } else if (component === 'botbuilderBotMessageBackground') {
+      code = this.state.code.replace(
+        /^::botMessageBoxBackground\s(.*)$/m,
+        `::botMessageBoxBackground ${color}`,
+      );
       this.setState(
         {
-          code: this.state.code.replace(
-            'botMessageBoxBackground ' +
-              this.state.botbuilderBotMessageBackground,
-            'botMessageBoxBackground ' + color,
-          ),
+          code,
           [component]: color,
         },
         () => this.updateSettings(),
       );
     } else if (component === 'botbuilderBotMessageTextColor') {
+      code = this.state.code.replace(
+        /^::botMessageTextColor\s(.*)$/m,
+        `::botMessageTextColor ${color}`,
+      );
       this.setState(
         {
-          code: this.state.code.replace(
-            'botMessageTextColor ' + this.state.botbuilderBotMessageTextColor,
-            'botMessageTextColor ' + color,
-          ),
+          code,
           [component]: color,
         },
         () => this.updateSettings(),
       );
     } else if (component === 'botbuilderIconColor') {
+      code = this.state.code.replace(
+        /^::botIconColor\s(.*)$/m,
+        `::botIconColor ${color}`,
+      );
       this.setState(
         {
-          code: this.state.code.replace(
-            'botIconColor ' + this.state.botbuilderIconColor,
-            'botIconColor ' + color,
-          ),
+          code,
           [component]: color,
         },
         () => this.updateSettings(),
@@ -128,56 +136,70 @@ class Design extends React.Component {
     }
   };
 
-  handleChangeCode(event) {
-    let updatedCode = event;
-    let backgroundBodyIndexNo =
-      updatedCode.indexOf('bodyBackground ') + 'bodyBackground '.length;
-    let userMessageBackgroundIndexNo =
-      updatedCode.indexOf('userMessageBoxBackground ') +
-      'userMessageBoxBackground '.length;
-    let userMessageTextColorIndexNo =
-      updatedCode.indexOf('userMessageTextColor ') +
-      'userMessageTextColor '.length;
-    let botMessageBackgroundIndexNo =
-      updatedCode.indexOf('botMessageBoxBackground ') +
-      'botMessageBoxBackground '.length;
-    let botMessageTextColorIndexNo =
-      updatedCode.indexOf('botMessageTextColor ') +
-      'botMessageTextColor '.length;
-    let iconColorIndexNo =
-      updatedCode.indexOf('botIconColor ') + 'botIconColor '.length;
-    let backgroundBody = updatedCode.substring(
-      backgroundBodyIndexNo,
-      backgroundBodyIndexNo + 7,
+  handleChangeCode(newValue) {
+    const bodyBackgroundMatch = newValue.match(/^::bodyBackground\s(.*)$/m);
+    const bodyBackgroundImgMatch = newValue.match(
+      /^::bodyBackgroundImage\s(.*)$/m,
     );
-    let userMessageBackground = updatedCode.substring(
-      userMessageBackgroundIndexNo,
-      userMessageBackgroundIndexNo + 7,
+    const userMessageBoxBackgroundMatch = newValue.match(
+      /^::userMessageBoxBackground\s(.*)$/m,
     );
-    let userMessageTextColor = updatedCode.substring(
-      userMessageTextColorIndexNo,
-      userMessageTextColorIndexNo + 7,
+    const userMessageTextColorMatch = newValue.match(
+      /^::userMessageTextColor\s(.*)$/m,
     );
-    let botMessageBackground = updatedCode.substring(
-      botMessageBackgroundIndexNo,
-      botMessageBackgroundIndexNo + 7,
+    const botMessageBoxBackgroundMatch = newValue.match(
+      /^::botMessageBoxBackground\s(.*)$/m,
     );
-    let botMessageTextColor = updatedCode.substring(
-      botMessageTextColorIndexNo,
-      botMessageTextColorIndexNo + 7,
+    const botMessageTextColorMatch = newValue.match(
+      /^::botMessageTextColor\s(.*)$/m,
     );
-    let iconColor = updatedCode.substring(
-      iconColorIndexNo,
-      iconColorIndexNo + 7,
-    );
+    const botIconColorMatch = newValue.match(/^::botIconColor\s(.*)$/m);
+    const botIconImageMatch = newValue.match(/^::botIconImage\s(.*)$/m);
+
+    if (bodyBackgroundMatch) {
+      this.setState({
+        botbuilderBackgroundBody: bodyBackgroundMatch[1],
+      });
+    }
+
+    if (bodyBackgroundImgMatch) {
+      this.setState({
+        botbuilderBodyBackgroundImg: bodyBackgroundImgMatch[1],
+      });
+    }
+
+    if (userMessageBoxBackgroundMatch) {
+      this.setState({
+        botbuilderUserMessageBackground: userMessageBoxBackgroundMatch[1],
+      });
+    }
+    if (userMessageTextColorMatch) {
+      this.setState({
+        botbuilderUserMessageTextColor: userMessageTextColorMatch[1],
+      });
+    }
+    if (botMessageBoxBackgroundMatch) {
+      this.setState({
+        botbuilderBotMessageBackground: botMessageBoxBackgroundMatch[1],
+      });
+    }
+    if (botMessageTextColorMatch) {
+      this.setState({
+        botbuilderBotMessageTextColor: botMessageTextColorMatch[1],
+      });
+    }
+    if (botIconColorMatch) {
+      this.setState({
+        botbuilderIconColor: botIconColorMatch[1],
+      });
+    }
+    if (botIconImageMatch) {
+      this.setState({
+        botbuilderIconImg: botIconImageMatch[1],
+      });
+    }
     this.setState({
-      botbuilderBackgroundBody: backgroundBody,
-      botbuilderUserMessageBackground: userMessageBackground,
-      botbuilderUserMessageTextColor: userMessageTextColor,
-      botbuilderBotMessageBackground: botMessageBackground,
-      botbuilderBotMessageTextColor: botMessageTextColor,
-      botbuilderIconColor: iconColor,
-      code: updatedCode,
+      code: newValue,
     });
   }
 
@@ -211,8 +233,13 @@ class Design extends React.Component {
       .done(function(response) {
         response = JSON.parse(response);
         let img_url = IMAGE_GET_URL + response.image_path;
+        let code = self.state.code.replace(
+          /^::bodyBackgroundImage\s(.*)$/m,
+          `::bodyBackgroundImage ${img_url}`,
+        );
         self.setState(
           {
+            code,
             uploadingBodyBackgroundImg: false,
             botbuilderBodyBackgroundImg: img_url,
             botbuilderBodyBackgroundImgName: response.image_path.substring(
@@ -252,8 +279,13 @@ class Design extends React.Component {
       .done(function(response) {
         response = JSON.parse(response);
         let img_url = IMAGE_GET_URL + response.image_path;
+        let code = self.state.code.replace(
+          /^::botIconImage\s(.*)$/m,
+          `::botIconImage ${img_url}`,
+        );
         self.setState(
           {
+            code,
             uploadingBotbuilderIconImg: false,
             iconSelected: null,
             botbuilderIconImg: img_url,
@@ -273,8 +305,13 @@ class Design extends React.Component {
       });
   };
   handleRemoveUrlBody = () => {
+    let code = this.state.code.replace(
+      /^::bodyBackgroundImage\s(.*)$/m,
+      '::bodyBackgroundImage ',
+    );
     this.setState(
       {
+        code,
         botbuilderBodyBackgroundImg: '',
         botbuilderBodyBackgroundImgName: '',
       },
@@ -288,11 +325,20 @@ class Design extends React.Component {
     } else {
       this.uploadImageIcon(files[0]);
     }
-    this.setState({ botbuilderIconImg }, () => this.updateSettings());
+    let code = this.state.code.replace(
+      /^::botIconImage\s(.*)$/m,
+      `::botIconImage ${botbuilderIconImg}`,
+    );
+    this.setState({ code, botbuilderIconImg }, () => this.updateSettings());
   };
   handleRemoveUrlIcon = () => {
+    let code = this.state.code.replace(
+      /^::botIconImage\s(.*)$/m,
+      '::botIconImage ',
+    );
     this.setState(
       {
+        code,
         botbuilderIconImg: '',
         botbuilderIconImgName: '',
       },
@@ -413,11 +459,20 @@ class Design extends React.Component {
                 botbuilderBackgroundBody:
                   '#' + settings.botbuilderBackgroundBody,
               });
+              this.handleChangeColor(
+                'botbuilderBackgroundBody',
+                settings.botbuilderBackgroundBody,
+              );
             }
             if (settings.botbuilderBodyBackgroundImg) {
               let img = settings.botbuilderBodyBackgroundImg;
+              let code = this.state.code.replace(
+                /^::bodyBackgroundImage\s(.*)$/m,
+                `::bodyBackgroundImage ${img}`,
+              );
               this.setState({
                 botbuilderBodyBackgroundImg: img,
+                code,
               });
             }
             if (settings.botbuilderBodyBackgroundImgName) {
@@ -431,34 +486,63 @@ class Design extends React.Component {
                 botbuilderUserMessageBackground:
                   '#' + settings.botbuilderUserMessageBackground,
               });
+              this.handleChangeColor(
+                'botbuilderUserMessageBackground',
+                settings.botbuilderUserMessageBackground,
+              );
             }
             if (settings.botbuilderUserMessageTextColor) {
               this.setState({
                 botbuilderUserMessageTextColor:
                   '#' + settings.botbuilderUserMessageTextColor,
               });
+              this.handleChangeColor(
+                'botbuilderUserMessageTextColor',
+                settings.botbuilderUserMessageTextColor,
+              );
             }
             if (settings.botbuilderBotMessageBackground) {
               this.setState({
                 botbuilderBotMessageBackground:
                   '#' + settings.botbuilderBotMessageBackground,
               });
+              this.handleChangeColor(
+                'botbuilderBotMessageBackground',
+                settings.botbuilderBotMessageBackground,
+              );
             }
             if (settings.botbuilderBotMessageTextColor) {
               this.setState({
                 botbuilderBotMessageTextColor:
                   '#' + settings.botbuilderBotMessageTextColor,
               });
+              this.handleChangeColor(
+                'botbuilderBotMessageTextColor',
+                settings.botbuilderBotMessageTextColor,
+              );
             }
             if (settings.botbuilderIconColor) {
               this.setState({
                 botbuilderIconColor: '#' + settings.botbuilderIconColor,
               });
+              this.handleChangeColor(
+                'botbuilderIconColor',
+                settings.botbuilderIconColor,
+              );
             }
             if (settings.botbuilderIconImg) {
+              let code = this.state.code.replace(
+                /^::botIconImage\s(.*)$/m,
+                `::botIconImage ${settings.botbuilderIconImg}`,
+              );
               this.setState({
+                code,
                 botbuilderIconImg: settings.botbuilderIconImg,
               });
+              this.handleChangeColor(
+                'botbuilderIconImg',
+                settings.botbuilderIconImg,
+              );
             }
             if (settings.botbuilderIconImgName) {
               this.setState({
@@ -587,8 +671,13 @@ class Design extends React.Component {
 
   handleIconSelect = icon => {
     if (icon.id === this.state.iconSelected) {
+      let code = this.state.code.replace(
+        /^::botIconImage\s(.*)$/m,
+        '::botIconImage ',
+      );
       this.setState(
         {
+          code,
           iconSelected: null,
           botbuilderIconImg: '',
           botbuilderIconImgName: '',
@@ -596,8 +685,13 @@ class Design extends React.Component {
         () => this.updateSettings(),
       );
     } else {
+      let code = this.state.code.replace(
+        /^::botIconImage\s(.*)$/m,
+        `::botIconImage ${icon.url}`,
+      );
       this.setState(
         {
+          code,
           iconSelected: icon.id,
           botbuilderIconImg: icon.url,
           botbuilderIconImgName: '',
