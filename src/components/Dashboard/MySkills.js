@@ -42,8 +42,7 @@ class MySkills extends Component {
   }
 
   loadSkills = () => {
-    let url;
-    url =
+    let url =
       urls.API_URL +
       '/cms/getSkillList.json?applyFilter=true&filter_name=ascending&filter_type=lexicographical';
     let self = this;
