@@ -31,6 +31,7 @@ const githubProfile = {
   width: 50,
   verticalAlign: 'middle',
   borderRadius: 100,
+  marginLeft: 16,
 };
 
 class AuthorSkills extends Component {
@@ -94,14 +95,16 @@ class AuthorSkills extends Component {
             return (
               <TableRow key={index}>
                 <TableRowColumn>
+                  <a href={skillURL}>
+                    <Img
+                      style={imageStyle}
+                      src={[image1, image2]}
+                      unloader={<CircleImage name={name} size="40" />}
+                    />
+                  </a>
+                </TableRowColumn>
+                <TableRowColumn>
                   <div>
-                    <a href={skillURL}>
-                      <Img
-                        style={imageStyle}
-                        src={[image1, image2]}
-                        unloader={<CircleImage name={name} size="40" />}
-                      />
-                    </a>
                     <a href={skillURL} className="effect-underline">
                       {name}
                     </a>
@@ -137,15 +140,16 @@ class AuthorSkills extends Component {
     const headingStyle = {
       fill: '#000',
       width: '100%',
+      textTransform: 'capitalize',
     };
     // console.log(this.props.authorUrl);
-    let auhtorGitHubUrl = this.props.authorUrl;
-    let Username = '';
+    let authorGitHubUrl = this.props.authorUrl;
+    let username = '';
     let githubUsername = '';
     let githubGravatar = '';
-    if (auhtorGitHubUrl) {
-      Username = auhtorGitHubUrl.split('/');
-      githubUsername = Username[3];
+    if (authorGitHubUrl) {
+      username = authorGitHubUrl.split('/');
+      githubUsername = username[3];
       githubGravatar =
         'https://avatars.githubusercontent.com/' + githubUsername + '?size=50';
     } else {
@@ -184,6 +188,7 @@ class AuthorSkills extends Component {
                 enableSelectAll={false}
               >
                 <TableRow>
+                  <TableHeaderColumn>Image</TableHeaderColumn>
                   <TableHeaderColumn>Name</TableHeaderColumn>
                   <TableHeaderColumn>Category</TableHeaderColumn>
                   <TableHeaderColumn>Language</TableHeaderColumn>
