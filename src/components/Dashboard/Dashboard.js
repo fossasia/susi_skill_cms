@@ -4,6 +4,7 @@ import { Paper } from 'material-ui';
 import Cookies from 'universal-cookie';
 import MySkills from './MySkills';
 import MyRatings from './MyRatings';
+import MyAnalytics from './MyAnalytics';
 import './Dashboard.css';
 const cookies = new Cookies();
 
@@ -54,6 +55,14 @@ class Dashboard extends React.Component {
           >
             <h1 className="center">My Ratings</h1>
             <MyRatings />
+          </Paper>
+          <Paper
+            style={styles.paperStyle}
+            className="botBuilder-page-card"
+            zDepth={1}
+          >
+            <h1 className="center">My Analytics</h1>
+            <MyAnalytics />
           </Paper>
         </div>
       </div>
