@@ -28,29 +28,29 @@ function createListCard(
               <img alt={skillName} src={image} style={styles.imageMobile} />
             </div>
           ) : (
-            <CircleImage name={el} size="96" />
+            <CircleImage name={skillName} size="96" />
           )}
         </div>
         <div style={styles.content}>
           <div style={styles.header}>
-            <Link
-              key={el}
-              to={{
-                pathname: `/${skill.group}/${skill.skill_tag}/${language}`,
-                state: {
-                  url: skillUrl,
-                  element: el,
-                  name: el,
-                  modelValue: skill.model,
-                  groupValue: skill.group,
-                  languageValue: language,
-                },
-              }}
-            >
-              <div style={styles.title}>
+            <div style={styles.title}>
+              <Link
+                key={el}
+                to={{
+                  pathname: `/${skill.group}/${skill.skill_tag}/${language}`,
+                  state: {
+                    url: skillUrl,
+                    element: el,
+                    name: el,
+                    modelValue: skill.model,
+                    groupValue: skill.group,
+                    languageValue: language,
+                  },
+                }}
+              >
                 <span>{skillName}</span>
-              </div>
-            </Link>
+              </Link>
+            </div>
             <div style={styles.authorName}>
               <span>{authorName}</span>
             </div>
@@ -88,29 +88,29 @@ function createListCard(
             <img alt={skillName} src={image} style={styles.image} />
           </div>
         ) : (
-          <CircleImage name={el} size="218" />
+          <CircleImage name={skillName} size="160" />
         )}
       </div>
       <div style={styles.content}>
         <div style={styles.header}>
-          <Link
-            key={el}
-            to={{
-              pathname: `/${skill.group}/${skill.skill_tag}/${language}`,
-              state: {
-                url: skillUrl,
-                element: el,
-                name: el,
-                modelValue: skill.model,
-                groupValue: skill.group,
-                languageValue: language,
-              },
-            }}
-          >
-            <div style={styles.title}>
+          <div style={styles.title}>
+            <Link
+              key={el}
+              to={{
+                pathname: `/${skill.group}/${skill.skill_tag}/${language}`,
+                state: {
+                  url: skillUrl,
+                  element: el,
+                  name: el,
+                  modelValue: skill.model,
+                  groupValue: skill.group,
+                  languageValue: language,
+                },
+              }}
+            >
               <span>{skillName}</span>
-            </div>
-          </Link>
+            </Link>
+          </div>
           <div style={styles.authorName}>
             <span>{authorName}</span>
           </div>
