@@ -753,7 +753,7 @@ export default class BrowseSkill extends React.Component {
                     label="List view"
                     labelStyle={{ display: 'none' }}
                     checkedIcon={
-                      <ActionViewStream style={{ color: '#4285f4' }} />
+                      <ActionViewStream style={{ fill: '#4285f4' }} />
                     }
                     uncheckedIcon={<ActionViewStream />}
                   />
@@ -762,7 +762,7 @@ export default class BrowseSkill extends React.Component {
                     label="Grid view"
                     labelStyle={{ display: 'none' }}
                     checkedIcon={
-                      <ActionViewModule style={{ color: '#4285f4' }} />
+                      <ActionViewModule style={{ fill: '#4285f4' }} />
                     }
                     uncheckedIcon={<ActionViewModule />}
                   />

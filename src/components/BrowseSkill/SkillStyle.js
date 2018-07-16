@@ -91,6 +91,7 @@ const styles = {
     margin: '0px 10px',
     width: '200px',
     overflowY: 'hidden',
+    fontSize: '14px',
   },
   newSkillBtn: {
     padding: '10px 0px 0px 16px',

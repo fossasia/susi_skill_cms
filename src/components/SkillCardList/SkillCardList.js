@@ -68,7 +68,16 @@ class SkillCardList extends Component {
           <div style={styles.imageContainer}>
             {image ? (
               <div style={styles.image}>
-                <img alt={skill_name} src={image} style={styles.image} />
+                <Link
+                  key={el}
+                  to={{
+                    pathname: `/${skill.group}/${skill.skill_tag}/${
+                      this.props.languageValue
+                    }`,
+                  }}
+                >
+                  <img alt={skill_name} src={image} style={styles.image} />
+                </Link>
               </div>
             ) : (
               <CircleImage name={el} size="218" />
@@ -133,7 +142,7 @@ class SkillCardList extends Component {
                 </div>
                 <div style={styles.row}>
                   <div style={styles.descriptionTitle}>Description</div>
-                  {description}
+                  <div style={styles.description}>{description}</div>
                 </div>
               </div>
             </div>
