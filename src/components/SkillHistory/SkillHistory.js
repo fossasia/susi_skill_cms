@@ -73,6 +73,7 @@ class SkillHistory extends Component {
   };
 
   componentDidMount() {
+    document.title = 'SUSI.AI - Skill History';
     let commitHistoryBaseURL = urls.API_URL + '/cms/getSkillHistory.json';
     let commitHistoryURL =
       commitHistoryBaseURL +

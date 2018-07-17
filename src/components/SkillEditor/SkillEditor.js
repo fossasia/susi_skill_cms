@@ -185,6 +185,7 @@ class SkillEditor extends Component {
 
   componentDidMount() {
     // Check if admin is logged in or not
+    document.title = 'SUSI.AI - Edit Skill';
     if (cookies.get('showAdmin') === true) {
       this.setState({
         showAdmin: true,

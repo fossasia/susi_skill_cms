@@ -109,6 +109,17 @@ class SkillListing extends Component {
   }
 
   componentDidMount() {
+    document.title = `SUSI.AI - ${
+      this.name
+        ? this.name
+            .split('_')
+            .map(data => {
+              var s = data.charAt(0).toUpperCase() + data.substring(1);
+              return s;
+            })
+            .join(' ')
+        : ''
+    } Skills`;
     if (this.url !== undefined) {
       let baseUrl = urls.API_URL + '/cms/getSkillMetadata.json';
       let userSkillRatingUrl = `${urls.API_URL}/cms/getRatingByUser.json`;

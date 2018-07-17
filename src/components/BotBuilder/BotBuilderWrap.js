@@ -36,6 +36,9 @@ const templates = [
 ];
 
 class BotBuilderWrap extends React.Component {
+  componentDidMount() {
+    document.title = 'SUSI.AI - Botbuilder';
+  }
   render() {
     if (!cookies.get('loggedIn')) {
       return (

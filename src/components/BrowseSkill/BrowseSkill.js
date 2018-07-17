@@ -68,6 +68,7 @@ export default class BrowseSkill extends React.Component {
   }
 
   componentDidMount() {
+    document.title = 'SUSI.AI - Browse Skills';
     this.loadLanguages();
     this.loadGroups();
 

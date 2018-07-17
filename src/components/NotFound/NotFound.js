@@ -2,6 +2,9 @@ import React from 'react';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 
 export default class NotFound extends React.Component {
+  componentDidMount() {
+    document.title = 'Page Not Found';
+  }
   render() {
     return (
       <div>

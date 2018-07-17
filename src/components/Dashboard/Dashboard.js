@@ -18,7 +18,9 @@ class Dashboard extends React.Component {
       createBotWizard: true,
     };
   }
-
+  componentDidMount() {
+    document.title = 'SUSI.AI - Dashboard';
+  }
   render() {
     if (!cookies.get('loggedIn')) {
       return (

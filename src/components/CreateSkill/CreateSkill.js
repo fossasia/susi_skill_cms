@@ -36,6 +36,7 @@ const cookies = new Cookies();
 let self;
 export default class CreateSkill extends React.Component {
   componentDidMount() {
+    document.title = 'SUSI.AI - Create Skill';
     self = this;
     self.loadgroups();
     // send code to CodeView in botbuilder
