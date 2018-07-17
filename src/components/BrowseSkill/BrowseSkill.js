@@ -756,7 +756,16 @@ export default class BrowseSkill extends React.Component {
                 <RadioButtonGroup
                   name="view_type"
                   defaultSelected="list"
-                  style={{ display: 'flex', marginTop: 34 }}
+                  style={
+                    window.innerWidth < 430
+                      ? {
+                          right: 12,
+                          position: 'absolute',
+                          top: 216,
+                          display: 'flex',
+                        }
+                      : { display: 'flex', marginTop: 34 }
+                  }
                   valueSelected={this.state.viewType}
                   onChange={this.handleViewChange}
                 >
@@ -764,6 +773,7 @@ export default class BrowseSkill extends React.Component {
                     value="list"
                     label="List view"
                     labelStyle={{ display: 'none' }}
+                    style={{ width: 'fit-content' }}
                     checkedIcon={
                       <ActionViewStream style={{ color: '#4285f4' }} />
                     }
@@ -773,6 +783,7 @@ export default class BrowseSkill extends React.Component {
                     value="grid"
                     label="Grid view"
                     labelStyle={{ display: 'none' }}
+                    style={{ width: 'fit-content' }}
                     checkedIcon={
                       <ActionViewModule style={{ color: '#4285f4' }} />
                     }
