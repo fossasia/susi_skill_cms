@@ -48,3 +48,12 @@ div.scrolling-wrapper::-webkit-scrollbar {
         font-size: 16px;
     }
 }
+
+.category-mobile-section div:first-child a {
+    border-top-width: 1px !important;
+    border-radius: 5px 5px 0 0;
+}
+
+.category-mobile-section div:last-child a {
+    border-radius: 0 0 5px 5px;
+}
