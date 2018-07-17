@@ -26,20 +26,42 @@ import Cookies from 'universal-cookie';
 const cookies = new Cookies();
 
 class BotWizard extends React.Component {
+  componentDidMount() {
+    if (
+      this.getQueryStringValue('template') ||
+      (this.getQueryStringValue('name') &&
+        this.getQueryStringValue('group') &&
+        this.getQueryStringValue('language'))
+    ) {
+      if (this.getQueryStringValue('template')) {
+        for (let template of this.props.templates) {
+          if (template.id === this.getQueryStringValue('template')) {
+            let buildCode = template.code;
+            this.setState({
+              buildCode: buildCode,
+              loaded: true,
+            });
+          }
+        }
+      } else {
+        let name = this.getQueryStringValue('name');
+        let group = this.getQueryStringValue('group');
+        let language = this.getQueryStringValue('language');
+        this.getBotDetails(name, group, language);
+      }
+    } else {
+      this.setState({
+        loaded: true,
+      });
+    }
+  }
+
   constructor(props) {
     super(props);
-    let startCode = '';
-    if (this.getQueryStringValue('template')) {
-      for (let template of this.props.templates) {
-        if (template.id === this.getQueryStringValue('template')) {
-          startCode = template.code;
-        }
-      }
-    }
     this.state = {
       finished: false,
       stepIndex: 0,
-      startCode,
+      buildCode: '',
       themeSettingsString: '{}',
       openSnackbar: false,
       msgSnackbar: '',
@@ -51,12 +73,46 @@ class BotWizard extends React.Component {
       savedSkillOld: {}, // contains skill meta data information for last saved skill
       updateSkillNow: false,
       imageChanged: false,
+      loaded: false,
       designCode:
         '::bodyBackground #ffffff\n::bodyBackgroundImage \n::userMessageBoxBackground #0077e5\n::userMessageTextColor #ffffff\n::botMessageBoxBackground #f8f8f8\n::botMessageTextColor #455a64\n::botIconColor #000000\n::botIconImage ',
       configCode:
         '!Write the status of each website you want to enable or disable the bot below.\n::sites_enabled website1.com, website2.com\n::sites_disabled website3.com',
     };
   }
+
+  getBotDetails = (name, group, language) => {
+    let url;
+    url =
+      urls.API_URL +
+      // eslint-disable-next-line
+      `/cms/getSkill.json?group=${group}&language=${language}&skill=${name}&private=1&access_token=` +
+      cookies.get('loggedIn');
+    $.ajax({
+      url: url,
+      dataType: 'jsonp',
+      jsonp: 'callback',
+      crossDomain: true,
+      success: function(data) {
+        let text = data.text;
+        let buildCode = '::name' + text.split('::name')[1];
+        let designCode =
+          '::bodyBackground ' +
+          text.split('::bodyBackground ')[1].split('::name')[0];
+        let configCode =
+          '!Write' + text.split('!Write')[1].split('::bodyBackground')[0];
+        this.setState({
+          buildCode: buildCode,
+          designCode: designCode,
+          configCode: configCode,
+          loaded: true,
+        });
+      }.bind(this),
+      error: function(err) {
+        console.log(err);
+      },
+    });
+  };
 
   getQueryStringValue = key => {
     return decodeURIComponent(
@@ -101,7 +157,7 @@ class BotWizard extends React.Component {
         return (
           <Build
             sendInfoToProps={this.sendInfoToProps}
-            code={this.state.startCode}
+            code={this.state.buildCode}
             onImageChange={() => this.setState({ imageChanged: true })}
           />
         );
@@ -316,34 +372,43 @@ class BotWizard extends React.Component {
                 }}
               >
                 <div style={styles.mainPage}>
-                  <MuiThemeProvider muiTheme={muiTheme}>
-                    <Stepper activeStep={stepIndex} linear={false}>
-                      <Step>
-                        <StepButton onClick={() => this.setStep(0)}>
-                          Build
-                        </StepButton>
-                      </Step>
-                      <Step>
-                        <StepButton onClick={() => this.setStep(1)}>
-                          Design
-                        </StepButton>
-                      </Step>
-                      <Step>
-                        <StepButton onClick={() => this.setStep(2)}>
-                          Configure
-                        </StepButton>
-                      </Step>
-                      <Step>
-                        <StepButton onClick={() => this.setStep(3)}>
-                          Deploy
-                        </StepButton>
-                      </Step>
-                    </Stepper>
-                  </MuiThemeProvider>
-                  <div style={contentStyle}>
-                    <div>{this.getStepContent(stepIndex)}</div>
-                    <div style={{ marginTop: '20px' }} />
-                  </div>
+                  {!this.state.loaded ? (
+                    <div className="center">
+                      <CircularProgress size={62} color="#4285f5" />
+                      <h4>Loading</h4>
+                    </div>
+                  ) : (
+                    <div>
+                      <MuiThemeProvider muiTheme={muiTheme}>
+                        <Stepper activeStep={stepIndex} linear={false}>
+                          <Step>
+                            <StepButton onClick={() => this.setStep(0)}>
+                              Build
+                            </StepButton>
+                          </Step>
+                          <Step>
+                            <StepButton onClick={() => this.setStep(1)}>
+                              Design
+                            </StepButton>
+                          </Step>
+                          <Step>
+                            <StepButton onClick={() => this.setStep(2)}>
+                              Configure
+                            </StepButton>
+                          </Step>
+                          <Step>
+                            <StepButton onClick={() => this.setStep(3)}>
+                              Deploy
+                            </StepButton>
+                          </Step>
+                        </Stepper>
+                      </MuiThemeProvider>
+                      <div style={contentStyle}>
+                        <div>{this.getStepContent(stepIndex)}</div>
+                        <div style={{ marginTop: '20px' }} />
+                      </div>
+                    </div>
+                  )}
                 </div>
                 <Paper
                   style={styles.paperStyle}
