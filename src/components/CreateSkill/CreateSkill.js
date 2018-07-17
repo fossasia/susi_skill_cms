@@ -41,7 +41,29 @@ export default class CreateSkill extends React.Component {
     self.loadgroups();
     // send code to CodeView in botbuilder
     if (this.props.botBuilder) {
-      this.setState({ code: this.props.botBuilder.code });
+      this.setState({
+        code: this.props.botBuilder.code,
+      });
+      if (
+        this.props.botBuilder.category &&
+        this.props.botBuilder.language &&
+        this.props.botBuilder.name
+      ) {
+        // set group, language and name while editing a saved bot
+        this.setState(
+          {
+            groupValue: this.props.botBuilder.category,
+            languageValue: this.props.botBuilder.language,
+            expertValue: this.props.botBuilder.name,
+            imageUrl: '',
+            showImage: true,
+            groupSelect: false,
+            languageSelect: false,
+            expertSelect: false,
+          },
+          () => this.handleGroupChange(null, 0, this.props.botBuilder.category),
+        );
+      }
     }
   }
 
@@ -477,7 +499,6 @@ export default class CreateSkill extends React.Component {
       },
       () => this.sendInfoToProps(),
     );
-    // console.log(this.state.imageUrl);
     const pattern = /^::image\s(.*)$/m;
     const code = this.state.code.replace(pattern, `::image images/${imgUrl}`);
     this.setState({
