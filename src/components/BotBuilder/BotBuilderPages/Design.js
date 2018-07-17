@@ -881,23 +881,26 @@ class Design extends React.Component {
     });
     return (
       <div>
-        <div style={{ padding: '20px 10px 0 10px' }}>
-          <AceEditor
-            mode="java"
-            theme={this.state.editorTheme}
-            width="100%"
-            fontSize={this.state.fontSizeCode}
-            height="200px"
-            value={this.state.code}
-            onChange={this.handleChangeCode}
-            showPrintMargin={false}
-            name="skill_code_editor"
-            scrollPastEnd={false}
-            wrapEnabled={true}
-            editorProps={{ $blockScrolling: true }}
-          />
-        </div>
         <div className="center menu-page">
+          <h2 style={{ lineHeight: '50px', textAlign: 'left' }}>
+            2. Design your bot
+          </h2>
+          <div style={{ padding: '20px 10px 0 10px' }}>
+            <AceEditor
+              mode="java"
+              theme={this.state.editorTheme}
+              width="100%"
+              fontSize={this.state.fontSizeCode}
+              height="200px"
+              value={this.state.code}
+              onChange={this.handleChangeCode}
+              showPrintMargin={false}
+              name="skill_code_editor"
+              scrollPastEnd={false}
+              wrapEnabled={true}
+              editorProps={{ $blockScrolling: true }}
+            />
+          </div>
           {!this.state.loadedSettings ? (
             <div className="center">
               <CircularProgress size={62} color="#4285f5" />

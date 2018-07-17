@@ -31,7 +31,7 @@
 	margin: auto;
 }
 .menu-page{
-	margin-top: 40px;
+	margin-top: 20px;
 }
 .preview-wrap{
 	margin-top: 10px;
@@ -208,4 +208,16 @@ input[type=file]{
 	.display-mobile-only{
 		display: none;
 	}
+}
+
+.preview-button {
+    height: 45px;
+    width: 42px;
+    position: fixed;
+    z-index: 1;
+    top: 75px;
+    right: 0;
+    background-color: #111;
+    overflow-x: hidden;
+    padding-top: 20px;
 }

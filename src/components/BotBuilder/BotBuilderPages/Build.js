@@ -195,7 +195,9 @@ class Build extends Component {
       <div className="menu-page">
         <div>
           <div style={{ display: 'flex', flexDirection: 'row' }}>
-            <h2 style={{ lineHeight: '50px' }}>Add a new skill to your bot</h2>
+            <h2 style={{ lineHeight: '50px' }}>
+              1. Add a new skill to your bot
+            </h2>
             <div style={{ marginLeft: 'auto', marginRight: '0px' }}>
               <IconButton
                 tooltip="Code View"
