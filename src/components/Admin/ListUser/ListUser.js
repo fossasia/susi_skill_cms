@@ -77,6 +77,7 @@ export default class ListUser extends Component {
   };
 
   componentDidMount() {
+    document.title = 'SUSI.AI - User Detail List';
     const pagination = { ...this.state.pagination };
     let url;
     url =

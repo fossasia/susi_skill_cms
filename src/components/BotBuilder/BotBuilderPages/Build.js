@@ -12,8 +12,21 @@ class Build extends Component {
     super(props);
     let skillCode =
       '::name <Skill_name>\n::category <Category>\n::language <Language>\n::author <author_name>\n::author_url <author_url>\n::description <description> \n::dynamic_content <Yes/No>\n::developer_privacy_policy <link>\n::image <image_url>\n::terms_of_use <link>\n\n\nUser query1|query2|quer3....\n!example:<The question that should be shown in public skill displays>\n!expect:<The answer expected for the above example>\nAnswer for the user query';
+    let skillCategory, skillLanguage, skillName;
     if (this.props.code) {
       skillCode = this.props.code;
+      skillCategory = skillCode
+        .split('::category ')[1]
+        .split('::')[0]
+        .trim();
+      skillLanguage = skillCode
+        .split('::language ')[1]
+        .split('::')[0]
+        .trim();
+      skillName = skillCode
+        .split('::name ')[1]
+        .split('::')[0]
+        .trim();
     }
     this.state = {
       treeData: {
@@ -25,6 +38,9 @@ class Build extends Component {
         botResponses: [],
       },
       skillCode,
+      skillCategory,
+      skillLanguage,
+      skillName,
       codeView: true,
       conversationView: false,
       treeView: false,
@@ -195,7 +211,9 @@ class Build extends Component {
       <div className="menu-page">
         <div>
           <div style={{ display: 'flex', flexDirection: 'row' }}>
-            <h2 style={{ lineHeight: '50px' }}>Add a new skill to your bot</h2>
+            <h2 style={{ lineHeight: '50px' }}>
+              1. Add a new skill to your bot
+            </h2>
             <div style={{ marginLeft: 'auto', marginRight: '0px' }}>
               <IconButton
                 tooltip="Code View"
@@ -244,6 +262,9 @@ class Build extends Component {
                 botBuilder={{
                   sendInfoToProps: this.sendInfoToProps,
                   code: this.state.skillCode,
+                  name: this.state.skillName,
+                  category: this.state.skillCategory,
+                  language: this.state.skillLanguage,
                   onSkillInfoChange: this.onSkillInfoChange,
                   onImageChange: this.props.onImageChange,
                 }}

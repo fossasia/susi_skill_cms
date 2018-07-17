@@ -22,6 +22,14 @@ const styles = {
     height: '218px',
     marginBottom: '6px',
   },
+  imageContainerMobile: {
+    display: 'inline-block',
+    alignItems: 'center',
+    padding: '10px',
+    background: '#fff',
+    height: '110px',
+    marginBottom: '6px',
+  },
   image: {
     position: 'relative',
     height: '180px',
@@ -29,6 +37,13 @@ const styles = {
     verticalAlign: 'top',
     borderRadius: '50%',
     marginLeft: '6.4%',
+  },
+  imageMobile: {
+    position: 'relative',
+    height: '110px',
+    width: '110px',
+    verticalAlign: 'top',
+    borderRadius: '50%',
   },
   title: {
     textAlign: 'left',

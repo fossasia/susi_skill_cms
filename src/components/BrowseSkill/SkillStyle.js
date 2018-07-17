@@ -41,6 +41,7 @@ const styles = {
   },
   container: {
     marginTop: '15px',
+    marginBottom: '15px',
     width: '100%',
     display: 'flex',
     justifyContent: 'center',
@@ -137,6 +138,15 @@ const styles = {
     minHeight: '24px',
     lineHeight: '24px',
     fontSize: '14px',
+  },
+  mobileMenuItem: {
+    minHeight: '24px',
+    lineHeight: '24px',
+    fontSize: '14px',
+    border: '1px #e7e7e7 solid',
+    borderTopWidth: 0,
+    margin: '0 14px',
+    padding: '8px 8px 8px 8px',
   },
   sidebarSubheader: {
     fontWeight: 700,

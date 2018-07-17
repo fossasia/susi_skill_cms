@@ -62,6 +62,8 @@ const styles = {
     margin: '10px',
     textAlign: 'center',
     overflowX: 'scroll',
+    // eslint-disable-next-line
+    overflowX: '-moz-hidden-unscrollable',
     overflowY: 'hidden',
     whiteSpace: 'nowrap',
   },

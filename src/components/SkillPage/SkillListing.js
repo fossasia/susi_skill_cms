@@ -15,7 +15,6 @@ import SkillFeedbackCard from '../SkillFeedbackCard/SkillFeedbackCard';
 import { FloatingActionButton, Paper } from 'material-ui';
 import CircularProgress from 'material-ui/CircularProgress';
 import Snackbar from 'material-ui/Snackbar';
-import Chip from 'material-ui/Chip';
 import Ratings from 'react-ratings-declarative';
 
 // Static Assets
@@ -110,6 +109,17 @@ class SkillListing extends Component {
   }
 
   componentDidMount() {
+    document.title = `SUSI.AI - ${
+      this.name
+        ? this.name
+            .split('_')
+            .map(data => {
+              var s = data.charAt(0).toUpperCase() + data.substring(1);
+              return s;
+            })
+            .join(' ')
+        : ''
+    } Skills`;
     if (this.url !== undefined) {
       let baseUrl = urls.API_URL + '/cms/getSkillMetadata.json';
       let userSkillRatingUrl = `${urls.API_URL}/cms/getRatingByUser.json`;
@@ -585,14 +595,6 @@ class SkillListing extends Component {
         marginBottom: 10,
         display: 'inline-block',
       },
-      chip: {
-        margin: '6px 6px 6px 0',
-        border: '1px solid #ccc',
-        cursor: 'pointer',
-      },
-      chipLabel: {
-        fontWeight: 500,
-      },
     };
     let renderElement = null;
     let oldGroupValue = this.props.location.pathname.split('/')[1];
@@ -714,7 +716,7 @@ class SkillListing extends Component {
                 <div className="ratingLabel">{this.state.total_star}</div>
               </a>
               <div className="avatar-meta margin-b-md">
-                <div className="examples">
+                <div className="example-container">
                   {typeof this.state.examples === 'undefined' ||
                   this.state.examples === null ||
                   typeof this.state.examples[
@@ -723,15 +725,13 @@ class SkillListing extends Component {
                     ? ''
                     : this.state.examples.map((data, index) => {
                         return (
-                          <Chip
+                          <div
                             key={index}
-                            style={styles.chip}
-                            labelStyle={styles.chipLabel}
-                            backgroundColor={'#FFFFFF'}
+                            className="example-comment"
                             onClick={event => this.testExample(event, data)}
                           >
-                            {data}
-                          </Chip>
+                            <q>{data}</q>
+                          </div>
                         );
                       })}
                 </div>

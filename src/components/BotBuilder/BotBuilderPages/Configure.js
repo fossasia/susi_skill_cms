@@ -95,6 +95,7 @@ class Configure extends Component {
   render() {
     return (
       <div className="menu-page">
+        <h2 style={{ lineHeight: '50px' }}>3. Configure your bot</h2>
         <div style={{ padding: '20px 10px 0 10px' }}>
           <AceEditor
             mode="java"
