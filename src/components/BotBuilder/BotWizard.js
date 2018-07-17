@@ -43,9 +43,10 @@ class BotWizard extends React.Component {
       themeSettingsString: '{}',
       openSnackbar: false,
       msgSnackbar: '',
-      slideState: 1, // 0 means preview full, 1 means in middle, 2 means preview collapsed
+      slideState: 1, // 1 means in middle, 2 means preview collapsed
       colBuild: 8,
       colPreview: 4,
+      prevButton: 0, // 0 means disappear, 1 means appear
       savingSkill: false,
       savedSkillOld: {}, // contains skill meta data information for last saved skill
       updateSkillNow: false,
@@ -123,35 +124,21 @@ class BotWizard extends React.Component {
     this.setState({ stepIndex });
   };
 
-  handleBuildToggle = () => {
-    let { slideState } = this.state;
-    if (slideState === 0 || slideState === 2) {
-      this.setState({
-        slideState: 1,
-        colBuild: 8,
-        colPreview: 4,
-      });
-    } else if (slideState === 1) {
-      this.setState({
-        slideState: 0,
-        colBuild: 0,
-        colPreview: 12,
-      });
-    }
-  };
   handlePreviewToggle = () => {
     let { slideState } = this.state;
-    if (slideState === 0 || slideState === 2) {
+    if (slideState === 2) {
       this.setState({
         slideState: 1,
         colBuild: 8,
         colPreview: 4,
+        prevButton: 0,
       });
     } else if (slideState === 1) {
       this.setState({
         slideState: 2,
         colBuild: 12,
         colPreview: 0,
+        prevButton: 1,
       });
     }
   };
@@ -328,18 +315,7 @@ class BotWizard extends React.Component {
                   display: this.state.colBuild === 0 ? 'none' : 'block',
                 }}
               >
-                <Paper
-                  style={styles.paperStyle}
-                  className="botBuilder-page-card"
-                  zDepth={1}
-                >
-                  <span title="collapse builder">
-                    <ChevronLeft
-                      className="botbuilder-chevron"
-                      onClick={this.handleBuildToggle}
-                      style={styles.chevronBuild}
-                    />
-                  </span>
+                <div style={styles.mainPage}>
                   <MuiThemeProvider muiTheme={muiTheme}>
                     <Stepper activeStep={stepIndex} linear={false}>
                       <Step>
@@ -368,7 +344,7 @@ class BotWizard extends React.Component {
                     <div>{this.getStepContent(stepIndex)}</div>
                     <div style={{ marginTop: '20px' }} />
                   </div>
-                </Paper>
+                </div>
                 <Paper
                   style={styles.paperStyle}
                   className="botBuilder-page-card"
@@ -442,7 +418,17 @@ class BotWizard extends React.Component {
                   )}
                 </Paper>
               </Col>
-
+              {this.state.prevButton === 1 ? (
+                <div className="preview-button">
+                  <span title="See Preview">
+                    <ChevronLeft
+                      className="botbuilder-chevron"
+                      onClick={this.handlePreviewToggle}
+                      style={styles.chevronButton}
+                    />
+                  </span>
+                </div>
+              ) : null}
               <Col
                 className="botbuilder-col"
                 xs={12}
@@ -460,7 +446,7 @@ class BotWizard extends React.Component {
                     <ChevronRight
                       className="botbuilder-chevron"
                       onClick={this.handlePreviewToggle}
-                      style={styles.chevronPreview}
+                      style={styles.chevron}
                     />
                   </span>
                   <br className="display-mobile-only" />
@@ -498,6 +484,10 @@ const styles = {
   home: {
     width: '100%',
   },
+  mainPage: {
+    paddingTop: '25px',
+    paddingRight: '15px',
+  },
   bg: {
     textAlign: 'center',
     padding: '30px',
@@ -518,21 +508,22 @@ const styles = {
     fontSize: '50px',
     marginTop: '300px',
   },
-  chevronBuild: {
+  chevron: {
     position: 'absolute',
-    right: '0',
+    left: '0',
     top: '0',
     width: '35px',
     height: '35px',
     cursor: 'pointer',
     display: window.innerWidth < 769 ? 'none' : 'inherit',
   },
-  chevronPreview: {
+  chevronButton: {
     position: 'absolute',
-    left: '0',
-    top: '0',
+    left: '4px',
+    top: '4px',
     width: '35px',
     height: '35px',
+    color: 'white',
     cursor: 'pointer',
     display: window.innerWidth < 769 ? 'none' : 'inherit',
   },
