@@ -1,7 +1,6 @@
 import React from 'react';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import RaisedButton from 'material-ui/RaisedButton';
-import { Grid, Col, Row } from 'react-flexbox-grid';
 import PropTypes from 'prop-types';
 import { Card, CardText } from 'material-ui/Card';
 import Snackbar from 'material-ui/Snackbar';
@@ -100,74 +99,60 @@ class BotBuilder extends React.Component {
             className="botBuilder-page-card"
             zDepth={1}
           >
-            <Grid>
-              <Row>
-                <Col xs={12} md={12}>
-                  <h1>Pick a template</h1>
-                  <div className="bot-template-wrap">
-                    {this.props.templates.map(template => {
-                      return (
-                        <Link
-                          key={template.id}
-                          to={'/botbuilder/botwizard?template=' + template.id}
-                        >
-                          <Card
-                            className="bot-template-card"
-                            style={{
-                              backgroundImage: 'url(' + template.image + ')',
-                              backgroundSize: 'cover',
-                            }}
-                          >
-                            <RaisedButton
-                              label={template.name}
-                              backgroundColor={colors.header}
-                              labelColor="#fff"
-                            />
-                          </Card>
-                        </Link>
-                      );
-                    })}
-                  </div>
-                </Col>
-              </Row>
-            </Grid>
+            <h1 style={styles.heading}>Pick a template</h1>
+            <div className="bot-template-wrap">
+              {this.props.templates.map(template => {
+                return (
+                  <Link
+                    key={template.id}
+                    to={'/botbuilder/botwizard?template=' + template.id}
+                  >
+                    <Card
+                      className="bot-template-card"
+                      style={{
+                        backgroundImage: 'url(' + template.image + ')',
+                        backgroundSize: 'cover',
+                      }}
+                    >
+                      <RaisedButton
+                        label={template.name}
+                        backgroundColor={colors.header}
+                        labelColor="#fff"
+                      />
+                    </Card>
+                  </Link>
+                );
+              })}
+            </div>
           </Paper>
           <Paper
             style={styles.paperStyle}
             className="botBuilder-page-card"
             zDepth={1}
           >
-            <Grid>
-              <Row>
-                <Col xs={12} md={12}>
-                  <h1>My bots</h1>
-                  <div className="bot-template-wrap">
-                    <Link to="/botbuilder/botwizard">
-                      <Card className="bot-template-card">
-                        <FloatingActionButton
-                          backgroundColor={colors.fabButton}
-                          mini={true}
-                          style={{
-                            boxShadow:
-                              'rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px',
-                          }}
-                        >
-                          <Add
-                            style={{
-                              height: '40px',
-                            }}
-                          />
-                        </FloatingActionButton>
-                        <CardText style={styles.newBotBtn}>
-                          Create a new bot
-                        </CardText>
-                      </Card>
-                    </Link>
-                    {this.state.chatbots}
-                  </div>
-                </Col>
-              </Row>
-            </Grid>
+            <h1 style={styles.heading}>My bots</h1>
+            <div className="bot-template-wrap">
+              <Link to="/botbuilder/botwizard">
+                <Card className="bot-template-card">
+                  <FloatingActionButton
+                    backgroundColor={colors.fabButton}
+                    mini={true}
+                    style={{
+                      boxShadow:
+                        'rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px',
+                    }}
+                  >
+                    <Add
+                      style={{
+                        height: '40px',
+                      }}
+                    />
+                  </FloatingActionButton>
+                  <CardText style={styles.newBotBtn}>Create a new bot</CardText>
+                </Card>
+              </Link>
+              {this.state.chatbots}
+            </div>
           </Paper>
         </div>
         <Snackbar
@@ -216,6 +201,10 @@ const styles = {
     fontFamily: 'Helvetica',
     fontSize: '16px',
     paddingTop: '20px',
+  },
+  heading: {
+    color: 'rgba(0,0,0,.65)',
+    paddingLeft: '20px',
   },
 };
 

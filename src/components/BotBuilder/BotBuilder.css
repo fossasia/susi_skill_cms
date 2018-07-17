@@ -106,6 +106,7 @@ iframe{
 	overflow:hidden;
 }
 .bot-template-wrap{
+	display: flex;
 	flex-wrap: wrap;
 	flex-direction: row;
 	margin: 10px;
