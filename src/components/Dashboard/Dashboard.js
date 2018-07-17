@@ -45,7 +45,7 @@ class Dashboard extends React.Component {
             className="botBuilder-page-card"
             zDepth={1}
           >
-            <h1 className="center">My Skills</h1>
+            <h1 style={{ color: 'rgba(0,0,0,.65)' }}>My Skills</h1>
             <MySkills />
           </Paper>
           <Paper
@@ -53,7 +53,7 @@ class Dashboard extends React.Component {
             className="botBuilder-page-card"
             zDepth={1}
           >
-            <h1 className="center">My Ratings</h1>
+            <h1 style={{ color: 'rgba(0,0,0,.65)' }}>My Ratings</h1>
             <MyRatings />
           </Paper>
           <Paper
@@ -61,7 +61,7 @@ class Dashboard extends React.Component {
             className="botBuilder-page-card"
             zDepth={1}
           >
-            <h1 className="center">My Analytics</h1>
+            <h1 style={{ color: 'rgba(0,0,0,.65)' }}>My Analytics</h1>
             <MyAnalytics />
           </Paper>
         </div>
