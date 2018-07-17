@@ -1,5 +1,26 @@
+.country-usage-container {
+    display: flex;
+    flex-direction: row
+}
+
 .country-usage-graph {
-    flex: 3;
-    margin: 16px 32px 16px 16px;
-    padding: 20px;
+    width: 70%;
+}
+
+.country-usage-list {
+    width: 15%;
+}
+
+@media only screen and (max-width: 800px) {
+    .country-usage-container {
+        display: block;
+    }
+    .country-usage-list {
+        width: 40%;
+        margin: 0 auto;
+    }
+
+    .country-usage-graph {
+        width: 100%;
+    }
 }
