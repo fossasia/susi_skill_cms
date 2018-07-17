@@ -112,9 +112,8 @@ iframe{
 	margin: 10px;
 }
 .bot-template-card{
-	width: 250px;
-	height: 200px;
-	min-height: 200px;
+	width: 260px;
+	height: 170px;
 	margin: 10px;
 	overflow: hidden;
 	justify-content: center;
@@ -128,7 +127,7 @@ iframe{
 	background-color: #f4f6f6;
 	border: 1px solid #eaeded;
 	padding: 10px;
-	padding-top: 80px;
+	padding-top: 66px;
 	position: relative;
 	color: #fff;
 }
