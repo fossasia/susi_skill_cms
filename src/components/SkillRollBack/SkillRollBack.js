@@ -70,6 +70,7 @@ class SkillRollBack extends Component {
   };
 
   componentDidMount() {
+    document.title = 'SUSI.AI - Skill RollBack';
     let baseUrl = this.getSkillAtCommitIDUrl();
     let self = this;
     var url1 = baseUrl + self.state.latestCommit;

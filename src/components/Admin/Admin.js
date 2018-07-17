@@ -25,6 +25,7 @@ class Admin extends Component {
   }
 
   componentDidMount() {
+    document.title = 'SUSI.AI - Admin';
     let url;
     url =
       urls.API_URL +
