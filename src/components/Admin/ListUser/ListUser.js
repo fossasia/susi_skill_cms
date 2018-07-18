@@ -3,51 +3,14 @@ import './ListUser.css';
 import $ from 'jquery';
 import Cookies from 'universal-cookie';
 import Table from 'antd/lib/table';
+import FlatButton from 'material-ui/FlatButton';
+import Dialog from 'material-ui/Dialog';
+import MenuItem from 'material-ui/MenuItem';
+import DropDownMenu from 'material-ui/DropDownMenu';
 import urls from '../../../Utils/urls.js';
+import 'antd/lib/table/style/index.css';
 
 const cookies = new Cookies();
-
-const columns = [
-  {
-    title: 'S.No.',
-    dataIndex: 'serialNum',
-    sorter: false,
-    width: '5%',
-  },
-  {
-    title: 'Email ID',
-    dataIndex: 'email',
-    sorter: false,
-    width: '25%',
-  },
-  {
-    title: 'Activation Status',
-    dataIndex: 'confirmed',
-    sorter: false,
-    width: '15%',
-  },
-  {
-    title: 'Signup',
-    dataIndex: 'signup',
-    width: '15%',
-  },
-  {
-    title: 'Last Login',
-    dataIndex: 'lastLogin',
-    width: '15%',
-  },
-  {
-    title: 'IP of Last Login',
-    dataIndex: 'ipLastLogin',
-    width: '15%',
-  },
-  {
-    title: 'User Role',
-    dataIndex: 'userRole',
-    sorter: false,
-    width: '10%',
-  },
-];
 
 export default class ListUser extends Component {
   constructor(props) {
@@ -58,8 +21,111 @@ export default class ListUser extends Component {
       middle: '50',
       pagination: {},
       loading: false,
+      showEditDialog: false,
+      changeRoleDialog: false,
     };
+    this.columns = [
+      {
+        title: 'S.No.',
+        dataIndex: 'serialNum',
+        sorter: false,
+        width: '5%',
+      },
+      {
+        title: 'Email ID',
+        dataIndex: 'email',
+        sorter: false,
+        width: '22%',
+        key: 'email',
+      },
+      {
+        title: 'Activation Status',
+        dataIndex: 'confirmed',
+        sorter: false,
+        width: '13%',
+      },
+      {
+        title: 'Signup',
+        dataIndex: 'signup',
+        width: '15%',
+      },
+      {
+        title: 'Last Login',
+        dataIndex: 'lastLogin',
+        width: '15%',
+      },
+      {
+        title: 'IP of Last Login',
+        dataIndex: 'ipLastLogin',
+        width: '15%',
+      },
+      {
+        title: 'User Role',
+        dataIndex: 'userRole',
+        sorter: false,
+        width: '10%',
+      },
+      {
+        title: 'Action',
+        sorter: false,
+        width: '5%',
+        key: 'action',
+        render: (text, record) => {
+          return (
+            <span>
+              <div
+                style={{ cursor: 'pointer', color: '#49A9EE' }}
+                onClick={() => this.editUserRole(record.email, record.userRole)}
+              >
+                Edit
+              </div>
+            </span>
+          );
+        },
+      },
+    ];
   }
+
+  apiCall = () => {
+    let url =
+      `${urls.API_URL}/aaa/changeRoles.json?user=` +
+      this.state.userEmail +
+      '&role=' +
+      this.state.userRole +
+      '&access_token=' +
+      cookies.get('loggedIn');
+
+    let self = this;
+    $.ajax({
+      url: url,
+      dataType: 'jsonp',
+      statusCode: {
+        401: function(xhr) {
+          if (window.console) {
+            console.log(xhr.responseText);
+            console.log('Error 401: Permission Denied!');
+          }
+        },
+        503: function(xhr) {
+          if (window.console) {
+            console.log(xhr.responseText);
+          }
+          console.log('Error 503: Server not responding!');
+          document.location.reload();
+        },
+      },
+      crossDomain: true,
+      timeout: 3000,
+      async: false,
+      success: function(response) {
+        console.log(response);
+        self.setState({ changeRoleDialog: true });
+      },
+      error: function(errorThrown) {
+        console.log(errorThrown);
+      },
+    });
+  };
 
   handleTableChange = (pagination, filters, sorter) => {
     const pager = { ...this.state.pagination };
@@ -126,6 +192,40 @@ export default class ListUser extends Component {
     });
   }
 
+  editUserRole = (email, userRole) => {
+    this.setState({
+      userEmail: email,
+      userRole: userRole,
+      showEditDialog: true,
+    });
+  };
+
+  handleChange = () => {
+    this.apiCall();
+    this.setState({
+      showEditDialog: false,
+    });
+  };
+
+  handleSuccess = () => {
+    this.setState({
+      changeRoleDialog: false,
+    });
+    document.location.reload();
+  };
+
+  handleClose = () => {
+    this.setState({
+      showEditDialog: false,
+    });
+  };
+
+  handleUserRoleChange = (event, index, value) => {
+    this.setState({
+      userRole: value,
+    });
+  };
+
   fetch = (params = {}) => {
     let url;
     let page;
@@ -136,8 +236,7 @@ export default class ListUser extends Component {
       page = 1;
     }
     url =
-      urls.API_URL +
-      '/aaa/getUsers.json?access_token=' +
+      `${urls.API_URL}/aaa/getUsers.json?access_token=` +
       cookies.get('loggedIn') +
       '&page=' +
       page;
@@ -184,10 +283,116 @@ export default class ListUser extends Component {
   };
 
   render() {
+    const actions = [
+      <FlatButton
+        key={1}
+        label="Change"
+        primary={true}
+        onTouchTap={this.handleChange}
+      />,
+      <FlatButton
+        key={2}
+        label="Cancel"
+        primary={false}
+        onTouchTap={this.handleClose}
+      />,
+    ];
+
+    const blueThemeColor = { color: 'rgb(66, 133, 244)' };
+    const themeForegroundColor = '#272727';
+    const themeBackgroundColor = '#fff';
+
     return (
       <div className="table">
+        <div>
+          <Dialog
+            title="Change User Role"
+            actions={actions}
+            modal={true}
+            open={this.state.showEditDialog}
+          >
+            <div>
+              Select new User Role for
+              <span style={{ fontWeight: 'bold', marginLeft: '5px' }}>
+                {this.state.userEmail}
+              </span>
+            </div>
+            <div>
+              <DropDownMenu
+                selectedMenuItemStyle={blueThemeColor}
+                onChange={this.handleUserRoleChange}
+                value={this.state.userRole}
+                labelStyle={{ color: themeForegroundColor }}
+                menuStyle={{ backgroundColor: themeBackgroundColor }}
+                menuItemStyle={{ color: themeForegroundColor }}
+                style={{
+                  width: '250px',
+                  marginLeft: '-20px',
+                }}
+                autoWidth={false}
+              >
+                <MenuItem
+                  primaryText="BOT"
+                  value="bot"
+                  className="setting-item"
+                />
+                <MenuItem
+                  primaryText="USER"
+                  value="user"
+                  className="setting-item"
+                />
+                <MenuItem
+                  primaryText="REVIEWER"
+                  value="reviewer"
+                  className="setting-item"
+                />
+                <MenuItem
+                  primaryText="OPERATOR"
+                  value="operator"
+                  className="setting-item"
+                />
+                <MenuItem
+                  primaryText="ADMIN"
+                  value="admin"
+                  className="setting-item"
+                />
+                <MenuItem
+                  primaryText="SUPERADMIN"
+                  value="superadmin"
+                  className="setting-item"
+                />
+              </DropDownMenu>
+            </div>
+          </Dialog>
+          <Dialog
+            title="Success"
+            actions={
+              <FlatButton
+                key={1}
+                label="Ok"
+                primary={true}
+                onTouchTap={this.handleSuccess}
+              />
+            }
+            modal={true}
+            open={this.state.changeRoleDialog}
+          >
+            <div>
+              User role of
+              <span style={{ fontWeight: 'bold', margin: '0 5px' }}>
+                {this.state.userEmail}
+              </span>
+              is changed to
+              <span style={{ fontWeight: 'bold', margin: '0 5px' }}>
+                {this.state.userRole}
+              </span>
+              successfully!
+            </div>
+          </Dialog>
+        </div>
+
         <Table
-          columns={columns}
+          columns={this.columns}
           rowKey={record => record.registered}
           dataSource={this.state.data}
           pagination={this.state.pagination}
