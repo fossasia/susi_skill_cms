@@ -198,28 +198,30 @@ export default class BrowseSkill extends React.Component {
   };
 
   loadLanguages = () => {
-    if (this.state.languages.length === 0) {
-      $.ajax({
-        url: urls.API_URL + '/cms/getAllLanguages.json',
-        dataType: 'jsonp',
-        jsonp: 'callback',
-        crossDomain: true,
-        success: function(data) {
-          data = data.languagesArray;
-          if (data) {
-            data.sort();
-            this.setState({ languages: data });
-            languages = [];
-            for (let i = 0; i < data.length; i++) {
-              languages.push(data[i]);
-            }
-          }
-        }.bind(this),
-        error: function(e) {
-          console.log('Error while fetching languages', e);
-        },
-      });
+    let url = urls.API_URL + '/cms/getAllLanguages.json?';
+    if (this.state.groupValue != null) {
+      url += 'group=' + this.state.groupValue;
     }
+    $.ajax({
+      url: url,
+      dataType: 'jsonp',
+      jsonp: 'callback',
+      crossDomain: true,
+      success: function(data) {
+        data = data.languagesArray;
+        if (data) {
+          data.sort();
+          languages = [];
+          for (let i = 0; i < data.length; i++) {
+            languages.push(data[i]);
+          }
+          this.setState({ languages: data });
+        }
+      }.bind(this),
+      error: function(e) {
+        console.log('Error while fetching languages', e);
+      },
+    });
   };
 
   loadCards = () => {
@@ -285,12 +287,17 @@ export default class BrowseSkill extends React.Component {
             self.state.ratingRefine,
           );
         }
-        self.setState({
-          skills: data.filteredData,
-          // cards: cards,
-          skillURL: url,
-          skillsLoaded: true,
-        });
+        self.setState(
+          {
+            skills: data.filteredData,
+            // cards: cards,
+            skillURL: url,
+            skillsLoaded: true,
+          },
+          function() {
+            this.loadLanguages();
+          },
+        );
         // console.log(self.state)
       },
       error: function(e) {
