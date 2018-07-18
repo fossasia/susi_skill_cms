@@ -93,7 +93,7 @@ function createListCard(
                 }`,
               }}
             >
-              <img alt={skill_name} src={image} style={styles.image} />
+              <img alt={skillName} src={image} style={styles.image} />
             </Link>
           </div>
         ) : (
