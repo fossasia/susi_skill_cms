@@ -686,8 +686,8 @@ class SkillListing extends Component {
             </div>
             <div className="meta">
               <h1 className="name">
-                {name &&
-                  name
+                {this.name &&
+                  this.name
                     .split(' ')
                     .map(data => {
                       var s = data.charAt(0).toUpperCase() + data.substring(1);
