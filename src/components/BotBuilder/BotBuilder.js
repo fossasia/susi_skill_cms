@@ -59,30 +59,32 @@ class BotBuilder extends React.Component {
     this.setState({
       chatbots: [],
     });
-    bots.map(bot => {
-      chatbots.push(
-        <Link
-          to={
-            '/botbuilder/botwizard?name=' +
-            bot.name +
-            '&language=' +
-            bot.language +
-            '&group=' +
-            bot.group
-          }
-        >
-          <Card className="bot-template-card">
-            <RaisedButton
-              label={bot.name}
-              labelPosition="before"
-              labelStyle={{ verticalAlign: 'middle' }}
-              backgroundColor={colors.header}
-              labelColor="#fff"
-            />
-          </Card>
-        </Link>,
-      );
-    });
+    if (bots) {
+      bots.forEach(bot => {
+        chatbots.push(
+          <Link
+            to={
+              '/botbuilder/botwizard?name=' +
+              bot.name +
+              '&language=' +
+              bot.language +
+              '&group=' +
+              bot.group
+            }
+          >
+            <Card className="bot-template-card">
+              <RaisedButton
+                label={bot.name}
+                labelPosition="before"
+                labelStyle={{ verticalAlign: 'middle' }}
+                backgroundColor={colors.header}
+                labelColor="#fff"
+              />
+            </Card>
+          </Link>,
+        );
+      });
+    }
     this.setState({
       chatbots: chatbots,
     });
