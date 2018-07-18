@@ -12,6 +12,7 @@ import {
 } from 'material-ui/Table';
 import Snackbar from 'material-ui/Snackbar';
 import SelectField from 'material-ui/SelectField';
+import Checkbox from 'material-ui/Checkbox';
 import MenuItem from 'material-ui/MenuItem';
 import Info from 'material-ui/svg-icons/action/info';
 import ReactTooltip from 'react-tooltip';
@@ -47,17 +48,71 @@ class Configure extends Component {
       fontSizeCode: 14,
       lastActiveInfo: false,
       code: this.props.code,
+      myDevices: false, // use chatbot in your devices
+      publicDevices: false, // allow chatbot to be used in other people's devices
       openSnackbar: false,
       msgSnackbar: '',
+      includeSusiSkills: true,
     };
-    this.handleChangeCode = this.handleChangeCode.bind(this);
+    this.handleChangeCode = this.handleChangeCode;
   }
 
   handleChangeCode(event) {
     this.setState({ code: event });
   }
 
+  handleChangeIncludeSusiSkills = () => {
+    let value = !this.state.includeSusiSkills;
+    let code = this.state.code;
+    code = code.replace(
+      /^::enable_default_skills\s(.*)$/m,
+      `::enable_default_skills ${value ? 'yes' : 'no'}`,
+    );
+    this.setState({
+      includeSusiSkills: value,
+      code,
+    });
+  };
+
+  handleChangeIncludeInMyDevices = () => {
+    let value = !this.state.myDevices;
+    let code = this.state.code;
+    code = code.replace(
+      /^::enable_bot_in_my_devices\s(.*)$/m,
+      `::enable_bot_in_my_devices ${value ? 'yes' : 'no'}`,
+    );
+    this.setState({
+      myDevices: value,
+      code,
+    });
+  };
+
+  handleChangeIncludeInPublicDevices = () => {
+    let value = !this.state.publicDevices;
+    let code = this.state.code;
+    code = code.replace(
+      /^::enable_bot_for_other_users\s(.*)$/m,
+      `::enable_bot_for_other_users ${value ? 'yes' : 'no'}`,
+    );
+    this.setState({
+      publicDevices: value,
+      code,
+    });
+  };
+
   generateConfigData = () => {
+    const enableDefaultSkillsMatch = this.state.code.match(
+      /^::enable_default_skills\s(.*)$/m,
+    );
+    if (enableDefaultSkillsMatch) {
+      let includeSusiSkills = false;
+      if (enableDefaultSkillsMatch[1] === 'yes') {
+        includeSusiSkills = true;
+      }
+      this.setState({
+        includeSusiSkills,
+      });
+    }
     configData = [];
     let newCode = this.state.code;
     let websiteData = newCode
@@ -118,6 +173,33 @@ class Configure extends Component {
             labelColor="#fff"
             onTouchTap={this.generateConfigData}
           />
+          <div>
+            <br />
+            <Checkbox
+              label="Include SUSI default skills"
+              labelPosition="right"
+              checked={this.state.includeSusiSkills}
+              labelStyle={{ fontSize: '14px' }}
+              iconStyle={{ fill: 'rgb(66, 133, 244)' }}
+              onCheck={this.handleChangeIncludeSusiSkills}
+            />
+            <Checkbox
+              label="Enable bot in my devices"
+              labelPosition="right"
+              checked={this.state.myDevices}
+              labelStyle={{ fontSize: '14px' }}
+              iconStyle={{ fill: 'rgb(66, 133, 244)' }}
+              onCheck={this.handleChangeIncludeInMyDevices}
+            />
+            <Checkbox
+              label="Enable bot for other users"
+              labelPosition="right"
+              checked={this.state.publicDevices}
+              labelStyle={{ fontSize: '14px' }}
+              iconStyle={{ fill: 'rgb(66, 133, 244)' }}
+              onCheck={this.handleChangeIncludeInPublicDevices}
+            />
+          </div>
         </div>
         <div className="table-wrap">
           <Table className="table-root" selectable={false}>

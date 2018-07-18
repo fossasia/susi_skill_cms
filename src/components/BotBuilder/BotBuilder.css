@@ -146,6 +146,13 @@ iframe{
 	height: 100%;
 	z-index: -1;
 }
+
+.bot-template-card:hover {
+    -ms-transform: scale(1.02); /* IE 9 */
+    -webkit-transform: scale(1.02); /* Safari 3-8 */
+    transform: scale(1.02); 
+}
+
 .chevron-arrow{
 	height: 35px;
 	width: 35px;

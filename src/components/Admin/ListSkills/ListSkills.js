@@ -24,6 +24,7 @@ class ListSkills extends React.Component {
       isAction: false,
       showDialog: false,
       skillName: '',
+      skill_tag: '',
       skillModel: '',
       skillGroup: '',
       skillLanguage: '',
@@ -80,6 +81,7 @@ class ListSkills extends React.Component {
                     record.group,
                     record.language,
                     record.reviewStatus,
+                    record.skill_tag,
                   )
                 }
               >
@@ -108,7 +110,7 @@ class ListSkills extends React.Component {
       `/cms/changeSkillStatus.json?model=${this.state.skillModel}&group=${
         this.state.skillGroup
       }&language=${this.state.skillLanguage}&skill=${
-        this.state.skillName
+        this.state.skill_tag
       }&reviewed=${this.state.skillReviewStatus}&access_token=` +
       cookies.get('loggedIn');
     $.ajax({
@@ -146,6 +148,7 @@ class ListSkills extends React.Component {
             model: i.model,
             group: i.group,
             language: i.language,
+            skill_tag: i.skill_tag,
             reviewStatus: i.reviewed,
             type: 'public',
             author: i.author,
@@ -181,12 +184,13 @@ class ListSkills extends React.Component {
     });
   };
 
-  handleOpen = (name, model, group, language, reviewStatus) => {
+  handleOpen = (name, model, group, language, reviewStatus, skill_tag) => {
     this.setState({
       skillModel: model,
       skillGroup: group,
       skillLanguage: language,
       skillName: name,
+      skill_tag: skill_tag,
       skillReviewStatus: reviewStatus,
       showDialog: true,
     });
