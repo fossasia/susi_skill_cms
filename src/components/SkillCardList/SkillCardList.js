@@ -85,7 +85,16 @@ function createListCard(
       <div style={styles.imageContainer}>
         {image ? (
           <div style={styles.image}>
-            <img alt={skillName} src={image} style={styles.image} />
+            <Link
+              key={el}
+              to={{
+                pathname: `/${skill.group}/${skill.skill_tag}/${
+                  this.props.languageValue
+                }`,
+              }}
+            >
+              <img alt={skillName} src={image} style={styles.image} />
+            </Link>
           </div>
         ) : (
           <CircleImage name={skillName} size="160" />
@@ -148,7 +157,7 @@ function createListCard(
             </div>
             <div style={styles.row}>
               <div style={styles.descriptionTitle}>Description</div>
-              {description}
+              <div style={styles.description}>{description}</div>
             </div>
           </div>
         </div>

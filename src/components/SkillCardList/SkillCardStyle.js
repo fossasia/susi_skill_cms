@@ -6,6 +6,7 @@ const styles = {
     flexDirection: 'row',
     borderTop: '1px solid #eaeded',
     padding: 7,
+    lineHeight: '1.25',
   },
   row: {
     width: '100%',
@@ -35,6 +36,7 @@ const styles = {
     width: '180px',
     verticalAlign: 'top',
     borderRadius: '50%',
+    marginLeft: '6.4%',
   },
   imageMobile: {
     position: 'relative',
@@ -60,7 +62,7 @@ const styles = {
     display: 'flex',
   },
   description: {
-    fontSize: 12,
+    fontSize: '12px',
   },
   descriptionTitle: {
     fontWeight: 700,
@@ -77,7 +79,7 @@ const styles = {
     width: '100%',
   },
   content: {
-    padding: ' 0 2%',
+    paddingLeft: '4.3%',
     float: 'left',
     display: 'block',
     width: '100%',
@@ -101,11 +103,11 @@ const styles = {
     alignItems: 'center',
     textAlign: 'center',
     width: 192,
+    color: '#949494',
   },
   exampleSection: {
-    width: '55%',
-    marginRight: '2%',
-    float: 'left',
+    width: '25%',
+    marginRight: '10.8%',
     display: 'flex',
     flexDirection: 'row',
     minWidth: '260px',
@@ -113,14 +115,14 @@ const styles = {
   details: {
     width: 'auto',
     minWidth: 720,
+    display: 'flex',
   },
   textData: {
     height: '100%',
-    float: 'right',
-    fontSize: '14px',
-    width: '100%',
-    maxWidth: 270,
+    fontSize: '12px',
+    width: '40%',
     minWidth: 160,
+    marginRight: '11%',
   },
   rating: {
     positive: 'relative',
