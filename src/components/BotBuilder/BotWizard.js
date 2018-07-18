@@ -47,6 +47,7 @@ class BotWizard extends React.Component {
         let name = this.getQueryStringValue('name');
         let group = this.getQueryStringValue('group');
         let language = this.getQueryStringValue('language');
+        this.setState({ commitMessage: `Updated Skill ${name}` });
         this.getBotDetails(name, group, language);
       }
     } else {
@@ -446,6 +447,7 @@ class BotWizard extends React.Component {
                     floatingLabelFixed={true}
                     hintText="Enter Commit Message"
                     style={{ width: '80%' }}
+                    value={this.state.commitMessage}
                     onChange={this.handleCommitMessageChange}
                   />
                   <br />
