@@ -82,6 +82,7 @@ class BotBuilder extends React.Component {
           </Card>
         </Link>,
       );
+      return null;
     });
     this.setState({
       chatbots: chatbots,
