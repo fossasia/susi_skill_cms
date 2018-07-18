@@ -6,6 +6,7 @@ const styles = {
     flexDirection: 'row',
     borderTop: '1px solid #eaeded',
     padding: 7,
+    lineHeight: '1.25',
   },
   row: {
     width: '100%',
@@ -18,8 +19,6 @@ const styles = {
     alignItems: 'center',
     padding: '10px',
     background: '#fff',
-    height: '218px',
-    marginBottom: '6px',
   },
   imageContainerMobile: {
     display: 'inline-block',
@@ -28,6 +27,7 @@ const styles = {
     background: '#fff',
     height: '110px',
     marginBottom: '6px',
+    marginTop: '6px',
   },
   image: {
     position: 'relative',
@@ -35,6 +35,7 @@ const styles = {
     width: '180px',
     verticalAlign: 'top',
     borderRadius: '50%',
+    marginLeft: '6.4%',
   },
   imageMobile: {
     position: 'relative',
@@ -60,7 +61,7 @@ const styles = {
     display: 'flex',
   },
   description: {
-    fontSize: 12,
+    fontSize: '12px',
   },
   descriptionTitle: {
     fontWeight: 700,
@@ -77,10 +78,11 @@ const styles = {
     width: '100%',
   },
   content: {
-    padding: ' 0 2%',
+    paddingLeft: '4.3%',
     float: 'left',
     display: 'block',
     width: '100%',
+    color: '#949494',
   },
   header: {
     marginBottom: 10,
@@ -100,27 +102,29 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'center',
     textAlign: 'center',
-    width: 192,
+    maxWidth: 260,
   },
   exampleSection: {
-    width: '55%',
-    marginRight: '2%',
     float: 'left',
     display: 'flex',
     flexDirection: 'row',
-    minWidth: '260px',
+    width: '57.448%',
+    marginRight: '3%',
+    maxWidth: '572.86px',
   },
   details: {
     width: 'auto',
     minWidth: 720,
+    display: 'flex',
   },
   textData: {
     height: '100%',
     float: 'right',
-    fontSize: '14px',
-    width: '100%',
     maxWidth: 270,
     minWidth: 160,
+    fontSize: '12px',
+    width: '40%',
+    marginRight: '11%',
   },
   rating: {
     positive: 'relative',

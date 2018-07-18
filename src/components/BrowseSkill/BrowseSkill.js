@@ -775,7 +775,7 @@ export default class BrowseSkill extends React.Component {
                     labelStyle={{ display: 'none' }}
                     style={{ width: 'fit-content' }}
                     checkedIcon={
-                      <ActionViewStream style={{ color: '#4285f4' }} />
+                      <ActionViewStream style={{ fill: '#4285f4' }} />
                     }
                     uncheckedIcon={<ActionViewStream />}
                   />
@@ -785,7 +785,7 @@ export default class BrowseSkill extends React.Component {
                     labelStyle={{ display: 'none' }}
                     style={{ width: 'fit-content' }}
                     checkedIcon={
-                      <ActionViewModule style={{ color: '#4285f4' }} />
+                      <ActionViewModule style={{ fill: '#4285f4' }} />
                     }
                     uncheckedIcon={<ActionViewModule />}
                   />
