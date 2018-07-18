@@ -48,6 +48,8 @@ class Configure extends Component {
       fontSizeCode: 14,
       lastActiveInfo: false,
       code: this.props.code,
+      myDevices: false, // use chatbot in your devices
+      publicDevices: false, // allow chatbot to be used in other people's devices
       openSnackbar: false,
       msgSnackbar: '',
       includeSusiSkills: true,
@@ -68,6 +70,32 @@ class Configure extends Component {
     );
     this.setState({
       includeSusiSkills: value,
+      code,
+    });
+  };
+
+  handleChangeIncludeInMyDevices = () => {
+    let value = !this.state.myDevices;
+    let code = this.state.code;
+    code = code.replace(
+      /^::enable_bot_in_my_devices\s(.*)$/m,
+      `::enable_bot_in_my_devices ${value ? 'yes' : 'no'}`,
+    );
+    this.setState({
+      myDevices: value,
+      code,
+    });
+  };
+
+  handleChangeIncludeInPublicDevices = () => {
+    let value = !this.state.publicDevices;
+    let code = this.state.code;
+    code = code.replace(
+      /^::enable_bot_for_other_users\s(.*)$/m,
+      `::enable_bot_for_other_users ${value ? 'yes' : 'no'}`,
+    );
+    this.setState({
+      publicDevices: value,
       code,
     });
   };
@@ -154,6 +182,22 @@ class Configure extends Component {
               labelStyle={{ fontSize: '14px' }}
               iconStyle={{ fill: 'rgb(66, 133, 244)' }}
               onCheck={this.handleChangeIncludeSusiSkills}
+            />
+            <Checkbox
+              label="Enable bot in my devices"
+              labelPosition="right"
+              checked={this.state.myDevices}
+              labelStyle={{ fontSize: '14px' }}
+              iconStyle={{ fill: 'rgb(66, 133, 244)' }}
+              onCheck={this.handleChangeIncludeInMyDevices}
+            />
+            <Checkbox
+              label="Enable bot for other users"
+              labelPosition="right"
+              checked={this.state.publicDevices}
+              labelStyle={{ fontSize: '14px' }}
+              iconStyle={{ fill: 'rgb(66, 133, 244)' }}
+              onCheck={this.handleChangeIncludeInPublicDevices}
             />
           </div>
         </div>
