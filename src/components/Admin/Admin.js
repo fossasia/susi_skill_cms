@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import NotFound from '../NotFound/NotFound';
 import './Admin.css';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import $ from 'jquery';
@@ -95,13 +96,7 @@ class Admin extends Component {
             </div>
           </div>
         ) : (
-          <div>
-            <StaticAppBar {...this.props} />
-            <div>
-              <h1 style={styles.notAllowed}>404 :(</h1>
-              <h2 style={{ textAlign: 'center' }}>Not Found</h2>
-            </div>
-          </div>
+          <NotFound />
         )}
       </div>
     );
@@ -114,12 +109,6 @@ const styles = {
     animated: false,
     textAlign: 'center',
     display: 'inline-block',
-  },
-  notAllowed: {
-    lineHeight: '90px',
-    textAlign: 'center',
-    fontSize: '80px',
-    padding: '100px 30px 30px',
   },
 };
 
