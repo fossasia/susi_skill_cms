@@ -111,7 +111,6 @@ class MyRatings extends Component {
                     </TableRow>
                   );
                 })}
-                <TableRow />
               </TableBody>
             </Table>
           </div>
