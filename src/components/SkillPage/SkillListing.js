@@ -12,6 +12,7 @@ import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import SkillUsageCard from '../SkillUsageCard/SkillUsageCard';
 import SkillRatingCard from '../SkillRatingCard/SkillRatingCard';
 import SkillFeedbackCard from '../SkillFeedbackCard/SkillFeedbackCard';
+import Footer from '../Footer/Footer.react';
 import { FloatingActionButton, Paper } from 'material-ui';
 import CircularProgress from 'material-ui/CircularProgress';
 import Snackbar from 'material-ui/Snackbar';
@@ -856,8 +857,10 @@ class SkillListing extends Component {
     }
 
     return (
-      <div>
-        <div>{renderElement}</div>
+      <div
+        style={{ display: 'flex', height: '100vh', flexDirection: 'column' }}
+      >
+        <div style={{ flex: '1 0 auto' }}>{renderElement}</div>
         <div>
           <AuthorSkills
             ref={c => {
@@ -875,6 +878,7 @@ class SkillListing extends Component {
           autoHideDuration={4000}
           onRequestClose={this.handleSnackRequestClose}
         />
+        <Footer />
       </div>
     );
   }
