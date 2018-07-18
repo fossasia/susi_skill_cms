@@ -541,7 +541,7 @@ class SkillEditor extends Component {
     }
     // Check whether the image uploaded by the User
     // matches the format of the Skill image to be stored
-    if (!new RegExp(/images\/\w+\.\w+/g).test(this.state.imageUrl)) {
+    if (!new RegExp(/.+\.\w+/g).test(this.state.imageUrl)) {
       notification.open({
         message: 'Error processing your request',
         description: 'Image path must be in format of images/imageName.jpg',
