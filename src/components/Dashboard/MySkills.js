@@ -190,7 +190,6 @@ class MySkills extends Component {
                     </TableRow>
                   );
                 })}
-                <TableRow />
               </TableBody>
             </Table>
           </div>
