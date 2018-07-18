@@ -43,7 +43,7 @@ class Login extends Component {
       success: false,
       validForm: false,
       emailError: true,
-      passwordError: true,
+      passwordError: false,
       checked: false,
       loading: false,
       showDialog: false,
@@ -145,24 +145,27 @@ class Login extends Component {
       state.password = password;
       state.passwordError = !(password && validPassword);
     }
-
     if (this.state.emailError) {
       this.emailErrorMessage = 'Enter a valid Email Address';
     } else {
       this.emailErrorMessage = '';
     }
-
     if (this.state.passwordError) {
       this.passwordErrorMessage = 'Minimum 6 characters required';
     } else {
       this.passwordErrorMessage = '';
     }
-    if (!state.emailError && !state.passwordError) {
+    if (
+      !state.emailError &&
+      !state.passwordError &&
+      !state.serverFieldError &&
+      this.state.password !== '' &&
+      this.state.email !== ''
+    ) {
       state.validForm = true;
     } else {
       state.validForm = false;
     }
-
     this.setState(state);
   };
 
@@ -229,17 +232,39 @@ class Login extends Component {
   render() {
     const styles = {
       width: '100%',
-      padding: '10px',
       textAlign: 'center',
     };
+
     const fieldStyle = {
-      width: '256px',
+      height: '37px',
+      borderRadius: 4,
+      border: '1px solid #ced4da',
+      fontSize: 16,
+      padding: '0px 10px',
+      width: '272px',
+      marginTop: '10px',
     };
-    const fontStyle = {
-      fontSize: '16px',
+
+    const passFieldStyle = {
+      height: '37px',
+      borderRadius: 4,
+      border: '1px solid #ced4da',
+      fontSize: 16,
+      padding: '0px 10px',
+      width: '250px',
+      marginTop: '10px',
     };
-    const underlineFocusStyle = {
-      color: '#4285f4',
+
+    const inputStyle = {
+      height: '35px',
+      marginBottom: '10px',
+    };
+
+    const inputpassStyle = {
+      height: '35px',
+      marginBottom: '10px',
+      marginRight: '50px',
+      width: '90%',
     };
 
     const actions = (
@@ -254,66 +279,63 @@ class Login extends Component {
     return (
       <div className="loginForm">
         <Paper zDepth={0} style={styles}>
-          <div>Login to SUSI</div>
+          <div id="loginHeading">Log into SUSI</div>
           <form onSubmit={this.handleSubmit}>
-            <div>
+            <div style={{ maxHeight: '70px' }}>
               <TextField
                 name="email"
                 type="email"
                 value={this.state.email}
                 onChange={this.handleChange}
-                underlineFocusStyle={underlineFocusStyle}
-                floatingLabelStyle={fontStyle}
-                floatingLabelFocusStyle={underlineFocusStyle}
+                style={fieldStyle}
+                inputStyle={inputStyle}
+                placeholder="Email"
+                underlineStyle={{ display: 'none' }}
                 errorText={this.emailErrorMessage}
-                floatingLabelText="Email"
               />
             </div>
-            <div>
+
+            <div style={{ maxHeight: '70px' }}>
               <PasswordField
                 name="password"
-                style={fieldStyle}
+                style={passFieldStyle}
+                inputStyle={inputpassStyle}
                 value={this.state.password}
-                underlineFocusStyle={underlineFocusStyle}
-                floatingLabelStyle={fontStyle}
-                floatingLabelFocusStyle={underlineFocusStyle}
+                placeholder="Password"
+                underlineStyle={{ display: 'none' }}
                 onChange={this.handleChange}
                 errorText={this.passwordErrorMessage}
-                floatingLabelText="Password"
+                visibilityButtonStyle={{
+                  marginTop: '-3px',
+                }}
+                visibilityIconStyle={{
+                  marginTop: '-3px',
+                }}
+                textFieldStyle={{ padding: '0px' }}
               />
             </div>
+
             <RaisedButton
               label={!this.state.loading ? 'Log In' : undefined}
               type="submit"
-              backgroundColor={colors.header}
+              backgroundColor="#4285f4"
               labelColor="#fff"
               disabled={!this.state.validForm}
+              style={{ width: '275px', margin: '10px 0px' }}
               icon={
                 this.state.loading ? <CircularProgress size={24} /> : undefined
               }
             />
-            <div className="login-links-section">
-              <span
-                style={{
-                  margin: '8px 0',
-                }}
-                className="login-links"
-                onClick={this.handleForgotPassword}
-              >
+
+            <div className="login-links-section" id="login-links">
+              <span className="fgtpwd" onClick={this.handleForgotPassword}>
                 Forgot Password?
               </span>
-              <span
-                style={{
-                  margin: '8px 0',
-                }}
-                className="login-links"
-                onClick={this.handleSignUp}
-              >
+              <span className="signUp" onClick={this.handleSignUp}>
                 Sign up for SUSI
               </span>
             </div>
           </form>
-          <div />
         </Paper>
         <Dialog
           actions={actions}
