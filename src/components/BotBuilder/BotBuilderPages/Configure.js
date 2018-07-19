@@ -165,6 +165,11 @@ class Configure extends Component {
             scrollPastEnd={false}
             wrapEnabled={true}
             editorProps={{ $blockScrolling: true }}
+            style={{
+              resize: 'vertical',
+              overflowY: 'scroll',
+              minHeight: '200px',
+            }}
           />
           <br />
           <RaisedButton

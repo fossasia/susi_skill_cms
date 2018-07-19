@@ -737,6 +737,11 @@ class SkillEditor extends Component {
                 readOnly={true}
                 wrapEnabled={true}
                 editorProps={{ $blockScrolling: true }}
+                style={{
+                  resize: 'vertical',
+                  overflowY: 'scroll',
+                  minHeight: '200px',
+                }}
               />
             </div>
           </div>
@@ -876,6 +881,11 @@ class SkillEditor extends Component {
               scrollPastEnd={false}
               wrapEnabled={true}
               editorProps={{ $blockScrolling: true }}
+              style={{
+                resize: 'vertical',
+                overflowY: 'scroll',
+                minHeight: '200px',
+              }}
             />
           </div>
 
