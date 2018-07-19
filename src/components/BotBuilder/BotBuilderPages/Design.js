@@ -899,6 +899,11 @@ class Design extends React.Component {
               scrollPastEnd={false}
               wrapEnabled={true}
               editorProps={{ $blockScrolling: true }}
+              style={{
+                resize: 'vertical',
+                overflowY: 'scroll',
+                minHeight: '200px',
+              }}
             />
           </div>
           {!this.state.loadedSettings ? (
