@@ -77,7 +77,7 @@ export default class CreateSkill extends React.Component {
       loading: false,
       file: null,
       imageUrl: '<image_url>',
-      commitMessage: null,
+      commitMessage: '',
       modelValue: null,
       groupValue: null,
       languageValue: null,
@@ -211,10 +211,14 @@ export default class CreateSkill extends React.Component {
       /^::name\s(.*)$/m,
       `::name ${expertValue}`,
     );
+    let commitMessage =
+      (this.props.botBuilder ? 'Created Bot Skill - ' : 'Created Skill - ') +
+      expertValue;
     this.setState(
       {
         expertValue,
         code,
+        commitMessage,
       },
       () => self.sendInfoToProps(),
     );
@@ -329,6 +333,7 @@ export default class CreateSkill extends React.Component {
         groupValue: this.state.groupValue,
         languageValue: this.state.languageValue,
         file: this.state.file,
+        commitMessage: this.state.commitMessage,
       });
     }
   };
@@ -692,6 +697,7 @@ export default class CreateSkill extends React.Component {
                   floatingLabelFixed={true}
                   hintText="Enter Commit Message"
                   style={{ width: '80%' }}
+                  value={this.state.commitMessage}
                   onChange={this.handleCommitMessageChange}
                 />
                 <RaisedButton

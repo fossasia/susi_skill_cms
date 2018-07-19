@@ -75,6 +75,7 @@ class BotWizard extends React.Component {
       updateSkillNow: false,
       imageChanged: false,
       loaded: false,
+      commitMessage: '',
       designCode:
         '::bodyBackground #ffffff\n::bodyBackgroundImage \n::userMessageBoxBackground #0077e5\n::userMessageTextColor #ffffff\n::botMessageBoxBackground #f8f8f8\n::botMessageTextColor #455a64\n::botIconColor #000000\n::botIconImage ',
       configCode:
