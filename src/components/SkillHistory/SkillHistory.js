@@ -25,6 +25,7 @@ import 'brace/theme/textmate';
 import 'brace/theme/solarized_dark';
 import 'brace/theme/solarized_light';
 import 'brace/theme/terminal';
+import 'brace/ext/searchbox';
 
 import './SkillHistory.css';
 
