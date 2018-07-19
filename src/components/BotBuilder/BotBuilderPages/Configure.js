@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import RaisedButton from 'material-ui/RaisedButton';
-import AceEditor from 'react-ace';
 import 'brace/mode/markdown';
 import 'brace/theme/github';
 import 'brace/theme/monokai';
@@ -14,283 +12,83 @@ import 'brace/theme/solarized_dark';
 import 'brace/theme/solarized_light';
 import 'brace/theme/terminal';
 import 'brace/ext/searchbox';
-import colors from '../../../Utils/colors';
-import {
-  Table,
-  TableBody,
-  TableHeader,
-  TableHeaderColumn,
-  TableRow,
-  TableRowColumn,
-} from 'material-ui/Table';
-import Snackbar from 'material-ui/Snackbar';
-import SelectField from 'material-ui/SelectField';
-import Checkbox from 'material-ui/Checkbox';
-import MenuItem from 'material-ui/MenuItem';
-import Info from 'material-ui/svg-icons/action/info';
-import ReactTooltip from 'react-tooltip';
+import IconButton from 'material-ui/IconButton';
+import Code from 'material-ui/svg-icons/action/code';
+import Table from 'material-ui/svg-icons/av/web';
 import PropTypes from 'prop-types';
-
-// static config data for demostration
-let configData = [
-  {
-    id: '1',
-    name: 'website1.com',
-    last: 'Jan 12, 2018 20:08 hrs',
-    status: 1,
-  },
-  {
-    id: '2',
-    name: 'website2.com',
-    last: 'Feb 19, 2018 13:00 hrs',
-    status: 1,
-  },
-  {
-    id: '3',
-    name: 'website3.com',
-    last: 'Mar 14, 2018 10:15 hrs',
-    status: 2,
-  },
-];
+import CodeView from './ConfigureViews/CodeView';
+import UIView from './ConfigureViews/UIView';
 
 class Configure extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      editorTheme: 'github',
-      fontSizeCode: 14,
       lastActiveInfo: false,
       code: this.props.code,
-      myDevices: false, // use chatbot in your devices
-      publicDevices: false, // allow chatbot to be used in other people's devices
-      openSnackbar: false,
-      msgSnackbar: '',
-      includeSusiSkills: true,
+      codeView: true,
+      uiView: false,
     };
   }
 
-  handleChangeCode = event => {
-    this.setState({ code: event });
-  };
-
-  handleChangeIncludeSusiSkills = () => {
-    let value = !this.state.includeSusiSkills;
-    let code = this.state.code;
-    code = code.replace(
-      /^::enable_default_skills\s(.*)$/m,
-      `::enable_default_skills ${value ? 'yes' : 'no'}`,
-    );
-    this.setState({
-      includeSusiSkills: value,
-      code,
-    });
-  };
-
-  handleChangeIncludeInMyDevices = () => {
-    let value = !this.state.myDevices;
-    let code = this.state.code;
-    code = code.replace(
-      /^::enable_bot_in_my_devices\s(.*)$/m,
-      `::enable_bot_in_my_devices ${value ? 'yes' : 'no'}`,
-    );
-    this.setState({
-      myDevices: value,
-      code,
-    });
-  };
-
-  handleChangeIncludeInPublicDevices = () => {
-    let value = !this.state.publicDevices;
-    let code = this.state.code;
-    code = code.replace(
-      /^::enable_bot_for_other_users\s(.*)$/m,
-      `::enable_bot_for_other_users ${value ? 'yes' : 'no'}`,
-    );
-    this.setState({
-      publicDevices: value,
-      code,
-    });
-  };
-
-  generateConfigData = () => {
-    const enableDefaultSkillsMatch = this.state.code.match(
-      /^::enable_default_skills\s(.*)$/m,
-    );
-    if (enableDefaultSkillsMatch) {
-      let includeSusiSkills = false;
-      if (enableDefaultSkillsMatch[1] === 'yes') {
-        includeSusiSkills = true;
-      }
-      this.setState({
-        includeSusiSkills,
-      });
-    }
-    configData = [];
-    let newCode = this.state.code;
-    let websiteData = newCode
-      .split('::sites_enabled')[1]
-      .split('::sites_disabled');
-    let enabledSites = websiteData[0].split(',');
-    let noOfEnabledSites = enabledSites.length;
-    let disabledSites = websiteData[1].split('\n')[0].split(',');
-    let noOfDisabledSites = disabledSites.length;
-    for (let i = 1; i <= noOfEnabledSites + noOfDisabledSites; i++) {
-      configData[i - 1] = {
-        id: i.toString(),
-        name:
-          i <= noOfEnabledSites
-            ? enabledSites[i - 1].trim()
-            : disabledSites[i - noOfEnabledSites - 1].trim(),
-        last: 'Feb 19, 2018 13:00 hrs',
-        status: i <= noOfEnabledSites ? 1 : 2,
-      };
-    }
-    this.setState({
-      openSnackbar: true,
-      msgSnackbar: 'Settings successfully saved!',
-    });
-  };
-
-  handleOpenLastActiveInfo = () => {
-    this.setState({ lastActiveInfo: true });
-  };
-
-  handleCloseLastActiveInfo = () => {
-    this.setState({ lastActiveInfo: false });
+  sendInfoToProps = values => {
+    this.setState({ ...values });
   };
 
   render() {
     return (
       <div className="menu-page">
-        <h2 style={{ lineHeight: '50px' }}>3. Configure your bot</h2>
-        <div style={{ padding: '20px 10px 0 10px' }}>
-          <AceEditor
-            mode="java"
-            theme={this.state.editorTheme}
-            width="100%"
-            fontSize={this.state.fontSizeCode}
-            height="250px"
-            value={this.state.code}
-            onChange={this.handleChangeCode}
-            showPrintMargin={false}
-            name="skill_code_editor"
-            scrollPastEnd={false}
-            wrapEnabled={true}
-            editorProps={{ $blockScrolling: true }}
-            style={{
-              resize: 'vertical',
-              overflowY: 'scroll',
-              minHeight: '200px',
-            }}
-          />
-          <br />
-          <RaisedButton
-            label="Save"
-            backgroundColor={colors.header}
-            labelColor="#fff"
-            onTouchTap={this.generateConfigData}
-          />
-          <div>
-            <br />
-            <Checkbox
-              label="Include SUSI default skills"
-              labelPosition="right"
-              checked={this.state.includeSusiSkills}
-              labelStyle={{ fontSize: '14px' }}
-              iconStyle={{ fill: 'rgb(66, 133, 244)' }}
-              onCheck={this.handleChangeIncludeSusiSkills}
-            />
-            <Checkbox
-              label="Enable bot in my devices"
-              labelPosition="right"
-              checked={this.state.myDevices}
-              labelStyle={{ fontSize: '14px' }}
-              iconStyle={{ fill: 'rgb(66, 133, 244)' }}
-              onCheck={this.handleChangeIncludeInMyDevices}
-            />
-            <Checkbox
-              label="Enable bot for other users"
-              labelPosition="right"
-              checked={this.state.publicDevices}
-              labelStyle={{ fontSize: '14px' }}
-              iconStyle={{ fill: 'rgb(66, 133, 244)' }}
-              onCheck={this.handleChangeIncludeInPublicDevices}
-            />
+        <div style={{ display: 'flex', flexDirection: 'row' }}>
+          <h2 style={{ lineHeight: '50px' }}>3. Configure your bot</h2>
+          <div style={{ marginLeft: 'auto', marginRight: '0px' }}>
+            <IconButton
+              tooltip="Code View"
+              onTouchTap={() => {
+                this.setState({
+                  codeView: true,
+                  uiView: false,
+                });
+              }}
+              disabled={this.state.codeView}
+            >
+              <Code />
+            </IconButton>
+            <IconButton
+              tooltip="UI View"
+              onTouchTap={() => {
+                this.setState({
+                  codeView: false,
+                  uiView: true,
+                });
+              }}
+              disabled={this.state.uiView}
+            >
+              <Table />
+            </IconButton>
           </div>
         </div>
-        <div className="table-wrap">
-          <Table className="table-root" selectable={false}>
-            <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
-              <TableRow>
-                <TableHeaderColumn>Website</TableHeaderColumn>
-                <TableHeaderColumn>
-                  <Info
-                    style={styles.helpIcon}
-                    onMouseEnter={this.handleOpenLastActiveInfo}
-                    onMouseLeave={this.handleCloseLastActiveInfo}
-                    data-tip="Last time the bot was used"
-                  />
-                  {this.state.lastActiveInfo ? (
-                    <ReactTooltip effect="solid" place="bottom" />
-                  ) : null}
-                  Last active
-                </TableHeaderColumn>
-                <TableHeaderColumn>Status</TableHeaderColumn>
-              </TableRow>
-            </TableHeader>
-            <TableBody displayRowCheckbox={false}>
-              {configData.map((item, index) => {
-                if (item.name) {
-                  return (
-                    <TableRow key={index}>
-                      <TableRowColumn style={{ fontSize: '16px' }}>
-                        {item.name}
-                      </TableRowColumn>
-                      <TableRowColumn style={{ fontSize: '16px' }}>
-                        {item.last}
-                      </TableRowColumn>
-                      <TableRowColumn>
-                        <SelectField
-                          floatingLabelText="Status"
-                          fullWidth={true}
-                          value={item.status}
-                        >
-                          <MenuItem value={1} primaryText="Enable" />
-                          <MenuItem value={2} primaryText="Disable" />
-                        </SelectField>
-                      </TableRowColumn>
-                    </TableRow>
-                  );
-                }
-                return null;
-              })}
-              <TableRow />
-            </TableBody>
-          </Table>
+        <div style={{ padding: '30px 10px 0 10px' }}>
+          {this.state.codeView ? (
+            <CodeView
+              configure={{
+                sendInfoToProps: this.sendInfoToProps,
+                code: this.state.code,
+              }}
+            />
+          ) : null}
+          {this.state.uiView ? (
+            <UIView
+              configure={{
+                sendInfoToProps: this.sendInfoToProps,
+                code: this.state.code,
+              }}
+            />
+          ) : null}
         </div>
-        <Snackbar
-          open={this.state.openSnackbar}
-          message={this.state.msgSnackbar}
-          autoHideDuration={2000}
-          onRequestClose={() => {
-            this.setState({ openSnackbar: false });
-          }}
-        />
       </div>
     );
   }
 }
-const styles = {
-  helpIcon: {
-    position: 'absolute',
-    top: '18px',
-    right: '10px',
-    height: '20px',
-    width: '20px',
-    cursor: 'pointer',
-    color: 'rgb(158, 158, 158)',
-  },
-};
+
 Configure.propTypes = {
   updateSettings: PropTypes.func,
   code: PropTypes.string,
