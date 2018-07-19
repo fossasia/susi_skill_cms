@@ -141,11 +141,11 @@ abbr[title] {
 .example-container{
   width: 55%;
   display: flex;
-  cursor: pointer;
   flex-wrap: wrap;
   flex-direction: row;
 }
 .example-comment{
+  cursor: pointer;
   font-style: italic;
   font-size: 14px;
   padding: 14px 18px;
