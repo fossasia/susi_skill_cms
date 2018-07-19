@@ -67,12 +67,11 @@ class Configure extends Component {
       msgSnackbar: '',
       includeSusiSkills: true,
     };
-    this.handleChangeCode = this.handleChangeCode;
   }
 
-  handleChangeCode(event) {
+  handleChangeCode = event => {
     this.setState({ code: event });
-  }
+  };
 
   handleChangeIncludeSusiSkills = () => {
     let value = !this.state.includeSusiSkills;
@@ -133,7 +132,7 @@ class Configure extends Component {
       .split('::sites_disabled');
     let enabledSites = websiteData[0].split(',');
     let noOfEnabledSites = enabledSites.length;
-    let disabledSites = websiteData[1].split(',');
+    let disabledSites = websiteData[1].split('\n')[0].split(',');
     let noOfDisabledSites = disabledSites.length;
     for (let i = 1; i <= noOfEnabledSites + noOfDisabledSites; i++) {
       configData[i - 1] = {
@@ -170,7 +169,7 @@ class Configure extends Component {
             theme={this.state.editorTheme}
             width="100%"
             fontSize={this.state.fontSizeCode}
-            height="200px"
+            height="250px"
             value={this.state.code}
             onChange={this.handleChangeCode}
             showPrintMargin={false}
