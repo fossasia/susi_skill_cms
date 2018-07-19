@@ -158,6 +158,12 @@ function enableBot() {
 		$("body").append(mybot);
 
 		// Toggle chatbot
+		if(botWindow) {
+			$('.susi-frame-container-active').toggle();
+			$('#susi-avatar-text').toggle();
+			$('#susi-launcher-close').toggle();
+			document.getElementById('susiTextMessage').focus();
+		}
 		$('#susi-launcher').click(function() {
 			$('.susi-frame-container-active').toggle();
 			$('#susi-avatar-text').toggle();

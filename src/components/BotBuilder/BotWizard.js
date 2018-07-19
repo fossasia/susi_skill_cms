@@ -519,7 +519,6 @@ class BotWizard extends React.Component {
                   </span>
                   <br className="display-mobile-only" />
                   <h2 className="center">Preview</h2>
-                  <br />
                   <div style={{ position: 'relative', overflow: 'hidden' }}>
                     <iframe
                       title="botPreview"

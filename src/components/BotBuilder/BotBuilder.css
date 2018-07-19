@@ -102,7 +102,7 @@ iframe{
 	border-radius: 12px;
 	margin:0;
 	padding:0;
-	border:1px solid #ccc;
+	border:0px solid #ccc;
 	overflow:hidden;
 }
 .bot-template-wrap{
