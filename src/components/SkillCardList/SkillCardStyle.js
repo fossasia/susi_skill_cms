@@ -54,6 +54,7 @@ const styles = {
   },
   authorName: {
     fontSize: 12,
+    textTransform: 'capitalize',
   },
   feedback: {
     color: '#4285f4',
