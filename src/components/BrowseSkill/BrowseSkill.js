@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import styles from './SkillStyle';
 import ISO6391 from 'iso-639-1';
 import SelectField from 'material-ui/SelectField';
+import Checkbox from 'material-ui/Checkbox';
 // eslint-disable-next-line
 import { Card } from 'material-ui/Card';
 import * as $ from 'jquery';
@@ -31,6 +32,7 @@ import urls from '../../Utils/urls';
 import Footer from '../Footer/Footer.react';
 import SearchBar from 'material-ui-search-bar';
 import _ from 'lodash';
+
 // eslint-disable-next-line
 import Ratings from 'react-ratings-declarative';
 
@@ -75,6 +77,8 @@ export default class BrowseSkill extends React.Component {
       skillURL: null,
       groupValue: 'All',
       languageValue: ['en'],
+      showSkills: '',
+      showReviewedSkills: false,
       expertValue: null,
       skills: [],
       groups: [],
@@ -132,6 +136,24 @@ export default class BrowseSkill extends React.Component {
     this.setState({ languageValue: values }, function() {
       this.loadCards();
     });
+  };
+
+  handleShowSkills = () => {
+    $('.select')
+      .find('svg')
+      .css({ fill: '#4285f4' });
+    let value = !this.state.showReviewedSkills;
+    let showSkills = value ? '&reviewed=true' : '';
+    this.setState(
+      {
+        showReviewedSkills: value,
+        showSkills: showSkills,
+        skillsLoaded: false,
+      },
+      function() {
+        this.loadCards();
+      },
+    );
   };
 
   handleViewChange = (event, value) => {
@@ -237,7 +259,8 @@ export default class BrowseSkill extends React.Component {
         this.props.routeValue +
         '&language=' +
         this.state.languageValue +
-        this.state.filter;
+        this.state.filter +
+        this.state.showSkills;
     } else if (this.props.routeType === 'language') {
       this.setState({
         languageValue: this.props.routeValue,
@@ -404,6 +427,12 @@ export default class BrowseSkill extends React.Component {
       this.state.ratingRefine ||
       this.state.timeFilter;
 
+    let showSkillsMenu =
+      this.props.routeType ||
+      this.state.searchQuery.length > 0 ||
+      this.state.ratingRefine ||
+      this.state.timeFilter;
+
     return (
       <div style={styles.browseSkillRoot}>
         <StaticAppBar
@@ -526,9 +555,38 @@ export default class BrowseSkill extends React.Component {
                   <div style={{ paddingLeft: '8px' }}>{groups}</div>
                 </div>
               )}
+
               <Divider style={{ margin: '8px 0' }} />
               {/* Refine by rating section*/}
               <Subheader style={styles.sidebarSubheader}>Refine by</Subheader>
+
+              {showSkillsMenu && (
+                <div
+                  style={{
+                    marginBottom: '12px',
+                    width: '100%',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    flexDirection: 'column',
+                  }}
+                >
+                  <Checkbox
+                    label="Show Only Reviewed Skills"
+                    labelPosition="right"
+                    className="select"
+                    checked={this.state.showReviewedSkills}
+                    labelStyle={{ fontSize: '14px' }}
+                    iconStyle={{ left: '4px' }}
+                    style={{
+                      width: '256px',
+                      paddingLeft: '8px',
+                      top: '3px',
+                    }}
+                    onCheck={this.handleShowSkills}
+                  />
+                </div>
+              )}
+
               <h4
                 style={{
                   marginLeft: '24px',
