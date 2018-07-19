@@ -21,6 +21,8 @@ import 'brace/theme/textmate';
 import 'brace/theme/solarized_dark';
 import 'brace/theme/solarized_light';
 import 'brace/theme/terminal';
+import 'brace/ext/searchbox';
+
 import * as $ from 'jquery';
 import notification from 'antd/lib/notification';
 import Info from 'material-ui/svg-icons/action/info';

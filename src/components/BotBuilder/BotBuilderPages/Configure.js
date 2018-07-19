@@ -1,6 +1,19 @@
 import React, { Component } from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
 import AceEditor from 'react-ace';
+import 'brace/mode/markdown';
+import 'brace/theme/github';
+import 'brace/theme/monokai';
+import 'brace/theme/tomorrow';
+import 'brace/theme/kuroir';
+import 'brace/theme/twilight';
+import 'brace/theme/xcode';
+import 'brace/mode/java';
+import 'brace/theme/textmate';
+import 'brace/theme/solarized_dark';
+import 'brace/theme/solarized_light';
+import 'brace/theme/terminal';
+import 'brace/ext/searchbox';
 import colors from '../../../Utils/colors';
 import {
   Table,
