@@ -50,7 +50,9 @@ class SkillEditor extends Component {
       showImage: true,
       image: '',
       skillUrl: null,
-      commitMessage: null,
+      commitMessage: `Updated Skill ${
+        this.props.location.pathname.split('/')[2]
+      }`,
       modelValue: 'general',
       file: null,
       codeChanged: false,
