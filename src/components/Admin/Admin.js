@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import NotFound from '../NotFound/NotFound';
 import './Admin.css';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
+import CircularProgress from 'material-ui/CircularProgress';
 import $ from 'jquery';
 import Cookies from 'universal-cookie';
 import PropTypes from 'prop-types';
@@ -20,7 +21,7 @@ class Admin extends Component {
     super(props);
 
     this.state = {
-      tabPosition: 'top',
+      loading: true,
       isAdmin: false,
     };
   }
@@ -41,16 +42,19 @@ class Admin extends Component {
         console.log(response.showAdmin);
         if (response.showAdmin) {
           this.setState({
+            loading: false,
             isAdmin: true,
           });
         } else {
           this.setState({
+            loading: false,
             isAdmin: false,
           });
         }
       }.bind(this),
       error: function(errorThrown) {
         this.setState({
+          loading: false,
           isAdmin: false,
         });
         console.log(errorThrown);
@@ -66,37 +70,40 @@ class Admin extends Component {
   render() {
     return (
       <div>
-        {this.state.isAdmin ? (
-          <div>
-            <div className="heading">
-              <StaticAppBar {...this.props} />
-              <h2 className="h2">Admin Panel</h2>
-            </div>
-            <div className="tabs">
-              <Paper style={styles.tabStyle} zDepth={0}>
-                <Tabs
-                  tabPosition={this.state.tabPosition}
-                  animated={false}
-                  type="card"
-                >
-                  <TabPane tab="Admin" key="1">
-                    Tab for Admin Content
-                  </TabPane>
-                  <TabPane tab="Users" key="2">
-                    <ListUser />
-                  </TabPane>
-                  <TabPane tab="Skills" key="3">
-                    <ListSkills />
-                  </TabPane>
-                  <TabPane tab="Permissions" key="4">
-                    Permission Content Tab
-                  </TabPane>
-                </Tabs>
-              </Paper>
-            </div>
+        <StaticAppBar {...this.props} />
+        {this.state.loading ? (
+          <div className="center" style={{ marginTop: '100px' }}>
+            <CircularProgress size={62} color="#4285f5" />
+            <h4>Loading</h4>
           </div>
         ) : (
-          <NotFound />
+          <div>
+            {this.state.isAdmin ? (
+              <div>
+                <h2 className="h2">Admin Panel</h2>
+                <div style={styles.tabStyle} className="tabs">
+                  <Paper style={styles.tabStyle} zDepth={0}>
+                    <Tabs tabPosition="top" animated={false} type="card">
+                      <TabPane tab="Admin" key="1">
+                        Tab for Admin Content
+                      </TabPane>
+                      <TabPane tab="Users" key="2">
+                        <ListUser />
+                      </TabPane>
+                      <TabPane tab="Skills" key="3">
+                        <ListSkills />
+                      </TabPane>
+                      <TabPane tab="Permissions" key="4">
+                        Permission Content Tab
+                      </TabPane>
+                    </Tabs>
+                  </Paper>
+                </div>
+              </div>
+            ) : (
+              <NotFound />
+            )}
+          </div>
         )}
       </div>
     );
@@ -109,6 +116,7 @@ const styles = {
     animated: false,
     textAlign: 'center',
     display: 'inline-block',
+    marginTop: '10px',
   },
 };
 
