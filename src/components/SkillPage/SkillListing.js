@@ -355,6 +355,31 @@ class SkillListing extends Component {
   };
 
   saveDeviceUsageData = (device_usage_data = []) => {
+    if (device_usage_data.length) {
+      device_usage_data.map(device => {
+        switch (device.device_type) {
+          case 'Web Client':
+            device.color = '#0088FE';
+            break;
+          case 'Android':
+            device.color = '#00C49F';
+            break;
+          case 'iOS':
+            device.color = '#FFBB28';
+            break;
+          case 'Smart Speaker':
+            device.color = '#FF8042';
+            break;
+          case 'Others':
+            device.color = '#EA4335';
+            break;
+          default:
+            device.color = '#673AB7';
+            break;
+        }
+        return null;
+      });
+    }
     this.setState({
       device_usage_data,
     });
