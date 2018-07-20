@@ -119,18 +119,7 @@ class SkillUsageCard extends Component {
                           onMouseEnter={this.onPieEnter}
                         >
                           {this.props.device_usage_data.map((entry, index) => (
-                            <Cell
-                              key={index}
-                              fill={
-                                [
-                                  '#0088FE',
-                                  '#00C49F',
-                                  '#FFBB28',
-                                  '#FF8042',
-                                  '#EA4335',
-                                ][index % 5]
-                              }
-                            />
+                            <Cell key={index} fill={entry.color} />
                           ))}
                         </Pie>
                         <Legend wrapperStyle={{ position: 'relative' }} />
