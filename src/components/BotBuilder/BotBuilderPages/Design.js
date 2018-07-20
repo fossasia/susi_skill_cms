@@ -29,7 +29,7 @@ import avatars from '../../../Utils/avatars';
 
 const cookies = new Cookies();
 let BASE_URL = urls.API_URL;
-let IMAGE_GET_URL = 'https://api.susi.ai/cms/getImage.png?image=';
+let IMAGE_GET_URL = `${BASE_URL}/cms/getImage.png?image=`;
 
 class Design extends React.Component {
   constructor(props) {
@@ -43,24 +43,22 @@ class Design extends React.Component {
       botbuilderBotMessageTextColor: '#455a64',
       botbuilderIconColor: '#000000',
       botbuilderIconImg: '',
-      saving: false,
       openSnackbar: false,
       msgSnackbar: '',
-      loadedSettings: false,
-      resetting: false,
       uploadingBodyBackgroundImg: false,
       botbuilderBodyBackgroundImgName: '',
       botbuilderIconImgName: '',
       uploadingBotbuilderIconImg: false,
       editorTheme: 'github',
       fontSizeCode: 14,
+      loadedSettings: false,
       code: this.props.code,
     };
-    this.getSettings();
     this.handleChangeCode = this.handleChangeCode.bind(this);
   }
 
   componentDidMount() {
+    this.getSettings();
     this.updateSettings();
   }
 
@@ -233,7 +231,7 @@ class Design extends React.Component {
     let settings = {
       async: true,
       crossDomain: true,
-      url: 'https://api.susi.ai/cms/uploadImage.json',
+      url: `${BASE_URL}/cms/uploadImage.json`,
       method: 'POST',
       processData: false,
       contentType: false,
@@ -279,7 +277,7 @@ class Design extends React.Component {
     let settings = {
       async: true,
       crossDomain: true,
-      url: 'https://api.susi.ai/cms/uploadImage.json',
+      url: `${BASE_URL}/cms/uploadImage.json`,
       method: 'POST',
       processData: false,
       contentType: false,
@@ -359,327 +357,121 @@ class Design extends React.Component {
     );
   };
 
-  handleSave = () => {
-    // send settings to server
-    if (
-      cookies.get('loggedIn') === null ||
-      cookies.get('loggedIn') === undefined
-    ) {
-      return;
-    }
-    let settings = [
-      {
-        key: 'botbuilderBackgroundBody',
-        value: this.state.botbuilderBackgroundBody.substring(1),
-      },
-      {
-        key: 'botbuilderBodyBackgroundImg',
-        value: this.state.botbuilderBodyBackgroundImg,
-      },
-      {
-        key: 'botbuilderBodyBackgroundImgName',
-        value: this.state.botbuilderBodyBackgroundImgName,
-      },
-      {
-        key: 'botbuilderUserMessageBackground',
-        value: this.state.botbuilderUserMessageBackground.substring(1),
-      },
-      {
-        key: 'botbuilderUserMessageTextColor',
-        value: this.state.botbuilderUserMessageTextColor.substring(1),
-      },
-      {
-        key: 'botbuilderBotMessageBackground',
-        value: this.state.botbuilderBotMessageBackground.substring(1),
-      },
-      {
-        key: 'botbuilderBotMessageTextColor',
-        value: this.state.botbuilderBotMessageTextColor.substring(1),
-      },
-      {
-        key: 'botbuilderIconColor',
-        value: this.state.botbuilderIconColor.substring(1),
-      },
-      {
-        key: 'botbuilderIconImg',
-        value: this.state.botbuilderIconImg,
-      },
-      {
-        key: 'botbuilderIconImgName',
-        value: this.state.botbuilderIconImgName,
-      },
-    ];
-    let url =
-      BASE_URL +
-      '/aaa/changeUserSettings.json?' +
-      '&access_token=' +
-      cookies.get('loggedIn');
-
-    settings.forEach((obj, index) => {
-      url +=
-        '&key' +
-        (index + 1).toString() +
-        '=' +
-        obj.key +
-        '&value' +
-        (index + 1).toString() +
-        '=' +
-        obj.value.toString();
-    });
-    url += '&count=' + settings.length.toString();
-    this.setState({ saving: true });
-    $.ajax({
-      url: url,
-      dataType: 'jsonp',
-      jsonp: 'callback',
-      crossDomain: true,
-      success: function(data) {
-        // successfully stored
-        this.setState({
-          saving: false,
-          openSnackbar: true,
-          msgSnackbar: 'Success! Saved settings',
-        });
-      }.bind(this),
-      error: function(textStatus, errorThrown) {
-        this.setState({
-          saving: false,
-          openSnackbar: true,
-          msgSnackbar: "Error! Can't save your settings. Try logging again",
-        });
-      }.bind(this),
-    });
-  };
-
   getSettings = () => {
-    if (cookies.get('loggedIn')) {
-      let url =
-        BASE_URL +
-        '/aaa/listUserSettings.json?' +
-        '&access_token=' +
-        cookies.get('loggedIn');
-      $.ajax({
-        url: url,
-        jsonpCallback: 'p',
-        dataType: 'jsonp',
-        jsonp: 'callback',
-        crossDomain: true,
-        success: function(data) {
-          if (data.settings) {
-            let settings = data.settings;
-            if (settings.botbuilderBackgroundBody) {
-              this.setState({
-                botbuilderBackgroundBody:
-                  '#' + settings.botbuilderBackgroundBody,
-              });
-              this.handleChangeColor(
-                'botbuilderBackgroundBody',
-                settings.botbuilderBackgroundBody,
-              );
-            }
-            if (settings.botbuilderBodyBackgroundImg) {
-              let img = settings.botbuilderBodyBackgroundImg;
-              let code = this.state.code.replace(
-                /^::bodyBackgroundImage\s(.*)$/m,
-                `::bodyBackgroundImage ${img}`,
-              );
-              this.setState({
-                botbuilderBodyBackgroundImg: img,
-                code,
-              });
-            }
-            if (settings.botbuilderBodyBackgroundImgName) {
-              this.setState({
-                botbuilderBodyBackgroundImgName:
-                  settings.botbuilderBodyBackgroundImgName,
-              });
-            }
-            if (settings.botbuilderUserMessageBackground) {
-              this.setState({
-                botbuilderUserMessageBackground:
-                  '#' + settings.botbuilderUserMessageBackground,
-              });
-              this.handleChangeColor(
-                'botbuilderUserMessageBackground',
-                settings.botbuilderUserMessageBackground,
-              );
-            }
-            if (settings.botbuilderUserMessageTextColor) {
-              this.setState({
-                botbuilderUserMessageTextColor:
-                  '#' + settings.botbuilderUserMessageTextColor,
-              });
-              this.handleChangeColor(
-                'botbuilderUserMessageTextColor',
-                settings.botbuilderUserMessageTextColor,
-              );
-            }
-            if (settings.botbuilderBotMessageBackground) {
-              this.setState({
-                botbuilderBotMessageBackground:
-                  '#' + settings.botbuilderBotMessageBackground,
-              });
-              this.handleChangeColor(
-                'botbuilderBotMessageBackground',
-                settings.botbuilderBotMessageBackground,
-              );
-            }
-            if (settings.botbuilderBotMessageTextColor) {
-              this.setState({
-                botbuilderBotMessageTextColor:
-                  '#' + settings.botbuilderBotMessageTextColor,
-              });
-              this.handleChangeColor(
-                'botbuilderBotMessageTextColor',
-                settings.botbuilderBotMessageTextColor,
-              );
-            }
-            if (settings.botbuilderIconColor) {
-              this.setState({
-                botbuilderIconColor: '#' + settings.botbuilderIconColor,
-              });
-              this.handleChangeColor(
-                'botbuilderIconColor',
-                settings.botbuilderIconColor,
-              );
-            }
-            if (settings.botbuilderIconImg) {
-              let code = this.state.code.replace(
-                /^::botIconImage\s(.*)$/m,
-                `::botIconImage ${settings.botbuilderIconImg}`,
-              );
-              this.setState({
-                code,
-                botbuilderIconImg: settings.botbuilderIconImg,
-              });
-              this.handleChangeColor(
-                'botbuilderIconImg',
-                settings.botbuilderIconImg,
-              );
-            }
-            if (settings.botbuilderIconImgName) {
-              this.setState({
-                botbuilderIconImgName: settings.botbuilderIconImgName,
-              });
-            }
-            this.setState(() => this.updateSettings());
-            let botbuilderIconImg = settings.botbuilderIconImg;
-            if (botbuilderIconImg) {
-              for (let icon of avatars) {
-                if (icon.url === botbuilderIconImg) {
-                  this.handleIconSelect(icon);
-                  break;
-                }
-              }
-            }
-          }
-          this.setState({
-            loadedSettings: true,
-          });
-        }.bind(this),
-        error: function(error) {
-          this.setState({
-            openSnackbar: true,
-            msgSnackbar: "Couldn't get settings. Please try login again",
-          });
-        }.bind(this),
+    let code = this.state.code;
+    const bodyBackgroundMatch = code.match(/^::bodyBackground\s(.*)$/m);
+    const bodyBackgroundImageMatch = code.match(
+      /^::bodyBackgroundImage\s(.*)$/m,
+    );
+    const userMessageBoxBackgroundMatch = code.match(
+      /^::userMessageBoxBackground\s(.*)$/m,
+    );
+    const userMessageTextColorMatch = code.match(
+      /^::userMessageTextColor\s(.*)$/m,
+    );
+    const botMessageBoxBackgroundMatch = code.match(
+      /^::botMessageBoxBackground\s(.*)$/m,
+    );
+    const botMessageTextColorMatch = code.match(
+      /^::botMessageTextColor\s(.*)$/m,
+    );
+    const botIconColorMatch = code.match(/^::botIconColor\s(.*)$/m);
+    const botIconImageMatch = code.match(/^::botIconImage\s(.*)$/m);
+
+    if (bodyBackgroundMatch) {
+      this.setState({
+        botbuilderBackgroundBody: bodyBackgroundMatch[1],
       });
     }
+    if (bodyBackgroundImageMatch) {
+      this.setState({
+        botbuilderBodyBackgroundImg: bodyBackgroundImageMatch[1],
+      });
+    }
+    if (userMessageBoxBackgroundMatch) {
+      this.setState({
+        botbuilderUserMessageBackground: userMessageBoxBackgroundMatch[1],
+      });
+    }
+    if (userMessageTextColorMatch) {
+      this.setState({
+        botbuilderUserMessageTextColor: userMessageTextColorMatch[1],
+      });
+    }
+    if (botMessageBoxBackgroundMatch) {
+      this.setState({
+        botbuilderBotMessageBackground: botMessageBoxBackgroundMatch[1],
+      });
+    }
+    if (botMessageTextColorMatch) {
+      this.setState({
+        botbuilderBotMessageTextColor: botMessageTextColorMatch[1],
+      });
+    }
+    if (botIconColorMatch) {
+      this.setState({
+        botbuilderIconColor: botIconColorMatch[1],
+      });
+    }
+    if (botIconImageMatch) {
+      for (let icon of avatars) {
+        if (icon.url === botIconImageMatch[1]) {
+          this.handleIconSelect(icon);
+          break;
+        }
+      }
+      this.setState({
+        botbuilderIconImg: botIconImageMatch[1],
+      });
+    }
+
+    this.setState(
+      {
+        loadedSettings: true,
+      },
+      () => this.updateSettings(),
+    );
   };
 
   handleReset = () => {
-    // send settings to server
-    if (
-      cookies.get('loggedIn') === null ||
-      cookies.get('loggedIn') === undefined
-    ) {
-      return;
-    }
-    let settings = [
+    // reset to default values
+    this.setState({ loadedSettings: false });
+    let code = this.state.code;
+    code = code.replace(
+      /^::bodyBackground\s(.*)$/m,
+      '::bodyBackground #ffffff',
+    );
+    code = code.replace(
+      /^::userMessageBoxBackground\s(.*)$/m,
+      '::userMessageBoxBackground #0077e5',
+    );
+    code = code.replace(
+      /^::userMessageTextColor\s(.*)$/m,
+      '::userMessageTextColor #ffffff',
+    );
+    code = code.replace(
+      /^::botMessageBoxBackground\s(.*)$/m,
+      '::botMessageBoxBackground #f8f8f8',
+    );
+    code = code.replace(
+      /^::botMessageTextColor\s(.*)$/m,
+      '::botMessageTextColor #455a64',
+    );
+    code = code.replace(/^::botIconColor\s(.*)$/m, '::botIconColor #000000');
+    this.setState(
       {
-        key: 'botbuilderBackgroundBody',
-        value: '',
+        code,
+        botbuilderBackgroundBody: '#ffffff',
+        botbuilderBodyBackgroundImg: '',
+        botbuilderUserMessageBackground: '#0077e5',
+        botbuilderUserMessageTextColor: '#ffffff',
+        botbuilderBotMessageBackground: '#f8f8f8',
+        botbuilderBotMessageTextColor: '#455a64',
+        botbuilderIconColor: '#000000',
+        botbuilderIconImg: '',
       },
-      {
-        key: 'botbuilderBodyBackgroundImg',
-        value: '',
-      },
-      {
-        key: 'botbuilderBodyBackgroundImgName',
-        value: '',
-      },
-      {
-        key: 'botbuilderUserMessageBackground',
-        value: '',
-      },
-      {
-        key: 'botbuilderUserMessageTextColor',
-        value: '',
-      },
-      {
-        key: 'botbuilderBotMessageBackground',
-        value: '',
-      },
-      {
-        key: 'botbuilderBotMessageTextColor',
-        value: '',
-      },
-      {
-        key: 'botbuilderIconColor',
-        value: '',
-      },
-      {
-        key: 'botbuilderIconImg',
-        value: '',
-      },
-      {
-        key: 'botbuilderIconImgName',
-        value: '',
-      },
-    ];
-    let url =
-      BASE_URL +
-      '/aaa/changeUserSettings.json?' +
-      '&access_token=' +
-      cookies.get('loggedIn');
-
-    settings.forEach((obj, index) => {
-      url +=
-        '&key' +
-        (index + 1).toString() +
-        '=' +
-        obj.key +
-        '&value' +
-        (index + 1).toString() +
-        '=' +
-        obj.value.toString();
-    });
-    url += '&count=' + settings.length.toString();
-    this.setState({ resetting: true });
-    $.ajax({
-      url: url,
-      dataType: 'jsonp',
-      jsonp: 'callback',
-      crossDomain: true,
-      success: function(data) {
-        // successfully stored
-        this.setState(
-          {
-            resetting: false,
-            openSnackbar: true,
-            msgSnackbar: 'Success! Saved settings',
-          },
-          () => this.updateSettings(),
-        );
-      }.bind(this),
-      error: function(textStatus, errorThrown) {
-        this.setState({
-          resetting: false,
-          openSnackbar: true,
-          msgSnackbar: "Error! Can't save your settings. Try logging again",
-        });
-      }.bind(this),
-    });
+      () => this.setState({ loadedSettings: true }),
+    );
   };
 
   handleIconSelect = icon => {
@@ -936,24 +728,6 @@ class Design extends React.Component {
                   )
                 }
                 onTouchTap={this.handleReset}
-              />
-              <RaisedButton
-                name="save"
-                style={{ marginLeft: '15px' }}
-                disabled={
-                  this.state.uploadingBodyBackgroundImg ||
-                  this.state.uploadingBotbuilderIconImg
-                }
-                backgroundColor={colors.header}
-                onTouchTap={this.handleSave}
-                labelColor="#fff"
-                label={
-                  this.state.saving ? (
-                    <CircularProgress color="#ffffff" size={32} />
-                  ) : (
-                    'Save Changes'
-                  )
-                }
               />
             </div>
           )}
