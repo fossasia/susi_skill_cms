@@ -329,6 +329,7 @@ class BotWizard extends React.Component {
           icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
         });
       });
+    this.handleNext();
   };
 
   updateSkill = () => {};
@@ -413,77 +414,66 @@ class BotWizard extends React.Component {
                   )}
                 </div>
                 <Paper
-                  style={styles.paperStyle}
+                  style={{
+                    width: '100%',
+                    marginTop: '20px',
+                    position: 'relative',
+                    display: stepIndex === 3 ? 'none' : 'block',
+                  }}
                   className="botBuilder-page-card"
                   zDepth={1}
                 >
-                  <RaisedButton
-                    label="Back"
-                    disabled={stepIndex === 0}
-                    backgroundColor={colors.header}
-                    labelColor="#fff"
-                    onTouchTap={this.handlePrev}
-                    style={{ marginRight: 12 }}
-                  />
-                  {stepIndex < 3 ? (
+                  {stepIndex !== 0 && stepIndex !== 3 ? (
                     <RaisedButton
-                      label={stepIndex === 2 ? 'Save and Deploy' : 'Next'}
+                      label="Back"
+                      backgroundColor={colors.header}
+                      labelColor="#fff"
+                      onTouchTap={this.handlePrev}
+                      style={{ marginRight: 12 }}
+                    />
+                  ) : null}
+                  {stepIndex < 2 ? (
+                    <RaisedButton
+                      label={'Next'}
                       backgroundColor={colors.header}
                       labelColor="#fff"
                       onTouchTap={this.handleNext}
+                      style={{ float: 'right' }}
                     />
-                  ) : (
-                    <p
-                      style={{
-                        padding: '20px 0px 0px 0px',
-                        fontFamily: 'sans-serif',
-                        fontSize: '14px',
-                      }}
-                    >
-                      You&apos;re all done. Thanks for using SUSI Bot.
-                    </p>
-                  )}
-                  <TextField
-                    floatingLabelText="Commit message"
-                    floatingLabelFixed={true}
-                    hintText="Enter Commit Message"
-                    style={{ width: '80%' }}
-                    value={this.state.commitMessage}
-                    onChange={this.handleCommitMessageChange}
-                  />
-                  <br />
-                  <Link to="/botbuilder">
-                    <RaisedButton label="Cancel" />
-                  </Link>
-                  {this.state.updateSkillNow ? (
+                  ) : null}
+                  {stepIndex === 2 ? (
                     <RaisedButton
                       label={
+                        // eslint-disable-next-line
                         this.state.savingSkill ? (
                           <CircularProgress color="#ffffff" size={32} />
+                        ) : this.state.updateSkillNow ? (
+                          'Update and Deploy'
                         ) : (
-                          'Update'
+                          'Save and Deploy'
                         )
                       }
                       backgroundColor={colors.header}
                       labelColor="#fff"
-                      style={{ marginLeft: 10 }}
+                      style={{ float: 'right' }}
                       onTouchTap={this.saveClick}
                     />
-                  ) : (
-                    <RaisedButton
-                      label={
-                        this.state.savingSkill ? (
-                          <CircularProgress color="#ffffff" size={32} />
-                        ) : (
-                          'Save'
-                        )
-                      }
-                      backgroundColor={colors.header}
-                      labelColor="#fff"
-                      style={{ marginLeft: 10 }}
-                      onTouchTap={this.saveClick}
+                  ) : null}
+                  {stepIndex === 2 ? (
+                    <TextField
+                      floatingLabelText="Commit message"
+                      floatingLabelFixed={true}
+                      hintText="Enter Commit Message"
+                      style={{ width: '100%' }}
+                      value={this.state.commitMessage}
+                      onChange={this.handleCommitMessageChange}
                     />
-                  )}
+                  ) : null}
+                  {stepIndex === 0 ? (
+                    <Link to="/botbuilder">
+                      <RaisedButton label="Cancel" />
+                    </Link>
+                  ) : null}
                 </Paper>
               </Col>
               {this.state.prevButton === 1 ? (
