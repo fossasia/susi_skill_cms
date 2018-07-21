@@ -54,8 +54,8 @@ function createListCard(
             <div style={styles.authorName}>
               <span>{authorName}</span>
             </div>
-            <div style={{ lineHeight: 1.35, fontSize: 16 }}>
-              <span>Skills for Alexa</span>
+            <div style={{ lineHeight: 1.35, fontSize: 14 }}>
+              <span>Skills for SUSI</span>
             </div>
             <div style={styles.rating}>
               <Ratings

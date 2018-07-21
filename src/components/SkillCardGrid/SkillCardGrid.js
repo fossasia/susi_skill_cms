@@ -63,15 +63,6 @@ class SkillCardGrid extends Component {
       } else {
         examples = null;
       }
-      // if (skill.descriptions) {
-      //   if (skill.descriptions.length > 105) {
-      //     description = skill.descriptions.substring(0, 104) + '...';
-      //   } else {
-      //     description = skill.descriptions;
-      //   }
-      // } else {
-      //   description = 'No description available';
-      // }
       if (skill.skill_rating) {
         average_rating = parseFloat(skill.skill_rating.stars.avg_star);
         total_rating = parseInt(skill.skill_rating.stars.total_star, 10);
@@ -106,7 +97,9 @@ class SkillCardGrid extends Component {
               ) : (
                 <CircleImage name={el} size="48" />
               )}
-              <div style={styles.example}>&quot;{examples}&quot;</div>
+              {examples ? (
+                <div style={styles.example}>&quot;{examples}&quot;</div>
+              ) : null}
             </div>
             <div style={styles.name}>
               <span>{skill_name}</span>
