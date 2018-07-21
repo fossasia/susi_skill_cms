@@ -370,7 +370,6 @@ class BotWizard extends React.Component {
                 className="botbuilder-col"
                 md={this.state.colBuild}
                 style={{
-                  overflowX: 'auto',
                   display: this.state.colBuild === 0 ? 'none' : 'block',
                 }}
               >
@@ -413,52 +412,12 @@ class BotWizard extends React.Component {
                     </div>
                   )}
                 </div>
-                <Paper
+                <div
                   style={{
-                    width: '100%',
-                    marginTop: '20px',
-                    position: 'relative',
                     display: stepIndex === 3 ? 'none' : 'block',
+                    padding: '0px 30px',
                   }}
-                  className="botBuilder-page-card"
-                  zDepth={1}
                 >
-                  {stepIndex !== 0 && stepIndex !== 3 ? (
-                    <RaisedButton
-                      label="Back"
-                      backgroundColor={colors.header}
-                      labelColor="#fff"
-                      onTouchTap={this.handlePrev}
-                      style={{ marginRight: 12 }}
-                    />
-                  ) : null}
-                  {stepIndex < 2 ? (
-                    <RaisedButton
-                      label={'Next'}
-                      backgroundColor={colors.header}
-                      labelColor="#fff"
-                      onTouchTap={this.handleNext}
-                      style={{ float: 'right' }}
-                    />
-                  ) : null}
-                  {stepIndex === 2 ? (
-                    <RaisedButton
-                      label={
-                        // eslint-disable-next-line
-                        this.state.savingSkill ? (
-                          <CircularProgress color="#ffffff" size={32} />
-                        ) : this.state.updateSkillNow ? (
-                          'Update and Deploy'
-                        ) : (
-                          'Save and Deploy'
-                        )
-                      }
-                      backgroundColor={colors.header}
-                      labelColor="#fff"
-                      style={{ float: 'right' }}
-                      onTouchTap={this.saveClick}
-                    />
-                  ) : null}
                   {stepIndex === 2 ? (
                     <TextField
                       floatingLabelText="Commit message"
@@ -469,12 +428,60 @@ class BotWizard extends React.Component {
                       onChange={this.handleCommitMessageChange}
                     />
                   ) : null}
-                  {stepIndex === 0 ? (
-                    <Link to="/botbuilder">
-                      <RaisedButton label="Cancel" />
-                    </Link>
-                  ) : null}
-                </Paper>
+                  <div
+                    style={{
+                      float: 'right',
+                      paddingLeft: '20px',
+                      paddingTop: this.state.stepIndex === 2 ? '20px' : '0px',
+                    }}
+                  >
+                    {stepIndex < 2 ? (
+                      <RaisedButton
+                        label={'Next'}
+                        backgroundColor={colors.header}
+                        labelColor="#fff"
+                        onTouchTap={this.handleNext}
+                      />
+                    ) : null}
+                    {stepIndex === 2 ? (
+                      <RaisedButton
+                        label={
+                          // eslint-disable-next-line
+                          this.state.savingSkill ? (
+                            <CircularProgress color="#ffffff" size={32} />
+                          ) : this.state.updateSkillNow ? (
+                            'Update and Deploy'
+                          ) : (
+                            'Save and Deploy'
+                          )
+                        }
+                        backgroundColor={colors.header}
+                        labelColor="#fff"
+                        onTouchTap={this.saveClick}
+                      />
+                    ) : null}
+                  </div>
+                  <div
+                    style={{
+                      float: 'right',
+                      paddingTop: this.state.stepIndex === 2 ? '20px' : '0px',
+                    }}
+                  >
+                    {stepIndex !== 0 && stepIndex !== 3 ? (
+                      <RaisedButton
+                        label="Back"
+                        backgroundColor={colors.header}
+                        labelColor="#fff"
+                        onTouchTap={this.handlePrev}
+                      />
+                    ) : null}
+                    {stepIndex === 0 ? (
+                      <Link to="/botbuilder">
+                        <RaisedButton label="Cancel" />
+                      </Link>
+                    ) : null}
+                  </div>
+                </div>
               </Col>
               {this.state.prevButton === 1 ? (
                 <div className="preview-button">
