@@ -38,7 +38,7 @@ class Configure extends Component {
     return (
       <div className="menu-page">
         <div style={{ display: 'flex', flexDirection: 'row' }}>
-          <h2 style={{ lineHeight: '50px' }}>3. Configure your bot</h2>
+          <h1 style={{ lineHeight: '50px' }}>3. Configure your bot</h1>
           <div style={{ marginLeft: 'auto', marginRight: '0px' }}>
             <IconButton
               tooltip="Code View"

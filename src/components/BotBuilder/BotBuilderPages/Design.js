@@ -28,7 +28,7 @@ class Design extends React.Component {
     return (
       <div className="center menu-page">
         <div style={{ display: 'flex', flexDirection: 'row' }}>
-          <h2 style={{ lineHeight: '50px' }}>2. Design your bot</h2>
+          <h1 style={{ lineHeight: '50px' }}>2. Design your bot</h1>
           <div style={{ marginLeft: 'auto', marginRight: '0px' }}>
             <IconButton
               tooltip="Code View"
