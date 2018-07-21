@@ -166,9 +166,7 @@ class SkillCardScrollList extends Component {
               ) : (
                 <CircleImage name={el} size="48" />
               )}
-              {examples ? (
-                <div style={styles.example}>&quot;{examples}&quot;</div>
-              ) : null}
+              <div style={styles.example}>&quot;{examples}&quot;</div>
             </div>
             <div style={styles.name}>
               <span>{skill_name}</span>
