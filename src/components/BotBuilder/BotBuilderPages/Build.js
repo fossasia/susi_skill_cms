@@ -224,9 +224,14 @@ class Build extends Component {
                     treeView: false,
                   });
                 }}
-                disabled={this.state.codeView}
               >
-                <Code />
+                <Code
+                  color={
+                    this.state.codeView
+                      ? 'rgb(66, 133, 244)'
+                      : 'rgb(158, 158, 158)'
+                  }
+                />
               </IconButton>
               <IconButton
                 tooltip="Conversation View"
@@ -237,9 +242,14 @@ class Build extends Component {
                     treeView: false,
                   });
                 }}
-                disabled={this.state.conversationView}
               >
-                <QA />
+                <QA
+                  color={
+                    this.state.conversationView
+                      ? 'rgb(66, 133, 244)'
+                      : 'rgb(158, 158, 158)'
+                  }
+                />
               </IconButton>
               <IconButton
                 tooltip="Tree View"
@@ -250,9 +260,14 @@ class Build extends Component {
                     treeView: true,
                   });
                 }}
-                disabled={this.state.treeView}
               >
-                <Timeline />
+                <Timeline
+                  color={
+                    this.state.treeView
+                      ? 'rgb(66, 133, 244)'
+                      : 'rgb(158, 158, 158)'
+                  }
+                />
               </IconButton>
             </div>
           </div>

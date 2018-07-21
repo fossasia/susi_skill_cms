@@ -48,9 +48,14 @@ class Configure extends Component {
                   uiView: false,
                 });
               }}
-              disabled={this.state.codeView}
             >
-              <Code />
+              <Code
+                color={
+                  this.state.codeView
+                    ? 'rgb(66, 133, 244)'
+                    : 'rgb(158, 158, 158)'
+                }
+              />
             </IconButton>
             <IconButton
               tooltip="UI View"
@@ -60,9 +65,12 @@ class Configure extends Component {
                   uiView: true,
                 });
               }}
-              disabled={this.state.uiView}
             >
-              <Table />
+              <Table
+                color={
+                  this.state.uiView ? 'rgb(66, 133, 244)' : 'rgb(158, 158, 158)'
+                }
+              />
             </IconButton>
           </div>
         </div>
