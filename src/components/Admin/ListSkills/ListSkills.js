@@ -210,7 +210,7 @@ class ListSkills extends React.Component {
       skillName: name,
       skill_tag: skill_tag,
       skillReviewStatus: reviewStatus,
-      skilleditStatus: editStatus,
+      skillEditStatus: editStatus,
       showDialog: true,
     });
   };

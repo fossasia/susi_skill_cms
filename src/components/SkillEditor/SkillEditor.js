@@ -49,6 +49,7 @@ class SkillEditor extends Component {
     }
     this.state = {
       showImage: true,
+      editable: true,
       image: '',
       skillUrl: null,
       commitMessage: `Updated Skill ${
@@ -189,11 +190,13 @@ class SkillEditor extends Component {
   componentDidMount() {
     // Check if admin is logged in or not
     document.title = 'SUSI.AI - Edit Skill';
-    if (cookies.get('showAdmin') === true) {
+
+    if (cookies.get('showAdmin') === 'true') {
       this.setState({
         showAdmin: true,
       });
     }
+
     self = this;
     self.loadgroups();
 
@@ -246,6 +249,9 @@ class SkillEditor extends Component {
         jsonp: 'callback',
         crossDomain: true,
         success: function(data) {
+          this.setState({
+            editable: data.skill_metadata.editable,
+          });
           self.updateData(data.skill_metadata);
         },
         error: function(e) {
@@ -287,6 +293,9 @@ class SkillEditor extends Component {
       jsonp: 'callback',
       crossDomain: true,
       success: function(data) {
+        self.setState({
+          editable: data.skill_metadata.editable,
+        });
         self.updateData(data.skill_metadata);
       },
     });
@@ -751,6 +760,78 @@ class SkillEditor extends Component {
         </div>
       );
     }
+    if (
+      cookies.get('loggedIn') &&
+      !this.state.editable &&
+      !this.state.showAdmin
+    ) {
+      return (
+        <div>
+          <StaticAppBar {...this.props} />
+          <div style={styles.home}>
+            <p style={styles.titleStyle}>
+              THIS SKILL IS NOT EDITABLE. IT IS CURRENTLY LOCKED BY ADMINS. YOU
+              CAN STILL SEE THE CODE OF THE SKILL.
+            </p>
+            <p style={styles.subtitleStyle}>
+              There can be various reasons for non-editable skills. <br />For
+              example if the skill is a standard skill, if there was vandalism
+              happening in the skill or if there is a dispute about the skill.
+            </p>
+            <p style={styles.description}>
+              The code is shown below in a read only mode.
+            </p>
+            <div style={styles.codeEditor}>
+              <div style={styles.toolbar}>
+                <span style={styles.button}>
+                  <Icon type="cloud-download" style={styles.icon} />
+                  Download as text
+                </span>
+                <span style={styles.button}>
+                  Size{' '}
+                  <SelectField
+                    style={{ width: '60px' }}
+                    onChange={this.handleFontChange}
+                  >
+                    {fontsizes}
+                  </SelectField>
+                </span>
+
+                <span style={styles.button}>
+                  Theme{' '}
+                  <SelectField
+                    style={{ width: '150px' }}
+                    onChange={this.handleThemeChange}
+                  >
+                    {codeEditorThemes}
+                  </SelectField>
+                </span>
+              </div>
+              <AceEditor
+                mode="java"
+                theme={this.state.editorTheme}
+                width="100%"
+                fontSize={this.state.fontSizeCode}
+                height="400px"
+                value={this.state.code}
+                showPrintMargin={false}
+                name="skill_code_editor"
+                onChange={this.handleChange.bind(this)}
+                scrollPastEnd={false}
+                readOnly={true}
+                wrapEnabled={true}
+                editorProps={{ $blockScrolling: true }}
+                style={{
+                  resize: 'vertical',
+                  overflowY: 'scroll',
+                  minHeight: '200px',
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      );
+    }
     return (
       <div>
         <StaticAppBar {...this.props} />
@@ -1024,6 +1105,13 @@ const styles = {
     fontWeight: 'bold',
     marginBottom: '30px',
     fontSize: '20px',
+    marginTop: '20px',
+  },
+  subtitleStyle: {
+    textAlign: 'center',
+    fontWeight: 'bold',
+    marginBottom: '30px',
+    fontSize: '16px',
     marginTop: '20px',
   },
   description: {
