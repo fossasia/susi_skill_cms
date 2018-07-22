@@ -44,6 +44,7 @@ class BotWizard extends React.Component {
           }
         }
       } else {
+        // editing a saved bot
         let name = this.getQueryStringValue('name');
         let group = this.getQueryStringValue('group');
         let language = this.getQueryStringValue('language');
@@ -110,11 +111,27 @@ class BotWizard extends React.Component {
           text.split('::bodyBackground ')[1].split('::name')[0];
         let configCode =
           '!Write' + text.split('!Write')[1].split('::bodyBackground')[0];
+        const imageNameMatch = buildCode.match(/^::image\s(.*)$/m);
+        let imagePreviewUrl = `${
+          urls.API_URL
+        }/cms/getImage.png?access_token=${cookies.get(
+          'loggedIn',
+        )}&language=${language}&group=${group}&image=${imageNameMatch[1]}`;
+        let savedSkillOld = {
+          OldGroup: group,
+          OldLanguage: language,
+          OldSkill: name,
+          old_image_name: imageNameMatch[1].replace('images/', ''),
+        };
         this.setState({
           buildCode: buildCode,
           designCode: designCode,
           configCode: configCode,
           loaded: true,
+          image: imagePreviewUrl,
+          imageUrl: imageNameMatch[1],
+          updateSkillNow: true,
+          savedSkillOld,
         });
       }.bind(this),
       error: function(err) {
@@ -253,7 +270,7 @@ class BotWizard extends React.Component {
       });
       return 0;
     }
-    if (this.state.file === null) {
+    if (this.state.file === null && this.state.updateSkillNow === false) {
       notification.open({
         message: 'Error Processing your Request',
         description: 'Image Not Given',

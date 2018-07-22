@@ -343,7 +343,6 @@ export default class CreateSkill extends React.Component {
         groupValue: this.state.groupValue,
         languageValue: this.state.languageValue,
         file: this.state.file,
-        commitMessage: this.state.commitMessage,
       });
     }
   };

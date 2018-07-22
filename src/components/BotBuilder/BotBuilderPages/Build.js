@@ -288,6 +288,7 @@ class Build extends Component {
                   onImageChange: this.props.onImageChange,
                   imageFile: this.props.imageFile,
                   image: this.props.image,
+                  imageUrl: this.props.imageUrl,
                 }}
               />
             ) : null}
@@ -317,6 +318,7 @@ Build.propTypes = {
   onImageChange: PropTypes.func,
   imageFile: PropTypes.object,
   image: PropTypes.string,
+  imageUrl: PropTypes.string,
 };
 
 export default Build;
