@@ -31,6 +31,7 @@ class Configure extends Component {
   }
 
   sendInfoToProps = values => {
+    this.props.updateConfiguration(values.code);
     this.setState({ ...values });
   };
 
@@ -98,7 +99,7 @@ class Configure extends Component {
 }
 
 Configure.propTypes = {
-  updateSettings: PropTypes.func,
+  updateConfiguration: PropTypes.func,
   code: PropTypes.string,
 };
 export default Configure;

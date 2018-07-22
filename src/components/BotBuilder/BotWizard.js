@@ -36,9 +36,9 @@ class BotWizard extends React.Component {
       if (this.getQueryStringValue('template')) {
         for (let template of this.props.templates) {
           if (template.id === this.getQueryStringValue('template')) {
-            let buildCode = template.code;
+            let code = template.code;
             this.setState({
-              buildCode: buildCode,
+              buildCode: code,
               loaded: true,
             });
           }
@@ -62,7 +62,6 @@ class BotWizard extends React.Component {
     this.state = {
       finished: false,
       stepIndex: 0,
-      buildCode: '',
       themeSettingsString: '{}',
       openSnackbar: false,
       msgSnackbar: '',
@@ -76,6 +75,14 @@ class BotWizard extends React.Component {
       imageChanged: false,
       loaded: false,
       commitMessage: '',
+      groupValue: null,
+      languageValue: '',
+      expertValue: '',
+      file: null,
+      imageUrl: '',
+      image: '',
+      buildCode:
+        '::name <Skill_name>\n::category <Category>\n::language <Language>\n::author <author_name>\n::author_url <author_url>\n::description <description> \n::dynamic_content <Yes/No>\n::developer_privacy_policy <link>\n::image <image_url>\n::terms_of_use <link>\n\n\nUser query1|query2|quer3....\n!example:<The question that should be shown in public skill displays>\n!expect:<The answer expected for the above example>\nAnswer for the user query',
       designCode:
         '::bodyBackground #ffffff\n::bodyBackgroundImage \n::userMessageBoxBackground #0077e5\n::userMessageTextColor #ffffff\n::botMessageBoxBackground #f8f8f8\n::botMessageTextColor #455a64\n::botIconColor #000000\n::botIconImage ',
       configCode:
@@ -146,11 +153,18 @@ class BotWizard extends React.Component {
   };
 
   updateSettings = themeSettingsString => {
-    this.setState({ themeSettingsString });
+    this.setState({
+      designCode: JSON.parse(themeSettingsString).code,
+      themeSettingsString,
+    });
   };
 
   sendInfoToProps = values => {
-    this.setState({ ...values });
+    this.setState({ ...values, buildCode: values.code });
+  };
+
+  updateConfiguration = code => {
+    this.setState({ configCode: code });
   };
 
   getStepContent(stepIndex) {
@@ -160,6 +174,9 @@ class BotWizard extends React.Component {
           <Build
             sendInfoToProps={this.sendInfoToProps}
             code={this.state.buildCode}
+            imageFile={this.state.file}
+            image={this.state.image}
+            imageUrl={this.state.imageUrl}
             onImageChange={() => this.setState({ imageChanged: true })}
           />
         );
@@ -171,7 +188,12 @@ class BotWizard extends React.Component {
           />
         );
       case 2:
-        return <Configure code={this.state.configCode} />;
+        return (
+          <Configure
+            updateConfiguration={this.updateConfiguration}
+            code={this.state.configCode}
+          />
+        );
       case 3:
         return <Deploy />;
       default:
@@ -210,7 +232,7 @@ class BotWizard extends React.Component {
   saveClick = () => {
     // save the skill on the server
     let self = this;
-    let code = this.state.code;
+    let code = this.state.buildCode;
     code = self.state.configCode + '\n' + self.state.designCode + '\n' + code;
     code = '::author_email ' + cookies.get('emailId') + '\n' + code;
     code = '::protected Yes\n' + code;
@@ -331,8 +353,6 @@ class BotWizard extends React.Component {
       });
     this.handleNext();
   };
-
-  updateSkill = () => {};
 
   render() {
     const muiTheme = getMuiTheme({
