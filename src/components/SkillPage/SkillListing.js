@@ -396,9 +396,9 @@ class SkillListing extends Component {
     if (skillData.skill_rating) {
       this.saveSkillRatings(skillData.skill_rating.stars);
     }
-    let imgUrl = `https://raw.githubusercontent.com/fossasia/susi_skill_data/master/models/general/${
-      this.groupValue
-    }/${this.languageValue}/${skillData.image}`;
+    let imgUrl = `${urls.API_URL}/cms/getImage.png?model=general&language=${
+      this.languageValue
+    }&group=${this.groupValue}&image=${skillData.image}`;
     if (!skillData.image) {
       imgUrl =
         'https://pbs.twimg.com/profile_images/904617517489979392/6Hff65Th.jpg';

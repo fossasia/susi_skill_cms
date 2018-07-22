@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import CircleImage from '../CircleImage/CircleImage';
 import styles from './SkillCardStyle';
-
+import urls from '../../Utils/urls';
 function createListCard(
   el,
   skillName,
@@ -213,9 +213,9 @@ class SkillCardList extends Component {
         skillName = skillName.charAt(0).toUpperCase() + skillName.slice(1);
       }
       if (skill.image) {
-        image = `https://raw.githubusercontent.com/fossasia/susi_skill_data/master/models/${
+        image = `${urls.API_URL}/cms/getImage.png?model=${
           skill.model
-        }/${skill.group}/${skill.language}/${skill.image}`;
+        }&language=${skill.language}&group=${skill.group}&image=${skill.image}`;
       }
       if (skill.examples) {
         examples = skill.examples;
