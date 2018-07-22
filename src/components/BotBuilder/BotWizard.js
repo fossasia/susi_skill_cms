@@ -520,6 +520,7 @@ class BotWizard extends React.Component {
                 md={this.state.colPreview}
                 style={{
                   display: this.state.colPreview === 0 ? 'none' : 'block',
+                  paddingTop: '25px',
                 }}
               >
                 <Paper
