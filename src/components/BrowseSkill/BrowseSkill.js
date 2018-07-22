@@ -62,7 +62,7 @@ function createCategoryMenuItem(categoryName) {
       key={categoryName}
       primaryText={categoryName}
       containerElement={<Link to={linkValue} />}
-      style={styles.sidebarMenuItem}
+      style={styles.categorySidebarMenuItem}
     />
   );
 }
@@ -552,7 +552,7 @@ export default class BrowseSkill extends React.Component {
                   <Subheader style={styles.sidebarSubheader}>
                     SUSI Skills
                   </Subheader>
-                  <div style={{ paddingLeft: '8px' }}>{groups}</div>
+                  <div>{groups}</div>
                 </div>
               )}
 
