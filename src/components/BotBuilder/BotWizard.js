@@ -598,6 +598,7 @@ const styles = {
     top: '0',
     width: '35px',
     height: '35px',
+    color: 'rgb(158, 158, 158)',
     cursor: 'pointer',
     display: window.innerWidth < 769 ? 'none' : 'inherit',
   },

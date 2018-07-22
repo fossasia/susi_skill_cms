@@ -224,7 +224,7 @@ input[type=file]{
     z-index: 1;
     top: 75px;
     right: 0;
-    background-color: #111;
+    background-color: rgb(158, 158, 158);
     overflow-x: hidden;
     padding-top: 20px;
 }
