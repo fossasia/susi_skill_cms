@@ -17,9 +17,13 @@ import PropTypes from 'prop-types';
 class UIView extends Component {
   constructor(props) {
     super(props);
+    let code = '';
+    if (this.props.configure) {
+      code = this.props.configure.code;
+    }
     this.state = {
       tableData: [],
-      code: this.props.configure.code,
+      code,
       myDevices: false, // use chatbot in your devices
       publicDevices: false, // allow chatbot to be used in other people's devices
       includeSusiSkills: true,

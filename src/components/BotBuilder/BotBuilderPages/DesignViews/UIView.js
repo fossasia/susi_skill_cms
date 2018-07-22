@@ -20,6 +20,10 @@ let IMAGE_GET_URL = `${BASE_URL}/cms/getImage.png?image=`;
 class UIView extends Component {
   constructor(props) {
     super(props);
+    let code = '';
+    if (this.props.design) {
+      code = this.props.design.code;
+    }
     this.state = {
       botbuilderBackgroundBody: '#ffffff',
       botbuilderBodyBackgroundImg: '',
@@ -36,7 +40,7 @@ class UIView extends Component {
       botbuilderBodyBackgroundImgName: '',
       botbuilderIconImgName: '',
       uploadingBotbuilderIconImg: false,
-      code: this.props.design.code,
+      code,
     };
   }
 
