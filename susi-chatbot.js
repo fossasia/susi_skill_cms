@@ -157,12 +157,49 @@ function enableBot() {
 
 		$("body").append(mybot);
 
+		// Resizing preview based on screen width
+		$(window).on('resize', function() {
+			if(botWindow) {
+				let widthOfScreen = $(window).width();
+				if(widthOfScreen > 280 && widthOfScreen <= 380){
+					document.getElementById("susi-frame-container").style.width = ((widthOfScreen/1.2)).toString() + 'px';
+				}else if(widthOfScreen <= 280 && widthOfScreen > 190){
+					document.getElementById("susi-frame-container").style.width = ((widthOfScreen/1.15)).toString() + 'px';
+				}else if(widthOfScreen <= 190){
+					document.getElementById("susi-frame-container").style.width = ((widthOfScreen/1.18)).toString() + 'px';
+				}else{
+					document.getElementById("susi-frame-container").style.width = ((widthOfScreen/1.12)).toString() + 'px';
+				}
+				// Preventing chatbot from going to full screen when screen width is less
+				document.getElementById("susi-frame-container").style.right = '20px';
+				document.getElementById("susi-frame-container").style.left = 'auto';
+				document.getElementById("susi-frame-container").style.height = '460px';
+				document.getElementById("susi-frame-container").style.top = 'auto';
+				document.getElementById("susi-frame-container").style.borderRadius = '8px';
+			}
+		});
 		// Toggle chatbot
 		if(botWindow) {
+			let widthOfScreen = $(window).width();
+			if(widthOfScreen > 280 && widthOfScreen <= 380){
+				document.getElementById("susi-frame-container").style.width = ((widthOfScreen/1.2)).toString() + 'px';
+			}else if(widthOfScreen <= 280 && widthOfScreen > 190){
+				document.getElementById("susi-frame-container").style.width = ((widthOfScreen/1.15)).toString() + 'px';
+			}else if(widthOfScreen <= 190){
+				document.getElementById("susi-frame-container").style.width = ((widthOfScreen/1.18)).toString() + 'px';
+			}else{
+				document.getElementById("susi-frame-container").style.width = ((widthOfScreen/1.12)).toString() + 'px';
+			}
+			// Preventing chatbot from going to full screen when screen width is less
+			document.getElementById("susi-frame-container").style.right = '20px';
+			document.getElementById("susi-frame-container").style.left = 'auto';
+			document.getElementById("susi-frame-container").style.height = '460px';
+			document.getElementById("susi-frame-container").style.top = 'auto';
+			document.getElementById("susi-frame-container").style.borderRadius = '8px';
+			// Opening chatbot by default during preview
 			$('.susi-frame-container-active').toggle();
 			$('#susi-avatar-text').toggle();
 			$('#susi-launcher-close').toggle();
-			document.getElementById('susiTextMessage').focus();
 		}
 		$('#susi-launcher').click(function() {
 			$('.susi-frame-container-active').toggle();
