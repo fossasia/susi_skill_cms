@@ -5,10 +5,14 @@ import AceEditor from 'react-ace';
 class CodeView extends Component {
   constructor(props) {
     super(props);
+    let code = '';
+    if (this.props.configure) {
+      code = this.props.configure.code;
+    }
     this.state = {
       editorTheme: 'github',
       fontSizeCode: 14,
-      code: this.props.configure.code,
+      code,
     };
   }
 

@@ -19,6 +19,10 @@ import CircularProgress from 'material-ui/CircularProgress';
 class CodeView extends Component {
   constructor(props) {
     super(props);
+    let code = '';
+    if (this.props.design) {
+      code = this.props.design.code;
+    }
     this.state = {
       botbuilderBackgroundBody: '#ffffff',
       botbuilderBodyBackgroundImg: '',
@@ -30,7 +34,7 @@ class CodeView extends Component {
       botbuilderIconImg: '',
       editorTheme: 'github',
       fontSizeCode: 14,
-      code: this.props.design.code,
+      code,
       loadedSettings: false,
     };
   }
