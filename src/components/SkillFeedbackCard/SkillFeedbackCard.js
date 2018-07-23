@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Paper } from 'material-ui';
 import Cookies from 'universal-cookie';
 import PropTypes from 'prop-types';
-
+import { Link } from 'react-router-dom';
 // Components
 import { List, ListItem } from 'material-ui/List';
 import Divider from 'material-ui/Divider';
@@ -42,7 +42,6 @@ class SkillFeedbackCard extends Component {
       openEditDialog: false,
       openDeleteDialog: false,
       errorText: '',
-      show_all_feedback: false,
     };
   }
 
@@ -64,12 +63,6 @@ class SkillFeedbackCard extends Component {
   handleDeleteClose = () => {
     this.setState({
       openDeleteDialog: false,
-    });
-  };
-
-  toggleShowAll = () => {
-    this.setState({
-      show_all_feedback: !this.state.show_all_feedback,
     });
   };
 
@@ -209,7 +202,7 @@ class SkillFeedbackCard extends Component {
       });
     }
 
-    if (!this.state.show_all_feedback && feedbackCards) {
+    if (feedbackCards) {
       if (userFeedbackCard) {
         feedbackCards.splice(4);
       } else {
@@ -257,13 +250,12 @@ class SkillFeedbackCard extends Component {
               {feedbackCards}
               {(userFeedbackCard && this.props.skill_feedback.length >= 4) ||
               this.props.skill_feedback.length >= 5 ? (
-                <ListItem
-                  className="display-all"
-                  primaryText={`Show ${
-                    this.state.show_all_feedback ? 'less' : 'all'
-                  } reviews`}
-                  onClick={this.toggleShowAll}
-                />
+                <Link to={`${this.props.skill_language}/feedbacks`}>
+                  <ListItem
+                    className="display-all"
+                    primaryText={'Show all reviews'}
+                  />
+                </Link>
               ) : null}
             </List>
           ) : (
@@ -306,6 +298,7 @@ SkillFeedbackCard.propTypes = {
   skill_feedback: PropTypes.array,
   postFeedback: PropTypes.func,
   deleteFeedback: PropTypes.func,
+  skill_language: PropTypes.string,
 };
 
 export default SkillFeedbackCard;
