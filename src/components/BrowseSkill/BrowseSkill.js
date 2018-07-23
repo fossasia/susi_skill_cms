@@ -374,7 +374,8 @@ export default class BrowseSkill extends React.Component {
 
   refineByRating = (skills, ratingRefine) => {
     return skills.filter(
-      skill => skill.skill_rating.stars.avg_star >= ratingRefine,
+      skill =>
+        skill.skill_rating && skill.skill_rating.stars.avg_star >= ratingRefine,
     );
   };
 
