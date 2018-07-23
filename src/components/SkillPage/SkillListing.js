@@ -874,6 +874,7 @@ class SkillListing extends Component {
               skill_feedback={this.state.skill_feedback}
               postFeedback={this.postFeedback}
               deleteFeedback={this.deleteFeedback}
+              skill_language={this.languageValue}
             />
             <SkillUsageCard
               skill_usage={this.state.skill_usage}
