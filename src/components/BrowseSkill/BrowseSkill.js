@@ -421,13 +421,7 @@ export default class BrowseSkill extends React.Component {
       );
     }
 
-    let showSortBy =
-      this.props.routeType ||
-      this.state.searchQuery.length > 0 ||
-      this.state.ratingRefine ||
-      this.state.timeFilter;
-
-    let showSkillsMenu =
+    let metricsHidden =
       this.props.routeType ||
       this.state.searchQuery.length > 0 ||
       this.state.ratingRefine ||
@@ -560,7 +554,7 @@ export default class BrowseSkill extends React.Component {
               {/* Refine by rating section*/}
               <Subheader style={styles.sidebarSubheader}>Refine by</Subheader>
 
-              {showSkillsMenu && (
+              {metricsHidden && (
                 <div
                   style={{
                     marginBottom: '12px',
@@ -715,7 +709,7 @@ export default class BrowseSkill extends React.Component {
                   value={this.state.searchQuery}
                 />
               </div>
-              {showSortBy && (
+              {metricsHidden && (
                 <SelectField
                   floatingLabelText="Sort by"
                   value={this.state.filter}
@@ -817,7 +811,7 @@ export default class BrowseSkill extends React.Component {
               >
                 {this.languageMenuItems(languageValue)}
               </SelectField>
-              {this.props.routeType && (
+              {metricsHidden && (
                 <RadioButtonGroup
                   name="view_type"
                   defaultSelected="list"
