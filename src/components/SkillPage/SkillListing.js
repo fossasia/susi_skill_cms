@@ -95,6 +95,7 @@ class SkillListing extends Component {
       ratings_over_time: [],
       showReportDialog: false,
       feedbackMessage: '',
+      editStatus: true,
     };
 
     let clickedSkill = this.props.location.pathname.split('/')[2];
@@ -211,6 +212,9 @@ class SkillListing extends Component {
         jsonp: 'callback',
         crossDomain: true,
         success: function(data) {
+          self.setState({
+            editStatus: data.skill_metadata.editable,
+          });
           self.updateData(data.skill_metadata);
         },
       });

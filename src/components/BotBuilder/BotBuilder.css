@@ -37,7 +37,7 @@
 	margin-top: 10px;
 }
 .botBuilder-page-card{
-	padding: 30px 0px;
+	padding: 15px 0px;
 }
 .copy-button{
 	position: absolute;
@@ -210,7 +210,7 @@ input[type=file]{
 		padding: 40px 30px 30px;
 	}
 	.botBuilder-page-card{
-		padding: 30px;
+		padding: 15px;
 	}
 	.display-mobile-only{
 		display: none;
@@ -224,7 +224,7 @@ input[type=file]{
     z-index: 1;
     top: 75px;
     right: 0;
-    background-color: #111;
+    background-color: rgb(158, 158, 158);
     overflow-x: hidden;
     padding-top: 20px;
 }

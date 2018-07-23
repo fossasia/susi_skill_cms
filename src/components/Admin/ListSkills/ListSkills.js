@@ -29,8 +29,9 @@ class ListSkills extends React.Component {
       skillGroup: '',
       skillLanguage: '',
       skillReviewStatus: false,
-      changeReviewStatusSuccessDialog: false,
-      changeReviewStatusFailureDialog: false,
+      skillEditStatus: true,
+      changeStatusSuccessDialog: false,
+      changeStatusFailureDialog: false,
     };
     this.columns = [
       {
@@ -42,7 +43,7 @@ class ListSkills extends React.Component {
       {
         title: 'Group',
         dataIndex: 'group',
-        width: '15%',
+        width: '10%',
       },
       {
         title: 'Language',
@@ -57,11 +58,16 @@ class ListSkills extends React.Component {
       {
         title: 'Author',
         dataIndex: 'author',
-        width: '20%',
+        width: '10%',
       },
       {
-        title: 'Status',
-        dataIndex: 'status',
+        title: 'Review Status',
+        dataIndex: 'reviewed',
+        width: '15%',
+      },
+      {
+        title: 'Edit Status',
+        dataIndex: 'editable',
         width: '15%',
       },
       {
@@ -81,6 +87,7 @@ class ListSkills extends React.Component {
                     record.group,
                     record.language,
                     record.reviewStatus,
+                    record.editStatus,
                     record.skill_tag,
                   )
                 }
@@ -95,7 +102,6 @@ class ListSkills extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handleOpen = this.handleOpen.bind(this);
-    this.handleStatusChange = this.handleStatusChange.bind(this);
     this.handleFinish = this.handleFinish.bind(this);
   }
 
@@ -111,7 +117,9 @@ class ListSkills extends React.Component {
         this.state.skillGroup
       }&language=${this.state.skillLanguage}&skill=${
         this.state.skill_tag
-      }&reviewed=${this.state.skillReviewStatus}&access_token=` +
+      }&reviewed=${this.state.skillReviewStatus}&editable=${
+        this.state.skillEditStatus
+      }&access_token=` +
       cookies.get('loggedIn');
     $.ajax({
       url: url,
@@ -119,11 +127,11 @@ class ListSkills extends React.Component {
       jsonp: 'callback',
       crossDomain: true,
       success: function(data) {
-        this.setState({ changeReviewStatusSuccessDialog: true });
+        this.setState({ changeStatusSuccessDialog: true });
       }.bind(this),
       error: function(err) {
         console.log(err);
-        this.setState({ changeReviewStatusFailureDialog: true });
+        this.setState({ changeStatusFailureDialog: true });
       }.bind(this),
     });
   };
@@ -150,9 +158,11 @@ class ListSkills extends React.Component {
             language: i.language,
             skill_tag: i.skill_tag,
             reviewStatus: i.reviewed,
+            editStatus: i.editable,
             type: 'public',
             author: i.author,
-            status: i.reviewed ? 'Approved' : 'Not Reviewed',
+            reviewed: i.reviewed ? 'Approved' : 'Not Reviewed',
+            editable: i.editable ? 'Editable' : 'Not Editable',
           };
           skills.push(skill);
         }
@@ -184,7 +194,15 @@ class ListSkills extends React.Component {
     });
   };
 
-  handleOpen = (name, model, group, language, reviewStatus, skill_tag) => {
+  handleOpen = (
+    name,
+    model,
+    group,
+    language,
+    reviewStatus,
+    editStatus,
+    skill_tag,
+  ) => {
     this.setState({
       skillModel: model,
       skillGroup: group,
@@ -192,6 +210,7 @@ class ListSkills extends React.Component {
       skillName: name,
       skill_tag: skill_tag,
       skillReviewStatus: reviewStatus,
+      skillEditStatus: editStatus,
       showDialog: true,
     });
   };
@@ -202,9 +221,15 @@ class ListSkills extends React.Component {
     });
   };
 
-  handleStatusChange = (event, index, value) => {
+  handleReviewStatusChange = (event, index, value) => {
     this.setState({
       skillReviewStatus: value,
+    });
+  };
+
+  handleEditStatusChange = (event, index, value) => {
+    this.setState({
+      skillEditStatus: value,
     });
   };
 
@@ -253,7 +278,7 @@ class ListSkills extends React.Component {
               <div>
                 <DropDownMenu
                   selectedMenuItemStyle={blueThemeColor}
-                  onChange={this.handleStatusChange}
+                  onChange={this.handleReviewStatusChange}
                   value={this.state.skillReviewStatus}
                   labelStyle={{ color: themeForegroundColor }}
                   menuStyle={{ backgroundColor: themeBackgroundColor }}
@@ -276,6 +301,36 @@ class ListSkills extends React.Component {
                   />
                 </DropDownMenu>
               </div>
+
+              <div style={{ marginTop: '12px' }}>
+                Change the edit status of skill {this.state.skillName}
+              </div>
+              <div>
+                <DropDownMenu
+                  selectedMenuItemStyle={blueThemeColor}
+                  onChange={this.handleEditStatusChange}
+                  value={this.state.skillEditStatus}
+                  labelStyle={{ color: themeForegroundColor }}
+                  menuStyle={{ backgroundColor: themeBackgroundColor }}
+                  menuItemStyle={{ color: themeForegroundColor }}
+                  style={{
+                    width: '250px',
+                    marginLeft: '-20px',
+                  }}
+                  autoWidth={false}
+                >
+                  <MenuItem
+                    primaryText="Editable"
+                    value={true}
+                    className="setting-item"
+                  />
+                  <MenuItem
+                    primaryText="Not Editable"
+                    value={false}
+                    className="setting-item"
+                  />
+                </DropDownMenu>
+              </div>
             </Dialog>
             <Dialog
               title="Success"
@@ -288,18 +343,14 @@ class ListSkills extends React.Component {
                 />
               }
               modal={true}
-              open={this.state.changeReviewStatusSuccessDialog}
+              open={this.state.changeStatusSuccessDialog}
             >
               <div>
-                Review status of
+                Status of
                 <span style={{ fontWeight: 'bold', margin: '0 5px' }}>
                   {this.state.skillName}
                 </span>
-                is changed to
-                <span style={{ fontWeight: 'bold', margin: '0 5px' }}>
-                  {this.state.skillReviewStatus ? 'Approved' : 'Not Approved'}
-                </span>
-                successfully!
+                has been changed successfully!
               </div>
             </Dialog>
             <Dialog
@@ -313,17 +364,14 @@ class ListSkills extends React.Component {
                 />
               }
               modal={true}
-              open={this.state.changeReviewStatusFailureDialog}
+              open={this.state.changeStatusFailureDialog}
             >
               <div>
-                Error! Review status of
+                Error! Status of
                 <span style={{ fontWeight: 'bold', margin: '0 5px' }}>
                   {this.state.skillName}
                 </span>
-                could not be changed to
-                <span style={{ fontWeight: 'bold', margin: '0 5px' }}>
-                  {this.state.skillReviewStatus ? 'Approved' : 'Not Approved'}
-                </span>!
+                could not be changed!
               </div>
             </Dialog>
             <Table

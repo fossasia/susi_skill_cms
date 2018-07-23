@@ -132,7 +132,8 @@ const styles = {
     paddingTop: 50,
     display: 'block',
     zIndex: 2,
-    border: '1px solid #ddd',
+    borderRight: '1px solid #ddd',
+    borderSpacing: '1px',
   },
   sidebarMenuItem: {
     minHeight: '24px',

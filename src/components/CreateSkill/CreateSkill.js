@@ -66,6 +66,13 @@ export default class CreateSkill extends React.Component {
           () => this.handleGroupChange(null, 0, this.props.botBuilder.category),
         );
       }
+      if (this.props.botBuilder.image) {
+        this.setState({
+          image: this.props.botBuilder.image,
+          file: this.props.botBuilder.imageFile,
+          imageUrl: this.props.botBuilder.imageUrl,
+        });
+      }
     }
   }
 
@@ -332,10 +339,10 @@ export default class CreateSkill extends React.Component {
         code: this.state.code,
         expertValue: this.state.expertValue,
         imageUrl: this.state.imageUrl,
+        image: this.state.image,
         groupValue: this.state.groupValue,
         languageValue: this.state.languageValue,
         file: this.state.file,
-        commitMessage: this.state.commitMessage,
       });
     }
   };
@@ -485,7 +492,7 @@ export default class CreateSkill extends React.Component {
     if (event.target.files && event.target.files[0]) {
       let reader = new FileReader();
       reader.onload = e => {
-        this.setState({ image: e.target.result });
+        this.setState({ image: e.target.result }, () => this.sendInfoToProps());
       };
       reader.readAsDataURL(event.target.files[0]);
       self.setState({
@@ -548,7 +555,6 @@ export default class CreateSkill extends React.Component {
           <Paper style={style} zDepth={1}>
             <Info
               style={styles.helpIcon}
-              isCapture={true}
               data-tip={
                 'Know more about <a href="https://github.com/fossasia/susi_skill_cms/blob/master/docs/Skill_Tutorial.md" rel="noopener noreferrer" target="_blank" >SUSI Skill Language</a>'
               }

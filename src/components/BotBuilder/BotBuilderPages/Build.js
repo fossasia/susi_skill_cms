@@ -10,15 +10,19 @@ import TreeView from './BuildViews/TreeView';
 class Build extends Component {
   constructor(props) {
     super(props);
-    let skillCode =
-      '::name <Skill_name>\n::category <Category>\n::language <Language>\n::author <author_name>\n::author_url <author_url>\n::description <description> \n::dynamic_content <Yes/No>\n::developer_privacy_policy <link>\n::image <image_url>\n::terms_of_use <link>\n\n\nUser query1|query2|quer3....\n!example:<The question that should be shown in public skill displays>\n!expect:<The answer expected for the above example>\nAnswer for the user query';
-    let skillCategory, skillLanguage, skillName;
+    let skillCode = '';
+    let skillCategory = null,
+      skillLanguage,
+      skillName;
     if (this.props.code) {
       skillCode = this.props.code;
       skillCategory = skillCode
         .split('::category ')[1]
         .split('::')[0]
         .trim();
+      if (skillCategory === '<Category>') {
+        skillCategory = null;
+      }
       skillLanguage = skillCode
         .split('::language ')[1]
         .split('::')[0]
@@ -211,9 +215,9 @@ class Build extends Component {
       <div className="menu-page">
         <div>
           <div style={{ display: 'flex', flexDirection: 'row' }}>
-            <h2 style={{ lineHeight: '50px' }}>
+            <h1 style={{ lineHeight: '50px' }}>
               1. Add a new skill to your bot
-            </h2>
+            </h1>
             <div style={{ marginLeft: 'auto', marginRight: '0px' }}>
               <IconButton
                 tooltip="Code View"
@@ -224,9 +228,14 @@ class Build extends Component {
                     treeView: false,
                   });
                 }}
-                disabled={this.state.codeView}
               >
-                <Code />
+                <Code
+                  color={
+                    this.state.codeView
+                      ? 'rgb(66, 133, 244)'
+                      : 'rgb(158, 158, 158)'
+                  }
+                />
               </IconButton>
               <IconButton
                 tooltip="Conversation View"
@@ -237,9 +246,14 @@ class Build extends Component {
                     treeView: false,
                   });
                 }}
-                disabled={this.state.conversationView}
               >
-                <QA />
+                <QA
+                  color={
+                    this.state.conversationView
+                      ? 'rgb(66, 133, 244)'
+                      : 'rgb(158, 158, 158)'
+                  }
+                />
               </IconButton>
               <IconButton
                 tooltip="Tree View"
@@ -250,9 +264,14 @@ class Build extends Component {
                     treeView: true,
                   });
                 }}
-                disabled={this.state.treeView}
               >
-                <Timeline />
+                <Timeline
+                  color={
+                    this.state.treeView
+                      ? 'rgb(66, 133, 244)'
+                      : 'rgb(158, 158, 158)'
+                  }
+                />
               </IconButton>
             </div>
           </div>
@@ -267,6 +286,9 @@ class Build extends Component {
                   language: this.state.skillLanguage,
                   onSkillInfoChange: this.onSkillInfoChange,
                   onImageChange: this.props.onImageChange,
+                  imageFile: this.props.imageFile,
+                  image: this.props.image,
+                  imageUrl: this.props.imageUrl,
                 }}
               />
             ) : null}
@@ -294,6 +316,9 @@ Build.propTypes = {
   code: PropTypes.string,
   sendInfoToProps: PropTypes.func,
   onImageChange: PropTypes.func,
+  imageFile: PropTypes.object,
+  image: PropTypes.string,
+  imageUrl: PropTypes.string,
 };
 
 export default Build;

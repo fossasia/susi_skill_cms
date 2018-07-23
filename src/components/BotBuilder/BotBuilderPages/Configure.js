@@ -31,6 +31,7 @@ class Configure extends Component {
   }
 
   sendInfoToProps = values => {
+    this.props.updateConfiguration(values.code);
     this.setState({ ...values });
   };
 
@@ -38,7 +39,7 @@ class Configure extends Component {
     return (
       <div className="menu-page">
         <div style={{ display: 'flex', flexDirection: 'row' }}>
-          <h2 style={{ lineHeight: '50px' }}>3. Configure your bot</h2>
+          <h1 style={{ lineHeight: '50px' }}>3. Configure your bot</h1>
           <div style={{ marginLeft: 'auto', marginRight: '0px' }}>
             <IconButton
               tooltip="Code View"
@@ -48,9 +49,14 @@ class Configure extends Component {
                   uiView: false,
                 });
               }}
-              disabled={this.state.codeView}
             >
-              <Code />
+              <Code
+                color={
+                  this.state.codeView
+                    ? 'rgb(66, 133, 244)'
+                    : 'rgb(158, 158, 158)'
+                }
+              />
             </IconButton>
             <IconButton
               tooltip="UI View"
@@ -60,9 +66,12 @@ class Configure extends Component {
                   uiView: true,
                 });
               }}
-              disabled={this.state.uiView}
             >
-              <Table />
+              <Table
+                color={
+                  this.state.uiView ? 'rgb(66, 133, 244)' : 'rgb(158, 158, 158)'
+                }
+              />
             </IconButton>
           </div>
         </div>
@@ -90,7 +99,7 @@ class Configure extends Component {
 }
 
 Configure.propTypes = {
-  updateSettings: PropTypes.func,
+  updateConfiguration: PropTypes.func,
   code: PropTypes.string,
 };
 export default Configure;

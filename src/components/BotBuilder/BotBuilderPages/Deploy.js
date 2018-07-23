@@ -14,9 +14,9 @@ class Deploy extends Component {
   render() {
     return (
       <div className="menu-page">
-        <h2 style={{ lineHeight: '50px' }}>
+        <h1 style={{ lineHeight: '50px' }}>
           4. Deploy your bot to your own website
-        </h2>
+        </h1>
         <br />
         <div className="code-wrap show">
           <div className="code-box">

@@ -36,14 +36,15 @@ class BotWizard extends React.Component {
       if (this.getQueryStringValue('template')) {
         for (let template of this.props.templates) {
           if (template.id === this.getQueryStringValue('template')) {
-            let buildCode = template.code;
+            let code = template.code;
             this.setState({
-              buildCode: buildCode,
+              buildCode: code,
               loaded: true,
             });
           }
         }
       } else {
+        // editing a saved bot
         let name = this.getQueryStringValue('name');
         let group = this.getQueryStringValue('group');
         let language = this.getQueryStringValue('language');
@@ -62,7 +63,6 @@ class BotWizard extends React.Component {
     this.state = {
       finished: false,
       stepIndex: 0,
-      buildCode: '',
       themeSettingsString: '{}',
       openSnackbar: false,
       msgSnackbar: '',
@@ -76,6 +76,14 @@ class BotWizard extends React.Component {
       imageChanged: false,
       loaded: false,
       commitMessage: '',
+      groupValue: null,
+      languageValue: '',
+      expertValue: '',
+      file: null,
+      imageUrl: '',
+      image: '',
+      buildCode:
+        '::name <Skill_name>\n::category <Category>\n::language <Language>\n::author <author_name>\n::author_url <author_url>\n::description <description> \n::dynamic_content <Yes/No>\n::developer_privacy_policy <link>\n::image <image_url>\n::terms_of_use <link>\n\n\nUser query1|query2|quer3....\n!example:<The question that should be shown in public skill displays>\n!expect:<The answer expected for the above example>\nAnswer for the user query',
       designCode:
         '::bodyBackground #ffffff\n::bodyBackgroundImage \n::userMessageBoxBackground #0077e5\n::userMessageTextColor #ffffff\n::botMessageBoxBackground #f8f8f8\n::botMessageTextColor #455a64\n::botIconColor #000000\n::botIconImage ',
       configCode:
@@ -103,11 +111,27 @@ class BotWizard extends React.Component {
           text.split('::bodyBackground ')[1].split('::name')[0];
         let configCode =
           '!Write' + text.split('!Write')[1].split('::bodyBackground')[0];
+        const imageNameMatch = buildCode.match(/^::image\s(.*)$/m);
+        let imagePreviewUrl = `${
+          urls.API_URL
+        }/cms/getImage.png?access_token=${cookies.get(
+          'loggedIn',
+        )}&language=${language}&group=${group}&image=${imageNameMatch[1]}`;
+        let savedSkillOld = {
+          OldGroup: group,
+          OldLanguage: language,
+          OldSkill: name,
+          old_image_name: imageNameMatch[1].replace('images/', ''),
+        };
         this.setState({
           buildCode: buildCode,
           designCode: designCode,
           configCode: configCode,
           loaded: true,
+          image: imagePreviewUrl,
+          imageUrl: imageNameMatch[1],
+          updateSkillNow: true,
+          savedSkillOld,
         });
       }.bind(this),
       error: function(err) {
@@ -146,11 +170,18 @@ class BotWizard extends React.Component {
   };
 
   updateSettings = themeSettingsString => {
-    this.setState({ themeSettingsString });
+    this.setState({
+      designCode: JSON.parse(themeSettingsString).code,
+      themeSettingsString,
+    });
   };
 
   sendInfoToProps = values => {
-    this.setState({ ...values });
+    this.setState({ ...values, buildCode: values.code });
+  };
+
+  updateConfiguration = code => {
+    this.setState({ configCode: code });
   };
 
   getStepContent(stepIndex) {
@@ -160,6 +191,9 @@ class BotWizard extends React.Component {
           <Build
             sendInfoToProps={this.sendInfoToProps}
             code={this.state.buildCode}
+            imageFile={this.state.file}
+            image={this.state.image}
+            imageUrl={this.state.imageUrl}
             onImageChange={() => this.setState({ imageChanged: true })}
           />
         );
@@ -171,7 +205,12 @@ class BotWizard extends React.Component {
           />
         );
       case 2:
-        return <Configure code={this.state.configCode} />;
+        return (
+          <Configure
+            updateConfiguration={this.updateConfiguration}
+            code={this.state.configCode}
+          />
+        );
       case 3:
         return <Deploy />;
       default:
@@ -210,7 +249,7 @@ class BotWizard extends React.Component {
   saveClick = () => {
     // save the skill on the server
     let self = this;
-    let code = this.state.code;
+    let code = this.state.buildCode;
     code = self.state.configCode + '\n' + self.state.designCode + '\n' + code;
     code = '::author_email ' + cookies.get('emailId') + '\n' + code;
     code = '::protected Yes\n' + code;
@@ -231,7 +270,7 @@ class BotWizard extends React.Component {
       });
       return 0;
     }
-    if (this.state.file === null) {
+    if (this.state.file === null && this.state.updateSkillNow === false) {
       notification.open({
         message: 'Error Processing your Request',
         description: 'Image Not Given',
@@ -332,8 +371,6 @@ class BotWizard extends React.Component {
     this.handleNext();
   };
 
-  updateSkill = () => {};
-
   render() {
     const muiTheme = getMuiTheme({
       stepper: {
@@ -370,7 +407,6 @@ class BotWizard extends React.Component {
                 className="botbuilder-col"
                 md={this.state.colBuild}
                 style={{
-                  overflowX: 'auto',
                   display: this.state.colBuild === 0 ? 'none' : 'block',
                 }}
               >
@@ -413,52 +449,12 @@ class BotWizard extends React.Component {
                     </div>
                   )}
                 </div>
-                <Paper
+                <div
                   style={{
-                    width: '100%',
-                    marginTop: '20px',
-                    position: 'relative',
                     display: stepIndex === 3 ? 'none' : 'block',
+                    padding: '0px 30px',
                   }}
-                  className="botBuilder-page-card"
-                  zDepth={1}
                 >
-                  {stepIndex !== 0 && stepIndex !== 3 ? (
-                    <RaisedButton
-                      label="Back"
-                      backgroundColor={colors.header}
-                      labelColor="#fff"
-                      onTouchTap={this.handlePrev}
-                      style={{ marginRight: 12 }}
-                    />
-                  ) : null}
-                  {stepIndex < 2 ? (
-                    <RaisedButton
-                      label={'Next'}
-                      backgroundColor={colors.header}
-                      labelColor="#fff"
-                      onTouchTap={this.handleNext}
-                      style={{ float: 'right' }}
-                    />
-                  ) : null}
-                  {stepIndex === 2 ? (
-                    <RaisedButton
-                      label={
-                        // eslint-disable-next-line
-                        this.state.savingSkill ? (
-                          <CircularProgress color="#ffffff" size={32} />
-                        ) : this.state.updateSkillNow ? (
-                          'Update and Deploy'
-                        ) : (
-                          'Save and Deploy'
-                        )
-                      }
-                      backgroundColor={colors.header}
-                      labelColor="#fff"
-                      style={{ float: 'right' }}
-                      onTouchTap={this.saveClick}
-                    />
-                  ) : null}
                   {stepIndex === 2 ? (
                     <TextField
                       floatingLabelText="Commit message"
@@ -469,12 +465,60 @@ class BotWizard extends React.Component {
                       onChange={this.handleCommitMessageChange}
                     />
                   ) : null}
-                  {stepIndex === 0 ? (
-                    <Link to="/botbuilder">
-                      <RaisedButton label="Cancel" />
-                    </Link>
-                  ) : null}
-                </Paper>
+                  <div
+                    style={{
+                      float: 'right',
+                      paddingLeft: '20px',
+                      paddingTop: this.state.stepIndex === 2 ? '20px' : '0px',
+                    }}
+                  >
+                    {stepIndex < 2 ? (
+                      <RaisedButton
+                        label={'Next'}
+                        backgroundColor={colors.header}
+                        labelColor="#fff"
+                        onTouchTap={this.handleNext}
+                      />
+                    ) : null}
+                    {stepIndex === 2 ? (
+                      <RaisedButton
+                        label={
+                          // eslint-disable-next-line
+                          this.state.savingSkill ? (
+                            <CircularProgress color="#ffffff" size={32} />
+                          ) : this.state.updateSkillNow ? (
+                            'Update and Deploy'
+                          ) : (
+                            'Save and Deploy'
+                          )
+                        }
+                        backgroundColor={colors.header}
+                        labelColor="#fff"
+                        onTouchTap={this.saveClick}
+                      />
+                    ) : null}
+                  </div>
+                  <div
+                    style={{
+                      float: 'right',
+                      paddingTop: this.state.stepIndex === 2 ? '20px' : '0px',
+                    }}
+                  >
+                    {stepIndex !== 0 && stepIndex !== 3 ? (
+                      <RaisedButton
+                        label="Back"
+                        backgroundColor={colors.header}
+                        labelColor="#fff"
+                        onTouchTap={this.handlePrev}
+                      />
+                    ) : null}
+                    {stepIndex === 0 ? (
+                      <Link to="/botbuilder">
+                        <RaisedButton label="Cancel" />
+                      </Link>
+                    ) : null}
+                  </div>
+                </div>
               </Col>
               {this.state.prevButton === 1 ? (
                 <div className="preview-button">
@@ -493,6 +537,7 @@ class BotWizard extends React.Component {
                 md={this.state.colPreview}
                 style={{
                   display: this.state.colPreview === 0 ? 'none' : 'block',
+                  paddingTop: '25px',
                 }}
               >
                 <Paper
@@ -571,6 +616,7 @@ const styles = {
     top: '0',
     width: '35px',
     height: '35px',
+    color: 'rgb(158, 158, 158)',
     cursor: 'pointer',
     display: window.innerWidth < 769 ? 'none' : 'inherit',
   },
