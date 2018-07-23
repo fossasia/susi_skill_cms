@@ -71,7 +71,6 @@ export default class BrowseSkill extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      text: 'Top skills',
       cards: [],
       modelValue: 'general',
       skillURL: null,
@@ -205,12 +204,12 @@ export default class BrowseSkill extends React.Component {
         crossDomain: true,
         success: function(data) {
           data = data.groups;
-          this.setState({ groups: data });
           data.sort();
           groups.push(createCategoryMenuItem('All'));
           for (let i = 0; i < data.length; i++) {
             groups.push(createCategoryMenuItem(data[i]));
           }
+          this.setState({ groups });
         }.bind(this),
         error: function(e) {
           console.log('Error while fetching groups', e);
@@ -552,7 +551,7 @@ export default class BrowseSkill extends React.Component {
                   <Subheader style={styles.sidebarSubheader}>
                     SUSI Skills
                   </Subheader>
-                  <div style={{ paddingLeft: '8px' }}>{groups}</div>
+                  <div style={{ paddingLeft: '8px' }}>{this.state.groups}</div>
                 </div>
               )}
 
