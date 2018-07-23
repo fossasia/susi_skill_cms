@@ -1,0 +1,34 @@
+.feedback-skill-detail{
+    display: flex;
+    padding-top: 2%;
+}
+
+.feedback-avatar{
+    padding-left: 2%;
+}
+
+.feedback-avatar-img{
+    height: 60px;
+    width: auto;
+}
+
+.feedback-skill-name-author{
+    padding-left: 2%;
+}
+
+.feedback-author{
+    cursor: pointer;
+    color: #108ee9;
+}
+
+.feedback-author:hover{
+    text-decoration: underline;
+}
+
+.feedback-name{
+    font-weight: 400;
+}
+
+.feedback-name:hover{
+    text-decoration: underline;
+}

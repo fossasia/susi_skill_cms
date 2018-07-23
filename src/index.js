@@ -22,6 +22,7 @@ import CreateSkill from './components/CreateSkill/CreateSkill';
 import SkillVersion from './components/SkillVersion/SkillVersion';
 import SkillHistory from './components/SkillHistory/SkillHistory';
 import SkillRollBack from './components/SkillRollBack/SkillRollBack';
+import SkillFeedbackPage from './components/SkillFeedbackPage/SkillFeedbackPage';
 import BotBuilderWrap from './components/BotBuilder/BotBuilderWrap';
 import setDefaults from './DefaultSettings';
 import BrowseSkillByCategory from './components/BrowseSkill/BrowseSkillByCategory';
@@ -53,6 +54,11 @@ class App extends React.Component {
               exact
               path="/:category/:skill/:lang"
               component={SkillListing}
+            />
+            <Route
+              exact
+              path="/:category/:skill/:lang/feedbacks"
+              component={SkillFeedbackPage}
             />
             <Route path="/botbuilder" component={BotBuilderWrap} />
             <Route exact path="/dashboard" component={Dashboard} />
