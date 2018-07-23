@@ -51,6 +51,8 @@ class MyRatings extends Component {
             let skill_name = Object.keys(i)[0];
             ratingsData.push({
               skill_name: skill_name,
+              group: i[skill_name].group,
+              language: i[skill_name].language,
               skill_star: i[skill_name].stars,
               rating_timestamp: i[skill_name].timestamp,
             });
@@ -97,10 +99,24 @@ class MyRatings extends Component {
                   return (
                     <TableRow key={index}>
                       <TableRowColumn style={{ fontSize: '16px' }}>
-                        {(
-                          skill.skill_name.charAt(0).toUpperCase() +
-                          skill.skill_name.slice(1)
-                        ).replace(/[_-]/g, ' ')}
+                        <Link
+                          to={{
+                            pathname:
+                              '/' +
+                              skill.group +
+                              '/' +
+                              skill.skill_name
+                                .toLowerCase()
+                                .replace(/ /g, '_') +
+                              '/' +
+                              skill.language,
+                          }}
+                        >
+                          {(
+                            skill.skill_name.charAt(0).toUpperCase() +
+                            skill.skill_name.slice(1)
+                          ).replace(/[_-]/g, ' ')}
+                        </Link>
                       </TableRowColumn>
                       <TableRowColumn style={{ fontSize: '16px' }}>
                         {skill.skill_star}
