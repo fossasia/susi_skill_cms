@@ -1,18 +1,21 @@
 import React, { Component } from 'react';
-import {
-  Table,
-  TableBody,
-  TableHeader,
-  TableHeaderColumn,
-  TableRow,
-  TableRowColumn,
-} from 'material-ui/Table';
-import SelectField from 'material-ui/SelectField';
-import MenuItem from 'material-ui/MenuItem';
+import Table from 'antd/lib/table';
+import Button from 'antd/lib/button';
+import Form from 'antd/lib/form';
+import TextField from 'material-ui/TextField';
+import Snackbar from 'material-ui/Snackbar';
 import Checkbox from 'material-ui/Checkbox';
-import Info from 'material-ui/svg-icons/action/info';
-import ReactTooltip from 'react-tooltip';
 import PropTypes from 'prop-types';
+
+const EditableContext = React.createElement();
+// eslint-disable-next-line
+const EditableRow = ({ form, index, ...props }) => (
+  <EditableContext.Provider value={form}>
+    <tr {...props} />
+  </EditableContext.Provider>
+);
+
+const EditableFormRow = Form.create()(EditableRow);
 
 class UIView extends Component {
   constructor(props) {
@@ -21,20 +24,97 @@ class UIView extends Component {
     if (this.props.configure) {
       code = this.props.configure.code;
     }
+    this.columns = [
+      {
+        title: 'Website',
+        dataIndex: 'name',
+        width: '30%',
+        editable: true,
+      },
+      {
+        title: 'Date Added',
+        dataIndex: 'date',
+        width: '55%',
+      },
+      {
+        title: 'Operation',
+        dataIndex: 'operation',
+        render: (text, record) => {
+          return <a onClick={() => this.handleDelete(record.key)}>Delete</a>;
+        },
+      },
+    ];
     this.state = {
-      tableData: [],
+      dataSource: [],
+      websiteName: '',
+      count: 0,
       code,
       myDevices: false, // use chatbot in your devices
       publicDevices: false, // allow chatbot to be used in other people's devices
       includeSusiSkills: true,
+      limitSites: false,
+      openSnackbar: false,
+      msgSnackbar: '',
     };
   }
+
+  handleDelete = key => {
+    const dataSource = [...this.state.dataSource];
+    this.setState({ dataSource: dataSource.filter(item => item.key !== key) });
+  };
+
+  handleAdd = () => {
+    const { count, dataSource } = this.state;
+    let date = new Date();
+    let name = this.state.websiteName;
+    if (name !== '') {
+      const newData = {
+        key: count,
+        name: name,
+        date: date.toString(),
+      };
+      this.setState({
+        dataSource: [...dataSource, newData],
+        count: count + 1,
+        websiteName: '',
+      });
+    } else {
+      this.setState({
+        openSnackbar: true,
+        msgSnackbar: 'Please enter domain name of the website.',
+      });
+    }
+  };
+
+  handleSave = row => {
+    const newData = [...this.state.dataSource];
+    const index = newData.findIndex(item => row.key === item.key);
+    const item = newData[index];
+    newData.splice(index, 1, {
+      ...item,
+      ...row,
+    });
+    this.setState({ dataSource: newData });
+  };
 
   componentDidMount = () => {
     this.generateUIData();
   };
 
   generateUIData = () => {
+    const enableOnOwnSitesOnly = this.state.code.match(
+      /^::allow_bot_only_on_own_sites\s(.*)$/m,
+    );
+    if (enableOnOwnSitesOnly) {
+      let limitSites = false;
+      if (enableOnOwnSitesOnly[1] === 'yes') {
+        limitSites = true;
+      }
+      this.setState({
+        limitSites,
+      });
+    }
+
     const enableDefaultSkillsMatch = this.state.code.match(
       /^::enable_default_skills\s(.*)$/m,
     );
@@ -73,30 +153,11 @@ class UIView extends Component {
         publicDevices,
       });
     }
+  };
 
-    let tableData = this.state.tableData;
-    tableData = [];
-    let newCode = this.state.code;
-    let websiteData = newCode
-      .split('::sites_enabled')[1]
-      .split('::sites_disabled');
-    let enabledSites = websiteData[0].split(',');
-    let noOfEnabledSites = enabledSites.length;
-    let disabledSites = websiteData[1].split('\n')[0].split(',');
-    let noOfDisabledSites = disabledSites.length;
-    for (let i = 1; i <= noOfEnabledSites + noOfDisabledSites; i++) {
-      tableData[i - 1] = {
-        id: i.toString(),
-        name:
-          i <= noOfEnabledSites
-            ? enabledSites[i - 1].trim()
-            : disabledSites[i - noOfEnabledSites - 1].trim(),
-        last: 'Feb 19, 2018 13:00 hrs',
-        status: i <= noOfEnabledSites ? 1 : 2,
-      };
-    }
+  handleChangeWebsiteName = event => {
     this.setState({
-      tableData: tableData,
+      websiteName: event.target.value,
     });
   };
 
@@ -156,6 +217,22 @@ class UIView extends Component {
     );
   };
 
+  handleChangeLimitSites = () => {
+    let value = !this.state.limitSites;
+    let code = this.state.code;
+    code = code.replace(
+      /^::allow_bot_only_on_own_sites\s(.*)$/m,
+      `::allow_bot_only_on_own_sites ${value ? 'yes' : 'no'}`,
+    );
+    this.setState(
+      {
+        limitSites: value,
+        code,
+      },
+      () => this.sendInfoToProps(),
+    );
+  };
+
   sendInfoToProps = () => {
     this.props.configure.sendInfoToProps({
       code: this.state.code,
@@ -163,56 +240,67 @@ class UIView extends Component {
   };
 
   render() {
+    const { dataSource } = this.state;
+    const components = {
+      body: {
+        row: EditableFormRow,
+      },
+    };
+    const columns = this.columns.map(col => {
+      if (!col.editable) {
+        return col;
+      }
+      return {
+        ...col,
+        onCell: record => ({
+          record,
+          editable: col.editable,
+          dataIndex: col.dataIndex,
+          title: col.title,
+          handleSave: this.handleSave,
+        }),
+      };
+    });
     return (
-      <div className="table-wrap">
-        <Table className="table-root" selectable={false}>
-          <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
-            <TableRow>
-              <TableHeaderColumn>Website</TableHeaderColumn>
-              <TableHeaderColumn>
-                <Info
-                  style={styles.helpIcon}
-                  onMouseEnter={this.handleOpenLastActiveInfo}
-                  onMouseLeave={this.handleCloseLastActiveInfo}
-                  data-tip="Last time the bot was used"
-                />
-                {this.state.lastActiveInfo ? (
-                  <ReactTooltip effect="solid" place="bottom" />
-                ) : null}
-                Last active
-              </TableHeaderColumn>
-              <TableHeaderColumn>Status</TableHeaderColumn>
-            </TableRow>
-          </TableHeader>
-          <TableBody displayRowCheckbox={false}>
-            {this.state.tableData.map((item, index) => {
-              if (item.name) {
-                return (
-                  <TableRow key={index}>
-                    <TableRowColumn style={{ fontSize: '16px' }}>
-                      {item.name}
-                    </TableRowColumn>
-                    <TableRowColumn style={{ fontSize: '16px' }}>
-                      {item.last}
-                    </TableRowColumn>
-                    <TableRowColumn>
-                      <SelectField
-                        floatingLabelText="Status"
-                        fullWidth={true}
-                        value={item.status}
-                      >
-                        <MenuItem value={1} primaryText="Enable" />
-                        <MenuItem value={2} primaryText="Disable" />
-                      </SelectField>
-                    </TableRowColumn>
-                  </TableRow>
-                );
-              }
-              return null;
-            })}
-          </TableBody>
-        </Table>
-        <div style={{ padding: '20px 0px' }}>
+      <div>
+        <div className="table-wrap">
+          <Checkbox
+            label="Allow bot only on own site"
+            labelPosition="right"
+            checked={this.state.limitSites}
+            labelStyle={{ fontSize: '14px' }}
+            iconStyle={{ fill: 'rgb(66, 133, 244)' }}
+            onCheck={this.handleChangeLimitSites}
+          />
+          {this.state.limitSites ? (
+            <div style={{ padding: '20px 0px' }}>
+              <TextField
+                name="Website Name"
+                value={this.state.websiteName}
+                onChange={this.handleChangeWebsiteName}
+                style={styles.nameField}
+                inputStyle={styles.inputStyle}
+                placeholder="Domain Name"
+                underlineStyle={{ display: 'none' }}
+              />
+              <Button
+                onClick={this.handleAdd}
+                type="primary"
+                style={{ marginBottom: 16, marginLeft: '15px', height: '36px' }}
+              >
+                Add a website
+              </Button>
+              <Table
+                components={components}
+                rowClassName={() => 'editable-row'}
+                bordered
+                dataSource={dataSource}
+                columns={columns}
+              />
+            </div>
+          ) : null}
+        </div>
+        <div style={{ padding: '0px 0px 20px 0px' }}>
           <Checkbox
             label="Include SUSI default skills"
             labelPosition="right"
@@ -238,6 +326,14 @@ class UIView extends Component {
             onCheck={this.handleChangeIncludeInPublicDevices}
           />
         </div>
+        <Snackbar
+          open={this.state.openSnackbar}
+          message={this.state.msgSnackbar}
+          autoHideDuration={2000}
+          onRequestClose={() => {
+            this.setState({ openSnackbar: false });
+          }}
+        />
       </div>
     );
   }
@@ -252,6 +348,18 @@ const styles = {
     width: '20px',
     cursor: 'pointer',
     color: 'rgb(158, 158, 158)',
+  },
+  nameField: {
+    height: '38px',
+    borderRadius: 4,
+    border: '1px solid #ced4da',
+    fontSize: 15,
+    padding: '0px 10px',
+    width: '272px',
+  },
+  inputStyle: {
+    height: '35px',
+    marginBottom: '10px',
   },
 };
 
