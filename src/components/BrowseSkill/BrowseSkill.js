@@ -530,7 +530,7 @@ export default class BrowseSkill extends React.Component {
                   style={styles.sidebarMenuItem}
                 />
               )}
-              <Divider style={{ margin: '8px 0' }} />
+              <Divider style={{ marginLeft: '16px', marginRight: '16px' }} />
 
               {this.props.routeType === 'category' ? (
                 <div className="category-sidebar-section">
@@ -556,7 +556,7 @@ export default class BrowseSkill extends React.Component {
                 </div>
               )}
 
-              <Divider style={{ margin: '8px 0' }} />
+              <Divider style={{ marginLeft: '16px', marginRight: '16px' }} />
               {/* Refine by rating section*/}
               <Subheader style={styles.sidebarSubheader}>Refine by</Subheader>
 
