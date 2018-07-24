@@ -15,7 +15,10 @@ import SkillFeedbackCard from '../SkillFeedbackCard/SkillFeedbackCard';
 import Footer from '../Footer/Footer.react';
 import { FloatingActionButton, Paper } from 'material-ui';
 import CircularProgress from 'material-ui/CircularProgress';
+import Dialog from 'material-ui/Dialog';
 import Snackbar from 'material-ui/Snackbar';
+import FlatButton from 'material-ui/FlatButton';
+import TextField from 'material-ui/TextField';
 import Ratings from 'react-ratings-declarative';
 
 // Static Assets
@@ -69,6 +72,7 @@ class SkillListing extends Component {
       examples: '',
       descriptions: '',
       skill_name: '',
+      skillTag: '',
       positive_rating: 0,
       negative_rating: 0,
       last_modified_time: '',
@@ -89,6 +93,8 @@ class SkillListing extends Component {
       skill_feedback: [],
       device_usage_data: [],
       ratings_over_time: [],
+      showReportDialog: false,
+      feedbackMessage: '',
       editStatus: true,
     };
 
@@ -424,7 +430,12 @@ class SkillListing extends Component {
     this.setState({
       descriptions,
     });
-
+    this.setState({
+      skillModel: skillData.model,
+      skillGroup: skillData.group,
+      skillLanguage: skillData.language,
+      skillTag: skillData.skill_tag,
+    });
     let skill_name =
       skillData.skill_name === null ? 'No Name Given' : skillData.skill_name;
     this.setState({
@@ -598,6 +609,50 @@ class SkillListing extends Component {
     this.setState({ showAuthorSkills: false });
   };
 
+  handleReportToggle = () => {
+    this.setState({
+      showReportDialog: !this.state.showReportDialog,
+    });
+  };
+
+  handleReportSubmit = () => {
+    let reportUrl = `${urls.API_URL}/cms/reportSkill.json?model=${
+      this.state.skillModel
+    }&group=${this.state.skillGroup}&language=${
+      this.state.skillLanguage
+    }&skill=${this.state.skillTag}&feedback=${
+      this.state.feedbackMessage
+    }&access_token=${cookies.get('loggedIn')}`;
+    let self = this;
+    $.ajax({
+      url: reportUrl,
+      dataType: 'jsonp',
+      jsonp: 'callback',
+      crossDomain: true,
+      success: function(data) {
+        self.handleReportToggle();
+        console.log(data);
+        self.setState({
+          openSnack: true,
+          snackMessage: 'Skill has been reported successfully.',
+        });
+      },
+      error: function(e) {
+        self.handleReportToggle();
+        self.setState({
+          openSnack: true,
+          snackMessage: 'Failed to report the skill.',
+        });
+      },
+    });
+  };
+
+  saveReportFeedback = feedbackMessage => {
+    this.setState({
+      feedbackMessage,
+    });
+  };
+
   testExample = (e, exampleText) => {
     let link = 'https://chat.susi.ai/?testExample=' + exampleText;
     window.open(link, '_blank');
@@ -626,6 +681,22 @@ class SkillListing extends Component {
         display: 'inline-block',
       },
     };
+
+    const reportDialogActions = [
+      <FlatButton
+        label="Cancel"
+        key="cancel"
+        style={{ color: 'rgb(66, 133, 244)' }}
+        onClick={this.handleReportToggle}
+      />,
+      <FlatButton
+        label="Submit"
+        key="submit"
+        style={{ color: 'rgb(66, 133, 244)' }}
+        onClick={this.handleReportSubmit}
+      />,
+    ];
+
     let renderElement = null;
     let oldGroupValue = this.props.location.pathname.split('/')[1];
     let oldLanguageValue = this.props.location.pathname.split('/')[3];
@@ -845,14 +916,44 @@ class SkillListing extends Component {
                       <td>Updated on: </td>
                       <td>{` ${parseDate(this.state.last_modified_time)}`}</td>
                     </tr>
-                    {/*
+                    {cookies.get('loggedIn') ? (
                       <tr>
                         <td>Report: </td>
                         <td>
-                          <Link to="/Report">Flag as inappropriate</Link>
+                          <div
+                            style={{ color: '#108ee9', cursor: 'pointer' }}
+                            onClick={this.handleReportToggle}
+                          >
+                            Flag as inappropriate
+                          </div>
                         </td>
+                        <Dialog
+                          title="Flag as inappropriate"
+                          actions={reportDialogActions}
+                          modal={false}
+                          open={this.state.showReportDialog}
+                          onRequestClose={this.handleReportToggle}
+                        >
+                          <TextField
+                            hintText="Leave a feedback message"
+                            floatingLabelText="Feedback message"
+                            multiLine
+                            floatingLabelFocusStyle={{
+                              color: 'rgb(66, 133, 244)',
+                            }}
+                            underlineFocusStyle={{
+                              borderColor: 'rgb(66, 133, 244)',
+                            }}
+                            fullWidth
+                            onChange={(event, val) =>
+                              this.saveReportFeedback(val)
+                            }
+                          />
+                        </Dialog>
                       </tr>
-                    */}
+                    ) : (
+                      ''
+                    )}
                     <tr>
                       <td>Content Rating: </td> <td>4+ age</td>
                     </tr>
@@ -874,6 +975,7 @@ class SkillListing extends Component {
               skill_feedback={this.state.skill_feedback}
               postFeedback={this.postFeedback}
               deleteFeedback={this.deleteFeedback}
+              skill_language={this.languageValue}
             />
             <SkillUsageCard
               skill_usage={this.state.skill_usage}
@@ -904,7 +1006,7 @@ class SkillListing extends Component {
         <Snackbar
           open={this.state.openSnack}
           message={this.state.snackMessage}
-          autoHideDuration={4000}
+          autoHideDuration={3000}
           onRequestClose={this.handleSnackRequestClose}
         />
         <Footer />

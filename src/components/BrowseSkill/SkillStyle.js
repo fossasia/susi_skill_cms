@@ -140,6 +140,12 @@ const styles = {
     lineHeight: '24px',
     fontSize: '14px',
   },
+  categorySidebarMenuItem: {
+    minHeight: '24px',
+    lineHeight: '24px',
+    fontSize: '14px',
+    paddingLeft: '8px',
+  },
   mobileMenuItem: {
     minHeight: '24px',
     lineHeight: '24px',
