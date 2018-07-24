@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import CircleImage from '../CircleImage/CircleImage';
 
 import styles from '../BrowseSkill/SkillStyle';
-
+import urls from '../../Utils/urls';
 class SkillCardGrid extends Component {
   constructor(props) {
     super(props);
@@ -45,15 +45,9 @@ class SkillCardGrid extends Component {
         skill_name = 'Name not available';
       }
       if (skill.image) {
-        image =
-          'https://raw.githubusercontent.com/fossasia/susi_skill_data/master/models/' +
-          skill.model +
-          '/' +
-          skill.group +
-          '/' +
-          skill.language +
-          '/' +
-          skill.image;
+        image = `${urls.API_URL}/cms/getImage.png?model=${
+          skill.model
+        }&language=${skill.language}&group=${skill.group}&image=${skill.image}`;
       } else {
         image = '';
       }

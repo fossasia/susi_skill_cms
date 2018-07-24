@@ -70,14 +70,11 @@ class AuthorSkills extends Component {
               let temp = name.split('_');
               name = temp[0] + ' ' + temp[1];
             }
-
-            let image =
-              'https://raw.githubusercontent.com/fossasia/susi_skill_data/master/models/general/' +
-              parse[4] +
-              '/' +
-              parse[5] +
-              '/images/' +
-              parse[6].split('.')[0];
+            let image = `${
+              urls.API_URL
+            }/cms/getImage.png?model=general&language=${parse[5]}&group=${
+              parse[4]
+            }&image=${'/images/' + parse[6].split('.')[0]}`;
             let image1 = image + '.png';
             let image2 = image + '.jpg';
 

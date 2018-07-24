@@ -7,6 +7,7 @@ import CircleImage from '../CircleImage/CircleImage';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import NavigationChevronLeft from 'material-ui/svg-icons/navigation/chevron-left';
 import NavigationChevronRight from 'material-ui/svg-icons/navigation/chevron-right';
+import urls from '../../Utils/urls';
 
 import styles from './ScrollStyle';
 
@@ -114,15 +115,9 @@ class SkillCardScrollList extends Component {
         skill_name = 'Name not available';
       }
       if (skill.image) {
-        image =
-          'https://raw.githubusercontent.com/fossasia/susi_skill_data/master/models/' +
-          skill.model +
-          '/' +
-          skill.group +
-          '/' +
-          skill.language +
-          '/' +
-          skill.image;
+        image = `${urls.API_URL}/cms/getImage.png?model=${
+          skill.model
+        }&language=${skill.language}&group=${skill.group}&image=${skill.image}`;
       } else {
         image = '';
       }
