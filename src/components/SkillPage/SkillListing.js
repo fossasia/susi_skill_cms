@@ -45,15 +45,6 @@ import './SkillListing.css';
 
 const cookies = new Cookies();
 
-const defaultNullSkillList = [
-  'image',
-  'author',
-  'author_url',
-  'developer_privacy_policy',
-  'terms_of_use',
-  'dynamic_content',
-  'examples',
-];
 let urlCode, name;
 
 class SkillListing extends Component {
@@ -413,41 +404,40 @@ class SkillListing extends Component {
       imgUrl =
         'https://pbs.twimg.com/profile_images/904617517489979392/6Hff65Th.jpg';
     }
-    this.setState({
-      imgUrl,
-    });
-
-    defaultNullSkillList.forEach(data => {
-      this.setState({
-        [data]: skillData[data],
-      });
-    });
-
     let descriptions =
       skillData.descriptions === null
         ? 'No Description Provided'
         : skillData.descriptions;
+    let skill_name =
+      skillData.skill_name === null ? 'No Name Given' : skillData.skill_name;
+    let {
+      image,
+      author,
+      author_url,
+      developer_privacy_policy,
+      terms_of_use,
+      dynamic_content,
+      examples,
+    } = skillData;
+    name = skill_name;
     this.setState({
+      imgUrl,
       descriptions,
-    });
-    this.setState({
+      skill_name,
+      last_modified_time: skillData.lastModifiedTime,
+      last_access_time: skillData.lastAccessTime,
+      dataReceived: true,
+      image,
+      author,
+      author_url,
+      developer_privacy_policy,
+      terms_of_use,
+      dynamic_content,
+      examples,
       skillModel: skillData.model,
       skillGroup: skillData.group,
       skillLanguage: skillData.language,
       skillTag: skillData.skill_tag,
-    });
-    let skill_name =
-      skillData.skill_name === null ? 'No Name Given' : skillData.skill_name;
-    this.setState({
-      skill_name,
-    });
-    name = skill_name;
-    this.setState({
-      last_modified_time: skillData.lastModifiedTime,
-      last_access_time: skillData.lastAccessTime,
-    });
-    this.setState({
-      dataReceived: true,
     });
   };
 
