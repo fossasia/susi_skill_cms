@@ -332,11 +332,6 @@ export default class ListUser extends Component {
                 autoWidth={false}
               >
                 <MenuItem
-                  primaryText="BOT"
-                  value="bot"
-                  className="setting-item"
-                />
-                <MenuItem
                   primaryText="USER"
                   value="user"
                   className="setting-item"
