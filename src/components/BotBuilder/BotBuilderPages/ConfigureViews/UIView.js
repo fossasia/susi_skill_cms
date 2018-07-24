@@ -56,11 +56,15 @@ class UIView extends Component {
       openSnackbar: false,
       msgSnackbar: '',
     };
+    this.dataSource = [];
   }
 
   handleDelete = key => {
     const dataSource = [...this.state.dataSource];
-    this.setState({ dataSource: dataSource.filter(item => item.key !== key) });
+    this.setState(
+      { dataSource: dataSource.filter(item => item.key !== key) },
+      () => this.generateCode(),
+    );
   };
 
   handleAdd = () => {
@@ -73,17 +77,54 @@ class UIView extends Component {
         name: name,
         date: date.toString(),
       };
-      this.setState({
-        dataSource: [...dataSource, newData],
-        count: count + 1,
-        websiteName: '',
-      });
+      this.setState(
+        {
+          dataSource: [...dataSource, newData],
+          count: count + 1,
+          websiteName: '',
+        },
+        () => this.generateCode(),
+      );
     } else {
       this.setState({
         openSnackbar: true,
         msgSnackbar: 'Please enter domain name of the website.',
       });
     }
+  };
+
+  generateCode = () => {
+    let code = this.state.code;
+    let data = this.state.dataSource;
+    let websites = '';
+    data.map(dataItem => {
+      if (dataItem.name !== '') {
+        websites += dataItem.name.trim();
+        if (dataItem.key < data.length - 1) {
+          websites += ', ';
+        }
+      }
+    });
+    code = code.replace(
+      /^::allowed_sites\s(.*)$/m,
+      `::allowed_sites ${websites}`,
+    );
+    this.setState(
+      {
+        code,
+      },
+      () => this.sendInfoToProps(),
+    );
+  };
+
+  handleAddFromCode = (websiteName, websiteCount) => {
+    let date = new Date();
+    const newData = {
+      key: websiteCount,
+      name: websiteName,
+      date: date.toString(),
+    };
+    this.dataSource = [...this.dataSource, newData];
   };
 
   handleSave = row => {
@@ -112,6 +153,19 @@ class UIView extends Component {
       }
       this.setState({
         limitSites,
+      });
+    }
+
+    if (enableOnOwnSitesOnly[1] === 'yes') {
+      const allowedSites = this.state.code.match(/^::allowed_sites\s(.*)$/m);
+      const sites = allowedSites[1].split(',');
+      for (let i = 0; i < sites.length; i++) {
+        this.handleAddFromCode(sites[i], i);
+      }
+      let data = this.dataSource;
+      this.setState({
+        dataSource: data,
+        count: sites.length,
       });
     }
 
