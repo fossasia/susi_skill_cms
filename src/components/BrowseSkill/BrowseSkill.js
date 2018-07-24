@@ -62,7 +62,7 @@ function createCategoryMenuItem(categoryName) {
       key={categoryName}
       primaryText={categoryName}
       containerElement={<Link to={linkValue} />}
-      style={styles.sidebarMenuItem}
+      style={styles.categorySidebarMenuItem}
     />
   );
 }
@@ -374,7 +374,8 @@ export default class BrowseSkill extends React.Component {
 
   refineByRating = (skills, ratingRefine) => {
     return skills.filter(
-      skill => skill.skill_rating.stars.avg_star >= ratingRefine,
+      skill =>
+        skill.skill_rating && skill.skill_rating.stars.avg_star >= ratingRefine,
     );
   };
 
@@ -421,13 +422,7 @@ export default class BrowseSkill extends React.Component {
       );
     }
 
-    let showSortBy =
-      this.props.routeType ||
-      this.state.searchQuery.length > 0 ||
-      this.state.ratingRefine ||
-      this.state.timeFilter;
-
-    let showSkillsMenu =
+    let metricsHidden =
       this.props.routeType ||
       this.state.searchQuery.length > 0 ||
       this.state.ratingRefine ||
@@ -530,7 +525,7 @@ export default class BrowseSkill extends React.Component {
                   style={styles.sidebarMenuItem}
                 />
               )}
-              <Divider style={{ margin: '8px 0' }} />
+              <Divider style={{ marginLeft: '16px', marginRight: '16px' }} />
 
               {this.props.routeType === 'category' ? (
                 <div className="category-sidebar-section">
@@ -552,15 +547,15 @@ export default class BrowseSkill extends React.Component {
                   <Subheader style={styles.sidebarSubheader}>
                     SUSI Skills
                   </Subheader>
-                  <div style={{ paddingLeft: '8px' }}>{groups}</div>
+                  <div>{groups}</div>
                 </div>
               )}
 
-              <Divider style={{ margin: '8px 0' }} />
+              <Divider style={{ marginLeft: '16px', marginRight: '16px' }} />
               {/* Refine by rating section*/}
               <Subheader style={styles.sidebarSubheader}>Refine by</Subheader>
 
-              {showSkillsMenu && (
+              {metricsHidden && (
                 <div
                   style={{
                     marginBottom: '12px',
@@ -715,7 +710,7 @@ export default class BrowseSkill extends React.Component {
                   value={this.state.searchQuery}
                 />
               </div>
-              {showSortBy && (
+              {metricsHidden && (
                 <SelectField
                   floatingLabelText="Sort by"
                   value={this.state.filter}
@@ -817,7 +812,7 @@ export default class BrowseSkill extends React.Component {
               >
                 {this.languageMenuItems(languageValue)}
               </SelectField>
-              {this.props.routeType && (
+              {metricsHidden && (
                 <RadioButtonGroup
                   name="view_type"
                   defaultSelected="list"
