@@ -28,7 +28,7 @@ class Logout extends Component {
     deleteCookie('loggedIn', { domain: cookieDomain, path: '/' });
     deleteCookie('serverUrl', { domain: cookieDomain, path: '/' });
     deleteCookie('emailId', { domain: cookieDomain, path: '/' });
-    deleteCookie('showAdmin', { path: '/' });
+    deleteCookie('showAdmin', { domain: cookieDomain, path: '/' });
     deleteCookie('username', { domain: cookieDomain, path: '/' });
     this.props.history.push('/');
     window.location.reload();
