@@ -39,6 +39,7 @@ const styles = {
     marginBottom: '6px',
     border: '1px',
     height: '20px',
+    width: 'fit-content',
   },
   example: {
     whiteSpace: 'normal',

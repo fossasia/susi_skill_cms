@@ -165,10 +165,30 @@ class SkillCardScrollList extends Component {
                 <div style={styles.example}>&quot;{examples}&quot;</div>
               ) : null}
             </div>
-            <div style={styles.name}>
-              <span>{skill_name}</span>
-            </div>
           </Link>
+          <div style={styles.name}>
+            <Link
+              to={{
+                pathname:
+                  '/' +
+                  skill.group +
+                  '/' +
+                  skill.skill_tag +
+                  '/' +
+                  this.props.languageValue,
+                state: {
+                  url: this.props.skillUrl,
+                  element: el,
+                  name: el,
+                  modelValue: this.props.modelValue,
+                  groupValue: skill.group,
+                  languageValue: this.props.languageValue,
+                },
+              }}
+            >
+              <span>{skill_name}</span>
+            </Link>
+          </div>
           <div style={styles.rating}>
             <Ratings
               rating={average_rating || 0}
