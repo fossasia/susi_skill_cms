@@ -36,6 +36,7 @@ import 'brace/theme/terminal';
 import CircleImage from '../CircleImage/CircleImage';
 import EditBtn from 'material-ui/svg-icons/editor/mode-edit';
 import VersionBtn from 'material-ui/svg-icons/action/history';
+import DeleteBtn from 'material-ui/svg-icons/action/delete';
 import ReactTooltip from 'react-tooltip';
 import colors from '../../Utils/colors';
 import urls from '../../Utils/urls';
@@ -87,6 +88,7 @@ class SkillListing extends Component {
       showReportDialog: false,
       feedbackMessage: '',
       editStatus: true,
+      showDeleteDialog: false,
     };
 
     let clickedSkill = this.props.location.pathname.split('/')[2];
@@ -643,6 +645,52 @@ class SkillListing extends Component {
     });
   };
 
+  handleDeleteToggle = () => {
+    this.setState({
+      showDeleteDialog: !this.state.showDeleteDialog,
+    });
+  };
+
+  deleteSkill = () => {
+    this.setState({
+      dataReceived: false,
+    });
+    let deleteUrl =
+      `${urls.API_URL}/cms/deleteSkill.json?` +
+      'model=' +
+      this.state.skillModel +
+      '&group=' +
+      this.state.skillGroup +
+      '&language=' +
+      this.state.skillLanguage +
+      '&skill=' +
+      this.state.skill_name +
+      '&access_token=' +
+      cookies.get('loggedIn');
+    $.ajax({
+      url: deleteUrl,
+      dataType: 'jsonp',
+      jsonp: 'callback',
+      crossDomain: true,
+      success: function(data) {
+        // redirect to the index page since the skill page won't be accessible
+        this.handleDeleteToggle();
+        this.setState({
+          dataReceived: true,
+        });
+        this.props.history.push('/');
+      }.bind(this),
+      error: function(err) {
+        console.log(err);
+        this.handleReportToggle();
+        this.setState({
+          openSnack: true,
+          snackMessage: 'Failed to delete the skill.',
+        });
+      }.bind(this),
+    });
+  };
+
   testExample = (e, exampleText) => {
     let link = 'https://chat.susi.ai/?testExample=' + exampleText;
     window.open(link, '_blank');
@@ -687,6 +735,21 @@ class SkillListing extends Component {
       />,
     ];
 
+    const deleteDialogActions = [
+      <FlatButton
+        label="Delete"
+        key="delete"
+        style={{ color: 'rgb(66, 133, 244)' }}
+        onClick={this.deleteSkill}
+      />,
+      <FlatButton
+        label="Cancel"
+        key="cancel"
+        style={{ color: 'rgb(66, 133, 244)' }}
+        onClick={this.handleDeleteToggle}
+      />,
+    ];
+
     let renderElement = null;
     let oldGroupValue = this.props.location.pathname.split('/')[1];
     let oldLanguageValue = this.props.location.pathname.split('/')[3];
@@ -724,55 +787,87 @@ class SkillListing extends Component {
               )}
             </div>
             <div className="linkButtons">
-              <Link
-                to={{
-                  pathname:
-                    '/' +
-                    this.groupValue +
-                    '/' +
-                    this.name +
-                    '/edit/' +
-                    this.languageValue,
-                  state: {
-                    url: urlCode,
-                    name: name,
-                    oldExpertValue: this.name,
-                    oldGroupValue: oldGroupValue,
-                    oldLanguageValue: oldLanguageValue,
-                    oldImageUrl: oldImageValue,
-                    oldImageValue: imageValue,
-                  },
-                }}
-              >
-                <FloatingActionButton
-                  data-tip="Edit Skill"
-                  backgroundColor={colors.header}
-                >
-                  <EditBtn />
-                </FloatingActionButton>
-                <ReactTooltip effect="solid" place="bottom" />
-              </Link>
-              <Link
-                to={{
-                  pathname:
-                    '/' +
-                    this.groupValue +
-                    '/' +
-                    this.name +
-                    '/versions/' +
-                    this.languageValue,
-                }}
-              >
-                <div className="skillVersionBtn">
+              {cookies.get('showAdmin') ? (
+                <div className="skillDeleteBtn">
                   <FloatingActionButton
-                    data-tip="Skill Versions"
+                    onClick={this.handleDeleteToggle}
+                    data-tip="Delete Skill"
                     backgroundColor={colors.header}
                   >
-                    <VersionBtn />
+                    <DeleteBtn />
                   </FloatingActionButton>
                   <ReactTooltip effect="solid" place="bottom" />
+                  <Dialog
+                    title="Delete Skill"
+                    actions={deleteDialogActions}
+                    modal={false}
+                    open={this.state.showDeleteDialog}
+                    onRequestClose={this.handleDeleteToggle}
+                  >
+                    <div>
+                      Are you sure about deleting{' '}
+                      <span style={{ fontWeight: 'bold' }}>
+                        {this.state.skill_name}
+                      </span>?
+                    </div>
+                  </Dialog>
                 </div>
-              </Link>
+              ) : (
+                ''
+              )}
+              <div>
+                <Link
+                  to={{
+                    pathname:
+                      '/' +
+                      this.groupValue +
+                      '/' +
+                      this.name +
+                      '/edit/' +
+                      this.languageValue,
+                    state: {
+                      url: urlCode,
+                      name: name,
+                      oldExpertValue: this.name,
+                      oldGroupValue: oldGroupValue,
+                      oldLanguageValue: oldLanguageValue,
+                      oldImageUrl: oldImageValue,
+                      oldImageValue: imageValue,
+                    },
+                  }}
+                >
+                  <FloatingActionButton
+                    data-tip="Edit Skill"
+                    backgroundColor={colors.header}
+                  >
+                    <EditBtn />
+                  </FloatingActionButton>
+                  <ReactTooltip effect="solid" place="bottom" />
+                </Link>
+              </div>
+              <div>
+                <Link
+                  to={{
+                    pathname:
+                      '/' +
+                      this.groupValue +
+                      '/' +
+                      this.name +
+                      '/versions/' +
+                      this.languageValue,
+                  }}
+                >
+                  <div className="skillVersionBtn">
+                    <FloatingActionButton
+                      data-tip="Skill Versions"
+                      backgroundColor={colors.header}
+                    >
+                      <VersionBtn />
+                    </FloatingActionButton>
+                    <ReactTooltip effect="solid" place="bottom" />
+                  </div>
+                </Link>
+              </div>
             </div>
             <div className="meta">
               <h1 className="name">

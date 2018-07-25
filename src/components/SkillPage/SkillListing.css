@@ -58,23 +58,17 @@ abbr[title] {
 }
 
 .linkButtons {
-  display: inline;
+  display: flex;
   float: right;
   margin-top: 10px;
 }
 
-.skillEditBtn {
-  display: inline;
-  float: left;
+.linkButtons > div {
+  margin: 5px;
 }
 
 .skillEditBtn > button {
     background-color: #4285f4;
-}
-
-.skillVersionBtn {
-  display: inline;
-  margin-left: 10px;
 }
 
 .avatar-img {
