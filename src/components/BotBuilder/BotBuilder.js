@@ -44,11 +44,13 @@ class BotBuilder extends React.Component {
           this.showChatbots(data.chatbots);
         }.bind(this),
         error: function(error) {
-          console.log(error);
-          this.setState({
-            openSnackbar: true,
-            msgSnackbar: "Couldn't get your chatbots. Please reload the page.",
-          });
+          if (error.status !== 404) {
+            this.setState({
+              openSnackbar: true,
+              msgSnackbar:
+                "Couldn't get your chatbots. Please reload the page.",
+            });
+          }
         }.bind(this),
       });
     }
