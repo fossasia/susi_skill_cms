@@ -5,6 +5,12 @@ import PropTypes from 'prop-types';
 import CircleImage from '../CircleImage/CircleImage';
 import styles from './SkillCardStyle';
 import urls from '../../Utils/urls';
+
+function testExample(e, exampleText) {
+  let link = 'https://chat.susi.ai/?testExample=' + exampleText;
+  window.open(link, '_blank');
+}
+
 function createListCard(
   el,
   skillName,
@@ -134,7 +140,11 @@ function createListCard(
           <div style={styles.exampleSection}>
             {examples.map((eg, index) => {
               return (
-                <div key={index} style={styles.example}>
+                <div
+                  key={index}
+                  style={styles.example}
+                  onClick={event => testExample(event, eg)}
+                >
                   &quot;{eg}&quot;
                 </div>
               );

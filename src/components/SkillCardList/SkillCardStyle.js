@@ -103,6 +103,7 @@ const styles = {
     alignItems: 'center',
     textAlign: 'center',
     maxWidth: 260,
+    cursor: 'pointer',
   },
   exampleSection: {
     float: 'left',
