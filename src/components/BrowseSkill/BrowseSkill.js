@@ -91,6 +91,7 @@ export default class BrowseSkill extends React.Component {
       topUsedSkills: [],
       topFeedbackSkills: [],
       latestSkills: [],
+      topGames: [],
       ratingRefine: null,
       timeFilter: null,
       viewType: 'list',
@@ -345,6 +346,7 @@ export default class BrowseSkill extends React.Component {
           topUsedSkills: data.metrics.usage,
           latestSkills: data.metrics.latest,
           topFeedbackSkills: data.metrics.feedback,
+          topGames: data.metrics.topGames,
         });
       },
       error: function(e) {
@@ -873,7 +875,7 @@ export default class BrowseSkill extends React.Component {
                       style={styles.metricsHeader}
                       className="metrics-header"
                     >
-                      <h4>{'"SUSI, What are your highest rated skills?"'}</h4>
+                      <h4>{'"SUSI, what are your highest rated skills?"'}</h4>
                     </div>
                     {/* Scroll Id must be unique for all instances of SkillCardList*/}
                     {!this.props.routeType && (
@@ -954,6 +956,30 @@ export default class BrowseSkill extends React.Component {
                       <SkillCardScrollList
                         scrollId="topFeedback"
                         skills={this.state.topFeedbackSkills}
+                        modelValue={this.state.modelValue}
+                        languageValue={this.state.languageValue}
+                        skillUrl={this.state.skillUrl}
+                      />
+                    )}
+                  </div>
+                ) : null}
+
+                {this.state.topGames &&
+                !this.state.searchQuery.length &&
+                !this.state.ratingRefine &&
+                !this.state.timeFilter ? (
+                  <div style={metricsContainerStyle}>
+                    <div
+                      style={styles.metricsHeader}
+                      className="metrics-header"
+                    >
+                      <h4>{'"SUSI, what are your top games?"'}</h4>
+                    </div>
+                    {/* Scroll Id must be unique for all instances of SkillCardList*/}
+                    {!this.props.routeType && (
+                      <SkillCardScrollList
+                        scrollId="topGames"
+                        skills={this.state.topGames}
                         modelValue={this.state.modelValue}
                         languageValue={this.state.languageValue}
                         skillUrl={this.state.skillUrl}
