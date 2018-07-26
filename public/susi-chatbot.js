@@ -1,4 +1,5 @@
 var susi_skills_deployed_url = "https://skills.susi.ai/";
+var api_url = "https://api.susi.ai";
 //Appending CSS
 var headTag = document.getElementsByTagName("head")[0];
 var link  = document.createElement('link');
@@ -14,7 +15,10 @@ link.href = susi_skills_deployed_url+'chat-style.css';
 link.media = 'all';
 headTag.appendChild(link);
 var script_tag = document.getElementById("susi-bot-script");
-var access_token = script_tag.getAttribute("data-token");
+var userid = script_tag.getAttribute("data-userid");
+var group = script_tag.getAttribute("data-group");
+var language = script_tag.getAttribute("data-language");
+var skill = script_tag.getAttribute("data-skill");
 var theme_settings = script_tag.getAttribute("data-theme")?script_tag.getAttribute("data-theme"):null;
 var botWindow = script_tag.getAttribute("data-bot-type")?(script_tag.getAttribute("data-bot-type")==="botWindow"?true:false):false;
 
@@ -56,23 +60,23 @@ function getTheme(){
 	else{
 		$.ajax({
 			type: "GET",
-			url: "https://api.susi.ai/aaa/listUserSettings.json?access_token="+access_token,
+			url: `${api_url}/cms/getSkillMetadata.json?userid=${userid}&group=${group}&language=${language}&skill=${skill}`,
 			jsonpCallback: 'pa',
 			contentType: "application/json",
 			dataType: 'jsonp',
 			jsonp: 'callback',
 			crossDomain: true,
 			success: function(data) {
-				if(data.settings){
-				let settings = data.settings;
-				botbuilderBackgroundBody = settings.botbuilderBackgroundBody?"#"+settings.botbuilderBackgroundBody:botbuilderBackgroundBody;
-				botbuilderBodyBackgroundImg = settings.botbuilderBodyBackgroundImg?settings.botbuilderBodyBackgroundImg:botbuilderBodyBackgroundImg;
-				botbuilderUserMessageBackground = settings.botbuilderUserMessageBackground?"#"+settings.botbuilderUserMessageBackground:botbuilderUserMessageBackground;
-				botbuilderUserMessageTextColor = settings.botbuilderUserMessageTextColor?"#"+settings.botbuilderUserMessageTextColor:botbuilderUserMessageTextColor;
-				botbuilderBotMessageBackground = settings.botbuilderBotMessageBackground?"#"+settings.botbuilderBotMessageBackground:botbuilderBotMessageBackground;
-				botbuilderBotMessageTextColor = settings.botbuilderBotMessageTextColor?"#"+settings.botbuilderBotMessageTextColor:botbuilderBotMessageTextColor;
-				botbuilderIconColor = settings.botbuilderIconColor?"#"+settings.botbuilderIconColor:botbuilderIconColor;
-				botbuilderIconImg = settings.botbuilderIconImg?settings.botbuilderIconImg:botbuilderIconImg;
+				if(data.skill_metadata && data.skill_metadata.design){
+				let settings = data.skill_metadata.design;
+				botbuilderBackgroundBody = settings.bodyBackground?settings.bodyBackground:botbuilderBackgroundBody;
+				botbuilderBodyBackgroundImg = settings.bodyBackgroundImage?settings.bodyBackgroundImage:botbuilderBodyBackgroundImg;
+				botbuilderUserMessageBackground = settings.userMessageBoxBackground?settings.userMessageBoxBackground:botbuilderUserMessageBackground;
+				botbuilderUserMessageTextColor = settings.userMessageTextColor?settings.userMessageTextColor:botbuilderUserMessageTextColor;
+				botbuilderBotMessageBackground = settings.botMessageBoxBackground?settings.botMessageBoxBackground:botbuilderBotMessageBackground;
+				botbuilderBotMessageTextColor = settings.botMessageTextColor?settings.botMessageTextColor:botbuilderBotMessageTextColor;
+				botbuilderIconColor = settings.botIconColor?settings.botIconColor:botbuilderIconColor;
+				botbuilderIconImg = settings.botIconImage?settings.botIconImage:botbuilderIconImg;
 				applyTheme();
 			}
 			},

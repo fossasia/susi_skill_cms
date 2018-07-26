@@ -212,7 +212,13 @@ class BotWizard extends React.Component {
           />
         );
       case 3:
-        return <Deploy />;
+        return (
+          <Deploy
+            group={this.state.groupValue}
+            language={this.state.languageValue}
+            skill={this.state.expertValue}
+          />
+        );
       default:
     }
   }
