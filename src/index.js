@@ -11,7 +11,7 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 // Components
 import SkillEditor from './components/SkillEditor/SkillEditor';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import NotFound from './components/NotFound/NotFound';
+import NotFound from './components/NotFound/NotFound.react';
 import Admin from './components/Admin/Admin';
 import Dashboard from './components/Dashboard/Dashboard';
 import BrowseSkill from './components/BrowseSkill/BrowseSkill';
