@@ -346,7 +346,7 @@ export default class BrowseSkill extends React.Component {
           topUsedSkills: data.metrics.usage,
           latestSkills: data.metrics.latest,
           topFeedbackSkills: data.metrics.feedback,
-          topGames: data.metrics.topGames,
+          topGames: data.metrics['Games, Trivia and Accessories'],
         });
       },
       error: function(e) {
