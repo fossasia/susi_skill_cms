@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { Card, CardText } from 'material-ui/Card';
 import Snackbar from 'material-ui/Snackbar';
 import Add from 'material-ui/svg-icons/content/add';
+import Delete from 'material-ui/svg-icons/action/delete';
 import { FloatingActionButton, Paper } from 'material-ui';
 import colors from '../../Utils/colors';
 import './BotBuilder.css';
@@ -64,17 +65,17 @@ class BotBuilder extends React.Component {
     if (bots) {
       bots.forEach(bot => {
         chatbots.push(
-          <Link
-            to={
-              '/botbuilder/botwizard?name=' +
-              bot.name +
-              '&language=' +
-              bot.language +
-              '&group=' +
-              bot.group
-            }
-          >
-            <Card className="bot-template-card">
+          <Card className="bot-template-card">
+            <Link
+              to={
+                '/botbuilder/botwizard?name=' +
+                bot.name +
+                '&language=' +
+                bot.language +
+                '&group=' +
+                bot.group
+              }
+            >
               <RaisedButton
                 label={bot.name}
                 labelPosition="before"
@@ -82,13 +83,56 @@ class BotBuilder extends React.Component {
                 backgroundColor={colors.header}
                 labelColor="#fff"
               />
-            </Card>
-          </Link>,
+            </Link>
+            <div className="bot-delete">
+              <Delete
+                color="rgb(255, 255, 255)"
+                onClick={() =>
+                  this.deleteBot(bot.name, bot.language, bot.group)
+                }
+              />
+            </div>
+          </Card>,
         );
       });
     }
     this.setState({
       chatbots: chatbots,
+    });
+  };
+
+  deleteBot = (name, language, group) => {
+    let url =
+      BASE_URL +
+      '/cms/deleteSkill.json?access_token=' +
+      cookies.get('loggedIn') +
+      '&private=1&group=' +
+      group +
+      '&language=' +
+      language +
+      '&skill=' +
+      name;
+    $.ajax({
+      url: url,
+      jsonpCallback: 'p',
+      dataType: 'jsonp',
+      jsonp: 'callback',
+      crossDomain: true,
+      success: function(data) {
+        this.setState(
+          {
+            openSnackbar: true,
+            msgSnackbar: 'Successfully ' + data.message,
+          },
+          () => this.getChatbots(),
+        );
+      }.bind(this),
+      error: function(error) {
+        this.setState({
+          openSnackbar: true,
+          msgSnackbar: 'Unable to delete your chatbot. Please try again.',
+        });
+      }.bind(this),
     });
   };
 
