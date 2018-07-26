@@ -190,21 +190,43 @@ class SkillCardScrollList extends Component {
             </Link>
           </div>
           <div style={styles.rating}>
-            <Ratings
-              rating={average_rating || 0}
-              widgetRatedColors="#ffbb28"
-              widgetDimensions="20px"
-              widgetSpacings="0px"
+            <Link
+              key={el}
+              to={{
+                pathname:
+                  '/' +
+                  skill.group +
+                  '/' +
+                  skill.skill_tag +
+                  '/' +
+                  this.props.languageValue +
+                  '/feedbacks',
+                state: {
+                  url: this.props.skillUrl,
+                  element: el,
+                  name: el,
+                  modelValue: this.props.modelValue,
+                  groupValue: skill.group,
+                  languageValue: this.props.languageValue,
+                },
+              }}
             >
-              <Ratings.Widget />
-              <Ratings.Widget />
-              <Ratings.Widget />
-              <Ratings.Widget />
-              <Ratings.Widget />
-            </Ratings>
-            <span style={styles.totalRating} title="Total ratings">
-              {total_rating || 0}
-            </span>
+              <Ratings
+                rating={average_rating || 0}
+                widgetRatedColors="#ffbb28"
+                widgetDimensions="20px"
+                widgetSpacings="0px"
+              >
+                <Ratings.Widget />
+                <Ratings.Widget />
+                <Ratings.Widget />
+                <Ratings.Widget />
+                <Ratings.Widget />
+              </Ratings>
+              <span style={styles.totalRating} title="Total ratings">
+                {total_rating || 0}
+              </span>
+            </Link>
           </div>
         </Card>,
       );

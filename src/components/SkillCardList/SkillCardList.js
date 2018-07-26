@@ -64,22 +64,39 @@ function createListCard(
               <span>Skills for SUSI</span>
             </div>
             <div style={styles.rating}>
-              <Ratings
-                style={{ display: 'flex' }}
-                rating={averageRating || 0}
-                widgetRatedColors="#ffbb28"
-                widgetDimensions="20px"
-                widgetSpacings="0px"
+              <Link
+                key={el}
+                to={{
+                  pathname: `/${skill.group}/${
+                    skill.skill_tag
+                  }/${language}/feedbacks`,
+                  state: {
+                    url: skillUrl,
+                    element: el,
+                    name: el,
+                    modelValue: skill.model,
+                    groupValue: skill.group,
+                    languageValue: language,
+                  },
+                }}
               >
-                <Ratings.Widget />
-                <Ratings.Widget />
-                <Ratings.Widget />
-                <Ratings.Widget />
-                <Ratings.Widget />
-              </Ratings>
-              <span style={styles.totalRating} title="Total ratings">
-                {totalRating || 0}
-              </span>
+                <Ratings
+                  style={{ display: 'flex' }}
+                  rating={averageRating || 0}
+                  widgetRatedColors="#ffbb28"
+                  widgetDimensions="20px"
+                  widgetSpacings="0px"
+                >
+                  <Ratings.Widget />
+                  <Ratings.Widget />
+                  <Ratings.Widget />
+                  <Ratings.Widget />
+                  <Ratings.Widget />
+                </Ratings>
+                <span style={styles.totalRating} title="Total ratings">
+                  {totalRating || 0}
+                </span>
+              </Link>
             </div>
           </div>
         </div>
@@ -153,22 +170,39 @@ function createListCard(
           <div style={styles.textData}>
             <div style={styles.row}>
               <div style={styles.rating}>
-                <Ratings
-                  style={{ display: 'flex' }}
-                  rating={averageRating || 0}
-                  widgetRatedColors="#ffbb28"
-                  widgetDimensions="20px"
-                  widgetSpacings="0px"
+                <Link
+                  key={el}
+                  to={{
+                    pathname: `/${skill.group}/${
+                      skill.skill_tag
+                    }/${language}/feedbacks`,
+                    state: {
+                      url: skillUrl,
+                      element: el,
+                      name: el,
+                      modelValue: skill.model,
+                      groupValue: skill.group,
+                      languageValue: language,
+                    },
+                  }}
                 >
-                  <Ratings.Widget />
-                  <Ratings.Widget />
-                  <Ratings.Widget />
-                  <Ratings.Widget />
-                  <Ratings.Widget />
-                </Ratings>
-                <span style={styles.totalRating} title="Total ratings">
-                  {totalRating || 0}
-                </span>
+                  <Ratings
+                    style={{ display: 'flex' }}
+                    rating={averageRating || 0}
+                    widgetRatedColors="#ffbb28"
+                    widgetDimensions="20px"
+                    widgetSpacings="0px"
+                  >
+                    <Ratings.Widget />
+                    <Ratings.Widget />
+                    <Ratings.Widget />
+                    <Ratings.Widget />
+                    <Ratings.Widget />
+                  </Ratings>
+                  <span style={styles.totalRating} title="Total ratings">
+                    {totalRating || 0}
+                  </span>
+                </Link>
               </div>
             </div>
             <div style={styles.row}>
