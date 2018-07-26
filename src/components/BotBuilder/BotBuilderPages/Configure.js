@@ -49,6 +49,7 @@ class Configure extends Component {
                   uiView: false,
                 });
               }}
+              disableTouchRipple={true}
             >
               <Code
                 color={
@@ -66,6 +67,7 @@ class Configure extends Component {
                   uiView: true,
                 });
               }}
+              disableTouchRipple={true}
             >
               <Table
                 color={

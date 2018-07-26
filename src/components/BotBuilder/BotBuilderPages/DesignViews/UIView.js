@@ -452,29 +452,48 @@ class UIView extends Component {
   render() {
     // Custom Theme feature Component
     const customiseOptionsList = [
-      { id: 1, component: 'botbuilderBackgroundBody', name: 'Body background' },
+      {
+        id: 1,
+        component: 'botbuilderBackgroundBody',
+        name: 'background',
+        helperText: 'Change the background color of your chatbot.',
+      },
       {
         id: 2,
         component: 'botbuilderUserMessageBackground',
         name: "User's message box background",
+        helperText: 'Change the color of user message bubble.',
       },
       {
         id: 3,
         component: 'botbuilderUserMessageTextColor',
         name: "User's message text color",
+        helperText: 'Change the text color of user messages.',
       },
       {
         id: 4,
         component: 'botbuilderBotMessageBackground',
         name: "Bot's message box background",
+        helperText: 'Change the color of bot message bubble.',
       },
       {
         id: 5,
         component: 'botbuilderBotMessageTextColor',
         name: "Bot's message text color",
+        helperText: 'Change the text color of bot messages.',
       },
-      { id: 6, component: 'botbuilderIconColor', name: 'Bot Icon' },
-      { id: 7, component: 'botbuilderAvatar', name: 'Choose your bot avatar' },
+      {
+        id: 6,
+        component: 'botbuilderIconColor',
+        name: 'Bot Icon',
+        helperText: 'Change the background color of bot avatar.',
+      },
+      {
+        id: 7,
+        component: 'botbuilderAvatar',
+        name: 'Choose your bot avatar',
+        helperText: 'Choose a different avatar.',
+      },
     ];
     const customizeComponents = customiseOptionsList.map(component => {
       return (
@@ -483,9 +502,47 @@ class UIView extends Component {
             <Row>
               <Col xs={12} md={6} lg={6}>
                 {component.id === 7 ? (
-                  <h2>{component.name}</h2>
+                  <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <div
+                      style={{
+                        fontSize: '18px',
+                        paddingTop: '12px',
+                        fontWeight: '400',
+                      }}
+                    >
+                      {component.name}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: '15px',
+                        paddingTop: '12px',
+                        fontWeight: '300',
+                      }}
+                    >
+                      {component.helperText}
+                    </div>
+                  </div>
                 ) : (
-                  <h2>Color of {component.name}</h2>
+                  <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <div
+                      style={{
+                        fontSize: '18px',
+                        paddingTop: '12px',
+                        fontWeight: '400',
+                      }}
+                    >
+                      Color of {component.name}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: '15px',
+                        paddingTop: '12px',
+                        fontWeight: '300',
+                      }}
+                    >
+                      {component.helperText}
+                    </div>
+                  </div>
                 )}
               </Col>
               <Col xs={12} md={6} lg={6}>
@@ -638,7 +695,7 @@ class UIView extends Component {
                 this.state.resetting ? (
                   <CircularProgress color={colors.header} size={32} />
                 ) : (
-                  'Reset'
+                  'Reset Changes'
                 )
               }
               onTouchTap={this.handleReset}
