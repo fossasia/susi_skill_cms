@@ -150,8 +150,21 @@ iframe{
 .bot-template-card:hover {
     -ms-transform: scale(1.02); /* IE 9 */
     -webkit-transform: scale(1.02); /* Safari 3-8 */
-    transform: scale(1.02); 
+	transform: scale(1.02); 
 }
+
+.bot-delete {
+	display: none;
+}
+
+.bot-template-card:hover .bot-delete,
+.bot-template-card:hover ~ .bot-delete {
+	display: block;
+	padding-left: 200px;
+	padding-top: 30px;
+	width: 100%;
+}
+
 
 .chevron-arrow{
 	height: 35px;
