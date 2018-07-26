@@ -93,6 +93,7 @@ class Login extends Component {
             });
             console.log(cookies.get('serverUrl'));
             let accessToken = response.access_token;
+            let uuid = response.uuid;
             let state = this.state;
             let time = response.valid_seconds;
 
@@ -103,7 +104,7 @@ class Login extends Component {
             state.time = time;
             this.setState(state);
 
-            this.handleOnSubmit(email, accessToken, time);
+            this.handleOnSubmit(email, accessToken, uuid, time);
             let msg = 'You are logged in';
             state.msg = msg;
             this.setState(state);
@@ -169,10 +170,15 @@ class Login extends Component {
     this.setState(state);
   };
 
-  handleOnSubmit = (email, loggedIn, showAdmin, time) => {
+  handleOnSubmit = (email, loggedIn, uuid, time) => {
     let state = this.state;
     if (state.success) {
       cookies.set('loggedIn', loggedIn, {
+        path: '/',
+        maxAge: time,
+        domain: cookieDomain,
+      });
+      cookies.set('uuid', uuid, {
         path: '/',
         maxAge: time,
         domain: cookieDomain,
