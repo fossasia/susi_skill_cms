@@ -28,7 +28,7 @@ class Design extends React.Component {
     return (
       <div className="center menu-page">
         <div style={{ display: 'flex', flexDirection: 'row' }}>
-          <h1 style={{ lineHeight: '50px' }}>2. Design your bot</h1>
+          <h1 style={{ lineHeight: '50px' }}>2. Choose Color and Background</h1>
           <div style={{ marginLeft: 'auto', marginRight: '0px' }}>
             <IconButton
               tooltip="Code View"
@@ -38,6 +38,7 @@ class Design extends React.Component {
                   uiView: false,
                 });
               }}
+              disableTouchRipple={true}
             >
               <Code
                 color={
@@ -55,6 +56,7 @@ class Design extends React.Component {
                   uiView: true,
                 });
               }}
+              disableTouchRipple={true}
             >
               <Table
                 color={
@@ -64,7 +66,13 @@ class Design extends React.Component {
             </IconButton>
           </div>
         </div>
-        <div style={{ padding: '30px 10px 0 10px' }}>
+        <div
+          style={{
+            padding: this.state.codeView
+              ? '30px 10px 0 10px'
+              : '0px 10px 0 10px',
+          }}
+        >
           {this.state.codeView ? (
             <CodeView
               design={{

@@ -228,6 +228,7 @@ class Build extends Component {
                     treeView: false,
                   });
                 }}
+                disableTouchRipple={true}
               >
                 <Code
                   color={
@@ -246,6 +247,7 @@ class Build extends Component {
                     treeView: false,
                   });
                 }}
+                disableTouchRipple={true}
               >
                 <QA
                   color={
@@ -264,6 +266,7 @@ class Build extends Component {
                     treeView: true,
                   });
                 }}
+                disableTouchRipple={true}
               >
                 <Timeline
                   color={

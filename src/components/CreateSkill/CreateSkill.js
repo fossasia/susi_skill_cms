@@ -556,7 +556,7 @@ export default class CreateSkill extends React.Component {
             <Info
               style={styles.helpIcon}
               data-tip={
-                'Know more about <a href="https://github.com/fossasia/susi_skill_cms/blob/master/docs/Skill_Tutorial.md" rel="noopener noreferrer" target="_blank" >SUSI Skill Language</a>'
+                'Learn more about <a href="https://github.com/fossasia/susi_skill_cms/blob/master/docs/Skill_Tutorial.md" rel="noopener noreferrer" target="_blank" >SUSI Skill Language</a>'
               }
             />
             <div style={styles.center}>
