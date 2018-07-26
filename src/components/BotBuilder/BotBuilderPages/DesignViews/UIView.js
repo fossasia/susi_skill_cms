@@ -7,12 +7,12 @@ import CircularProgress from 'material-ui/CircularProgress';
 import RaisedButton from 'material-ui/RaisedButton';
 import Snackbar from 'material-ui/Snackbar';
 import Close from 'material-ui/svg-icons/navigation/close';
+import Add from 'material-ui/svg-icons/content/add';
 import ColorPicker from 'material-ui-color-picker';
 import colors from '../../../../Utils/colors';
 import urls from '../../../../Utils/urls';
 import avatars from '../../../../Utils/avatars';
 import TiTick from 'react-icons/lib/ti/tick';
-
 const cookies = new Cookies();
 let BASE_URL = urls.API_URL;
 let IMAGE_GET_URL = `${BASE_URL}/cms/getImage.png?image=`;
@@ -24,6 +24,7 @@ class UIView extends Component {
     if (this.props.design) {
       code = this.props.design.code;
     }
+    let avatarsIcons = avatars.slice();
     this.state = {
       botbuilderBackgroundBody: '#ffffff',
       botbuilderBodyBackgroundImg: '',
@@ -38,9 +39,9 @@ class UIView extends Component {
       loadedSettings: false,
       uploadingBodyBackgroundImg: false,
       botbuilderBodyBackgroundImgName: '',
-      botbuilderIconImgName: '',
       uploadingBotbuilderIconImg: false,
       code,
+      avatars: avatarsIcons,
     };
   }
 
@@ -48,16 +49,12 @@ class UIView extends Component {
     this.getSettings();
   }
 
-  updateSettings = () => {
-    let settingsString = JSON.stringify(this.state);
-    this.props.design.updateSettings(settingsString);
-  };
-
   sendInfoToProps = () => {
     this.props.design.sendInfoToProps({
       code: this.state.code,
     });
-    this.updateSettings();
+    let settingsString = JSON.stringify(this.state);
+    this.props.design.updateSettings(settingsString);
   };
 
   handleChangeColor = (component, color) => {
@@ -213,26 +210,32 @@ class UIView extends Component {
     this.setState({ uploadingBotbuilderIconImg: true });
     let self = this;
     $.ajax(settings)
-      .done(function(response) {
-        response = JSON.parse(response);
-        let img_url = IMAGE_GET_URL + response.image_path;
-        let code = self.state.code.replace(
-          /^::botIconImage\s(.*)$/m,
-          `::botIconImage ${img_url}`,
-        );
-        self.setState(
-          {
-            code,
-            uploadingBotbuilderIconImg: false,
-            iconSelected: null,
-            botbuilderIconImg: img_url,
-            botbuilderIconImgName: response.image_path.substring(
-              response.image_path.indexOf('_') + 1,
-            ),
-          },
-          () => self.sendInfoToProps(),
-        );
-      })
+      .done(
+        function(response) {
+          response = JSON.parse(response);
+          let img_url = IMAGE_GET_URL + response.image_path;
+          let code = this.state.code.replace(
+            /^::botIconImage\s(.*)$/m,
+            `::botIconImage ${img_url}`,
+          );
+          let avatarsObj = this.state.avatars;
+          let img_obj = {
+            id: avatarsObj.length,
+            url: img_url,
+          };
+          this.handleIconSelect(img_obj);
+          avatarsObj.push(img_obj);
+          this.setState(
+            {
+              code,
+              uploadingBotbuilderIconImg: false,
+              botbuilderIconImg: img_url,
+              avatars: avatarsObj,
+            },
+            () => this.sendInfoToProps(),
+          );
+        }.bind(this),
+      )
       .fail(function(jqXHR, textStatus) {
         self.setState({
           uploadingBotbuilderIconImg: false,
@@ -258,17 +261,13 @@ class UIView extends Component {
   };
 
   handleChangeIconImage = botbuilderIconImg => {
+    botbuilderIconImg.persist();
     let files = botbuilderIconImg.target.files;
     if (files.length === 0) {
       this.handleRemoveUrlIcon();
     } else {
       this.uploadImageIcon(files[0]);
     }
-    let code = this.state.code.replace(
-      /^::botIconImage\s(.*)$/m,
-      `::botIconImage ${botbuilderIconImg}`,
-    );
-    this.setState({ code, botbuilderIconImg }, () => this.sendInfoToProps());
   };
 
   handleRemoveUrlIcon = () => {
@@ -280,7 +279,7 @@ class UIView extends Component {
       {
         code,
         botbuilderIconImg: '',
-        botbuilderIconImgName: '',
+        iconSelected: null,
       },
       () => this.sendInfoToProps(),
     );
@@ -292,7 +291,6 @@ class UIView extends Component {
     const bodyBackgroundImageMatch = code.match(
       /^::bodyBackgroundImage\s(.*)$/m,
     );
-    console.log(bodyBackgroundImageMatch);
     const userMessageBoxBackgroundMatch = code.match(
       /^::userMessageBoxBackground\s(.*)$/m,
     );
@@ -307,7 +305,6 @@ class UIView extends Component {
     );
     const botIconColorMatch = code.match(/^::botIconColor\s(.*)$/m);
     const botIconImageMatch = code.match(/^::botIconImage\s(.*)$/m);
-    console.log(botIconImageMatch);
     if (bodyBackgroundMatch) {
       this.setState({
         botbuilderBackgroundBody: bodyBackgroundMatch[1],
@@ -346,25 +343,27 @@ class UIView extends Component {
         botbuilderIconColor: botIconColorMatch[1],
       });
     }
-    if (botIconImageMatch) {
-      for (let icon of avatars) {
+    if (botIconImageMatch && botIconImageMatch[1].length > 0) {
+      let avatarsObj = this.state.avatars;
+      avatarsObj.push({
+        id: avatarsObj.length,
+        url: botIconImageMatch[1],
+      });
+      for (let icon of avatarsObj) {
         if (icon.url === botIconImageMatch[1]) {
           this.handleIconSelect(icon);
           break;
         }
       }
       this.setState({
+        avatars: avatarsObj,
         botbuilderIconImg: botIconImageMatch[1],
-        botbuilderIconImgName: botIconImageMatch[1].split('/')[5],
       });
     }
 
-    this.setState(
-      {
-        loadedSettings: true,
-      },
-      () => this.updateSettings(),
-    );
+    this.setState({
+      loadedSettings: true,
+    });
   };
 
   handleReset = () => {
@@ -424,7 +423,6 @@ class UIView extends Component {
           code,
           iconSelected: null,
           botbuilderIconImg: '',
-          botbuilderIconImgName: '',
         },
         () => this.sendInfoToProps(),
       );
@@ -438,7 +436,6 @@ class UIView extends Component {
           code,
           iconSelected: icon.id,
           botbuilderIconImg: icon.url,
-          botbuilderIconImgName: '',
         },
         () => this.sendInfoToProps(),
       );
@@ -614,9 +611,10 @@ class UIView extends Component {
           </Grid>
           {component.component === 'botbuilderAvatar' && (
             <div style={{ padding: '25px  0 25px 0' }}>
-              {avatars.map(icon => {
+              {this.state.avatars.map(icon => {
                 return (
                   <span
+                    id={icon.id}
                     key={icon.id}
                     className={
                       'icon-wrap ' +
@@ -635,47 +633,40 @@ class UIView extends Component {
                   </span>
                 );
               })}
+              <form style={{ display: 'inline-block' }}>
+                <label
+                  className="avatar-upload-btn icon-wrap"
+                  title="Upload your own bot icon"
+                >
+                  <input
+                    disabled={this.state.uploadingBotbuilderIconImg}
+                    type="file"
+                    onChange={
+                      this.state.uploadingBotbuilderIconImg
+                        ? null
+                        : this.handleChangeIconImage
+                    }
+                    accept="image/x-png,image/gif,image/jpeg"
+                  />
+                  {this.state.uploadingBotbuilderIconImg ? (
+                    <CircularProgress
+                      color="rgb(66, 133, 245)"
+                      style={{ marginTop: '15px' }}
+                      size={30}
+                    />
+                  ) : (
+                    <Add
+                      style={{
+                        height: '30px',
+                        marginTop: '15px',
+                        color: 'rgb(66, 133, 245)',
+                      }}
+                    />
+                  )}
+                </label>
+              </form>
             </div>
           )}
-          {component.component === 'botbuilderAvatar' && (
-            <div>
-              <h2>OR</h2>
-              <br />
-              <div style={{ display: 'flex', flexDirection: 'row' }}>
-                <h2 style={{ paddingRight: '20px' }}>
-                  Upload your own bot avatar
-                </h2>
-                <form style={{ display: 'inline-block' }}>
-                  <label className="file-upload-btn">
-                    <input
-                      disabled={this.state.uploadingBotbuilderIconImg}
-                      type="file"
-                      onChange={this.handleChangeIconImage}
-                      accept="image/x-png,image/gif,image/jpeg"
-                    />
-                    {this.state.uploadingBotbuilderIconImg ? (
-                      <CircularProgress color="#ffffff" size={32} />
-                    ) : (
-                      'Upload Image'
-                    )}
-                  </label>
-                </form>
-              </div>
-              <br />
-              {this.state.botbuilderIconImgName && (
-                <div style={{ display: 'flex', flexDirection: 'row' }}>
-                  <h3>{this.state.botbuilderIconImgName}</h3>
-                  <span title="Remove image">
-                    <Close
-                      className="remove-icon"
-                      onTouchTap={this.handleRemoveUrlIcon}
-                    />
-                  </span>
-                </div>
-              )}
-            </div>
-          )}
-
           <br />
         </div>
       );

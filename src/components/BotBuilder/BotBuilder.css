@@ -217,6 +217,15 @@ input[type=file]{
 	visibility: visible;
 	opacity: 1;
 }
+.avatar-upload-btn {
+	border-radius: 50%;
+	height: 60px;
+	width: 60px;
+	background-color: #eee;
+	text-align: center;
+	float: left;
+	cursor: pointer;
+}
 
 @media (min-width:769px){
 	.botbuilder-page-wrapper{
