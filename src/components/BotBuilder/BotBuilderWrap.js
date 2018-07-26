@@ -46,7 +46,7 @@ class BotBuilderWrap extends React.Component {
           <StaticAppBar {...this.props} />
           <div>
             <p style={styles.loggedInError}>
-              Please login to create the Contact Bot.
+              Please login to create a chatbot.
             </p>
           </div>
         </div>
