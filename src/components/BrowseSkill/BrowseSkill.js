@@ -165,7 +165,7 @@ export default class BrowseSkill extends React.Component {
       this.setState(
         {
           filter: `&applyFilter=true&filter_name=descending
-            &filter_type=date&duration=${value}`,
+            &filter_type=creation_date&duration=${value}`,
           timeFilter: value,
           skillsLoaded: false,
         },
@@ -501,7 +501,7 @@ export default class BrowseSkill extends React.Component {
               )}
               {!this.state.timeFilter && (
                 <MenuItem
-                  value="&applyFilter=true&filter_name=descending&filter_type=date&duration=7"
+                  value="&applyFilter=true&filter_name=descending&filter_type=creation_date&duration=7"
                   key="Last 7 Days"
                   primaryText="Last 7 Days"
                   onClick={() => this.handleArrivalTimeChange(7)}
@@ -510,7 +510,7 @@ export default class BrowseSkill extends React.Component {
               )}
               {!this.state.timeFilter && (
                 <MenuItem
-                  value="&applyFilter=true&filter_name=descending&filter_type=date&duration=30"
+                  value="&applyFilter=true&filter_name=descending&filter_type=creation_date&duration=30"
                   key="Last 30 Days"
                   primaryText="Last 30 Days"
                   onClick={() => this.handleArrivalTimeChange(30)}
@@ -519,7 +519,7 @@ export default class BrowseSkill extends React.Component {
               )}
               {!this.state.timeFilter && (
                 <MenuItem
-                  value="&applyFilter=true&filter_name=descending&filter_type=date&duration=90"
+                  value="&applyFilter=true&filter_name=descending&filter_type=creation_date&duration=90"
                   key="Last 90 Days"
                   primaryText="Last 90 Days"
                   onClick={() => this.handleArrivalTimeChange(90)}
