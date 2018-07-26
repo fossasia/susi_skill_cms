@@ -837,8 +837,8 @@ class SkillListing extends Component {
                   <div className="card-content">
                     <ul>
                       <li>
-                        The Skill Contains content Dynamic Content that is
-                        updated real-time based on inputs from the User.
+                        This skill contains dynamic content that is updated in
+                        real time based on inputs from the user.
                       </li>
                     </ul>
                   </div>
