@@ -94,7 +94,6 @@ class SkillListing extends Component {
     this.url = urls.API_URL + '/cms/getSkillList.json?group=Knowledge';
     if (this.url !== undefined) {
       let url = this.url;
-      this.name = clickedSkill;
       if (url.indexOf('model') < 0) {
         urlCode = url + '?skill=' + this.name;
       } else {
@@ -776,14 +775,7 @@ class SkillListing extends Component {
             </div>
             <div className="meta">
               <h1 className="name">
-                {this.name &&
-                  this.name
-                    .split(' ')
-                    .map(data => {
-                      var s = data.charAt(0).toUpperCase() + data.substring(1);
-                      return s;
-                    })
-                    .join(' ')}
+                {this.name && this.name.split('_').join(' ')}
               </h1>
               <h4>
                 by{' '}

@@ -41,6 +41,10 @@ abbr[title] {
     margin-top: 16px;
 }
 
+h1.name {
+  text-transform: capitalize;
+}
+
 .skill_listing_container {
     width: 100%;
     max-width: 1000px;
