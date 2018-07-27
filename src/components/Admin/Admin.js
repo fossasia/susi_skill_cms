@@ -4,6 +4,7 @@ import './Admin.css';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import CircularProgress from 'material-ui/CircularProgress';
 import $ from 'jquery';
+import { Card } from 'antd';
 import Cookies from 'universal-cookie';
 import PropTypes from 'prop-types';
 import Paper from 'material-ui/Paper';
@@ -21,6 +22,8 @@ class Admin extends Component {
     super(props);
 
     this.state = {
+      userStats: {},
+      loadUserStats: true,
       loading: true,
       isAdmin: false,
     };
@@ -39,7 +42,6 @@ class Admin extends Component {
       jsonp: 'callback',
       crossDomain: true,
       success: function(response) {
-        console.log(response.showAdmin);
         if (response.showAdmin) {
           this.setState({
             loading: false,
@@ -59,6 +61,27 @@ class Admin extends Component {
         });
         console.log(errorThrown);
       }.bind(this),
+    });
+
+    url =
+      urls.API_URL +
+      '/aaa/getUsers.json?getUserStats=true&access_token=' +
+      cookies.get('loggedIn');
+    $.ajax({
+      url: url,
+      dataType: 'jsonp',
+      jsonpCallback: 'pyfw',
+      jsonp: 'callback',
+      crossDomain: true,
+      success: function(response) {
+        this.setState({
+          userStats: response.userStats,
+          loadUserStats: false,
+        });
+      }.bind(this),
+      error: function(errorThrown) {
+        console.log(errorThrown);
+      },
     });
   }
 
@@ -85,7 +108,112 @@ class Admin extends Component {
                   <Paper style={styles.tabStyle} zDepth={0}>
                     <Tabs tabPosition="top" animated={false} type="card">
                       <TabPane tab="Admin" key="1">
-                        Tab for Admin Content
+                        <span
+                          style={{
+                            fontSize: '18px',
+                            fontWeight: '5000',
+                            float: 'left',
+                            marginRight: '20px',
+                          }}
+                        >
+                          <Card
+                            loading={this.state.loadUserStats}
+                            title={
+                              <span
+                                style={{ fontSize: '18px', fontWeight: 'bold' }}
+                              >
+                                Users
+                              </span>
+                            }
+                            style={{
+                              width: '300px',
+                              fontSize: '18px',
+                              fontWeight: 'bold',
+                              lineHeight: '2',
+                            }}
+                          >
+                            <p>
+                              Total :{' '}
+                              {this.state.userStats.totalUsers
+                                ? this.state.userStats.totalUsers
+                                : 0}
+                            </p>
+                            <p>
+                              Active :{' '}
+                              {this.state.userStats.activeUsers
+                                ? this.state.userStats.activeUsers
+                                : 0}
+                            </p>
+                            <p>
+                              Inactive :{' '}
+                              {this.state.userStats.inactiveUsers
+                                ? this.state.userStats.inactiveUsers
+                                : 0}
+                            </p>
+                          </Card>
+                        </span>
+
+                        <span
+                          style={{
+                            fontSize: '18px',
+                            fontWeight: '5000',
+                            float: 'left',
+                          }}
+                        >
+                          <Card
+                            loading={this.state.loadUserStats}
+                            title={
+                              <span
+                                style={{ fontSize: '18px', fontWeight: 'bold' }}
+                              >
+                                User Roles
+                              </span>
+                            }
+                            style={{
+                              width: '300px',
+                              fontSize: '18px',
+                              fontWeight: 'bold',
+                              lineHeight: '2',
+                            }}
+                          >
+                            <p>
+                              Anonymous :{' '}
+                              {this.state.userStats.anonymous
+                                ? this.state.userStats.anonymous
+                                : 0}
+                            </p>
+                            <p>
+                              Users :{' '}
+                              {this.state.userStats.users
+                                ? this.state.userStats.users
+                                : 0}
+                            </p>
+                            <p>
+                              Reviewers :{' '}
+                              {this.state.userStats.reviewers
+                                ? this.state.userStats.reviewers
+                                : 0}
+                            </p>
+                            <p>
+                              Operators :{' '}
+                              {this.state.userStats.operators
+                                ? this.state.userStats.operators
+                                : 0}
+                            </p>
+                            <p>
+                              Admins :{' '}
+                              {this.state.userStats.admins
+                                ? this.state.userStats.admins
+                                : 0}
+                            </p>
+                            <p>
+                              Super Admins :{' '}
+                              {this.state.userStats.superAdmins
+                                ? this.state.userStats.superAdmins
+                                : 0}
+                            </p>
+                          </Card>
+                        </span>
                       </TabPane>
                       <TabPane tab="Users" key="2">
                         <ListUser />
@@ -114,7 +242,7 @@ const styles = {
   tabStyle: {
     width: '100%',
     animated: false,
-    textAlign: 'center',
+    textAlign: 'left',
     display: 'inline-block',
     marginTop: '10px',
   },
