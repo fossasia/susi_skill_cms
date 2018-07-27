@@ -964,7 +964,7 @@ export default class BrowseSkill extends React.Component {
                   </div>
                 ) : null}
 
-                {this.state.topGames &&
+                {this.state.topGames.length &&
                 !this.state.searchQuery.length &&
                 !this.state.ratingRefine &&
                 !this.state.timeFilter ? (
