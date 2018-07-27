@@ -272,7 +272,8 @@ export default class BrowseSkill extends React.Component {
         this.state.groupValue +
         '&applyFilter=true&language=' +
         this.props.routeValue +
-        this.state.filter;
+        this.state.filter +
+        this.state.showSkills;
     } else if (
       this.state.languages.length > 0 &&
       this.state.groups.length > 0
@@ -285,7 +286,8 @@ export default class BrowseSkill extends React.Component {
         this.state.groupValue +
         '&language=' +
         this.state.languageValue +
-        this.state.filter;
+        this.state.filter +
+        this.state.showSkills;
       // console.log(url);
     } else {
       url =
