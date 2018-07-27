@@ -104,6 +104,7 @@ class UIView extends Component {
           websites += ', ';
         }
       }
+      return null;
     });
     code = code.replace(
       /^::allowed_sites\s(.*)$/m,
