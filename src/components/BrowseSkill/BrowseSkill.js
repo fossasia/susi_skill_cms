@@ -762,6 +762,26 @@ export default class BrowseSkill extends React.Component {
                   />
                   <MenuItem
                     value={
+                      '&applyFilter=true&filter_name=descending&filter_type=creation_date'
+                    }
+                    key={
+                      '&applyFilter=true&filter_name=descending&filter_type=creation_date'
+                    }
+                    primaryText={'Newly created'}
+                    label={'Newly Created'}
+                  />
+                  <MenuItem
+                    value={
+                      '&applyFilter=true&filter_name=descending&filter_type=modified_date'
+                    }
+                    key={
+                      '&applyFilter=true&filter_name=descending&filter_type=modified_date'
+                    }
+                    primaryText={'Recently updated'}
+                    label={'Recently updated'}
+                  />
+                  <MenuItem
+                    value={
                       '&applyFilter=true&filter_name=descending&filter_type=feedback'
                     }
                     key={
