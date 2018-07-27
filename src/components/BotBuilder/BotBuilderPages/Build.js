@@ -33,13 +33,9 @@ class Build extends Component {
         .trim();
     }
     this.state = {
-      treeData: {
-        name: 'Welcome!',
-        children: [],
-      },
-      ConversationData: {
-        userQueries: [],
-        botResponses: [],
+      skillData: {
+        name: 'Welcome!', // Starting message of chatbot
+        children: [], // contains subsequent user queries and bot responses
       },
       skillCode,
       skillCategory,
@@ -62,17 +58,13 @@ class Build extends Component {
   };
 
   generateSkillData = () => {
-    let treeData_new = {
+    let skillData_new = {
       name: 'Welcome!',
       children: [],
     };
     let user_index = 0;
     let bot_index = 0;
-    var conversationData_new = {
-      userQueries: [],
-      botResponses: [],
-    };
-    let tree_children = [];
+    let skill_children = [];
     var lines = this.state.skillCode.split('\n');
     let skills = [];
     for (let i = 0; i < lines.length; i++) {
@@ -116,7 +108,6 @@ class Build extends Component {
       let bot_responses = [];
       if (line_bot) {
         let responses_bot = line_bot.trim().split('|');
-        conversationData_new.botResponses.push(responses_bot);
         for (let response of responses_bot) {
           let obj = {
             name: response.trim(),
@@ -126,7 +117,6 @@ class Build extends Component {
         }
       }
       let queries = line_user.trim().split('|');
-      conversationData_new.userQueries.push(queries);
 
       for (let query of queries) {
         let obj = {
@@ -136,12 +126,11 @@ class Build extends Component {
           id: 'u' + user_index++,
         };
         bot_index += bot_responses.length;
-        tree_children.push(obj);
+        skill_children.push(obj);
       }
     }
-    treeData_new.children = tree_children;
-    this.setState({ ConversationData: conversationData_new });
-    this.setState({ treeData: treeData_new });
+    skillData_new.children = skill_children;
+    this.setState({ skillData: skillData_new });
   };
 
   getChildren = (bot_responses, bot_index) => {
@@ -156,27 +145,27 @@ class Build extends Component {
   };
 
   handleDeleteNode = node => {
-    let { treeData } = this.state;
-    for (let i = 0; i < treeData.children.length; i++) {
-      let child = treeData.children[i];
+    let { skillData } = this.state;
+    for (let i = 0; i < skillData.children.length; i++) {
+      let child = skillData.children[i];
       if (child.id === node.id) {
-        treeData.children.splice(i, 1);
+        skillData.children.splice(i, 1);
         break;
       }
       if (child.children) {
         for (let j = 0; j < child.children.length; j++) {
           let childNode = child.children[j];
           if (childNode.id === node.id) {
-            treeData.children[i].children.splice(j, 1);
+            skillData.children[i].children.splice(j, 1);
           }
         }
       }
     }
-    this.setState({ treeData }, this.generateSkillCode());
+    this.setState({ skillData }, this.generateSkillCode());
   };
 
   generateSkillCode = () => {
-    let { skillCode, treeData } = this.state;
+    let { skillCode, skillData } = this.state;
     let lines = skillCode.split('\n');
     let newSkillCode = '';
     let i = 0;
@@ -194,8 +183,8 @@ class Build extends Component {
         break;
       }
     }
-    for (let j = 0; j < treeData.children.length; j++) {
-      let node = treeData.children[j];
+    for (let j = 0; j < skillData.children.length; j++) {
+      let node = skillData.children[j];
       newSkillCode += node.name + '\n';
       if (node.children) {
         for (let k = 0; k < node.children.length; k++) {
@@ -297,14 +286,13 @@ class Build extends Component {
             ) : null}
             {this.state.conversationView ? (
               <ConversationView
-                ConversationData={this.state.ConversationData}
-                treeData={this.state.treeData}
+                skillData={this.state.skillData}
                 handleDeleteNode={this.handleDeleteNode}
               />
             ) : null}
             {this.state.treeView ? (
               <TreeView
-                treeData={this.state.treeData}
+                skillData={this.state.skillData}
                 handleDeleteNode={this.handleDeleteNode}
               />
             ) : null}

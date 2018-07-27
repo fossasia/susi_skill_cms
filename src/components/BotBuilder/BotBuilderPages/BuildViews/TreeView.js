@@ -54,7 +54,7 @@ class TreeView extends Component {
         <ReactTooltip effect="solid" place="bottom" />
         <div>
           <OrgChart
-            tree={this.props.treeData}
+            tree={this.props.skillData}
             NodeComponent={MyNodeComponent}
           />
           <br />
@@ -80,7 +80,7 @@ const styles = {
   },
 };
 TreeView.propTypes = {
-  treeData: PropTypes.object,
+  skillData: PropTypes.object,
   handleDeleteNode: PropTypes.func,
 };
 export default TreeView;
