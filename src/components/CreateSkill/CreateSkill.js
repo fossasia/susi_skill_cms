@@ -130,49 +130,23 @@ export default class CreateSkill extends React.Component {
     }
   }
 
-  onChange(newValue) {
+  onChange = newValue => {
     const match = newValue.match(/^::image\s(.*)$/m);
     const nameMatch = newValue.match(/^::name\s(.*)$/m);
     const categoryMatch = newValue.match(/^::category\s(.*)$/m);
     const languageMatch = newValue.match(/^::language\s(.*)$/m);
 
-    if (nameMatch) {
-      self.setState(
-        {
-          expertValue: nameMatch[1],
-        },
-        () => self.sendInfoToProps(),
-      );
-    }
-
-    if (categoryMatch) {
-      self.setState(
-        {
-          groupValue: categoryMatch[1],
-        },
-        () => self.sendInfoToProps(),
-      );
-    }
-
-    if (languageMatch) {
-      self.setState(
-        {
-          languageValue: languageMatch[1],
-        },
-        () => self.sendInfoToProps(),
-      );
-    }
-
-    if (match !== null) {
-      self.setState(
-        {
-          imageUrl: match[1],
-        },
-        () => self.sendInfoToProps(),
-      );
-    }
-    self.updateCode(newValue);
-  }
+    self.setState(
+      {
+        expertValue: nameMatch[1],
+        groupValue: categoryMatch[1],
+        languageValue: languageMatch[1],
+        imageUrl: match[1],
+        code: newValue,
+      },
+      () => self.sendInfoToProps(),
+    );
+  };
 
   loadgroups() {
     if (this.state.groups.length === 0) {
