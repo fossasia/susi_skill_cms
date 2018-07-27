@@ -89,6 +89,10 @@ ul.pagination li a, .navigation-pagination a{
     margin-left: 4px;
 }
 
+.navigation-pagination{
+    padding: 8px 12px 7px 13px;
+}
+
 ul.pagination li {
     background-color: #fff;
     display: block;
@@ -106,6 +110,19 @@ ul.pagination li a:hover, .navigation-pagination a:hover{
     background: -o-linear-gradient(top,#e7eaf0,#d9dce1);
     background: -webkit-gradient(linear,left top,left bottom,color-stop(0, #e7eaf0),color-stop(1, #d9dce1));
     border-color: #a2a6ac #979aa1 #82858a;
+}
+
+.navigation-pagination-disabled{
+    background: #fff;
+    border: 0;
+    padding: 8px 12px 7px 13px;
+    margin-left: 4px;
+    border: 1px solid transparent;
+}
+
+a.navigation-pagination-text-disabled{
+    color: #999;
+    cursor: inherit;
 }
 
 li.page-item.navigation {

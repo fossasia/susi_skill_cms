@@ -44,7 +44,7 @@ const iconButtonElement = (
 
 const LEFT_PAGE = 'LEFT';
 const RIGHT_PAGE = 'RIGHT';
-const pageLimit = 1;
+const pageLimit = 6;
 
 const range = (from, to, step = 1) => {
   let i = from;
@@ -182,6 +182,9 @@ class SkillFeedbackPage extends Component {
       totalRecords: this.state.skill_feedback,
     };
     this.setState({ currentPage }, () => this.onPageChanged(paginationData));
+    if (this.feedbackRef) {
+      this.feedbackRef.scrollIntoView({ behaviour: 'smooth' });
+    }
   };
 
   handleClick = page => evt => {
@@ -583,7 +586,7 @@ class SkillFeedbackPage extends Component {
             </div>
           </div>
         ) : null}
-        <div>
+        <div ref={el => (this.feedbackRef = el)}>
           {userFeedbackCard}
           {feedbackCards}
         </div>
@@ -662,17 +665,20 @@ class SkillFeedbackPage extends Component {
                 (this.state.skill_feedback.length > 0 ? (
                   <div className="pagination-container">
                     <ul className="pagination">
-                      <FlatButton
-                        disabled={this.state.currentPage === 1}
-                        className="navigation-pagination"
+                      <div
+                        className={`navigation-pagination${
+                          this.state.currentPage === 1 ? '-disabled' : ''
+                        } `}
                       >
                         <a
                           onClick={this.handleMoveLeft}
-                          className="navigation-pagination-text"
+                          className={`navigation-pagination-text${
+                            this.state.currentPage === 1 ? '-disabled' : ''
+                          }`}
                         >
                           ← Previous
                         </a>
-                      </FlatButton>
+                      </div>
                       {pages.map((page, index) => {
                         if (page === LEFT_PAGE) {
                           return (
@@ -704,22 +710,30 @@ class SkillFeedbackPage extends Component {
                           </li>
                         );
                       })}
-                      <FlatButton
-                        disabled={
+                      <div
+                        className={`navigation-pagination${
                           this.state.currentPage ===
                           Math.ceil(
                             this.state.skill_feedback.length / pageLimit,
                           )
-                        }
-                        className="navigation-pagination"
+                            ? '-disabled'
+                            : ''
+                        }`}
                       >
                         <a
                           onClick={this.handleMoveRight}
-                          className="navigation-pagination-text"
+                          className={`navigation-pagination-text${
+                            this.state.currentPage ===
+                            Math.ceil(
+                              this.state.skill_feedback.length / pageLimit,
+                            )
+                              ? '-disabled'
+                              : ''
+                          }`}
                         >
                           Next →
                         </a>
-                      </FlatButton>
+                      </div>
                     </ul>
                   </div>
                 ) : (
@@ -776,7 +790,7 @@ class SkillFeedbackPage extends Component {
           <TextField
             id="edit-feedback"
             hintText="Skill Feedback"
-            defaultValue={userFeedback}
+            defaultValue={userFeedback ? userFeedback.feedback : ''}
             errorText={this.state.errorText}
             multiLine={true}
             fullWidth={true}
