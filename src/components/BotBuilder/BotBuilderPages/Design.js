@@ -73,7 +73,7 @@ class Design extends React.Component {
               : '0px 10px 0 10px',
           }}
         >
-          {this.state.codeView ? (
+          {this.state.codeView && (
             <CodeView
               design={{
                 sendInfoToProps: this.sendInfoToProps,
@@ -81,8 +81,8 @@ class Design extends React.Component {
                 code: this.state.code,
               }}
             />
-          ) : null}
-          {this.state.uiView ? (
+          )}
+          {this.state.uiView && (
             <UIView
               design={{
                 sendInfoToProps: this.sendInfoToProps,
@@ -90,7 +90,7 @@ class Design extends React.Component {
                 code: this.state.code,
               }}
             />
-          ) : null}
+          )}
         </div>
       </div>
     );
