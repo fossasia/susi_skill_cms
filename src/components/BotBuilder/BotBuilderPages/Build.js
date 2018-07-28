@@ -52,9 +52,8 @@ class Build extends Component {
   }
 
   sendInfoToProps = values => {
-    this.setState({ skillCode: values.code });
+    this.setState({ skillCode: values.code }, () => this.generateSkillData());
     this.props.sendInfoToProps(values);
-    this.generateSkillData();
   };
 
   generateSkillData = () => {
