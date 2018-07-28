@@ -18,7 +18,7 @@ import BrowseSkill from './components/BrowseSkill/BrowseSkill';
 import SkillListing from './components/SkillPage/SkillListing';
 import ListUser from './components/Admin/ListUser/ListUser';
 import Logout from './components/Auth/Logout.react';
-import CreateSkill from './components/CreateSkill/CreateSkill';
+import SkillCreator from './components/SkillCreator/SkillCreator';
 import SkillVersion from './components/SkillVersion/SkillVersion';
 import SkillHistory from './components/SkillHistory/SkillHistory';
 import SkillRollBack from './components/SkillRollBack/SkillRollBack';
@@ -63,7 +63,7 @@ class App extends React.Component {
             <Route path="/botbuilder" component={BotBuilderWrap} />
             <Route exact path="/dashboard" component={Dashboard} />
             <Route exact path="/logout" component={Logout} />
-            <Route exact path="/skillCreator" component={CreateSkill} />
+            <Route exact path="/skillCreator" component={SkillCreator} />
             <Route
               exact
               path="/:category/:skill/versions/:lang"

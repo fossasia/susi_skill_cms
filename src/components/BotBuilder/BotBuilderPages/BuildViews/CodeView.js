@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import CreateSkill from '../../../CreateSkill/CreateSkill';
+import SkillCodeView from '../../../SkillCreator/SkillViews/CodeView';
 
 class CodeView extends Component {
   constructor(props) {
@@ -14,7 +14,7 @@ class CodeView extends Component {
     return (
       <div>
         <div>
-          <CreateSkill botBuilder={this.props.botBuilder} />
+          <SkillCodeView botBuilder={this.props.botBuilder} />
         </div>
       </div>
     );

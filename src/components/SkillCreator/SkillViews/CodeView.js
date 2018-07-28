@@ -28,19 +28,17 @@ import 'brace/ext/searchbox';
 import * as $ from 'jquery';
 import notification from 'antd/lib/notification';
 import Info from 'material-ui/svg-icons/action/info';
-import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import LinearProgress from 'material-ui/LinearProgress';
-import colors from '../../Utils/colors';
-import urls from '../../Utils/urls';
+import colors from '../../../Utils/colors';
+import urls from '../../../Utils/urls';
 const languages = [];
 const fontsizes = [];
 const codeEditorThemes = [];
 const cookies = new Cookies();
 
 let self;
-export default class CreateSkill extends React.Component {
+export default class CodeView extends React.Component {
   componentDidMount() {
-    document.title = 'SUSI.AI - Create Skill';
     self = this;
     self.loadgroups();
     // send code to CodeView in botbuilder
@@ -75,6 +73,12 @@ export default class CreateSkill extends React.Component {
           imageUrl: this.props.botBuilder.imageUrl,
         });
       }
+    }
+
+    if (this.props.skillCode) {
+      this.setState({
+        code: this.props.skillCode,
+      });
     }
   }
 
@@ -506,23 +510,12 @@ export default class CreateSkill extends React.Component {
       padding: '10px',
       position: 'relative',
     };
-    if (!cookies.get('loggedIn')) {
-      return (
-        <div>
-          <StaticAppBar {...this.props} />
-          <div>
-            <p style={styles.loggedInError}>Please login to create a skill.</p>
-          </div>
-        </div>
-      );
-    }
     return (
       <div>
-        {!this.props.botBuilder && <StaticAppBar {...this.props} />}
         <div
           style={{
             width: '100%',
-            padding: this.props.botBuilder ? '0px' : '80px 30px 30px',
+            padding: this.props.botBuilder ? '0px' : '30px 30px 30px',
           }}
         >
           <ReactTooltip
@@ -794,6 +787,7 @@ const styles = {
     color: 'rgb(158, 158, 158)',
   },
 };
-CreateSkill.propTypes = {
+CodeView.propTypes = {
   botBuilder: PropTypes.object,
+  skillCode: PropTypes.string,
 };
