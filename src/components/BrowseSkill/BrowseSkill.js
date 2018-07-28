@@ -20,7 +20,6 @@ import Person from 'material-ui/svg-icons/social/person';
 import ActionViewModule from 'material-ui/svg-icons/action/view-module';
 import ActionViewStream from 'material-ui/svg-icons/action/view-stream';
 import ChevronRight from 'material-ui/svg-icons/navigation/chevron-right';
-import colors from '../../Utils/colors';
 // eslint-disable-next-line
 import CircleImage from '../CircleImage/CircleImage';
 import CircularProgress from 'material-ui/CircularProgress';
@@ -28,7 +27,7 @@ import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import SkillCardList from '../SkillCardList/SkillCardList';
 import SkillCardGrid from '../SkillCardGrid/SkillCardGrid';
 import SkillCardScrollList from '../SkillCardScrollList/SkillCardScrollList';
-import urls from '../../Utils/urls';
+import { urls, colors } from '../../utils';
 import Footer from '../Footer/Footer.react';
 import SearchBar from 'material-ui-search-bar';
 import _ from 'lodash';

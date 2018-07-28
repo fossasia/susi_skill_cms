@@ -8,9 +8,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import Snackbar from 'material-ui/Snackbar';
 import Close from 'material-ui/svg-icons/navigation/close';
 import ColorPicker from 'material-ui-color-picker';
-import colors from '../../../../Utils/colors';
-import urls from '../../../../Utils/urls';
-import avatars from '../../../../Utils/avatars';
+import { urls, colors, avatars } from '../../../../utils';
 import TiTick from 'react-icons/lib/ti/tick';
 
 const cookies = new Cookies();

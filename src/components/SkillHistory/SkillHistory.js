@@ -10,8 +10,7 @@ import { RaisedButton } from 'material-ui';
 import CircularProgress from 'material-ui/CircularProgress';
 import { Paper } from 'material-ui';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
-import urls from '../../Utils/urls';
-import colors from '../../Utils/colors';
+import { urls, colors } from '../../utils';
 
 import 'brace/mode/markdown';
 import 'brace/theme/github';

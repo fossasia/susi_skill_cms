@@ -24,7 +24,7 @@ import EditBtn from 'material-ui/svg-icons/editor/mode-edit';
 // CSS
 import './SkillFeedbackCard.css';
 
-import { parseDate } from '../../Utils/helperFunctions';
+import { parseDate } from '../../utils';
 
 const cookies = new Cookies();
 

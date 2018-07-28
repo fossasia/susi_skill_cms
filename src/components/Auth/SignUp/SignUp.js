@@ -8,8 +8,7 @@ import PasswordField from 'material-ui-password-field';
 import Dialog from 'material-ui/Dialog';
 import PropTypes from 'prop-types';
 import zxcvbn from 'zxcvbn';
-import colors from '../../../Utils/colors';
-import urls from '../../../Utils/urls';
+import { colors, urls } from '../../../utils';
 
 export default class SignUp extends Component {
   constructor(props) {

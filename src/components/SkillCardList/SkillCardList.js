@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import CircleImage from '../CircleImage/CircleImage';
 import styles from './SkillCardStyle';
-import urls from '../../Utils/urls';
+import { urls } from '../../utils';
 
 function testExample(e, exampleText) {
   let link = 'https://chat.susi.ai/?testExample=' + exampleText;

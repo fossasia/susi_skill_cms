@@ -19,8 +19,7 @@ import Snackbar from 'material-ui/Snackbar';
 import MenuItem from 'material-ui/MenuItem';
 import * as $ from 'jquery';
 import Add from 'material-ui/svg-icons/content/add';
-import urls from '../../Utils/urls';
-import colors from '../../Utils/colors';
+import { urls, colors } from '../../utils';
 
 const cookies = new Cookies();
 

@@ -8,7 +8,7 @@ import Img from 'react-image';
 import CircleImage from '../CircleImage/CircleImage';
 import Close from 'material-ui/svg-icons/navigation/close';
 import './AuthorSkills.css';
-import urls from '../../Utils/urls';
+import { urls } from '../../utils';
 import {
   Table,
   TableBody,

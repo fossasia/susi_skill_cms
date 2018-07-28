@@ -11,7 +11,7 @@ import Paper from 'material-ui/Paper';
 import Tabs from 'antd/lib/tabs';
 import ListUser from './ListUser/ListUser';
 import ListSkills from './ListSkills/ListSkills';
-import urls from '../../Utils/urls';
+import { urls } from '../../utils';
 
 const cookies = new Cookies();
 

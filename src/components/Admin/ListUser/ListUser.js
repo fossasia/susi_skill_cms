@@ -7,7 +7,7 @@ import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'material-ui/Dialog';
 import MenuItem from 'material-ui/MenuItem';
 import DropDownMenu from 'material-ui/DropDownMenu';
-import urls from '../../../Utils/urls.js';
+import { urls } from '../../../utils';
 import 'antd/lib/table/style/index.css';
 
 const cookies = new Cookies();

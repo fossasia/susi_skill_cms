@@ -9,7 +9,7 @@ import CircularProgress from 'material-ui/CircularProgress';
 import Snackbar from 'material-ui/Snackbar';
 import Cookies from 'universal-cookie';
 import './ListSkills.css';
-import urls from '../../../Utils/urls';
+import { urls } from '../../../utils';
 import * as $ from 'jquery';
 import { LocaleProvider } from 'antd';
 import Tabs from 'antd/lib/tabs';

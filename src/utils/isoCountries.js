@@ -1,4 +1,4 @@
-export const isoCountries = {
+const isoCountries = {
   AF: 'Afghanistan',
   AX: 'Aland Islands',
   AL: 'Albania',
@@ -245,3 +245,5 @@ export const isoCountries = {
   ZM: 'Zambia',
   ZW: 'Zimbabwe',
 };
+
+export default isoCountries;

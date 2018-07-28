@@ -6,8 +6,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import Dialog from 'material-ui/Dialog';
 import './ForgotPassword.css';
 import $ from 'jquery';
-import colors from '../../../Utils/colors';
-import urls from '../../../Utils/urls';
+import { colors, urls } from '../../../utils';
 import Close from 'material-ui/svg-icons/navigation/close';
 
 class ForgotPassword extends Component {

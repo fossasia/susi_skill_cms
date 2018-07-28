@@ -8,10 +8,8 @@ import $ from 'jquery';
 import PropTypes from 'prop-types';
 import { addUrlProps, UrlQueryParamTypes } from 'react-url-query';
 import Cookies from 'universal-cookie';
-import urls from '../../../Utils/urls';
 import CircularProgress from 'material-ui/CircularProgress';
-import colors from '../../../Utils/colors';
-import { isProduction } from '../../../Utils/helperFunctions';
+import { colors, urls, isProduction } from '../../../utils';
 import Dialog from 'material-ui/Dialog';
 const cookies = new Cookies();
 

@@ -26,9 +26,7 @@ import NavigationChevronRight from 'material-ui/svg-icons/navigation/chevron-rig
 
 import '../SkillFeedbackCard/SkillFeedbackCard.css';
 import './SkillFeedbackPage.css';
-import urls from '../../Utils/urls';
-
-import { parseDate } from '../../Utils/helperFunctions';
+import { urls, parseDate } from '../../utils';
 
 const cookies = new Cookies();
 
