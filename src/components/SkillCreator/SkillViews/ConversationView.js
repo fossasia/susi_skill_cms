@@ -76,8 +76,10 @@ class ConversationView extends Component {
             let text = item.name;
             let messageArr = text.match(/.{1,28}/g);
             let message = [];
-            for (let i = 0; i < messageArr.length; i++) {
-              message.push(<div>{messageArr[i]}</div>);
+            if (messageArr && messageArr.length > 0) {
+              for (let i = 0; i < messageArr.length; i++) {
+                message.push(<div>{messageArr[i]}</div>);
+              }
             }
             if (item.type === 'user') {
               return (

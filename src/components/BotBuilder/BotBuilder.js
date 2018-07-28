@@ -65,7 +65,7 @@ class BotBuilder extends React.Component {
     if (bots) {
       bots.forEach(bot => {
         chatbots.push(
-          <Card className="bot-template-card">
+          <Card key={bot.name} className="bot-template-card">
             <Link
               to={
                 '/botbuilder/botwizard?name=' +
