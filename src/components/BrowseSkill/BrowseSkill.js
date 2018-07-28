@@ -90,7 +90,8 @@ export default class BrowseSkill extends React.Component {
       topRatedSkills: [],
       topUsedSkills: [],
       topFeedbackSkills: [],
-      latestSkills: [],
+      newestSkills: [],
+      latestUpdatedSkills: [],
       topGames: [],
       ratingRefine: null,
       timeFilter: null,
@@ -346,7 +347,8 @@ export default class BrowseSkill extends React.Component {
           skillsLoaded: true,
           topRatedSkills: data.metrics.rating,
           topUsedSkills: data.metrics.usage,
-          latestSkills: data.metrics.latest,
+          latestUpdatedSkills: data.metrics.latest,
+          newestSkills: data.metrics.newest,
           topFeedbackSkills: data.metrics.feedback,
           topGames: data.metrics['Games, Trivia and Accessories'],
         });
@@ -916,7 +918,7 @@ export default class BrowseSkill extends React.Component {
                   </div>
                 ) : null}
 
-                {this.state.latestSkills.length &&
+                {this.state.newestSkills.length &&
                 !this.state.searchQuery.length &&
                 !this.state.ratingRefine &&
                 !this.state.timeFilter ? (
@@ -925,13 +927,37 @@ export default class BrowseSkill extends React.Component {
                       style={styles.metricsHeader}
                       className="metrics-header"
                     >
-                      <h4>{'"SUSI, what are the latest skills?"'}</h4>
+                      <h4>{'"SUSI, what are the newest skills?"'}</h4>
                     </div>
                     {/* Scroll Id must be unique for all instances of SkillCardList*/}
                     {!this.props.routeType && (
                       <SkillCardScrollList
-                        scrollId="latestSkills"
-                        skills={this.state.latestSkills}
+                        scrollId="newestSkills"
+                        skills={this.state.newestSkills}
+                        modelValue={this.state.modelValue}
+                        languageValue={this.state.languageValue}
+                        skillUrl={this.state.skillUrl}
+                      />
+                    )}
+                  </div>
+                ) : null}
+
+                {this.state.latestUpdatedSkills.length &&
+                !this.state.searchQuery.length &&
+                !this.state.ratingRefine &&
+                !this.state.timeFilter ? (
+                  <div style={metricsContainerStyle}>
+                    <div
+                      style={styles.metricsHeader}
+                      className="metrics-header"
+                    >
+                      <h4>{'"SUSI, what are the recently updated skills?"'}</h4>
+                    </div>
+                    {/* Scroll Id must be unique for all instances of SkillCardList*/}
+                    {!this.props.routeType && (
+                      <SkillCardScrollList
+                        scrollId="latestUpdatedSkills"
+                        skills={this.state.latestUpdatedSkills}
                         modelValue={this.state.modelValue}
                         languageValue={this.state.languageValue}
                         skillUrl={this.state.skillUrl}
