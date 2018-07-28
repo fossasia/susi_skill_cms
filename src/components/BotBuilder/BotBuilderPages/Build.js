@@ -49,6 +49,25 @@ class Build extends Component {
 
   componentDidMount() {
     this.generateSkillData();
+    if (this.props.preferUiView === 'code') {
+      this.setState({
+        codeView: true,
+        conversationView: false,
+        treeView: false,
+      });
+    } else if (this.props.preferUiView === 'conversation') {
+      this.setState({
+        codeView: false,
+        conversationView: true,
+        treeView: false,
+      });
+    } else if (this.props.preferUiView === 'tree') {
+      this.setState({
+        codeView: false,
+        conversationView: false,
+        treeView: true,
+      });
+    }
   }
 
   sendInfoToProps = values => {
@@ -215,6 +234,7 @@ class Build extends Component {
                     conversationView: false,
                     treeView: false,
                   });
+                  this.props.onChangePreferUiView('code');
                 }}
                 disableTouchRipple={true}
               >
@@ -234,6 +254,7 @@ class Build extends Component {
                     conversationView: true,
                     treeView: false,
                   });
+                  this.props.onChangePreferUiView('conversation');
                 }}
                 disableTouchRipple={true}
               >
@@ -253,6 +274,7 @@ class Build extends Component {
                     conversationView: false,
                     treeView: true,
                   });
+                  this.props.onChangePreferUiView('tree');
                 }}
                 disableTouchRipple={true}
               >
@@ -309,6 +331,8 @@ Build.propTypes = {
   imageFile: PropTypes.object,
   image: PropTypes.string,
   imageUrl: PropTypes.string,
+  preferUiView: PropTypes.string,
+  onChangePreferUiView: PropTypes.func,
 };
 
 export default Build;

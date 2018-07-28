@@ -83,6 +83,7 @@ class BotWizard extends React.Component {
       imageUrl: '',
       image: '',
       designData: null,
+      preferUiView: 'code',
       buildCode:
         '::name <Bot_name>\n::category <Category>\n::language <Language>\n::author <author_name>\n::author_url <author_url>\n::description <description> \n::dynamic_content <Yes/No>\n::developer_privacy_policy <link>\n::image <image_url>\n::terms_of_use <link>\n\n\nUser query1|query2|quer3....\n!example:<The question that should be shown in public skill displays>\n!expect:<The answer expected for the above example>\nAnswer for the user query',
       designCode:
@@ -237,6 +238,18 @@ class BotWizard extends React.Component {
     this.setState({ configCode: code });
   };
 
+  onChangePreferUiView = prefer => {
+    if (prefer === 'ui') {
+      if (this.state.preferUiView === 'code') {
+        this.setState({ preferUiView: 'conversation' });
+      } else {
+        return null;
+      }
+    } else {
+      this.setState({ preferUiView: prefer });
+    }
+  };
+
   getStepContent(stepIndex) {
     switch (stepIndex) {
       case 0:
@@ -248,6 +261,8 @@ class BotWizard extends React.Component {
             image={this.state.image}
             imageUrl={this.state.imageUrl}
             onImageChange={() => this.setState({ imageChanged: true })}
+            preferUiView={this.state.preferUiView}
+            onChangePreferUiView={this.onChangePreferUiView}
           />
         );
       case 1:
@@ -255,6 +270,8 @@ class BotWizard extends React.Component {
           <Design
             updateSettings={this.updateSettings}
             code={this.state.designCode}
+            preferUiView={this.state.preferUiView}
+            onChangePreferUiView={this.onChangePreferUiView}
           />
         );
       case 2:
@@ -262,6 +279,8 @@ class BotWizard extends React.Component {
           <Configure
             updateConfiguration={this.updateConfiguration}
             code={this.state.configCode}
+            preferUiView={this.state.preferUiView}
+            onChangePreferUiView={this.onChangePreferUiView}
           />
         );
       case 3:

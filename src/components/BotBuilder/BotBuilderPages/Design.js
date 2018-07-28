@@ -16,6 +16,20 @@ class Design extends React.Component {
     };
   }
 
+  componentDidMount() {
+    if (this.props.preferUiView === 'code') {
+      this.setState({
+        codeView: true,
+        uiView: false,
+      });
+    } else {
+      this.setState({
+        codeView: false,
+        uiView: true,
+      });
+    }
+  }
+
   sendInfoToProps = values => {
     this.setState({ ...values });
   };
@@ -37,6 +51,7 @@ class Design extends React.Component {
                   codeView: true,
                   uiView: false,
                 });
+                this.props.onChangePreferUiView('code');
               }}
               disableTouchRipple={true}
             >
@@ -55,6 +70,7 @@ class Design extends React.Component {
                   codeView: false,
                   uiView: true,
                 });
+                this.props.onChangePreferUiView('ui');
               }}
               disableTouchRipple={true}
             >
@@ -100,6 +116,8 @@ class Design extends React.Component {
 Design.propTypes = {
   updateSettings: PropTypes.func,
   code: PropTypes.string,
+  preferUiView: PropTypes.string,
+  onChangePreferUiView: PropTypes.func,
 };
 
 export default Design;
