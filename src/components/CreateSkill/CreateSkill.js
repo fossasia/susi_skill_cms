@@ -3,6 +3,8 @@ import Icon from 'antd/lib/icon';
 import MenuItem from 'material-ui/MenuItem';
 import PropTypes from 'prop-types';
 import SelectField from 'material-ui/SelectField';
+import DropDownMenu from 'material-ui/DropDownMenu';
+// import Popover from 'material-ui/Popover/Popover';
 import ReactTooltip from 'react-tooltip';
 import ISO6391 from 'iso-639-1';
 import { Paper, RaisedButton, TextField } from 'material-ui';
@@ -96,6 +98,10 @@ export default class CreateSkill extends React.Component {
       fontSizeCode: 14,
       editorTheme: 'github',
       groups: [],
+      anchorOrigin: {
+        horizontal: 'left',
+        vertical: 'bottom',
+      },
     };
     let fonts = [14, 16, 18, 20, 24, 28, 32, 40];
     let themes = [
@@ -535,25 +541,37 @@ export default class CreateSkill extends React.Component {
             />
             <div style={styles.center}>
               <div style={styles.dropdownDiv}>
-                <SelectField
-                  floatingLabelText="Category"
-                  style={{ width: 300, marginLeft: 10, marginRight: 10 }}
+                <div
+                  style={{
+                    fontSize: 15,
+                    paddingTop: '8px',
+                    paddingLeft: '10px',
+                  }}
+                >
+                  Category:
+                </div>
+                <DropDownMenu
+                  style={{ width: 300 }}
                   value={this.state.groupValue}
                   onChange={this.handleGroupChange}
+                  anchorOrigin={this.state.anchorOrigin}
+                  autoWidth={true}
+                  maxHeight={300}
                 >
                   {this.state.groups}
-                </SelectField>
-                <SelectField
-                  floatingLabelText="Language"
-                  autoWidth={true}
-                  fullWidth={true}
+                </DropDownMenu>
+                <div style={{ fontSize: 15, paddingTop: '8px' }}>Language:</div>
+                <DropDownMenu
                   disabled={this.state.languageSelect}
-                  style={{ width: '125px', marginLeft: 10, marginRight: 10 }}
+                  style={{ width: 200 }}
                   value={this.state.languageValue}
+                  anchorOrigin={this.state.anchorOrigin}
                   onChange={this.handleLanguageChange}
+                  autoWidth={true}
+                  maxHeight={300}
                 >
                   {languages}
-                </SelectField>
+                </DropDownMenu>
                 <TextField
                   disabled={this.state.expertSelect}
                   floatingLabelText={
