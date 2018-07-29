@@ -89,6 +89,7 @@ class SkillListing extends Component {
       feedbackMessage: '',
       editStatus: true,
       showDeleteDialog: false,
+      supportedLanguages: [],
     };
 
     let clickedSkill = this.props.location.pathname.split('/')[2];
@@ -439,6 +440,7 @@ class SkillListing extends Component {
       skillGroup: skillData.group,
       skillLanguage: skillData.language,
       skillTag: skillData.skill_tag,
+      supportedLanguages: skillData.supported_languages,
     });
   };
 
@@ -1033,6 +1035,25 @@ class SkillListing extends Component {
                     )}
                     <tr>
                       <td>Content Rating: </td> <td>4+ age</td>
+                    </tr>
+                    <tr>
+                      <td>Supported Languages: </td>
+                      <td>
+                        {this.state.supportedLanguages.map(languageObject => (
+                          <Link
+                            key={location.language}
+                            onClick={this.forceUpdate}
+                            to={`/${this.groupValue}/${languageObject.name}/${
+                              languageObject.language
+                            }`}
+                          >
+                            {ISO6391.getNativeName(languageObject.language)
+                              ? ISO6391.getNativeName(languageObject.language)
+                              : 'Universal'}
+                            &nbsp;
+                          </Link>
+                        ))}
+                      </td>
                     </tr>
                   </table>
                 </div>
