@@ -150,7 +150,7 @@ iframe{
 .bot-template-card:hover {
     -ms-transform: scale(1.02); /* IE 9 */
     -webkit-transform: scale(1.02); /* Safari 3-8 */
-	transform: scale(1.02); 
+	transform: scale(1.02);
 }
 
 .bot-delete {
@@ -225,6 +225,22 @@ input[type=file]{
 	text-align: center;
 	float: left;
 	cursor: pointer;
+}
+.deploy-steps li{
+	list-style-type: decimal;
+	font-size: 16px;
+	font-weight: bold;
+	margin-bottom: 20px;
+}
+.code-box{
+	font-size: 13px;
+	font-weight: normal;
+}
+.html-tag{
+	font-style: italic;
+	background-color: #eee;
+	display: inline-block;
+	padding: 0 3px;
 }
 
 @media (min-width:769px){
