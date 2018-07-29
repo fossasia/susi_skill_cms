@@ -318,6 +318,11 @@ export default class CodeView extends React.Component {
   };
 
   sendInfoToProps = () => {
+    if (this.props.sendInfoToProps) {
+      this.props.sendInfoToProps({
+        code: this.state.code,
+      });
+    }
     if (this.props.botBuilder) {
       this.props.botBuilder.sendInfoToProps({
         code: this.state.code,
@@ -790,4 +795,5 @@ const styles = {
 CodeView.propTypes = {
   botBuilder: PropTypes.object,
   skillCode: PropTypes.string,
+  sendInfoToProps: PropTypes.func,
 };
