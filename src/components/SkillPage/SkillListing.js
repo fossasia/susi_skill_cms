@@ -1012,10 +1012,16 @@ class SkillListing extends Component {
                               ? null
                               : ', ';
                           return (
-                            <span key={index}>
+                            <Link
+                              key={index}
+                              onClick={this.forceUpdate}
+                              to={`/${this.groupValue}/${data.name}/${
+                                data.language
+                              }`}
+                            >
                               {ISO6391.getNativeName(data.language)}
                               {delimiter}
-                            </span>
+                            </Link>
                           );
                         })}
                       </td>
