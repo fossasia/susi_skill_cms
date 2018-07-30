@@ -60,6 +60,7 @@ class SkillListing extends Component {
       terms_of_use: '',
       dynamic_content: '',
       examples: '',
+      languagesSupported: [],
       descriptions: '',
       skill_name: '',
       skillTag: '',
@@ -433,6 +434,7 @@ class SkillListing extends Component {
       terms_of_use,
       dynamic_content,
       examples,
+      languagesSupported: skillData.supported_languages,
       skillModel: skillData.model,
       skillGroup: skillData.group,
       skillLanguage: skillData.language,
@@ -990,6 +992,29 @@ class SkillListing extends Component {
                     <tr>
                       <td>Updated on: </td>
                       <td>{` ${parseDate(this.state.last_modified_time)}`}</td>
+                    </tr>
+                    <tr>
+                      <td>Languages supported:</td>
+                      <td>
+                        {this.state.languagesSupported.map((data, index) => {
+                          let delimiter =
+                            this.state.languagesSupported.length === index + 1
+                              ? null
+                              : ', ';
+                          return (
+                            <Link
+                              key={index}
+                              onClick={this.forceUpdate}
+                              to={`/${this.groupValue}/${data.name}/${
+                                data.language
+                              }`}
+                            >
+                              {ISO6391.getNativeName(data.language)}
+                              {delimiter}
+                            </Link>
+                          );
+                        })}
+                      </td>
                     </tr>
                     {cookies.get('loggedIn') ? (
                       <tr>
