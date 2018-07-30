@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import colors from '../../../Utils/colors';
 import { Paper } from 'material-ui';
 import PropTypes from 'prop-types';
 import RaisedButton from 'material-ui/RaisedButton';
 import Snackbar from 'material-ui/Snackbar';
 import Person from 'material-ui/svg-icons/social/person';
 import Delete from 'material-ui/svg-icons/action/delete';
+import { colors } from '../../../utils';
 import './ConversationView.css';
 
 class ConversationView extends Component {

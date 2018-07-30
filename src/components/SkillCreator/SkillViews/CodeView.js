@@ -29,8 +29,8 @@ import * as $ from 'jquery';
 import notification from 'antd/lib/notification';
 import Info from 'material-ui/svg-icons/action/info';
 import LinearProgress from 'material-ui/LinearProgress';
-import colors from '../../../Utils/colors';
-import urls from '../../../Utils/urls';
+import { urls, colors } from '../../../utils';
+
 const languages = [];
 const fontsizes = [];
 const codeEditorThemes = [];

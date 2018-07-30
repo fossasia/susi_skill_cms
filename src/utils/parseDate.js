@@ -1,4 +1,4 @@
-export const parseDate = dtstr => {
+let parseDate = dtstr => {
   if (dtstr) {
     // replace anything but numbers by spaces
     dtstr = dtstr.replace(/\D/g, ' ');
@@ -33,7 +33,4 @@ export const parseDate = dtstr => {
   }
 };
 
-export const isProduction = () => {
-  let domain = window.location.hostname;
-  return domain.indexOf('.susi.ai') > 0;
-};
+export default parseDate;

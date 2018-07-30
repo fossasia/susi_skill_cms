@@ -12,8 +12,7 @@ import { Link } from 'react-router-dom';
 import CircularProgress from 'material-ui/CircularProgress';
 import Snackbar from 'material-ui/Snackbar';
 import * as $ from 'jquery';
-import urls from '../../Utils/urls';
-import { parseDate } from '../../Utils/helperFunctions';
+import { urls, parseDate } from '../../utils';
 
 const cookies = new Cookies();
 

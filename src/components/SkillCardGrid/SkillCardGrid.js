@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import CircleImage from '../CircleImage/CircleImage';
 
 import styles from '../BrowseSkill/SkillStyle';
-import urls from '../../Utils/urls';
+import { urls } from '../../utils';
 class SkillCardGrid extends Component {
   constructor(props) {
     super(props);

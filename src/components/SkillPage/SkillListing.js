@@ -38,9 +38,7 @@ import EditBtn from 'material-ui/svg-icons/editor/mode-edit';
 import VersionBtn from 'material-ui/svg-icons/action/history';
 import DeleteBtn from 'material-ui/svg-icons/action/delete';
 import ReactTooltip from 'react-tooltip';
-import colors from '../../Utils/colors';
-import urls from '../../Utils/urls';
-import { parseDate } from '../../Utils/helperFunctions';
+import { urls, colors, parseDate } from '../../utils';
 
 import './SkillListing.css';
 

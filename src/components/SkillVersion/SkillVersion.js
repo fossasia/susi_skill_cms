@@ -17,9 +17,8 @@ import { RadioButton } from 'material-ui/RadioButton';
 import notification from 'antd/lib/notification';
 import Icon from 'antd/lib/icon';
 import $ from 'jquery';
+import { urls, colors } from '../../utils';
 
-import colors from '../../Utils/colors';
-import urls from '../../Utils/urls';
 class SkillVersion extends Component {
   constructor(props) {
     super(props);

@@ -6,7 +6,7 @@ import Table from 'material-ui/Table/Table';
 import TableBody from 'material-ui/Table/TableBody';
 import TableRowColumn from 'material-ui/Table/TableRowColumn';
 import TableRow from 'material-ui/Table/TableRow';
-import { isoCountries } from '../../Utils/isoCountries';
+import { isoCountries } from '../../utils';
 import './CountryWiseSkillUsageCard.css';
 
 class CountryWiseSkillUsageCard extends PureComponent {

@@ -11,7 +11,7 @@ import CircularProgress from 'material-ui/CircularProgress';
 
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import SkillEditor from '../SkillEditor/SkillEditor';
-import urls from '../../Utils/urls';
+import { urls } from '../../utils';
 
 import 'brace/mode/markdown';
 import 'brace/theme/github';

@@ -12,7 +12,7 @@ import {
   Cell,
   ResponsiveContainer,
 } from 'recharts';
-import urls from '../../Utils/urls';
+import { urls } from '../../utils';
 
 const cookies = new Cookies();
 
