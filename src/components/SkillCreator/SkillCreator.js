@@ -32,6 +32,10 @@ class SkillCreator extends Component {
     this.generateSkillData();
   };
 
+  sendInfoToProps = value => {
+    this.setState({ skillCode: value.code }, () => this.generateSkillData());
+  };
+
   generateSkillData = () => {
     let skillData_new = {
       name: 'Welcome!',
@@ -253,7 +257,10 @@ class SkillCreator extends Component {
           </div>
         </div>
         {this.state.codeView ? (
-          <CodeView skillCode={this.state.skillCode} />
+          <CodeView
+            skillCode={this.state.skillCode}
+            sendInfoToProps={this.sendInfoToProps}
+          />
         ) : null}
         {this.state.conversationView ? (
           <ConversationView
