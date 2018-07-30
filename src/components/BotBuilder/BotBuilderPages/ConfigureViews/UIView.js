@@ -323,10 +323,13 @@ class UIView extends Component {
             label="Allow bot only on own site"
             labelPosition="right"
             checked={this.state.limitSites}
-            labelStyle={{ fontSize: '14px' }}
+            labelStyle={{ fontSize: '16px' }}
             iconStyle={{ fill: 'rgb(66, 133, 244)' }}
             onCheck={this.handleChangeLimitSites}
           />
+          <div style={{ fontSize: '14px', padding: '0px 0px 2px 40px' }}>
+            Allow the chatbot to run only on specified websites.
+          </div>
           {this.state.limitSites ? (
             <div style={{ padding: '20px 0px' }}>
               <TextField
@@ -360,26 +363,37 @@ class UIView extends Component {
             label="Include SUSI default skills"
             labelPosition="right"
             checked={this.state.includeSusiSkills}
-            labelStyle={{ fontSize: '14px' }}
+            labelStyle={{ fontSize: '16px' }}
             iconStyle={{ fill: 'rgb(66, 133, 244)' }}
             onCheck={this.handleChangeIncludeSusiSkills}
           />
+          <div style={{ fontSize: '14px', padding: '0px 0px 2px 40px' }}>
+            Allow the users to use all skills of SUSI.AI on your chatbot.
+            Don&apos;t worry, your bot skill will always have a higher priority
+            than SUSI skills.
+          </div>
           <Checkbox
             label="Enable bot in my devices"
             labelPosition="right"
             checked={this.state.myDevices}
-            labelStyle={{ fontSize: '14px' }}
+            labelStyle={{ fontSize: '16px' }}
             iconStyle={{ fill: 'rgb(66, 133, 244)' }}
             onCheck={this.handleChangeIncludeInMyDevices}
           />
+          <div style={{ fontSize: '14px', padding: '0px 0px 2px 40px' }}>
+            Allow the chatbot to run on your devices.
+          </div>
           <Checkbox
             label="Enable bot for other users"
             labelPosition="right"
             checked={this.state.publicDevices}
-            labelStyle={{ fontSize: '14px' }}
+            labelStyle={{ fontSize: '16px' }}
             iconStyle={{ fill: 'rgb(66, 133, 244)' }}
             onCheck={this.handleChangeIncludeInPublicDevices}
           />
+          <div style={{ fontSize: '14px', padding: '0px 0px 2px 40px' }}>
+            Allow the chatbot to run on other devices specified by you.
+          </div>
         </div>
         <Snackbar
           open={this.state.openSnackbar}
