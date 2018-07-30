@@ -107,7 +107,7 @@ class AuthorSkills extends Component {
                     </a>
                   </div>
                 </TableRowColumn>
-                <TableRowColumn>{parse[4]}</TableRowColumn>
+                <TableRowColumn title={parse[4]}>{parse[4]}</TableRowColumn>
                 <TableRowColumn>
                   {ISO6391.getNativeName(parse[5])}
                 </TableRowColumn>
