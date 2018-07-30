@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import $ from 'jquery';
-import urls from '../../../Utils/urls';
+import urls from '../../../utils/urls';
 import PropTypes from 'prop-types';
 import './Chatbot.css';
 import './Preview.css';
