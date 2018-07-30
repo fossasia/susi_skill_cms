@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Paper from 'material-ui/Paper';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
+import CircularProgress from 'material-ui/CircularProgress';
 import Dialog from 'material-ui/Dialog';
 import './ForgotPassword.css';
 import $ from 'jquery';
@@ -21,6 +22,7 @@ class ForgotPassword extends Component {
       emailError: true,
       validEmail: true,
       validForm: false,
+      loading: false,
     };
 
     this.emailErrorMessage = '';
@@ -84,6 +86,8 @@ class ForgotPassword extends Component {
 
     let BASE_URL = urls.API_URL;
 
+    this.setState({ loading: true });
+
     if (email && validEmail) {
       $.ajax({
         url: BASE_URL + '/aaa/recoverpassword.json?forgotemail=' + email,
@@ -96,6 +100,7 @@ class ForgotPassword extends Component {
             let msg = 'Email does not exist';
             let state = this.state;
             state.msg = msg;
+            state.loading = false;
             this.setState(state);
           },
         },
@@ -109,6 +114,7 @@ class ForgotPassword extends Component {
             state.success = false;
             state.msg += 'Please Try Again';
           }
+          state.loading = false;
           this.setState(state);
         }.bind(this),
         error: function(jqXHR, textStatus, errorThrown) {
@@ -124,6 +130,7 @@ class ForgotPassword extends Component {
           // }
           let state = this.state;
           state.msg = msg;
+          state.loading = false;
           this.setState(state);
         }.bind(this),
       });
@@ -171,12 +178,21 @@ class ForgotPassword extends Component {
             <div>
               <RaisedButton
                 type="submit"
-                label="Reset"
+                label={this.state.loading ? '' : 'Reset'}
                 backgroundColor={colors.header}
                 labelColor="#fff"
                 style={{ margin: '25px 0 0 0 ' }}
                 disabled={!this.state.validForm}
-              />
+              >
+                {this.state.loading ? (
+                  <CircularProgress
+                    size={24}
+                    thickness={2}
+                    style={{ marginTop: 5 }}
+                    color={'#FFF'}
+                  />
+                ) : null}
+              </RaisedButton>
             </div>
           </form>
         </Paper>
