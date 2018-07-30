@@ -150,7 +150,7 @@ iframe{
 .bot-template-card:hover {
     -ms-transform: scale(1.02); /* IE 9 */
     -webkit-transform: scale(1.02); /* Safari 3-8 */
-	transform: scale(1.02); 
+	transform: scale(1.02);
 }
 
 .bot-delete {
@@ -225,6 +225,16 @@ input[type=file]{
 	text-align: center;
 	float: left;
 	cursor: pointer;
+}
+.ace_scroller {
+	/*#fafbfc*/
+	border: 1px solid #d1d5da;
+	background-color: #fafbfc;
+}
+.ace_focus .ace_scroller{
+	background-color: #ffffff;
+	border-color: #2188ff;
+	box-shadow: inset 0 1px 2px rgba(27,31,35,0.075), 0 0 0 0.2em rgba(3,102,214,0.3);
 }
 
 @media (min-width:769px){

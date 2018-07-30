@@ -328,7 +328,7 @@ class SkillRollBack extends Component {
                     editorProps={{ $blockScrolling: true }}
                     style={{
                       resize: 'vertical',
-                      overflowY: 'scroll',
+                      overflowY: 'auto',
                       minHeight: '200px',
                     }}
                   />
@@ -358,7 +358,7 @@ class SkillRollBack extends Component {
                     editorProps={{ $blockScrolling: true }}
                     style={{
                       resize: 'vertical',
-                      overflowY: 'scroll',
+                      overflowY: 'auto',
                       minHeight: '200px',
                     }}
                   />

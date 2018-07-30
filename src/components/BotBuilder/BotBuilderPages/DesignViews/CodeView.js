@@ -154,8 +154,8 @@ class CodeView extends Component {
             editorProps={{ $blockScrolling: true }}
             style={{
               resize: 'vertical',
-              overflowY: 'scroll',
-              minHeight: '200px',
+              overflowY: 'auto',
+              minHeight: '400px',
             }}
           />
         )}
