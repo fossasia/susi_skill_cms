@@ -1040,21 +1040,38 @@ export default class BrowseSkill extends React.Component {
                 this.state.ratingRefine ||
                 (this.state.timeFilter && this.state.skills.length) ? (
                   <div>
-                    {this.state.viewType === 'list' ? (
-                      <SkillCardList
-                        skills={this.state.skills}
-                        modelValue={this.state.modelValue}
-                        languageValue={this.state.languageValue}
-                        skillUrl={this.state.skillUrl}
-                      />
-                    ) : (
-                      <SkillCardGrid
-                        skills={this.state.skills}
-                        modelValue={this.state.modelValue}
-                        languageValue={this.state.languageValue}
-                        skillUrl={this.state.skillUrl}
-                      />
-                    )}
+                    <div
+                      style={{
+                        display: 'flex',
+                        margin: '0 0 10px 10px',
+                        fontSize: '16px',
+                      }}
+                    >
+                      {this.state.skills.length} results for&nbsp;<b>
+                        SUSI Skills
+                      </b>&nbsp;:&nbsp;<div
+                        style={{ color: '#4286f4', fontWeight: 'bold' }}
+                      >
+                        {this.props.routeValue}
+                      </div>
+                    </div>
+                    <div>
+                      {this.state.viewType === 'list' ? (
+                        <SkillCardList
+                          skills={this.state.skills}
+                          modelValue={this.state.modelValue}
+                          languageValue={this.state.languageValue}
+                          skillUrl={this.state.skillUrl}
+                        />
+                      ) : (
+                        <SkillCardGrid
+                          skills={this.state.skills}
+                          modelValue={this.state.modelValue}
+                          languageValue={this.state.languageValue}
+                          skillUrl={this.state.skillUrl}
+                        />
+                      )}
+                    </div>
                   </div>
                 ) : (
                   <div>
