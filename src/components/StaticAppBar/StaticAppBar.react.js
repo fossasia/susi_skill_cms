@@ -1,12 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Cookies from 'universal-cookie';
-import Dialog from 'material-ui/Dialog';
-import Login from '../Auth/Login/Login';
-import SignUp from '../Auth/SignUp/SignUp';
+import Auth from '../Auth/';
 import List from 'material-ui/svg-icons/action/list';
-import ForgotPassword from '../Auth/ForgotPassword/ForgotPassword';
-import Close from 'material-ui/svg-icons/navigation/close';
 import AppBar from 'material-ui/AppBar';
 import IconButton from 'material-ui/IconButton';
 import IconMenu from 'material-ui/IconMenu';
@@ -19,7 +15,7 @@ import LoginIcon from 'material-ui/svg-icons/action/account-circle';
 import Info from 'material-ui/svg-icons/action/info';
 import Settings from 'material-ui/svg-icons/action/settings';
 import Chat from 'material-ui/svg-icons/communication/chat';
-import SKillIcon from 'material-ui/svg-icons/action/dashboard';
+import SkillIcon from 'material-ui/svg-icons/action/dashboard';
 import MenuItem from 'material-ui/MenuItem';
 import { Link } from 'react-router-dom';
 import susiWhite from '../images/SUSIAI-white.png';
@@ -38,7 +34,7 @@ let TopRightMenuItems = props => (
       Chat
     </MenuItem>
     <Link to="/">
-      <MenuItem rightIcon={<SKillIcon />}>Skills</MenuItem>
+      <MenuItem rightIcon={<SkillIcon />}>Skills</MenuItem>
     </Link>
     {!cookies.get('loggedIn') ? (
       <MenuItem href="http://chat.susi.ai/overview" rightIcon={<Info />}>
@@ -52,9 +48,7 @@ class StaticAppBar extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      showLogin: false,
-      showSignUp: false,
-      showForgotPassword: false,
+      showAuth: false,
       showOptions: false,
       showAdmin: false,
       anchorEl: null,
@@ -187,56 +181,14 @@ class StaticAppBar extends Component {
 
   handleLogin = () => {
     this.setState({
-      showLogin: true,
-      showSignUp: false,
-      showForgotPassword: false,
+      showAuth: true,
       showOptions: false,
     });
   };
 
-  handleSignUp = () => {
-    this.setState({
-      showSignUp: true,
-      showLogin: false,
-      showForgotPassword: false,
-      showOptions: false,
-    });
-  };
-
-  handleForgotPassword = () => {
-    this.setState({
-      showSignUp: false,
-      showLogin: false,
-      showForgotPassword: true,
-      showOptions: false,
-    });
-  };
-
-  handleClose = () => {
-    this.setState({
-      showOptions: false,
-      showLogin: false,
-      showSignUp: false,
-      showForgotPassword: false,
-    });
-  };
+  handleAuthClose = () => this.setState({ showAuth: false });
 
   render() {
-    const closingStyle = {
-      position: 'absolute',
-      zIndex: 1200,
-      fill: '#444',
-      width: '26px',
-      height: '26px',
-      right: '10px',
-      top: '10px',
-      cursor: 'pointer',
-    };
-
-    const bodyStyle = {
-      padding: 0,
-      textAlign: 'center',
-    };
     const headerStyle = {
       background: colors.header,
     };
@@ -373,50 +325,15 @@ class StaticAppBar extends Component {
             iconElementRight={<TopRightMenu />}
           />
         </header>
-        {/* Login */}
-        <Dialog
-          modal={false}
-          open={this.state.showLogin}
-          onRequestClose={this.handleClose}
-          autoScrollBodyContent={true}
-          bodyStyle={bodyStyle}
-          contentStyle={{ width: '35%', minWidth: '300px' }}
-        >
-          <Login
-            {...this.props}
-            onForgotPwdLogin={this.handleForgotPassword}
-            onSignUpLogin={this.handleSignUp}
+        {/* Auth */}
+        {this.state.showAuth ? (
+          <Auth
+            history={this.props.history}
+            defaultAuthSection="login"
+            showAuth={this.state.showAuth}
+            closeAuth={this.handleAuthClose}
           />
-          <Close style={closingStyle} onTouchTap={this.handleClose} />
-        </Dialog>
-        {/* SignUp */}
-        <Dialog
-          modal={false}
-          open={this.state.showSignUp}
-          onRequestClose={this.handleClose}
-          autoScrollBodyContent={true}
-          bodyStyle={bodyStyle}
-          contentStyle={{ width: '35%', minWidth: '300px' }}
-        >
-          <SignUp
-            {...this.props}
-            onRequestClose={this.handleClose}
-            onLoginSignUp={this.handleLogin}
-          />
-          <Close style={closingStyle} onTouchTap={this.handleClose} />
-        </Dialog>
-        {/* Forgot Password */}
-        <Dialog
-          modal={false}
-          open={this.state.showForgotPassword}
-          autoScrollBodyContent={true}
-          bodyStyle={bodyStyle}
-          contentStyle={{ width: '35%', minWidth: '300px' }}
-          onRequestClose={this.handleClose}
-        >
-          <ForgotPassword {...this.props} onRequestClose={this.handleClose} />
-          <Close style={closingStyle} onTouchTap={this.handleClose} />
-        </Dialog>
+        ) : null}
       </div>
     );
   }
@@ -424,6 +341,7 @@ class StaticAppBar extends Component {
 
 StaticAppBar.propTypes = {
   location: PropTypes.object,
+  history: PropTypes.object,
 };
 
 export default StaticAppBar;
