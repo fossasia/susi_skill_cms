@@ -30,6 +30,20 @@ class Configure extends Component {
     };
   }
 
+  componentDidMount() {
+    if (this.props.preferUiView === 'code') {
+      this.setState({
+        codeView: true,
+        uiView: false,
+      });
+    } else {
+      this.setState({
+        codeView: false,
+        uiView: true,
+      });
+    }
+  }
+
   sendInfoToProps = values => {
     this.props.updateConfiguration(values.code);
     this.setState({ ...values });
@@ -48,6 +62,7 @@ class Configure extends Component {
                   codeView: true,
                   uiView: false,
                 });
+                this.props.onChangePreferUiView('code');
               }}
               disableTouchRipple={true}
             >
@@ -66,6 +81,7 @@ class Configure extends Component {
                   codeView: false,
                   uiView: true,
                 });
+                this.props.onChangePreferUiView('ui');
               }}
               disableTouchRipple={true}
             >
@@ -103,5 +119,7 @@ class Configure extends Component {
 Configure.propTypes = {
   updateConfiguration: PropTypes.func,
   code: PropTypes.string,
+  preferUiView: PropTypes.string,
+  onChangePreferUiView: PropTypes.func,
 };
 export default Configure;
