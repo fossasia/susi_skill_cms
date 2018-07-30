@@ -148,10 +148,10 @@ export default class CodeView extends React.Component {
 
     self.setState(
       {
-        expertValue: nameMatch[1],
-        groupValue: categoryMatch[1],
-        languageValue: languageMatch[1],
-        imageUrl: match[1],
+        expertValue: nameMatch ? nameMatch[1] : '',
+        groupValue: categoryMatch ? categoryMatch[1] : '',
+        languageValue: languageMatch ? languageMatch[1] : '',
+        imageUrl: match ? match[1] : '',
         code: newValue,
       },
       () => self.sendInfoToProps(),

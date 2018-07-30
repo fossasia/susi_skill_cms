@@ -49,7 +49,7 @@ class CodeView extends Component {
   };
 
   updateSettings = () => {
-    let settingsString = JSON.stringify(this.state);
+    let settingsString = this.state;
     this.props.design.updateSettings(settingsString);
   };
 

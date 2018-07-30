@@ -51,7 +51,7 @@ class UIView extends Component {
     this.props.design.sendInfoToProps({
       code: this.state.code,
     });
-    let settingsString = JSON.stringify(this.state);
+    let settingsString = this.state;
     this.props.design.updateSettings(settingsString);
   };
 

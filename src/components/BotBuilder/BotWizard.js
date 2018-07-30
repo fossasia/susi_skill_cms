@@ -8,6 +8,7 @@ import { Grid, Col, Row } from 'react-flexbox-grid';
 import Build from './BotBuilderPages/Build';
 import PropTypes from 'prop-types';
 import Design from './BotBuilderPages/Design';
+import Preview from './Preview/Preview';
 import CircularProgress from 'material-ui/CircularProgress';
 import { Link } from 'react-router-dom';
 import Configure from './BotBuilderPages/Configure';
@@ -81,6 +82,7 @@ class BotWizard extends React.Component {
       file: null,
       imageUrl: '',
       image: '',
+      designData: null,
       buildCode:
         '::name <Bot_name>\n::category <Category>\n::language <Language>\n::author <author_name>\n::author_url <author_url>\n::description <description> \n::dynamic_content <Yes/No>\n::developer_privacy_policy <link>\n::image <image_url>\n::terms_of_use <link>\n\n\nUser query1|query2|quer3....\n!example:<The question that should be shown in public skill displays>\n!expect:<The answer expected for the above example>\nAnswer for the user query',
       designCode:
@@ -122,16 +124,19 @@ class BotWizard extends React.Component {
           OldSkill: name,
           old_image_name: imageNameMatch[1].replace('images/', ''),
         };
-        this.setState({
-          buildCode: buildCode,
-          designCode: designCode,
-          configCode: configCode,
-          loaded: true,
-          image: imagePreviewUrl,
-          imageUrl: imageNameMatch[1],
-          updateSkillNow: true,
-          savedSkillOld,
-        });
+        this.setState(
+          {
+            buildCode: buildCode,
+            designCode: designCode,
+            configCode: configCode,
+            loaded: true,
+            image: imagePreviewUrl,
+            imageUrl: imageNameMatch[1],
+            updateSkillNow: true,
+            savedSkillOld,
+          },
+          () => this.generateDesignData(),
+        );
       }.bind(this),
       error: function(err) {
         console.log(err);
@@ -139,6 +144,55 @@ class BotWizard extends React.Component {
     });
   };
 
+  generateDesignData = () => {
+    let code = this.state.designCode;
+    const bodyBackgroundMatch = code.match(/^::bodyBackground\s(.*)$/m);
+    const bodyBackgroundImageMatch = code.match(
+      /^::bodyBackgroundImage\s(.*)$/m,
+    );
+    const userMessageBoxBackgroundMatch = code.match(
+      /^::userMessageBoxBackground\s(.*)$/m,
+    );
+    const userMessageTextColorMatch = code.match(
+      /^::userMessageTextColor\s(.*)$/m,
+    );
+    const botMessageBoxBackgroundMatch = code.match(
+      /^::botMessageBoxBackground\s(.*)$/m,
+    );
+    const botMessageTextColorMatch = code.match(
+      /^::botMessageTextColor\s(.*)$/m,
+    );
+    const botIconColorMatch = code.match(/^::botIconColor\s(.*)$/m);
+    const botIconImageMatch = code.match(/^::botIconImage\s(.*)$/m);
+    let designData = {};
+    if (bodyBackgroundMatch) {
+      designData.botbuilderBackgroundBody = bodyBackgroundMatch[1];
+    }
+    if (bodyBackgroundImageMatch) {
+      designData.botbuilderBodyBackgroundImg = bodyBackgroundImageMatch[1];
+    }
+    if (userMessageBoxBackgroundMatch) {
+      designData.botbuilderUserMessageBackground =
+        userMessageBoxBackgroundMatch[1];
+    }
+    if (userMessageTextColorMatch) {
+      designData.botbuilderUserMessageTextColor = userMessageTextColorMatch[1];
+    }
+    if (botMessageBoxBackgroundMatch) {
+      designData.botbuilderBotMessageBackground =
+        botMessageBoxBackgroundMatch[1];
+    }
+    if (botMessageTextColorMatch) {
+      designData.botbuilderBotMessageTextColor = botMessageTextColorMatch[1];
+    }
+    if (botIconColorMatch) {
+      designData.botbuilderIconColor = botIconColorMatch[1];
+    }
+    if (botIconImageMatch) {
+      designData.botbuilderIconImg = botIconImageMatch[1];
+    }
+    this.setState({ designData });
+  };
   getQueryStringValue = key => {
     return decodeURIComponent(
       window.location.search.replace(
@@ -170,8 +224,8 @@ class BotWizard extends React.Component {
 
   updateSettings = themeSettingsString => {
     this.setState({
-      designCode: JSON.parse(themeSettingsString).code,
-      themeSettingsString,
+      designCode: themeSettingsString.code,
+      designData: themeSettingsString,
     });
   };
 
@@ -396,12 +450,6 @@ class BotWizard extends React.Component {
     }
     const { stepIndex } = this.state;
     const contentStyle = { margin: '0 16px' };
-    const locationBot =
-      '/BotPreview.html?access=' +
-      cookies.get('loggedIn') +
-      '&type=botWindow' +
-      '&themeSettings=' +
-      encodeURIComponent(this.state.themeSettingsString);
     return (
       <div>
         <StaticAppBar {...this.props} />
@@ -559,15 +607,14 @@ class BotWizard extends React.Component {
                   </span>
                   <br className="display-mobile-only" />
                   <h2 className="center">Preview</h2>
-                  <div style={{ position: 'relative', overflow: 'hidden' }}>
-                    <iframe
-                      title="botPreview"
-                      name="frame-1"
-                      id="frame-1"
-                      src={locationBot}
-                      height="600"
-                      width="100%"
-                    />
+                  <div
+                    style={{
+                      position: 'relative',
+                      overflow: 'hidden',
+                      marginTop: '20px',
+                    }}
+                  >
+                    <Preview designData={this.state.designData} />
                   </div>
                 </Paper>
               </Col>
