@@ -1,44 +1,73 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+
+/* Material-UI*/
+import Close from 'material-ui/svg-icons/navigation/close';
+import Dialog from 'material-ui/Dialog';
 import Paper from 'material-ui/Paper';
-import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import CircularProgress from 'material-ui/CircularProgress';
-import Dialog from 'material-ui/Dialog';
-import './ForgotPassword.css';
+import TextField from 'material-ui/TextField';
+
+/* Utils*/
 import $ from 'jquery';
 import { colors, urls } from '../../../utils';
-import Close from 'material-ui/svg-icons/navigation/close';
 
-class ForgotPassword extends Component {
+/* CSS*/
+import './ForgotPassword.css';
+
+const styles = {
+  containerStyle: {
+    width: '100%',
+    textAlign: 'center',
+    padding: '10px',
+  },
+  underlineFocusStyle: {
+    color: colors.header,
+  },
+  closingStyle: {
+    position: 'absolute',
+    zIndex: 1200,
+    fill: '#444',
+    width: '26px',
+    height: '26px',
+    right: '10px',
+    top: '10px',
+    cursor: 'pointer',
+  },
+};
+
+export default class ForgotPassword extends Component {
+  static propTypes = {
+    history: PropTypes.object,
+    onRequestClose: PropTypes.func,
+  };
+
   constructor(props) {
     super(props);
 
     this.state = {
       email: '',
-      msg: '',
+      message: '',
       success: false,
       checked: false,
       emailError: true,
       validEmail: true,
       validForm: false,
       loading: false,
+      emailErrorMessage: '',
     };
-
-    this.emailErrorMessage = '';
   }
 
   handleClose = () => {
-    let state = this.state;
-    if (state.success) {
-      this.setState({
-        msg: '',
-      });
+    let { success } = this.state;
+    if (success) {
+      this.setState({ message: '' });
       this.props.onRequestClose();
     } else {
       this.setState({
         email: '',
-        msg: '',
+        message: '',
         success: false,
         checked: false,
         emailError: true,
@@ -49,127 +78,106 @@ class ForgotPassword extends Component {
   };
 
   handleChange = event => {
-    let email;
-    let state = this.state;
+    let {
+      email,
+      validEmail,
+      emailError,
+      emailErrorMessage,
+      validForm,
+    } = this.state;
     if (event.target.name === 'email') {
       email = event.target.value.trim();
-      let validEmail = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
-      state.email = email;
-      state.validEmail = validEmail;
-      state.emailError = !(validEmail && email);
+      validEmail = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
+      emailError = !(validEmail && email);
     }
 
-    if (state.emailError) {
-      if (!state.email) {
-        this.emailErrorMessage = 'This Field Is Required';
-      } else if (!state.validEmail) {
-        this.emailErrorMessage = 'Invalid Email';
+    if (emailError) {
+      if (!email) {
+        emailErrorMessage = 'This Field Is Required';
+      } else if (!validEmail) {
+        emailErrorMessage = 'Invalid Email';
       }
     } else {
-      this.emailErrorMessage = '';
+      emailErrorMessage = '';
     }
 
-    if (!state.emailError) {
-      state.validForm = true;
+    if (!emailError) {
+      validForm = true;
     } else {
-      state.validForm = false;
+      validForm = false;
     }
 
-    this.setState(state);
+    this.setState({
+      email,
+      validEmail,
+      emailError,
+      emailErrorMessage,
+      validForm,
+    });
   };
 
   handleSubmit = event => {
     event.preventDefault();
 
-    let email = this.state.email.trim();
+    let { email, success, message } = this.state;
+    email = email.trim();
     let validEmail = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
-
     let BASE_URL = urls.API_URL;
+    let self = this;
 
     this.setState({ loading: true });
 
     if (email && validEmail) {
       $.ajax({
-        url: BASE_URL + '/aaa/recoverpassword.json?forgotemail=' + email,
+        url: `${BASE_URL}/aaa/recoverpassword.json?forgotemail=${email}`,
         dataType: 'jsonp',
         crossDomain: true,
         timeout: 3000,
-        async: false,
         statusCode: {
           422: function() {
-            let msg = 'Email does not exist';
-            let state = this.state;
-            state.msg = msg;
-            state.loading = false;
-            this.setState(state);
+            message = 'Email does not exist';
+            self.setState({ message, loading: false });
           },
         },
         success: function(response) {
-          let msg = response.message;
-          let state = this.state;
-          state.msg = msg;
+          message = `${response.message}.`;
           if (response.accepted) {
-            state.success = true;
+            success = true;
           } else {
-            state.success = false;
-            state.msg += 'Please Try Again';
+            success = false;
+            message += ' Please Try Again.';
           }
-          state.loading = false;
-          this.setState(state);
-        }.bind(this),
+          self.setState({ success, message, loading: false });
+        },
         error: function(jqXHR, textStatus, errorThrown) {
           let jsonValue = jqXHR.status;
-          let msg = '';
+          message = '';
           if (jsonValue === 404) {
-            msg = 'Email does not exist';
+            message = 'Email does not exist.';
           } else {
-            msg = 'Failed. Try Again';
+            message = 'Failed. Try Again.';
           }
-          // if (status === 'timeout') {
-          //  msg = 'Please check your internet connection';
-          // }
-          let state = this.state;
-          state.msg = msg;
-          state.loading = false;
-          this.setState(state);
-        }.bind(this),
+          self.setState({ message, loading: false });
+        },
       });
     }
   };
 
   render() {
-    const styles = {
-      width: '100%',
-      textAlign: 'center',
-      padding: '10px',
-    };
-
-    const underlineFocusStyle = {
-      color: colors.header,
-    };
-
-    const closingStyle = {
-      position: 'absolute',
-      zIndex: 1200,
-      fill: '#444',
-      width: '26px',
-      height: '26px',
-      right: '10px',
-      top: '10px',
-      cursor: 'pointer',
-    };
+    let { email, message, emailErrorMessage, validForm, loading } = this.state;
+    const { containerStyle, underlineFocusStyle, closingStyle } = styles;
 
     return (
-      <div className="forgotPwdForm">
-        <Paper zDepth={0} style={styles}>
+      <div className="forgotPasswordForm">
+        <Paper zDepth={0} style={containerStyle}>
           <h3>Forgot Password?</h3>
           <form onSubmit={this.handleSubmit}>
             <div>
               <TextField
                 name="email"
                 floatingLabelText="Email"
-                errorText={this.emailErrorMessage}
-                value={this.state.email}
+                errorText={emailErrorMessage}
+                value={email}
                 underlineFocusStyle={underlineFocusStyle}
                 floatingLabelFocusStyle={underlineFocusStyle}
                 onChange={this.handleChange}
@@ -182,26 +190,25 @@ class ForgotPassword extends Component {
                 backgroundColor={colors.header}
                 labelColor="#fff"
                 style={{ margin: '25px 0 0 0 ' }}
-                disabled={!this.state.validForm}
+                disabled={!validForm}
               >
-                {this.state.loading ? (
+                {loading && (
                   <CircularProgress
                     size={24}
                     thickness={2}
                     style={{ marginTop: 5 }}
                     color={'#FFF'}
                   />
-                ) : null}
+                )}
               </RaisedButton>
             </div>
           </form>
         </Paper>
-        {this.state.msg && (
+        {message && (
           <div>
             <Dialog modal={false} open={true} onRequestClose={this.handleClose}>
-              {this.state.msg}
-
-              <Close style={closingStyle} onTouchTap={this.handleClose} />
+              {message}
+              <Close style={closingStyle} onClick={this.handleClose} />
             </Dialog>
           </div>
         )}
@@ -209,10 +216,3 @@ class ForgotPassword extends Component {
     );
   }
 }
-
-ForgotPassword.propTypes = {
-  history: PropTypes.object,
-  onRequestClose: PropTypes.func,
-};
-
-export default ForgotPassword;
