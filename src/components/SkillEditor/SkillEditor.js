@@ -109,11 +109,12 @@ class SkillEditor extends Component {
       );
     }
   }
-  updateData(skillData) {
+
+  updateData = skillData => {
     if (skillData.image) {
       this.imgUrl = `${urls.API_URL}/cms/getImage.png?model=general&language=${
-        this.languageValue
-      }&group=${this.groupValue}&image=${skillData.image}`;
+        this.state.languageValue
+      }&group=${this.state.groupValue}&image=${skillData.image}`;
     } else {
       this.imgUrl =
         'https://pbs.twimg.com/profile_images/904617517489979392/6Hff65Th.jpg';
@@ -121,7 +122,8 @@ class SkillEditor extends Component {
     this.setState({
       image: this.imgUrl,
     });
-  }
+  };
+
   loadgroups() {
     if (groups.length === 0) {
       $.ajax({
