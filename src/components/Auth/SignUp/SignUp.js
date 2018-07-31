@@ -33,6 +33,7 @@ export default class SignUp extends Component {
     history: PropTypes.object,
     updateAuthDialog: PropTypes.func,
     updateSnackbar: PropTypes.func,
+    closeDialog: PropTypes.func,
   };
 
   constructor(props) {
@@ -141,6 +142,8 @@ export default class SignUp extends Component {
       emailError,
       passwordConfirmError,
     } = this.state;
+    const { updateSnackbar, closeDialog } = this.props;
+
     let API_ENDPOINT = `${urls.API_URL}/aaa/signup.json`;
     API_ENDPOINT =
       API_ENDPOINT +
@@ -161,15 +164,21 @@ export default class SignUp extends Component {
         statusCode: {
           422: function() {
             message = 'Email already taken. Please try with another email.';
-            this.props.updateSnackbar(message);
+            updateSnackbar && updateSnackbar(message);
           },
         },
         success: function(response) {
           message = response.message;
           success = true;
           this.setState(
-            { message, success },
-            this.props.updateSnackbar(message),
+            {
+              message,
+              success,
+            },
+            () => {
+              updateSnackbar && updateSnackbar(message);
+              closeDialog && closeDialog();
+            },
           );
         }.bind(this),
         error: function(jqXHR, textStatus, errorThrown) {
@@ -180,10 +189,9 @@ export default class SignUp extends Component {
             message = 'Failed. Try Again';
           }
           success = false;
-          this.setState(
-            { message, success },
-            this.props.updateSnackbar(message),
-          );
+          this.setState({ message, success }, () => {
+            updateSnackbar && updateSnackbar(message);
+          });
         }.bind(this),
       });
     }

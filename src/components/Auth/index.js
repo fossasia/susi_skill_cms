@@ -29,9 +29,8 @@ const styles = {
 
 class Auth extends Component {
   static propTypes = {
-    closeAuth: PropTypes.func,
-    showAuth: PropTypes.bool,
     defaultAuthSection: PropTypes.string.isRequired,
+    updateParentOpenState: PropTypes.func,
     history: PropTypes.object,
   };
 
@@ -39,13 +38,26 @@ class Auth extends Component {
     super(props);
 
     this.state = {
-      authDialogSection: props.defaultAuthSection,
+      authDialogSection: props.defaultAuthSection || 'login',
       openSnackbar: false,
       message: '',
+      showAuth: true,
     };
   }
 
+  componentWillUnmount = () => {
+    this.setState({ showAuth: false });
+  };
+
   updateAuthDialog = authDialogSection => this.setState({ authDialogSection });
+
+  requestAuthClose = () => {
+    const { updateParentOpenState } = this.props;
+
+    this.setState({ showAuth: false }, () => {
+      updateParentOpenState && updateParentOpenState();
+    });
+  };
 
   updateMessage = message => this.setState({ message });
 
@@ -58,7 +70,7 @@ class Auth extends Component {
 
   render() {
     const { closingStyle, bodyStyle } = styles;
-    let { authDialogSection } = this.state;
+    let { authDialogSection, showAuth } = this.state;
     let mainContent = null;
 
     if (authDialogSection === 'login') {
@@ -66,14 +78,16 @@ class Auth extends Component {
         <Login
           updateAuthDialog={this.updateAuthDialog}
           updateSnackbar={this.updateSnackbar}
+          closeDialog={this.requestAuthClose}
           history={this.props.history}
         />
       );
-    } else if (authDialogSection === 'ForgotPassword') {
+    } else if (authDialogSection === 'forgotPassword') {
       mainContent = (
         <ForgotPassword
           updateAuthDialog={this.updateAuthDialog}
           updateSnackbar={this.updateSnackbar}
+          closeDialog={this.requestAuthClose}
           history={this.props.history}
         />
       );
@@ -82,6 +96,7 @@ class Auth extends Component {
         <SignUp
           updateAuthDialog={this.updateAuthDialog}
           updateSnackbar={this.updateSnackbar}
+          closeDialog={this.requestAuthClose}
           history={this.props.history}
         />
       );
@@ -89,17 +104,19 @@ class Auth extends Component {
 
     return (
       <div>
-        <Dialog
-          modal={false}
-          open={this.props.showAuth}
-          onRequestClose={this.props.closeAuth}
-          autoScrollBodyContent={true}
-          bodyStyle={bodyStyle}
-          contentStyle={{ width: '35%', minWidth: '300px' }}
-        >
-          {mainContent}
-          <Close style={closingStyle} onTouchTap={this.props.closeAuth} />
-        </Dialog>
+        {showAuth && (
+          <Dialog
+            modal={false}
+            open={showAuth}
+            onRequestClose={this.requestAuthClose}
+            autoScrollBodyContent={true}
+            bodyStyle={bodyStyle}
+            contentStyle={{ width: '35%', minWidth: '300px' }}
+          >
+            {mainContent}
+            <Close style={closingStyle} onClick={this.requestAuthClose} />
+          </Dialog>
+        )}
         <Snackbar
           open={this.state.openSnackbar}
           message={this.state.message}

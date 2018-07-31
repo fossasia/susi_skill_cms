@@ -186,7 +186,7 @@ class StaticAppBar extends Component {
     });
   };
 
-  handleAuthClose = () => this.setState({ showAuth: false });
+  closeAuthDialog = () => this.setState({ showAuth: false });
 
   render() {
     const headerStyle = {
@@ -285,7 +285,7 @@ class StaticAppBar extends Component {
             ) : (
               <MenuItem
                 primaryText="Login"
-                onTouchTap={this.handleLogin}
+                onClick={this.handleLogin}
                 rightIcon={<LoginIcon />}
               />
             )}
@@ -330,8 +330,7 @@ class StaticAppBar extends Component {
           <Auth
             history={this.props.history}
             defaultAuthSection="login"
-            showAuth={this.state.showAuth}
-            closeAuth={this.handleAuthClose}
+            updateParentOpenState={this.closeAuthDialog}
           />
         ) : null}
       </div>

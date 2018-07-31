@@ -65,6 +65,7 @@ class Login extends Component {
     history: PropTypes.object,
     updateAuthDialog: PropTypes.func,
     updateSnackbar: PropTypes.func,
+    closeDialog: PropTypes.func,
   };
 
   static defaultProps = {
@@ -98,6 +99,7 @@ class Login extends Component {
     e.preventDefault();
 
     let { email, password, validEmail } = this.state;
+    const { updateSnackbar, closeDialog } = this.props;
     let BASE_URL = urls.API_URL;
 
     email = email.trim();
@@ -135,19 +137,20 @@ class Login extends Component {
             this.setState({ accessToken, time, success });
             this.setCookies(email, accessToken, uuid, time);
             let message = 'You are logged in';
-            this.props.updateSnackbar(message);
+            updateSnackbar && updateSnackbar(message);
+            closeDialog && closeDialog();
           } else {
             password = '';
             let message = 'Login Failed. Try Again';
             this.setState({ password });
-            this.props.updateSnackbar(message);
+            updateSnackbar && updateSnackbar(message);
           }
         }.bind(this),
         error: function(errorThrown) {
           password = '';
           let message = 'Login Failed. Try Again';
           this.setState({ password });
-          this.props.updateSnackbar(message);
+          updateSnackbar && updateSnackbar(message);
         }.bind(this),
         complete: function(jqXHR, textStatus) {
           this.setState({ loading: false });
@@ -194,6 +197,7 @@ class Login extends Component {
     } else {
       validForm = false;
     }
+
     this.setState({
       email,
       password,
