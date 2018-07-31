@@ -226,15 +226,31 @@ input[type=file]{
 	float: left;
 	cursor: pointer;
 }
+
 .ace_scroller {
-	/*#fafbfc*/
 	border: 1px solid #d1d5da;
-	background-color: #fafbfc;
+	background-color: #fafbfc !important; /* csslint allow: known-properties, important */
 }
 .ace_focus .ace_scroller{
-	background-color: #ffffff;
+	background-color: #ffffff !important; /* csslint allow: known-properties, important */
 	border-color: #2188ff;
 	box-shadow: inset 0 1px 2px rgba(27,31,35,0.075), 0 0 0 0.2em rgba(3,102,214,0.3);
+}
+.deploy-steps li{
+	list-style-type: decimal;
+	font-size: 16px;
+	font-weight: bold;
+	margin-bottom: 20px;
+}
+.code-box{
+	font-size: 13px;
+	font-weight: normal;
+}
+.html-tag{
+	font-style: italic;
+	background-color: #eee;
+	display: inline-block;
+	padding: 0 3px;
 }
 
 @media (min-width:769px){

@@ -155,7 +155,7 @@ class CodeView extends Component {
             style={{
               resize: 'vertical',
               overflowY: 'auto',
-              minHeight: '400px',
+              minHeight: '200px',
             }}
           />
         )}

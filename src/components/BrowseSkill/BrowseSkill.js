@@ -1040,21 +1040,39 @@ export default class BrowseSkill extends React.Component {
                 this.state.ratingRefine ||
                 (this.state.timeFilter && this.state.skills.length) ? (
                   <div>
-                    <div
-                      style={{
-                        display: 'flex',
-                        margin: '0 0 10px 10px',
-                        fontSize: '16px',
-                      }}
-                    >
-                      {this.state.skills.length} results for&nbsp;<b>
-                        SUSI Skills
-                      </b>&nbsp;:&nbsp;<div
-                        style={{ color: '#4286f4', fontWeight: 'bold' }}
+                    {this.state.searchQuery.length || this.props.routeType ? (
+                      <div
+                        style={{
+                          display: 'flex',
+                          margin: '0 0 10px 10px',
+                          fontSize: '16px',
+                        }}
                       >
-                        {this.props.routeValue}
+                        {this.state.skills.length} result(s) for&nbsp;<b>
+                          SUSI Skills
+                        </b>
+                        {this.props.routeValue && (
+                          <div style={{ display: 'flex' }}>
+                            &nbsp;:&nbsp;<div
+                              style={{ color: '#4286f4', fontWeight: 'bold' }}
+                            >
+                              {this.props.routeValue}
+                            </div>
+                          </div>
+                        )}
+                        {this.state.searchQuery.length > 0 && (
+                          <div style={{ display: 'flex' }}>
+                            &nbsp;:&nbsp;<div
+                              style={{ color: '#4286f4', fontWeight: 'bold' }}
+                            >
+                              &quot;{this.state.searchQuery}&quot;
+                            </div>
+                          </div>
+                        )}
                       </div>
-                    </div>
+                    ) : (
+                      ''
+                    )}
                     <div>
                       {this.state.viewType === 'list' ? (
                         <SkillCardList
