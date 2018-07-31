@@ -1,34 +1,26 @@
-.forgotpwdlink {
-	text-decoration: none;
-	color: #999999;
-	margin-bottom: 20px;
+.signupForm {
+    margin: 0 auto;
+    padding: 10px 0;
 }
 
-.signUpForm {
-	margin: 0 auto;
-	padding: 10px 0;
+.signupForm h3 {
+    margin: 5px 0;
+    font-weight: bold;
 }
 
-.sty {
-	width: 256px;
-}
-.signUpForm h3 {
-	margin: 5px 0;
-	font-weight: bold;
-}
 @media screen and (max-width: 768px) {
-	.signUpForm h3 {
-		font-size: 16px;
-	}
+    .signupForm h3 {
+        font-size: 16px;
+    }
 }
 
-.login-links {
-	color: #365899;
-	cursor: pointer;
-	font-size: 12px;
+.loginLinks {
+    color: #365899;
+    cursor: pointer;
+    font-size: 12px;
 }
 
-.login-links:hover {
-	color: #365899;
-	text-decoration: underline;
+.loginLinks:hover {
+    color: #365899;
+    text-decoration: underline;
 }

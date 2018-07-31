@@ -1,19 +1,19 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-/* Material-UI*/
+/* Material-UI */
 import CircularProgress from 'material-ui/CircularProgress';
 import PasswordField from 'material-ui-password-field';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 
-/* Utils*/
+/* Utils */
 import $ from 'jquery';
 import Cookies from 'universal-cookie';
-import { colors, urls, isProduction } from '../../../utils';
+import { urls, isProduction } from '../../../utils';
 import { addUrlProps, UrlQueryParamTypes } from 'react-url-query';
 
-/* CSS*/
+/* CSS */
 import './Login.css';
 
 const cookies = new Cookies();
