@@ -48,7 +48,13 @@ class BotWizard extends React.Component {
         let name = this.getQueryStringValue('name');
         let group = this.getQueryStringValue('group');
         let language = this.getQueryStringValue('language');
-        this.setState({ commitMessage: `Updated Skill ${name}` });
+        this.setState({
+          commitMessage: `Updated Skill ${name}`,
+          newBot: false,
+          skillName: name,
+          skillGroup: group,
+          skillLanguage: language,
+        });
         this.getBotDetails(name, group, language);
       }
     } else {
@@ -84,6 +90,10 @@ class BotWizard extends React.Component {
       image: '',
       designData: null,
       preferUiView: 'code',
+      newBot: true,
+      skillName: '',
+      skillGroup: '',
+      skillLanguage: '',
       buildCode:
         '::name <Bot_name>\n::category <Category>\n::language <Language>\n::author <author_name>\n::author_url <author_url>\n::description <description> \n::dynamic_content <Yes/No>\n::developer_privacy_policy <link>\n::image <image_url>\n::terms_of_use <link>\n\n\nUser query1|query2|quer3....\n!example:<The question that should be shown in public skill displays>\n!expect:<The answer expected for the above example>\nAnswer for the user query',
       designCode:
@@ -414,12 +424,18 @@ class BotWizard extends React.Component {
             OldSkill: self.state.expertValue.trim().replace(/\s/g, '_'),
             old_image_name: self.state.imageUrl.replace('images/', ''),
           };
-          self.setState({
-            savingSkill: false,
-            savedSkillOld,
-            updateSkillNow: true,
-            imageChanged: false,
-          });
+          self.setState(
+            {
+              savingSkill: false,
+              savedSkillOld,
+              updateSkillNow: true,
+              imageChanged: false,
+              skillName: savedSkillOld.OldSkill,
+              skillGroup: savedSkillOld.OldGroup,
+              skillLanguage: savedSkillOld.OldLanguage,
+            },
+            () => self.handleNext(),
+          );
           notification.open({
             message: 'Accepted',
             description: 'Your Skill has been saved',
@@ -446,7 +462,6 @@ class BotWizard extends React.Component {
           icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
         });
       });
-    this.handleNext();
   };
 
   render() {
@@ -633,7 +648,14 @@ class BotWizard extends React.Component {
                       marginTop: '20px',
                     }}
                   >
-                    <Preview designData={this.state.designData} />
+                    <Preview
+                      designData={this.state.designData}
+                      newBot={this.state.newBot}
+                      isDeployed={this.state.updateSkillNow}
+                      skillName={this.state.skillName}
+                      skillGroup={this.state.skillGroup}
+                      skillLanguage={this.state.skillLanguage}
+                    />
                   </div>
                 </Paper>
               </Col>

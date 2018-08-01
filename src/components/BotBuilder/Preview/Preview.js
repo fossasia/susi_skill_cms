@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import $ from 'jquery';
 import urls from '../../../utils/urls';
 import PropTypes from 'prop-types';
+import Cookies from 'universal-cookie';
 import './Chatbot.css';
 import './Preview.css';
 
+const cookies = new Cookies();
 const host = window.location.protocol + '//' + window.location.host;
 class Preview extends Component {
   constructor() {
@@ -155,12 +157,19 @@ class Preview extends Component {
 
   // Send request to SUSI API
   send = text => {
+    let url = urls.API_URL + '/susi/chat.json?q=' + encodeURIComponent(text);
+    if (!this.props.newBot || this.props.isDeployed) {
+      let userid = cookies.get('uuid');
+      url += `&privateskill=1&userid=${userid}&group=${
+        this.props.skillGroup
+      }&language=${this.props.skillLanguage}&skill=${this.props.skillName}`;
+    }
     var thisMsgNumber = this.msgNumber;
     this.msgNumber++;
     this.setLoadingMessage(thisMsgNumber);
     $.ajax({
       type: 'GET',
-      url: urls.API_URL + '/susi/chat.json?q=' + encodeURIComponent(text),
+      url: url,
       contentType: 'application/json',
       dataType: 'json',
       success: function(data) {
@@ -345,5 +354,10 @@ class Preview extends Component {
 
 Preview.propTypes = {
   designData: PropTypes.object,
+  newBot: PropTypes.bool,
+  isDeployed: PropTypes.bool,
+  skillName: PropTypes.string,
+  skillGroup: PropTypes.string,
+  skillLanguage: PropTypes.string,
 };
 export default Preview;
