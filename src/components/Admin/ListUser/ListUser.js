@@ -35,14 +35,19 @@ export default class ListUser extends Component {
         title: 'Email ID',
         dataIndex: 'email',
         sorter: false,
-        width: '22%',
+        width: '20%',
         key: 'email',
+      },
+      {
+        title: 'User Name',
+        dataIndex: 'userName',
+        width: '12%',
       },
       {
         title: 'Activation Status',
         dataIndex: 'confirmed',
         sorter: false,
-        width: '13%',
+        width: '10%',
       },
       {
         title: 'Signup',
@@ -57,13 +62,13 @@ export default class ListUser extends Component {
       {
         title: 'IP of Last Login',
         dataIndex: 'ipLastLogin',
-        width: '15%',
+        width: '10%',
       },
       {
         title: 'User Role',
         dataIndex: 'userRole',
         sorter: false,
-        width: '10%',
+        width: '8%',
       },
       {
         title: 'Action',
@@ -258,6 +263,7 @@ export default class ListUser extends Component {
             lastLogin: data.lastLoginTime,
             ipLastLogin: data.lastLoginIP,
             userRole: data.userRole,
+            userName: data.userName,
           };
 
           if (user.confirmed) {
