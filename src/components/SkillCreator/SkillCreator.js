@@ -703,9 +703,8 @@ export default class SkillCreator extends Component {
         <Paper style={styles.paperStyle} zDepth={1}>
           <Info
             style={styles.helpIcon}
-            data-tip={
-              'Learn more about <a href="https://github.com/fossasia/susi_skill_cms/blob/master/docs/Skill_Tutorial.md" rel="noopener noreferrer" target="_blank" >SUSI Skill Language</a>'
-            }
+            data-tip={`Learn more about <a href=${urls.CMS_GITHUB_URL +
+              '/blob/master/docs/Skill_Tutorial.md'} rel="noopener noreferrer" target="_blank" >SUSI Skill Language</a>`}
           />
           <div style={styles.center}>
             <div style={styles.dropdownDiv}>

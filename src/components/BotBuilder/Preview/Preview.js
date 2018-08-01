@@ -11,6 +11,7 @@ const host = window.location.protocol + '//' + window.location.host;
 class Preview extends Component {
   constructor() {
     super();
+    this.msgNumber = 0;
     this.state = {
       botbuilderBackgroundBody: '#ffffff',
       botbuilderBodyBackgroundImg: '',

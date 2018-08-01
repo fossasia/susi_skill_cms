@@ -30,14 +30,14 @@ const cookies = new Cookies();
 
 let TopRightMenuItems = props => (
   <div>
-    <MenuItem href="http://chat.susi.ai/" rightIcon={<Chat />}>
+    <MenuItem href={urls.CHAT_URL} rightIcon={<Chat />}>
       Chat
     </MenuItem>
     <Link to="/">
       <MenuItem rightIcon={<SkillIcon />}>Skills</MenuItem>
     </Link>
     {!cookies.get('loggedIn') ? (
-      <MenuItem href="http://chat.susi.ai/overview" rightIcon={<Info />}>
+      <MenuItem href={urls.CHAT_URL + '/overview'} rightIcon={<Info />}>
         About
       </MenuItem>
     ) : null}
@@ -255,17 +255,14 @@ class StaticAppBar extends Component {
             ) : null}
             {cookies.get('loggedIn') ? (
               <MenuItem
-                href="https://accounts.susi.ai/settings"
+                href={urls.ACC_URL + '/settings'}
                 rightIcon={<Settings />}
               >
                 Settings
               </MenuItem>
             ) : null}
             {cookies.get('loggedIn') ? (
-              <MenuItem
-                href="http://chat.susi.ai/overview"
-                rightIcon={<Info />}
-              >
+              <MenuItem href={urls.CHAT_URL + '/overview'} rightIcon={<Info />}>
                 About
               </MenuItem>
             ) : null}

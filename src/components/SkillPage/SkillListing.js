@@ -401,8 +401,7 @@ class SkillListing extends Component {
       this.languageValue
     }&group=${this.groupValue}&image=${skillData.image}`;
     if (!skillData.image) {
-      imgUrl =
-        'https://pbs.twimg.com/profile_images/904617517489979392/6Hff65Th.jpg';
+      imgUrl = '/favicon-512x512.jpg';
     }
     let descriptions =
       skillData.descriptions === null
@@ -691,7 +690,7 @@ class SkillListing extends Component {
   };
 
   testExample = (e, exampleText) => {
-    let link = 'https://chat.susi.ai/?testExample=' + exampleText;
+    let link = urls.CHAT_URL + '/?testExample=' + exampleText;
     window.open(link, '_blank');
   };
 

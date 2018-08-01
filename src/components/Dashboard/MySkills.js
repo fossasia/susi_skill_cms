@@ -201,7 +201,10 @@ class MySkills extends Component {
                 <h2>
                   Create your first skill or learn more about{' '}
                   <a
-                    href="https://github.com/fossasia/susi_skill_cms/blob/master/docs/Skill_Tutorial.md"
+                    href={
+                      urls.CMS_GITHUB_URL +
+                      '/blob/master/docs/Skill_Tutorial.md'
+                    }
                     rel="noopener noreferrer"
                     target="_blank"
                   >
