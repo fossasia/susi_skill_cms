@@ -36,6 +36,8 @@ import _ from 'lodash';
 import Ratings from 'react-ratings-declarative';
 
 import './custom.css';
+import Cookies from 'universal-cookie';
+const cookies = new Cookies();
 
 let groups = [];
 let languages = [];
@@ -74,7 +76,7 @@ export default class BrowseSkill extends React.Component {
       modelValue: 'general',
       skillURL: null,
       groupValue: 'All',
-      languageValue: ['en'],
+      languageValue: cookies.get('languages') || ['en'],
       showSkills: '',
       showReviewedSkills: false,
       expertValue: null,
@@ -133,6 +135,7 @@ export default class BrowseSkill extends React.Component {
   };
 
   handleLanguageChange = (event, index, values) => {
+    cookies.set('languages', values);
     this.setState({ languageValue: values }, function() {
       this.loadCards();
     });
