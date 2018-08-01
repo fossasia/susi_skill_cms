@@ -1,9 +1,4 @@
-
 .DS_Store
-.idea/modules.xml
-.idea/susi_skill_wiki.iml
-.idea/vcs.xml
-.idea/workspace.xml
 # See https://help.github.com/ignore-files/ for more about ignoring files.
 
 # dependencies
@@ -26,9 +21,7 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.idea/workspace.xml
-.idea
-.idea/workspace.xml
+/.idea
 package-lock.json
 
 # Deploy keys should never be committed
