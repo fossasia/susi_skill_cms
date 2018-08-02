@@ -3,8 +3,7 @@ import Table from 'antd/lib/table';
 import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'material-ui/Dialog';
 import enUS from 'antd/lib/locale-provider/en_US';
-import DropDownMenu from 'material-ui/DropDownMenu';
-import MenuItem from 'material-ui/MenuItem';
+import Checkbox from 'material-ui/Checkbox';
 import CircularProgress from 'material-ui/CircularProgress';
 import Snackbar from 'material-ui/Snackbar';
 import Cookies from 'universal-cookie';
@@ -334,13 +333,15 @@ class ListSkills extends React.Component {
     });
   };
 
-  handleReviewStatusChange = (event, index, value) => {
+  handleReviewStatusChange = () => {
+    let value = !this.state.skillReviewStatus;
     this.setState({
       skillReviewStatus: value,
     });
   };
 
-  handleEditStatusChange = (event, index, value) => {
+  handleEditStatusChange = () => {
+    let value = !this.state.skillEditStatus;
     this.setState({
       skillEditStatus: value,
     });
@@ -355,7 +356,7 @@ class ListSkills extends React.Component {
       <FlatButton
         key={1}
         label="Change"
-        primary={true}
+        labelStyle={{ color: '#4285f4' }}
         onTouchTap={this.handleChange}
       />,
       <FlatButton
@@ -370,7 +371,7 @@ class ListSkills extends React.Component {
       <FlatButton
         key={1}
         label="Delete"
-        primary={true}
+        labelStyle={{ color: '#4285f4' }}
         onTouchTap={this.confirmDelete}
       />,
       <FlatButton
@@ -385,7 +386,7 @@ class ListSkills extends React.Component {
       <FlatButton
         key={1}
         label="Restore"
-        primary={true}
+        labelStyle={{ color: '#4285f4' }}
         onTouchTap={this.confirmRestore}
       />,
       <FlatButton
@@ -395,10 +396,6 @@ class ListSkills extends React.Component {
         onTouchTap={this.handleClose}
       />,
     ];
-
-    const blueThemeColor = { color: 'rgb(66, 133, 244)' };
-    const themeForegroundColor = '#272727';
-    const themeBackgroundColor = '#fff';
 
     let columns = [
       {
@@ -586,76 +583,43 @@ class ListSkills extends React.Component {
             >
               <TabPane tab="Active" key="1">
                 <Dialog
-                  title="Skill Settings"
+                  title={'Skill Settings for ' + this.state.skillName}
                   actions={actions}
                   model={true}
                   open={this.state.showDialog}
+                  style={{
+                    width: '800px',
+                    left: '50%',
+                    marginLeft: '-400px',
+                  }}
                 >
                   <div>
-                    Change the review status of skill {this.state.skillName}
-                  </div>
-                  <div>
-                    <DropDownMenu
-                      selectedMenuItemStyle={blueThemeColor}
-                      onChange={this.handleReviewStatusChange}
-                      value={this.state.skillReviewStatus}
-                      labelStyle={{ color: themeForegroundColor }}
-                      menuStyle={{
-                        backgroundColor: themeBackgroundColor,
-                      }}
-                      menuItemStyle={{
-                        color: themeForegroundColor,
-                      }}
+                    <Checkbox
+                      label="Reviewed"
+                      labelPosition="right"
+                      className="select"
+                      checked={this.state.skillReviewStatus}
+                      labelStyle={{ fontSize: '14px' }}
+                      iconStyle={{ left: '4px', fill: '#4285f4' }}
                       style={{
-                        width: '250px',
-                        marginLeft: '-20px',
+                        width: 'auto',
+                        marginTop: '3px',
                       }}
-                      autoWidth={false}
-                    >
-                      <MenuItem
-                        primaryText="Approved"
-                        value={true}
-                        className="setting-item"
-                      />
-                      <MenuItem
-                        primaryText="Not Approved"
-                        value={false}
-                        className="setting-item"
-                      />
-                    </DropDownMenu>
-                  </div>
-                  <div style={{ marginTop: '12px' }}>
-                    Change the edit status of skill {this.state.skillName}
-                  </div>
-                  <div>
-                    <DropDownMenu
-                      selectedMenuItemStyle={blueThemeColor}
-                      onChange={this.handleEditStatusChange}
-                      value={this.state.skillEditStatus}
-                      labelStyle={{ color: themeForegroundColor }}
-                      menuStyle={{
-                        backgroundColor: themeBackgroundColor,
-                      }}
-                      menuItemStyle={{
-                        color: themeForegroundColor,
-                      }}
+                      onCheck={this.handleReviewStatusChange}
+                    />
+                    <Checkbox
+                      label="Editable"
+                      labelPosition="right"
+                      className="select"
+                      checked={this.state.skillEditStatus}
+                      labelStyle={{ fontSize: '14px' }}
+                      iconStyle={{ left: '4px', fill: '#4285f4' }}
                       style={{
-                        width: '250px',
-                        marginLeft: '-20px',
+                        width: 'auto',
+                        marginTop: '3px',
                       }}
-                      autoWidth={false}
-                    >
-                      <MenuItem
-                        primaryText="Editable"
-                        value={true}
-                        className="setting-item"
-                      />
-                      <MenuItem
-                        primaryText="Not Editable"
-                        value={false}
-                        className="setting-item"
-                      />
-                    </DropDownMenu>
+                      onCheck={this.handleEditStatusChange}
+                    />
                   </div>
                 </Dialog>
 
@@ -685,7 +649,7 @@ class ListSkills extends React.Component {
                     <FlatButton
                       key={1}
                       label="Ok"
-                      primary={true}
+                      labelStyle={{ color: '#4285f4' }}
                       onTouchTap={this.handleFinish}
                     />
                   }
@@ -711,7 +675,7 @@ class ListSkills extends React.Component {
                     <FlatButton
                       key={1}
                       label="Ok"
-                      primary={true}
+                      labelStyle={{ color: '#4285f4' }}
                       onTouchTap={this.handleFinish}
                     />
                   }
@@ -737,7 +701,7 @@ class ListSkills extends React.Component {
                     <FlatButton
                       key={1}
                       label="Ok"
-                      primary={true}
+                      labelStyle={{ color: '#4285f4' }}
                       onTouchTap={this.handleFinish}
                     />
                   }
@@ -763,7 +727,7 @@ class ListSkills extends React.Component {
                     <FlatButton
                       key={1}
                       label="Ok"
-                      primary={true}
+                      labelStyle={{ color: '#4285f4' }}
                       onTouchTap={this.handleFinish}
                     />
                   }
@@ -790,7 +754,7 @@ class ListSkills extends React.Component {
                     <FlatButton
                       key={1}
                       label="Ok"
-                      primary={true}
+                      labelStyle={{ color: '#4285f4' }}
                       onTouchTap={this.handleFinish}
                     />
                   }
@@ -816,7 +780,7 @@ class ListSkills extends React.Component {
                     <FlatButton
                       key={1}
                       label="Ok"
-                      primary={true}
+                      labelStyle={{ color: '#4285f4' }}
                       onTouchTap={this.handleFinish}
                     />
                   }

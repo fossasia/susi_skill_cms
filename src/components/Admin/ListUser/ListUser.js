@@ -74,7 +74,7 @@ export default class ListUser extends Component {
           return (
             <span>
               <div
-                style={{ cursor: 'pointer', color: '#49A9EE' }}
+                style={{ cursor: 'pointer', color: '#4285f4' }}
                 onClick={() => this.editUserRole(record.email, record.userRole)}
               >
                 Edit
@@ -287,7 +287,7 @@ export default class ListUser extends Component {
       <FlatButton
         key={1}
         label="Change"
-        primary={true}
+        labelStyle={{ color: '#4285f4' }}
         onTouchTap={this.handleChange}
       />,
       <FlatButton
@@ -365,7 +365,7 @@ export default class ListUser extends Component {
               <FlatButton
                 key={1}
                 label="Ok"
-                primary={true}
+                labelStyle={{ color: '#4285f4' }}
                 onTouchTap={this.handleSuccess}
               />
             }
