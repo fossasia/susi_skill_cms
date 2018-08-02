@@ -30,7 +30,7 @@ class ListSkills extends React.Component {
       isAction: false,
       showDialog: false,
       skillName: '',
-      skill_tag: '',
+      skillTag: '',
       skillModel: '',
       skillGroup: '',
       skillLanguage: '',
@@ -66,7 +66,7 @@ class ListSkills extends React.Component {
       `/cms/changeSkillStatus.json?model=${this.state.skillModel}&group=${
         this.state.skillGroup
       }&language=${this.state.skillLanguage}&skill=${
-        this.state.skill_tag
+        this.state.skillTag
       }&reviewed=${this.state.skillReviewStatus}&editable=${
         this.state.skillEditStatus
       }&access_token=` +
@@ -233,7 +233,7 @@ class ListSkills extends React.Component {
             model: i.model,
             group: i.group,
             language: i.language,
-            skill_tag: i.skill_tag,
+            skillTag: i.skill_tag,
             reviewStatus: i.reviewed,
             editStatus: i.editable,
             type: 'public',
@@ -312,14 +312,14 @@ class ListSkills extends React.Component {
     language,
     reviewStatus,
     editStatus,
-    skill_tag,
+    skillTag,
   ) => {
     this.setState({
       skillModel: model,
       skillGroup: group,
       skillLanguage: language,
       skillName: name,
-      skill_tag: skill_tag,
+      skillTag: skillTag,
       skillReviewStatus: reviewStatus,
       skillEditStatus: editStatus,
       showDialog: true,
