@@ -1062,13 +1062,13 @@ class SkillListing extends Component {
               </div>
             </Paper>
             <SkillRatingCard
-              skill_name={this.state.skill_name}
-              skill_ratings={this.state.skill_ratings}
+              skillName={this.state.skill_name}
+              skillRatings={this.state.skill_ratings}
               rating={this.state.rating}
-              avg_rating={this.state.avg_rating}
-              total_star={this.state.total_star}
+              avgRating={this.state.avg_rating}
+              totalStar={this.state.total_star}
               changeRating={this.changeRating}
-              ratings_over_time={this.state.ratings_over_time}
+              ratingsOverTime={this.state.ratings_over_time}
             />
             <SkillFeedbackCard
               skill_name={this.state.skill_name}
