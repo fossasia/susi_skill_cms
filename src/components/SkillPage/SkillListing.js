@@ -1098,7 +1098,7 @@ class SkillListing extends Component {
               this.author = c;
             }}
             open={this.state.showAuthorSkills}
-            close={this.closeAuthorSkills}
+            requestClose={this.closeAuthorSkills}
             author={this.state.author}
             authorUrl={this.state.author_url}
           />

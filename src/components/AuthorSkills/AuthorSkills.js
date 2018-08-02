@@ -1,14 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import github from '../images/github-logo.png';
-import ISO6391 from 'iso-639-1';
-import Dialog from 'material-ui/Dialog';
-import * as $ from 'jquery';
-import Img from 'react-image';
-import CircleImage from '../CircleImage/CircleImage';
+
+/* Material-UI */
 import Close from 'material-ui/svg-icons/navigation/close';
-import './AuthorSkills.css';
-import { urls } from '../../utils';
+import Dialog from 'material-ui/Dialog';
 import {
   Table,
   TableBody,
@@ -17,24 +12,60 @@ import {
   TableRow,
   TableRowColumn,
 } from 'material-ui/Table';
-let skills = [];
-const imageStyle = {
-  marginRight: 10,
-  position: 'relative',
-  height: '40px',
-  width: '40px',
-  verticalAlign: 'middle',
-  border: 0,
-};
-const githubProfile = {
-  height: 50,
-  width: 50,
-  verticalAlign: 'middle',
-  borderRadius: 100,
-  marginLeft: 16,
+
+/* Utils */
+import * as $ from 'jquery';
+import CircleImage from '../CircleImage/CircleImage';
+import githubLogo from '../images/github-logo.png';
+import Img from 'react-image';
+import ISO6391 from 'iso-639-1';
+import { urls } from '../../utils';
+
+/* CSS */
+import './AuthorSkills.css';
+
+const styles = {
+  imageStyle: {
+    marginRight: 10,
+    position: 'relative',
+    height: '40px',
+    width: '40px',
+    verticalAlign: 'middle',
+    border: 0,
+  },
+  githubAvatarStyle: {
+    height: 50,
+    width: 50,
+    verticalAlign: 'middle',
+    borderRadius: 100,
+    marginLeft: 16,
+  },
+  closingStyle: {
+    position: 'absolute',
+    zIndex: 1200,
+    fill: '#444',
+    width: '26px',
+    height: '26px',
+    right: '10px',
+    top: '10px',
+    cursor: 'pointer',
+  },
+  headingStyle: {
+    fill: '#000',
+    width: '100%',
+    textTransform: 'capitalize',
+  },
 };
 
-class AuthorSkills extends Component {
+export default class AuthorSkills extends Component {
+  static propTypes = {
+    location: PropTypes.object,
+    open: PropTypes.bool,
+    requestClose: PropTypes.func,
+    author: PropTypes.string,
+    authorUrl: PropTypes.string,
+  };
+
   constructor(props) {
     super(props);
 
@@ -49,53 +80,47 @@ class AuthorSkills extends Component {
   }
 
   loadSkillCards = author => {
-    // console.log(author);
-    let url = urls.API_URL + '/cms/getSkillsByAuthor.json?author=' + author;
+    let url = `${urls.API_URL}/cms/getSkillsByAuthor.json?author=${author}`;
+
     $.ajax({
       url: url,
       dataType: 'jsonp',
       jsonp: 'callback',
       crossDomain: true,
       success: function(data) {
-        let skillByAuthor = Object.keys(data);
-        skillByAuthor = skillByAuthor.slice(0, skillByAuthor.length - 1);
+        let skillKeys = Object.keys(data);
+        skillKeys = skillKeys.slice(0, skillKeys.length - 1);
         // eslint-disable-next-line
-        skills = skillByAuthor.map((skill, index) => {
+        let skills = skillKeys.map((skillKey, index) => {
           // eslint-disable-next-line
-          if (skill == index) {
-            let parse = data[skill].split('/');
-            let name = parse[6].split('.')[0];
+          if (skillKey == index) {
+            const dataPoints = data[skillKey].split('/');
+            let name = dataPoints[6].split('.')[0];
             name = name.charAt(0).toUpperCase() + name.slice(1);
+
             if (name.split('_').length > 1) {
-              let temp = name.split('_');
-              name = temp[0] + ' ' + temp[1];
+              name = name.split('_').join(' ');
             }
+
             let image = `${
               urls.API_URL
-            }/cms/getImage.png?model=general&language=${parse[5]}&group=${
-              parse[4]
-            }&image=${'/images/' + parse[6].split('.')[0]}`;
-            let image1 = image + '.png';
-            let image2 = image + '.jpg';
+            }/cms/getImage.png?model=general&language=${dataPoints[5]}&group=${
+              dataPoints[4]
+            }&image=${'/images/' + dataPoints[6].split('.')[0]}`;
+            let pngImage = image + '.png';
+            let jpgImage = image + '.jpg';
 
-            let skillURL =
-              window.location.protocol +
-              '//' +
-              window.location.host +
-              '/' +
-              parse[4] +
-              '/' +
-              parse[6].split('.')[0] +
-              '/' +
-              parse[5];
+            let skillURL = `${window.location.protocol}//${
+              window.location.host
+            }/${dataPoints[4]}/${dataPoints[6].split('.')[0]}/${dataPoints[5]}`;
 
             return (
               <TableRow key={index}>
                 <TableRowColumn>
                   <a href={skillURL}>
                     <Img
-                      style={imageStyle}
-                      src={[image1, image2]}
+                      style={styles.imageStyle}
+                      src={[pngImage, jpgImage]}
                       unloader={<CircleImage name={name} size="40" />}
                     />
                   </a>
@@ -107,15 +132,15 @@ class AuthorSkills extends Component {
                     </a>
                   </div>
                 </TableRowColumn>
-                <TableRowColumn>{parse[4]}</TableRowColumn>
+                <TableRowColumn>{dataPoints[4]}</TableRowColumn>
                 <TableRowColumn>
-                  {ISO6391.getNativeName(parse[5])}
+                  {ISO6391.getNativeName(dataPoints[5])}
                 </TableRowColumn>
               </TableRow>
             );
           }
         });
-        this.setState({ skills: skills });
+        this.setState({ skills });
       }.bind(this),
       error: function(e) {
         console.log('Error while fetching author skills', e);
@@ -124,51 +149,35 @@ class AuthorSkills extends Component {
   };
 
   render() {
-    const closingStyle = {
-      position: 'absolute',
-      zIndex: 1200,
-      fill: '#444',
-      width: '26px',
-      height: '26px',
-      right: '10px',
-      top: '10px',
-      cursor: 'pointer',
-    };
-    const headingStyle = {
-      fill: '#000',
-      width: '100%',
-      textTransform: 'capitalize',
-    };
-    // console.log(this.props.authorUrl);
-    let authorGitHubUrl = this.props.authorUrl;
-    let username = '';
-    let githubUsername = '';
-    let githubGravatar = '';
-    if (authorGitHubUrl) {
-      username = authorGitHubUrl.split('/');
-      githubUsername = username[3];
-      githubGravatar =
-        'https://avatars.githubusercontent.com/' + githubUsername + '?size=50';
+    let { author, authorUrl, open, requestClose } = this.props;
+    const { githubAvatarStyle, closingStyle, headingStyle } = styles;
+    let githubAvatarSrc = '';
+
+    if (authorUrl) {
+      githubAvatarSrc = `https://avatars.githubusercontent.com/${
+        authorUrl.split('/')[3]
+      }?size=50`;
     } else {
-      githubGravatar = github;
+      githubAvatarSrc = githubLogo;
     }
+
     return (
       <div>
         <Dialog
           modal={false}
-          open={this.props.open}
+          open={open}
           autoScrollBodyContent={true}
           contentStyle={{ width: '50%', minWidth: '300px' }}
-          onRequestClose={this.props.close}
+          onRequestClose={requestClose}
         >
           <div style={headingStyle}>
             <h3>
-              Skills by {this.props.author}{' '}
-              <a href={this.props.authorUrl}>
+              Skills by {author}{' '}
+              <a href={authorUrl}>
                 <img
                   alt={'GitHub'}
-                  style={githubProfile}
-                  src={githubGravatar}
+                  style={githubAvatarStyle}
+                  src={githubAvatarSrc}
                 />
               </a>
             </h3>
@@ -196,19 +205,9 @@ class AuthorSkills extends Component {
               </TableBody>
             </Table>
           </div>
-          <Close style={closingStyle} onTouchTap={this.props.close} />
+          <Close style={closingStyle} onTouchTap={requestClose} />
         </Dialog>
       </div>
     );
   }
 }
-
-AuthorSkills.propTypes = {
-  location: PropTypes.object,
-  open: PropTypes.bool,
-  close: PropTypes.func,
-  author: PropTypes.string,
-  authorUrl: PropTypes.string,
-};
-
-export default AuthorSkills;
