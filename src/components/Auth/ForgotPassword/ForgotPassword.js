@@ -40,7 +40,9 @@ const styles = {
 export default class ForgotPassword extends Component {
   static propTypes = {
     history: PropTypes.object,
-    onRequestClose: PropTypes.func,
+    updateAuthDialog: PropTypes.func,
+    updateSnackbar: PropTypes.func,
+    closeDialog: PropTypes.func,
   };
 
   constructor(props) {
@@ -48,7 +50,6 @@ export default class ForgotPassword extends Component {
 
     this.state = {
       email: '',
-      message: '',
       success: false,
       checked: false,
       emailError: true,
@@ -59,24 +60,6 @@ export default class ForgotPassword extends Component {
     };
   }
 
-  handleClose = () => {
-    let { success } = this.state;
-    if (success) {
-      this.setState({ message: '' });
-      this.props.onRequestClose();
-    } else {
-      this.setState({
-        email: '',
-        message: '',
-        success: false,
-        checked: false,
-        emailError: true,
-        validEmail: false,
-        validForm: false,
-      });
-    }
-  };
-
   handleChange = event => {
     let {
       email,
@@ -85,6 +68,7 @@ export default class ForgotPassword extends Component {
       emailErrorMessage,
       validForm,
     } = this.state;
+
     if (event.target.name === 'email') {
       email = event.target.value.trim();
       validEmail = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
@@ -97,14 +81,10 @@ export default class ForgotPassword extends Component {
       } else if (!validEmail) {
         emailErrorMessage = 'Invalid Email';
       }
+      validForm = false;
     } else {
       emailErrorMessage = '';
-    }
-
-    if (!emailError) {
       validForm = true;
-    } else {
-      validForm = false;
     }
 
     this.setState({
@@ -119,11 +99,12 @@ export default class ForgotPassword extends Component {
   handleSubmit = event => {
     event.preventDefault();
 
-    let { email, success, message } = this.state;
+    const { updateSnackbar, closeDialog } = this.props;
+    let { email, success } = this.state;
     email = email.trim();
     let validEmail = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
     let BASE_URL = urls.API_URL;
-    let self = this;
+    let message = '';
 
     this.setState({ loading: true });
 
@@ -136,8 +117,10 @@ export default class ForgotPassword extends Component {
         statusCode: {
           422: function() {
             message = 'Email does not exist';
-            self.setState({ message, loading: false });
-          },
+            this.setState({ loading: false }, () => {
+              updateSnackbar && updateSnackbar(message);
+            });
+          }.bind(this),
         },
         success: function(response) {
           message = `${response.message}.`;
@@ -147,8 +130,16 @@ export default class ForgotPassword extends Component {
             success = false;
             message += ' Please Try Again.';
           }
-          self.setState({ success, message, loading: false });
-        },
+          this.setState({ success, loading: false }, () => {
+            updateSnackbar && updateSnackbar(message);
+
+            if (success) {
+              setTimeout(() => {
+                closeDialog && closeDialog();
+              }, 2000);
+            }
+          });
+        }.bind(this),
         error: function(jqXHR, textStatus, errorThrown) {
           let jsonValue = jqXHR.status;
           message = '';
@@ -157,8 +148,10 @@ export default class ForgotPassword extends Component {
           } else {
             message = 'Failed. Try Again.';
           }
-          self.setState({ message, loading: false });
-        },
+          this.setState({ loading: false }, () => {
+            updateSnackbar && updateSnackbar(message);
+          });
+        }.bind(this),
       });
     }
   };
@@ -186,21 +179,13 @@ export default class ForgotPassword extends Component {
             <div>
               <RaisedButton
                 type="submit"
-                label={this.state.loading ? '' : 'Reset'}
+                label={!loading ? 'Reset' : ''}
                 backgroundColor={colors.header}
                 labelColor="#fff"
                 style={{ margin: '25px 0 0 0 ' }}
                 disabled={!validForm}
-              >
-                {loading && (
-                  <CircularProgress
-                    size={24}
-                    thickness={2}
-                    style={{ marginTop: 5 }}
-                    color={'#FFF'}
-                  />
-                )}
-              </RaisedButton>
+                icon={loading ? <CircularProgress size={24} /> : undefined}
+              />
             </div>
           </form>
         </Paper>

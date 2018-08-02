@@ -1,23 +1,58 @@
 import React, { Component } from 'react';
-import Paper from 'material-ui/Paper';
-import TextField from 'material-ui/TextField';
-import RaisedButton from 'material-ui/RaisedButton';
-import './Login.css';
-import PasswordField from 'material-ui-password-field';
-import $ from 'jquery';
 import PropTypes from 'prop-types';
-import { addUrlProps, UrlQueryParamTypes } from 'react-url-query';
-import Cookies from 'universal-cookie';
+
+/* Material-UI */
 import CircularProgress from 'material-ui/CircularProgress';
-import { colors, urls, isProduction } from '../../../utils';
-import Dialog from 'material-ui/Dialog';
+import PasswordField from 'material-ui-password-field';
+import RaisedButton from 'material-ui/RaisedButton';
+import TextField from 'material-ui/TextField';
+
+/* Utils */
+import $ from 'jquery';
+import Cookies from 'universal-cookie';
+import { urls, isProduction } from '../../../utils';
+import { addUrlProps, UrlQueryParamTypes } from 'react-url-query';
+
+/* CSS */
+import './Login.css';
+
 const cookies = new Cookies();
+const cookieDomain = isProduction() ? '.susi.ai' : '';
 
 const urlPropsQueryConfig = {
   token: { type: UrlQueryParamTypes.string },
 };
 
-const cookieDomain = isProduction() ? '.susi.ai' : '';
+const styles = {
+  fieldStyle: {
+    height: '37px',
+    borderRadius: 4,
+    border: '1px solid #ced4da',
+    fontSize: 16,
+    padding: '0px 10px',
+    width: '272px',
+    marginTop: '10px',
+  },
+  passwordFieldStyle: {
+    height: '37px',
+    borderRadius: 4,
+    border: '1px solid #ced4da',
+    fontSize: 16,
+    padding: '0px 10px',
+    width: '250px',
+    marginTop: '10px',
+  },
+  inputStyle: {
+    height: '35px',
+    marginBottom: '10px',
+  },
+  inputPasswordStyle: {
+    height: '35px',
+    marginBottom: '10px',
+    marginRight: '50px',
+    width: '90%',
+  },
+};
 
 class Login extends Component {
   static propTypes = {
@@ -27,17 +62,21 @@ class Login extends Component {
     // By default they update that single query parameter and maintain existing
     // values in the other parameters.
     onChangeToken: PropTypes.func,
+    history: PropTypes.object,
+    updateAuthDialog: PropTypes.func,
+    updateSnackbar: PropTypes.func,
+    closeDialog: PropTypes.func,
   };
 
   static defaultProps = {
     token: 'null',
   };
+
   constructor(props) {
     super(props);
     this.state = {
       email: '',
       password: '',
-      isFilled: false,
       success: false,
       validForm: false,
       emailError: true,
@@ -45,9 +84,9 @@ class Login extends Component {
       checked: false,
       loading: false,
       showDialog: false,
+      emailErrorMessage: '',
+      passwordErrorMessage: '',
     };
-    this.emailErrorMessage = '';
-    this.passwordErrorMessage = '';
   }
 
   componentDidMount() {
@@ -59,22 +98,24 @@ class Login extends Component {
   handleSubmit = e => {
     e.preventDefault();
 
-    var email = this.state.email.trim();
-    var password = this.state.password.trim();
-
+    let { email, password, validEmail } = this.state;
+    const { updateSnackbar, closeDialog } = this.props;
     let BASE_URL = urls.API_URL;
 
+    email = email.trim();
+    password = password.trim();
+
     if (!email || !password) {
-      return this.state.isFilled;
+      return;
     }
 
-    let validEmail = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
     let loginEndPoint =
       BASE_URL +
       '/aaa/login.json?type=access-token&login=' +
       this.state.email +
       '&password=' +
       encodeURIComponent(this.state.password);
+    validEmail = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
 
     if (email && validEmail) {
       this.setState({ loading: true });
@@ -89,37 +130,27 @@ class Login extends Component {
               path: '/',
               domain: cookieDomain,
             });
-            console.log(cookies.get('serverUrl'));
             let accessToken = response.access_token;
             let uuid = response.uuid;
-            let state = this.state;
             let time = response.valid_seconds;
-
-            state.isFilled = true;
-            state.accessToken = accessToken;
-            state.success = true;
-            state.msg = response.message;
-            state.time = time;
-            this.setState(state);
-
-            this.handleOnSubmit(email, accessToken, uuid, time);
-            let msg = 'You are logged in';
-            state.msg = msg;
-            this.setState(state);
+            let success = true;
+            this.setState({ accessToken, time, success });
+            this.setCookies(email, accessToken, uuid, time);
+            let message = 'You are logged in';
+            updateSnackbar && updateSnackbar(message);
+            closeDialog && closeDialog();
           } else {
-            let state = this.state;
-            state.msg = 'Login Failed. Try Again';
-            state.password = '';
-            state.showDialog = true;
-            this.setState(state);
+            password = '';
+            let message = 'Login Failed. Try Again';
+            this.setState({ password });
+            updateSnackbar && updateSnackbar(message);
           }
         }.bind(this),
         error: function(errorThrown) {
-          let state = this.state;
-          state.msg = 'Login Failed. Try Again';
-          state.password = '';
-          state.showDialog = true;
-          this.setState(state);
+          password = '';
+          let message = 'Login Failed. Try Again';
+          this.setState({ password });
+          updateSnackbar && updateSnackbar(message);
         }.bind(this),
         complete: function(jqXHR, textStatus) {
           this.setState({ loading: false });
@@ -129,48 +160,60 @@ class Login extends Component {
   };
 
   handleChange = event => {
-    let email;
-    let password;
-    let state = this.state;
+    let {
+      email,
+      password,
+      validEmail,
+      validPassword,
+      emailError,
+      passwordError,
+      emailErrorMessage,
+      passwordErrorMessage,
+      validForm,
+    } = this.state;
 
     if (event.target.name === 'email') {
       email = event.target.value.trim();
-      let validEmail = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
-      state.email = email;
-      state.emailError = !(email && validEmail);
+      validEmail = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
+      emailError = !(email && validEmail);
     } else if (event.target.name === 'password') {
       password = event.target.value;
-      let validPassword = password.length >= 6;
-      state.password = password;
-      state.passwordError = !(password && validPassword);
+      validPassword = password.length >= 6;
+      passwordError = !(password && validPassword);
     }
-    if (this.state.emailError) {
-      this.emailErrorMessage = 'Enter a valid Email Address';
+
+    if (emailError) {
+      emailErrorMessage = 'Enter a valid Email Address';
     } else {
-      this.emailErrorMessage = '';
+      emailErrorMessage = '';
     }
-    if (this.state.passwordError) {
-      this.passwordErrorMessage = 'Minimum 6 characters required';
+    if (passwordError) {
+      passwordErrorMessage = 'Minimum 6 characters required';
     } else {
-      this.passwordErrorMessage = '';
+      passwordErrorMessage = '';
     }
-    if (
-      !state.emailError &&
-      !state.passwordError &&
-      !state.serverFieldError &&
-      this.state.password !== '' &&
-      this.state.email !== ''
-    ) {
-      state.validForm = true;
+    if (!emailError && !passwordError && password !== '' && email !== '') {
+      validForm = true;
     } else {
-      state.validForm = false;
+      validForm = false;
     }
-    this.setState(state);
+
+    this.setState({
+      email,
+      password,
+      validEmail,
+      validPassword,
+      emailError,
+      passwordError,
+      emailErrorMessage,
+      passwordErrorMessage,
+      validForm,
+    });
   };
 
-  handleOnSubmit = (email, loggedIn, uuid, time) => {
-    let state = this.state;
-    if (state.success) {
+  setCookies = (email, loggedIn, uuid, time) => {
+    let { success } = this.state;
+    if (success) {
       cookies.set('loggedIn', loggedIn, {
         path: '/',
         maxAge: time,
@@ -186,7 +229,7 @@ class Login extends Component {
         maxAge: time,
         domain: cookieDomain,
       });
-      this.props.history.push('/', { showLogin: false });
+      this.props.history.push('/');
       window.location.reload();
     } else {
       this.setState({
@@ -197,167 +240,89 @@ class Login extends Component {
     }
   };
 
-  handleOpen = () => {
-    this.setState({ open: true });
-  };
+  handleSignUp = () => this.props.updateAuthDialog('signup');
 
-  handleSignUp = () => {
-    this.setState({
-      email: '',
-      password: '',
-      isFilled: false,
-      success: false,
-      validForm: false,
-      emailError: true,
-      passwordError: true,
-      checked: false,
-    });
-    this.props.onSignUpLogin();
-  };
-
-  handleForgotPassword = () => {
-    this.setState({
-      email: '',
-      password: '',
-      isFilled: false,
-      success: false,
-      validForm: false,
-      emailError: true,
-      passwordError: true,
-      checked: false,
-    });
-    this.props.onForgotPwdLogin();
-  };
-
-  handleClose = event => {
-    this.setState({ showDialog: false });
-  };
+  handleForgotPassword = () => this.props.updateAuthDialog('forgotPassword');
 
   render() {
-    const styles = {
-      width: '100%',
-      textAlign: 'center',
-    };
-
-    const fieldStyle = {
-      height: '37px',
-      borderRadius: 4,
-      border: '1px solid #ced4da',
-      fontSize: 16,
-      padding: '0px 10px',
-      width: '272px',
-      marginTop: '10px',
-    };
-
-    const passFieldStyle = {
-      height: '37px',
-      borderRadius: 4,
-      border: '1px solid #ced4da',
-      fontSize: 16,
-      padding: '0px 10px',
-      width: '250px',
-      marginTop: '10px',
-    };
-
-    const inputStyle = {
-      height: '35px',
-      marginBottom: '10px',
-    };
-
-    const inputpassStyle = {
-      height: '35px',
-      marginBottom: '10px',
-      marginRight: '50px',
-      width: '90%',
-    };
-
-    const actions = (
-      <RaisedButton
-        label="OK"
-        backgroundColor={colors.header}
-        labelStyle={{ color: '#fff' }}
-        onTouchTap={this.handleClose}
-      />
-    );
+    const {
+      fieldStyle,
+      passwordFieldStyle,
+      inputStyle,
+      inputPasswordStyle,
+    } = styles;
+    const {
+      email,
+      password,
+      passwordErrorMessage,
+      emailErrorMessage,
+      loading,
+      validForm,
+    } = this.state;
 
     return (
       <div className="loginForm">
-        <Paper zDepth={0} style={styles}>
-          <div id="loginHeading">Log into SUSI</div>
-          <form onSubmit={this.handleSubmit}>
-            <div style={{ maxHeight: '70px' }}>
-              <TextField
-                name="email"
-                type="email"
-                value={this.state.email}
-                onChange={this.handleChange}
-                style={fieldStyle}
-                inputStyle={inputStyle}
-                placeholder="Email"
-                underlineStyle={{ display: 'none' }}
-                errorText={this.emailErrorMessage}
-              />
-            </div>
-
-            <div style={{ maxHeight: '70px' }}>
-              <PasswordField
-                name="password"
-                style={passFieldStyle}
-                inputStyle={inputpassStyle}
-                value={this.state.password}
-                placeholder="Password"
-                underlineStyle={{ display: 'none' }}
-                onChange={this.handleChange}
-                errorText={this.passwordErrorMessage}
-                visibilityButtonStyle={{
-                  marginTop: '-3px',
-                }}
-                visibilityIconStyle={{
-                  marginTop: '-3px',
-                }}
-                textFieldStyle={{ padding: '0px' }}
-              />
-            </div>
-
-            <RaisedButton
-              label={!this.state.loading ? 'Log In' : undefined}
-              type="submit"
-              backgroundColor="#4285f4"
-              labelColor="#fff"
-              disabled={!this.state.validForm}
-              style={{ width: '275px', margin: '10px 0px' }}
-              icon={
-                this.state.loading ? <CircularProgress size={24} /> : undefined
-              }
+        <div id="loginHeading">Log into SUSI</div>
+        <form onSubmit={this.handleSubmit}>
+          <div style={{ maxHeight: '70px' }}>
+            <TextField
+              name="email"
+              type="email"
+              value={email}
+              onChange={this.handleChange}
+              style={fieldStyle}
+              inputStyle={inputStyle}
+              placeholder="Email"
+              underlineStyle={{ display: 'none' }}
+              errorText={emailErrorMessage}
             />
+          </div>
 
-            <div className="login-links-section" id="login-links">
-              <span className="fgtpwd" onClick={this.handleForgotPassword}>
-                Forgot Password?
-              </span>
-              <span className="signUp" onClick={this.handleSignUp}>
-                Sign up for SUSI
-              </span>
-            </div>
-          </form>
-        </Paper>
-        <Dialog
-          actions={actions}
-          modal={false}
-          open={this.state.showDialog}
-          onRequestClose={this.handleClose}
-        >
-          {this.state.msg}
-        </Dialog>
+          <div style={{ maxHeight: '70px' }}>
+            <PasswordField
+              name="password"
+              style={passwordFieldStyle}
+              inputStyle={inputPasswordStyle}
+              value={password}
+              placeholder="Password"
+              underlineStyle={{ display: 'none' }}
+              onChange={this.handleChange}
+              errorText={passwordErrorMessage}
+              visibilityButtonStyle={{
+                marginTop: '-3px',
+              }}
+              visibilityIconStyle={{
+                marginTop: '-3px',
+              }}
+              textFieldStyle={{ padding: '0px' }}
+            />
+          </div>
+
+          <RaisedButton
+            label={!loading ? 'Log In' : undefined}
+            type="submit"
+            backgroundColor="#4285f4"
+            labelColor="#fff"
+            disabled={!validForm}
+            style={{ width: '275px', margin: '10px 0px' }}
+            icon={loading ? <CircularProgress size={24} /> : undefined}
+          />
+
+          <div className="loginLinksSection" id="loginLinks">
+            <span
+              className="forgotPassword"
+              onClick={this.handleForgotPassword}
+            >
+              Forgot Password?
+            </span>
+            <span className="signup" onClick={this.handleSignUp}>
+              Sign up for SUSI
+            </span>
+          </div>
+        </form>
       </div>
     );
   }
 }
-
-Login.propTypes = {
-  history: PropTypes.object,
-  onForgotPwdLogin: PropTypes.func,
-  onSignUpLogin: PropTypes.func,
-};
 
 export default addUrlProps({ urlPropsQueryConfig })(Login);

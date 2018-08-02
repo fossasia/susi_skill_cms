@@ -1,16 +1,41 @@
 import React, { Component } from 'react';
-import Paper from 'material-ui/Paper';
-import TextField from 'material-ui/TextField';
-import RaisedButton from 'material-ui/RaisedButton';
-import $ from 'jquery';
-import './SignUp.css';
-import PasswordField from 'material-ui-password-field';
-import Dialog from 'material-ui/Dialog';
 import PropTypes from 'prop-types';
-import zxcvbn from 'zxcvbn';
+
+/* Material-UI */
+import PasswordField from 'material-ui-password-field';
+import RaisedButton from 'material-ui/RaisedButton';
+import TextField from 'material-ui/TextField';
+
+/* Utils */
+import $ from 'jquery';
+import Cookies from 'universal-cookie';
 import { colors, urls } from '../../../utils';
 
+/* CSS */
+import './SignUp.css';
+
+const cookies = new Cookies();
+
+const styles = {
+  fieldStyle: {
+    width: '256px',
+  },
+  fontStyle: {
+    fontSize: '16px',
+  },
+  underlineFocusStyle: {
+    color: '#4285f4',
+  },
+};
+
 export default class SignUp extends Component {
+  static propTypes = {
+    history: PropTypes.object,
+    updateAuthDialog: PropTypes.func,
+    updateSnackbar: PropTypes.func,
+    closeDialog: PropTypes.func,
+  };
+
   constructor(props) {
     super(props);
 
@@ -18,357 +43,240 @@ export default class SignUp extends Component {
       email: '',
       isEmail: false,
       emailError: true,
-      passwordError: true,
-      passwordConfirmError: true,
+      emailErrorMessage: '',
       passwordValue: '',
+      passwordError: true,
+      passwordErrorMessage: '',
+      passwordConfirmError: true,
       confirmPasswordValue: '',
-      msg: '',
+      passwordConfirmErrorMessage: '',
       success: false,
       open: false,
       openLogin: false,
       openForgotPassword: false,
       validForm: false,
       serverUrl: '',
-      checked: false,
       msgOpen: false,
       serverFieldError: false,
     };
 
-    this.emailErrorMessage = '';
-    this.passwordErrorMessage = '';
-    this.passwordConfirmErrorMessage = '';
-    this.customServerMessage = '';
-
-    if (document.cookie.split('=')[0] === 'loggedIn') {
+    if (cookies.get('loggedIn')) {
       window.location.reload();
     }
   }
 
-  // Handle closing the dialog
-  handleClose = () => {
-    let state = this.state;
-    if (state.success) {
-      this.setState({
-        msgOpen: false,
-      });
-      this.props.onRequestClose();
-    } else {
-      this.setState({
-        email: '',
-        isEmail: false,
-        emailError: true,
-        passwordError: true,
-        passwordConfirmError: true,
-        passwordValue: '',
-        passwordStrength: '',
-        passwordScore: -1,
-        confirmPasswordValue: '',
-        msg: '',
-        success: false,
-        validForm: false,
-        serverUrl: '',
-        checked: false,
-        serverFieldError: false,
-        open: false,
-        msgOpen: false,
-      });
-    }
-  };
-
-  // Handle toggle between custom server and default server
-  handleServeChange = event => {
-    if (
-      this.state.emailError ||
-      this.state.passwordError ||
-      this.state.passwordConfirmError
-    ) {
-      this.setState({ validForm: false });
-    } else {
-      this.setState({ validForm: true });
-    }
-  };
-
-  // Handle changes in email, password and confirmPassword
   handleChange = event => {
-    let email;
-    let password;
-    let confirmPassword;
-    // let serverUrl;
-    let state = this.state;
+    let {
+      email,
+      passwordValue,
+      confirmPasswordValue,
+      isEmail,
+      emailError,
+      validPassword,
+      passwordError,
+      passwordConfirmError,
+      emailErrorMessage,
+      passwordErrorMessage,
+      passwordConfirmErrorMessage,
+      validForm,
+    } = this.state;
+
     if (event.target.name === 'email') {
       email = event.target.value.trim();
-      let validEmail = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
-      state.email = email;
-      state.isEmail = validEmail;
-      state.emailError = !(email || validEmail);
+      isEmail = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
+      emailError = !(email && isEmail);
     } else if (event.target.name === 'password') {
-      password = event.target.value;
-      let validPassword = password.length >= 6;
-      state.passwordValue = password;
-      state.passwordError = !(password && validPassword);
-      if (validPassword) {
-        let result = zxcvbn(password);
-        state.passwordScore = result.score;
-        let strength = ['Worst', 'Bad', 'Weak', 'Good', 'Strong'];
-        state.passwordStrength = strength[result.score];
-      } else {
-        state.passwordStrength = '';
-        state.passwordScore = -1;
-      }
+      passwordValue = event.target.value;
+      validPassword = passwordValue.length >= 6;
+      passwordError = !(passwordValue && validPassword);
     } else if (event.target.name === 'confirmPassword') {
-      password = this.state.passwordValue;
-      confirmPassword = event.target.value;
-      let validPassword = confirmPassword === password;
-      state.confirmPasswordValue = confirmPassword;
-      state.passwordConfirmError = !(validPassword && confirmPassword);
+      confirmPasswordValue = event.target.value;
+      validPassword = confirmPasswordValue === passwordValue;
+      passwordConfirmError = !(validPassword && confirmPasswordValue);
     }
 
-    if (
-      !this.state.emailError &&
-      !this.state.passwordError &&
-      !this.state.passwordConfirmError
-    ) {
-      state.validForm = true;
+    if (emailError) {
+      emailErrorMessage = 'Enter a valid Email Address';
+    } else if (passwordError) {
+      emailErrorMessage = '';
+      passwordErrorMessage = 'Minimum 6 characters required';
+      passwordConfirmErrorMessage = '';
+    } else if (passwordConfirmError) {
+      emailErrorMessage = '';
+      passwordErrorMessage = '';
+      passwordConfirmErrorMessage = 'Check your password again';
     } else {
-      state.validForm = false;
+      emailErrorMessage = '';
+      passwordErrorMessage = '';
+      passwordConfirmErrorMessage = '';
     }
 
-    this.setState(state);
-
-    if (this.state.emailError) {
-      this.emailErrorMessage = 'Enter a valid Email Address';
-    } else if (this.state.passwordError) {
-      this.emailErrorMessage = '';
-      this.passwordErrorMessage = 'Minimum 6 characters required';
-      this.passwordConfirmErrorMessage = '';
-    } else if (this.state.passwordConfirmError) {
-      this.emailErrorMessage = '';
-      this.passwordErrorMessage = '';
-      this.passwordConfirmErrorMessage = 'Check your password again';
+    if (!emailError && !passwordError && !passwordConfirmError) {
+      validForm = true;
     } else {
-      this.emailErrorMessage = '';
-      this.passwordErrorMessage = '';
-      this.passwordConfirmErrorMessage = '';
+      validForm = false;
     }
 
-    if (
-      this.state.emailError ||
-      this.state.passwordError ||
-      this.state.passwordConfirmError ||
-      this.state.serverFieldError
-    ) {
-      this.setState({ validForm: false });
-    } else {
-      this.setState({ validForm: true });
-    }
+    this.setState({
+      email,
+      passwordValue,
+      confirmPasswordValue,
+      isEmail,
+      emailError,
+      validPassword,
+      passwordError,
+      passwordConfirmError,
+      emailErrorMessage,
+      passwordErrorMessage,
+      passwordConfirmErrorMessage,
+      validForm,
+    });
   };
 
-  // Submit the SignUp Form
   handleSubmit = event => {
     event.preventDefault();
-    let BASE_URL = urls.API_URL;
 
-    let signupEndPoint =
-      BASE_URL +
-      '/aaa/signup.json?signup=' +
-      this.state.email +
-      '&password=' +
-      encodeURIComponent(this.state.passwordValue);
+    const {
+      email,
+      passwordValue,
+      emailError,
+      passwordConfirmError,
+    } = this.state;
+    const { updateSnackbar, closeDialog } = this.props;
 
-    if (!this.state.emailError && !this.state.passwordConfirmError) {
+    let API_ENDPOINT = `${urls.API_URL}/aaa/signup.json`;
+    API_ENDPOINT =
+      API_ENDPOINT +
+      '?signup=' +
+      email +
+      'password=' +
+      encodeURIComponent(passwordValue);
+    let message = '';
+    let success = false;
+
+    if (!emailError && !passwordConfirmError) {
       $.ajax({
-        url: signupEndPoint,
+        url: API_ENDPOINT,
         dataType: 'jsonp',
         crossDomain: true,
         timeout: 3000,
         async: false,
         statusCode: {
           422: function() {
-            let msg = 'Email already taken. Please try with another email.';
-            let state = this.state;
-            state.msg = msg;
-            this.setState(state);
+            message = 'Email already taken. Please try with another email.';
+            updateSnackbar && updateSnackbar(message);
           },
         },
         success: function(response) {
-          let msg = response.message;
-          let state = this.state;
-          state.msg = msg;
-          state.success = true;
-          state.msgOpen = true;
-          this.setState(state);
+          message = response.message;
+          success = true;
+          this.setState(
+            {
+              message,
+              success,
+            },
+            () => {
+              updateSnackbar && updateSnackbar(message);
+              closeDialog && closeDialog();
+            },
+          );
         }.bind(this),
         error: function(jqXHR, textStatus, errorThrown) {
-          let jsonValue = jqXHR.status;
-          let msg;
+          const jsonValue = jqXHR.status;
           if (jsonValue === 404) {
-            msg = 'Email already taken. Please try with another email.';
+            message = 'Email already taken. Please try with another email.';
           } else {
-            msg = 'Failed. Try Again';
+            message = 'Failed. Try Again';
           }
-          /* if (status === 'timeout') {
-                      msg = 'Please check your internet connection';
-                    }*/
-
-          let state = this.state;
-          state.msg = msg;
-          state.msgOpen = true;
-          state.success = false;
-          this.setState(state);
+          success = false;
+          this.setState({ message, success }, () => {
+            updateSnackbar && updateSnackbar(message);
+          });
         }.bind(this),
-      });
-    }
-  };
-
-  // Open Forgot Password Dialog
-  handleForgotPassword = () => {
-    this.setState({
-      openForgotPassword: true,
-      open: false,
-      openLogin: false,
-    });
-  };
-
-  handleForgotPasswordToggle = forgotPassword => {
-    if (forgotPassword) {
-      this.setState({
-        open: false,
-        openForgotPassword: true,
-        openLogin: false,
-      });
-    } else {
-      // Go back to login dialog
-      this.setState({
-        open: true,
-        openForgotPassword: false,
-        openLogin: false,
       });
     }
   };
 
   // Open Login Dialog
-  handleOpen = () => {
-    this.setState({
-      msgOpen: false,
-      email: '',
-      isEmail: false,
-      emailError: true,
-      passwordError: true,
-      passwordConfirmError: true,
-      passwordValue: '',
-      confirmPasswordValue: '',
-      msg: '',
-      success: false,
-      validForm: false,
-      serverUrl: '',
-      checked: false,
-      serverFieldError: false,
-    });
-    this.props.onLoginSignUp();
-  };
+  handleLogin = () => this.props.updateAuthDialog('login');
 
   render() {
-    const styles = {
-      width: '100%',
-      textAlign: 'center',
-      padding: '10px',
-    };
-    const fieldStyle = {
-      width: '256px',
-    };
-    const fontStyle = {
-      fontSize: '16px',
-    };
-    const underlineFocusStyle = {
-      color: '#4285f4',
-    };
-
-    const PasswordClass = [`is-strength-${this.state.passwordScore}`];
+    const { fieldStyle, fontStyle, underlineFocusStyle } = styles;
+    const {
+      email,
+      passwordValue,
+      passwordErrorMessage,
+      emailErrorMessage,
+      validForm,
+      confirmPasswordValue,
+      passwordConfirmErrorMessage,
+    } = this.state;
 
     return (
-      <div className="signUpForm">
-        <Paper zDepth={0} style={styles}>
-          <div>Sign Up with SUSI</div>
-          <form onSubmit={this.handleSubmit}>
-            <div>
-              <TextField
-                name="email"
-                value={this.state.email}
-                onChange={this.handleChange}
-                errorText={this.emailErrorMessage}
-                floatingLabelStyle={fontStyle}
-                underlineFocusStyle={underlineFocusStyle}
-                floatingLabelFocusStyle={underlineFocusStyle}
-                floatingLabelText="Email"
-              />
-            </div>
-            <div className={PasswordClass.join(' ')}>
-              <PasswordField
-                name="password"
-                style={fieldStyle}
-                value={this.state.passwordValue}
-                onChange={this.handleChange}
-                errorText={this.passwordErrorMessage}
-                floatingLabelStyle={fontStyle}
-                underlineFocusStyle={underlineFocusStyle}
-                floatingLabelFocusStyle={underlineFocusStyle}
-                floatingLabelText="Password"
-              />
-            </div>
-            <div>
-              <PasswordField
-                name="confirmPassword"
-                style={fieldStyle}
-                value={this.state.confirmPasswordValue}
-                onChange={this.handleChange}
-                errorText={this.passwordConfirmErrorMessage}
-                floatingLabelStyle={fontStyle}
-                underlineFocusStyle={underlineFocusStyle}
-                floatingLabelFocusStyle={underlineFocusStyle}
-                floatingLabelText="Confirm Password"
-              />
-            </div>
-            <span
-              style={{
-                display: 'inline-block',
-                marginTop: '10px',
-              }}
-              className="login-links"
-              onClick={this.handleOpen}
-            >
-              Already have an account? Login here
-            </span>
-
-            <div>
-              <RaisedButton
-                label="Sign Up"
-                type="submit"
-                disabled={!this.state.validForm}
-                backgroundColor={colors.header}
-                labelColor="#fff"
-                style={{ margin: '15px 0 0 0 ' }}
-              />
-            </div>
-          </form>
-        </Paper>
-        {this.state.msg && (
+      <div className="signupForm">
+        <div>Sign Up with SUSI</div>
+        <form onSubmit={this.handleSubmit}>
           <div>
-            <Dialog
-              modal={false}
-              open={this.state.msgOpen}
-              onRequestClose={this.handleClose}
-            >
-              {this.state.msg}
-            </Dialog>
+            <TextField
+              name="email"
+              value={email}
+              onChange={this.handleChange}
+              errorText={emailErrorMessage}
+              floatingLabelStyle={fontStyle}
+              underlineFocusStyle={underlineFocusStyle}
+              floatingLabelFocusStyle={underlineFocusStyle}
+              floatingLabelText="Email"
+            />
           </div>
-        )}
+          <div>
+            <PasswordField
+              name="password"
+              style={fieldStyle}
+              value={passwordValue}
+              onChange={this.handleChange}
+              errorText={passwordErrorMessage}
+              floatingLabelStyle={fontStyle}
+              underlineFocusStyle={underlineFocusStyle}
+              floatingLabelFocusStyle={underlineFocusStyle}
+              floatingLabelText="Password"
+            />
+          </div>
+          <div>
+            <PasswordField
+              name="confirmPassword"
+              style={fieldStyle}
+              value={confirmPasswordValue}
+              onChange={this.handleChange}
+              errorText={passwordConfirmErrorMessage}
+              floatingLabelStyle={fontStyle}
+              underlineFocusStyle={underlineFocusStyle}
+              floatingLabelFocusStyle={underlineFocusStyle}
+              floatingLabelText="Confirm Password"
+            />
+          </div>
+          <span
+            style={{
+              display: 'inline-block',
+              marginTop: '10px',
+            }}
+            className="loginLinks"
+            onClick={this.handleLogin}
+          >
+            Already have an account? Login here
+          </span>
+
+          <div>
+            <RaisedButton
+              label="Sign Up"
+              type="submit"
+              disabled={!validForm}
+              backgroundColor={colors.header}
+              labelColor="#fff"
+              style={{ margin: '15px 0 0 0 ' }}
+            />
+          </div>
+        </form>
       </div>
     );
   }
 }
-
-SignUp.propTypes = {
-  history: PropTypes.object,
-  onRequestClose: PropTypes.func,
-  onLoginSignUp: PropTypes.func,
-};
