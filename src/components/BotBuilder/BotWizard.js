@@ -112,7 +112,10 @@ class BotWizard extends React.Component {
           '::bodyBackground ' +
           text.split('::bodyBackground ')[1].split('::name')[0];
         let configCode =
-          '!Write' + text.split('!Write')[1].split('::bodyBackground')[0];
+          '::allow_bot_only_on_own_sites' +
+          text
+            .split('::allow_bot_only_on_own_sites')[1]
+            .split('::bodyBackground')[0];
         const imageNameMatch = buildCode.match(/^::image\s(.*)$/m);
         let imagePreviewUrl = `${
           urls.API_URL
@@ -135,13 +138,21 @@ class BotWizard extends React.Component {
             imageUrl: imageNameMatch[1],
             updateSkillNow: true,
             savedSkillOld,
+            groupValue: group,
+            languageValue: language,
+            expertValue: name,
           },
           () => this.generateDesignData(),
         );
       }.bind(this),
       error: function(err) {
         console.log(err);
-      },
+        this.setState({
+          loaded: true,
+          msgSnackbar: "Error! Couldn't fetch skill",
+          openSnackbar: true,
+        });
+      }.bind(this),
     });
   };
 
