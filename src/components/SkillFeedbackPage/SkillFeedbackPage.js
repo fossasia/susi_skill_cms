@@ -541,7 +541,10 @@ class SkillFeedbackPage extends Component {
                 }
                 primaryText={
                   <div>
-                    <div>{data.email}</div>
+                    <div>{`${data.email.slice(
+                      0,
+                      data.email.indexOf('@') + 1,
+                    )}...`}</div>
                     <div className="feedback-timestamp">
                       {this.formatDate(parseDate(data.timestamp))}
                     </div>
