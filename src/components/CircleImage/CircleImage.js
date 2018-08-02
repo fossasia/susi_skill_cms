@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+
+/* Utils */
 import initials from 'initials';
 import addPx from 'add-px';
 import contrast from 'contrast';
@@ -19,53 +21,66 @@ function sumChars(str) {
   for (let i = 0; i < str.length; i++) {
     sum += str.charCodeAt(i);
   }
-
   return sum;
 }
 
-class CircleImage extends Component {
+export default class CircleImage extends Component {
+  static propTypes = {
+    borderRadius: PropTypes.string,
+    src: PropTypes.string,
+    srcset: PropTypes.string,
+    name: PropTypes.string.isRequired,
+    color: PropTypes.string,
+    colors: PropTypes.array,
+    size: PropTypes.string,
+    style: PropTypes.object,
+    className: PropTypes.string,
+  };
+
+  static defaultProps = {
+    colors: defaultColors,
+  };
+
   render() {
-    let {
-      borderRadius = '100%',
+    const {
       src,
       srcset,
       name,
       color,
-      colors = defaultColors,
-      size,
+      colors,
       style,
+      borderRadius = '100%',
       className,
     } = this.props;
 
-    if (!name) {
-      throw new Error('CircleImage requires a name');
-    }
+    let size = addPx(this.props.size);
 
-    const abbr = initials(name);
-    size = addPx(size);
-
-    const imageStyle = {
-      display: 'block',
-      borderRadius,
+    let styles = {
+      imageStyle: {
+        display: 'block',
+        borderRadius,
+      },
+      innerStyle: {
+        lineHeight: size,
+        textAlign: 'center',
+        overflow: 'initial',
+        marginRight: 10,
+        borderRadius,
+      },
     };
 
-    const innerStyle = {
-      lineHeight: size,
-      textAlign: 'center',
-      overflow: 'initial',
-      marginRight: 10,
-      borderRadius,
-    };
+    let { imageStyle, innerStyle } = styles;
+    const nameInitials = initials(name);
+    let innerElement,
+      classes = [className, 'CircleImage'];
 
     if (size) {
       imageStyle.width = innerStyle.width = innerStyle.maxWidth = size;
       imageStyle.height = innerStyle.height = innerStyle.maxHeight = size;
     }
 
-    let inner,
-      classes = [className, 'CircleImage'];
     if (src || srcset) {
-      inner = (
+      innerElement = (
         <img
           className="CircleImage--img"
           style={imageStyle}
@@ -75,44 +90,27 @@ class CircleImage extends Component {
         />
       );
     } else {
-      let background;
+      let backgroundColor = '';
+
       if (color) {
-        background = color;
+        backgroundColor = color;
       } else {
-        // pick a deterministic color from the list
-        let i = sumChars(name) % colors.length;
-        background = colors[i];
+        // Pick a deterministic color from the list
+        const i = sumChars(name) % colors.length;
+        backgroundColor = colors[i];
       }
 
-      innerStyle.backgroundColor = background;
-
-      inner = abbr;
-    }
-
-    if (innerStyle.backgroundColor) {
+      innerStyle.backgroundColor = backgroundColor;
       classes.push(`CircleImage--${contrast(innerStyle.backgroundColor)}`);
+      innerElement = nameInitials;
     }
 
     return (
       <div aria-label={name} className={classes.join(' ')} style={style}>
         <div className="CircleImage--inner" style={innerStyle}>
-          {inner}
+          {innerElement}
         </div>
       </div>
     );
   }
 }
-
-CircleImage.propTypes = {
-  borderRadius: PropTypes.string,
-  src: PropTypes.string,
-  srcset: PropTypes.string,
-  name: PropTypes.string,
-  color: PropTypes.string,
-  colors: PropTypes.array,
-  size: PropTypes.string,
-  style: PropTypes.object,
-  className: PropTypes.string,
-};
-
-export default CircleImage;
