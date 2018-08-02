@@ -750,7 +750,7 @@ class SkillEditor extends Component {
                 editorProps={{ $blockScrolling: true }}
                 style={{
                   resize: 'vertical',
-                  overflowY: 'scroll',
+                  overflowY: 'auto',
                   minHeight: '200px',
                 }}
               />
@@ -822,7 +822,7 @@ class SkillEditor extends Component {
                 editorProps={{ $blockScrolling: true }}
                 style={{
                   resize: 'vertical',
-                  overflowY: 'scroll',
+                  overflowY: 'auto',
                   minHeight: '200px',
                 }}
               />
@@ -966,7 +966,7 @@ class SkillEditor extends Component {
               editorProps={{ $blockScrolling: true }}
               style={{
                 resize: 'vertical',
-                overflowY: 'scroll',
+                overflowY: 'auto',
                 minHeight: '200px',
               }}
             />
