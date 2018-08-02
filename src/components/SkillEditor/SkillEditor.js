@@ -3,9 +3,11 @@ import PropTypes from 'prop-types';
 import Icon from 'antd/lib/icon';
 import MenuItem from 'material-ui/MenuItem';
 import SelectField from 'material-ui/SelectField';
+import Info from 'material-ui/svg-icons/action/info';
 import { Dialog, Paper, RaisedButton, TextField } from 'material-ui';
 import AceEditor from 'react-ace';
 import { Link } from 'react-router-dom';
+import ReactTooltip from 'react-tooltip';
 import Cookies from 'universal-cookie';
 import 'brace/mode/markdown';
 import ISO6391 from 'iso-639-1';
@@ -856,7 +858,20 @@ class SkillEditor extends Component {
                 </div>
               </Paper>
             )}
+          <ReactTooltip
+            effect="solid"
+            place="bottom"
+            className="tooltipSkill"
+            delayHide={500}
+            html={true}
+          />
           <Paper style={style} zDepth={1}>
+            <Info
+              style={styles.helpIcon}
+              data-tip={
+                'Learn more about <a href="https://github.com/fossasia/susi_skill_cms/blob/master/docs/Skill_Tutorial.md" rel="noopener noreferrer" target="_blank" >SUSI Skill Language</a>'
+              }
+            />
             <div style={styles.center}>
               <div style={styles.dropdownDiv}>
                 <SelectField
@@ -1165,6 +1180,15 @@ const styles = {
     left: 0,
     width: '100%',
     opacity: 0,
+  },
+  helpIcon: {
+    position: 'absolute',
+    top: '100px',
+    right: '40px',
+    height: '20px',
+    width: '20px',
+    cursor: 'pointer',
+    color: 'rgb(158, 158, 158)',
   },
 };
 
