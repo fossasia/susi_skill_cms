@@ -134,7 +134,14 @@ export default class BrowseSkill extends React.Component {
 
   handleLanguageChange = (event, index, values) => {
     this.setState({ languageValue: values }, function() {
-      this.loadCards();
+      if (
+        this.props.routeType ||
+        ['category', 'language'].includes(window.location.href.split('/')[3])
+      ) {
+        this.loadCards();
+      } else {
+        this.loadMetricsSkills();
+      }
     });
   };
 
@@ -334,7 +341,10 @@ export default class BrowseSkill extends React.Component {
 
   loadMetricsSkills = () => {
     let url;
-    url = urls.API_URL + '/cms/getSkillMetricsData.json';
+    url =
+      urls.API_URL +
+      '/cms/getSkillMetricsData.json?language=' +
+      this.state.languageValue;
     let self = this;
     $.ajax({
       url: url,
