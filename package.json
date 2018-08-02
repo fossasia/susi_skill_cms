@@ -24,6 +24,7 @@
     "material-ui-color-picker": "2.0.1",
     "material-ui-password-field": "1.2.0",
     "material-ui-search-bar": "0.4.2",
+    "md5": "2.2.1",
     "prop-types": "latest",
     "react": "15.6.1",
     "react-ace": "5.1.0",
