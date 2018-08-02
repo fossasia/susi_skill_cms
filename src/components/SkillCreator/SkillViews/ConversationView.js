@@ -13,12 +13,22 @@ class ConversationView extends Component {
     super(props);
     this.state = {
       value: '',
-      textType: 'user',
+      textType: '',
       textBoxValue: '',
       openSnackbar: false,
       msgSnackbar: '',
     };
   }
+
+  componentDidMount = () => {
+    let skillData = this.props.skillData;
+    let noOfConv = skillData.children.length;
+    if (skillData.children[noOfConv - 1].children.length === 0) {
+      this.setState({ textType: 'bot' });
+    } else {
+      this.setState({ textType: 'user' });
+    }
+  };
 
   handleChange = event => {
     this.setState({
@@ -29,6 +39,7 @@ class ConversationView extends Component {
 
   handleSubmit = event => {
     if (this.state.value !== '') {
+      this.props.handleAddNode(this.state.value);
       if (this.state.textType === 'bot') {
         this.setState({ textType: 'user' });
       } else if (this.state.textType === 'user') {
@@ -68,7 +79,7 @@ class ConversationView extends Component {
     return (
       <div
         style={{
-          padding: this.props.botbuilder ? '10px 10px 20px 10px' : '30px',
+          paddingTop: '20px',
         }}
       >
         <Paper id="message-container" style={styles.paperStyle} zDepth={1}>
@@ -207,6 +218,7 @@ const styles = {
 ConversationView.propTypes = {
   skillData: PropTypes.object,
   handleDeleteNode: PropTypes.func,
+  handleAddNode: PropTypes.func,
   botbuilder: PropTypes.bool,
 };
 export default ConversationView;
