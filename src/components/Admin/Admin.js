@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import NotFound from '../NotFound/NotFound';
+import NotFound from '../NotFound/NotFound.react';
 import './Admin.css';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import CircularProgress from 'material-ui/CircularProgress';
