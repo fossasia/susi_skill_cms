@@ -77,7 +77,7 @@ class SkillListing extends Component {
       total_star: 0,
       skill_ratings: [],
       skill_usage: [],
-      country_wise_skill_usage: [],
+      countryWiseSkillUsage: [],
       rating: 0,
       openSnack: false,
       snackMessage: '',
@@ -337,15 +337,15 @@ class SkillListing extends Component {
     });
   };
 
-  saveCountryWiseSkillUsage = (country_wise_skill_usage = []) => {
+  saveCountryWiseSkillUsage = (countryWiseSkillUsage = []) => {
     // Add sample data to test
-    let data = country_wise_skill_usage.map(country => [
+    let data = countryWiseSkillUsage.map(country => [
       country.country_code,
       parseInt(country.count, 10),
     ]);
 
     this.setState({
-      country_wise_skill_usage: data,
+      countryWiseSkillUsage: data,
     });
   };
 
@@ -1080,7 +1080,7 @@ class SkillListing extends Component {
             <SkillUsageCard
               skill_usage={this.state.skill_usage}
               device_usage_data={this.state.device_usage_data}
-              country_wise_skill_usage={this.state.country_wise_skill_usage}
+              countryWiseSkillUsage={this.state.countryWiseSkillUsage}
             />
           </div>
         </div>

@@ -130,24 +130,18 @@ class SkillUsageCard extends Component {
               ) : (
                 ''
               )}
-              {this.props.country_wise_skill_usage !== [] ? (
-                <div className="device-usage">
-                  <div className="sub-title">Country wise Usage</div>
-                  <CountryWiseSkillUsageCard
-                    country_wise_skill_usage={
-                      this.props.country_wise_skill_usage
-                    }
-                  />
-                </div>
-              ) : (
-                ''
-              )}
             </div>
           ) : (
             <div className="default-message">
               No usage data available, try this skill now!
             </div>
           )}
+          <div className="device-usage">
+            <div className="sub-title">Country wise Usage</div>
+            <CountryWiseSkillUsageCard
+              countryWiseSkillUsage={this.props.countryWiseSkillUsage}
+            />
+          </div>
         </Paper>
       </div>
     );
@@ -244,7 +238,7 @@ renderActiveShape.propTypes = {
 SkillUsageCard.propTypes = {
   skill_usage: PropTypes.array,
   device_usage_data: PropTypes.array,
-  country_wise_skill_usage: PropTypes.array,
+  countryWiseSkillUsage: PropTypes.array,
 };
 
 export default SkillUsageCard;

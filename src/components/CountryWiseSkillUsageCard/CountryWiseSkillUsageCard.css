@@ -24,3 +24,8 @@
         width: 100%;
     }
 }
+
+.unavailable-message {
+    display: flex;
+    justify-content: center;
+}
