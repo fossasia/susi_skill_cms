@@ -246,12 +246,16 @@ function enableBot() {
 
 		// Send request to SUSI API
 		function send(text) {
+			let url = baseUrl+encodeURIComponent(text);
+			if(userid && group && language && skill){
+				url += `&privateskill=1&userid=${userid}&group=${group}&language=${language}&skill=${skill}`;
+			}
 			var thisMsgNumber = msgNumber;
 			msgNumber++;
 			setLoadingMessage(thisMsgNumber);
 			$.ajax({
 				type: "GET",
-				url: baseUrl+encodeURIComponent(text),
+				url: url,
 				contentType: "application/json",
 				dataType: "json",
 				success: function(data) {
