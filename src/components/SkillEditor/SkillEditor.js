@@ -4,6 +4,7 @@ import Icon from 'antd/lib/icon';
 import MenuItem from 'material-ui/MenuItem';
 import SelectField from 'material-ui/SelectField';
 import Info from 'material-ui/svg-icons/action/info';
+import DropDownMenu from 'material-ui/DropDownMenu';
 import { Dialog, Paper, RaisedButton, TextField } from 'material-ui';
 import AceEditor from 'react-ace';
 import { Link } from 'react-router-dom';
@@ -78,6 +79,10 @@ class SkillEditor extends Component {
       editorTheme: 'github',
       showAdmin: false,
       deleteDisabled: true,
+      anchorOrigin: {
+        horizontal: 'left',
+        vertical: 'bottom',
+      },
     };
     let fonts = [14, 16, 18, 20, 24, 28, 32, 40];
     let themes = [
@@ -876,26 +881,42 @@ class SkillEditor extends Component {
             />
             <div style={styles.center}>
               <div style={styles.dropdownDiv}>
-                <SelectField
-                  floatingLabelText="Category"
+                <div
                   style={{
-                    width: 300,
-                    marginLeft: 10,
-                    marginRight: 10,
+                    fontSize: 15,
+                    paddingTop: '18px',
+                    paddingLeft: '10px',
                   }}
-                  value={this.state.groupValue}
-                  onChange={this.handleGroupChange}
                 >
-                  {groups}
-                </SelectField>
-                <SelectField
-                  floatingLabelText="Language"
-                  style={{ width: '125px', marginLeft: 10, marginRight: 10 }}
-                  value={this.state.languageValue}
-                  onChange={this.handleLanguageChange}
-                >
-                  {languages}
-                </SelectField>
+                  Category:
+                </div>
+                <div style={{ paddingTop: 25 }}>
+                  <DropDownMenu
+                    style={{ width: 300 }}
+                    value={this.state.groupValue}
+                    onChange={this.handleGroupChange}
+                    anchorOrigin={this.state.anchorOrigin}
+                    autoWidth={true}
+                    maxHeight={300}
+                  >
+                    {groups}
+                  </DropDownMenu>
+                </div>
+                <div style={{ fontSize: 15, paddingTop: '18px' }}>
+                  Language:
+                </div>
+                <div style={{ paddingTop: 25 }}>
+                  <DropDownMenu
+                    style={{ width: '200' }}
+                    value={this.state.languageValue}
+                    anchorOrigin={this.state.anchorOrigin}
+                    onChange={this.handleLanguageChange}
+                    autoWidth={true}
+                    maxHeight={300}
+                  >
+                    {languages}
+                  </DropDownMenu>
+                </div>
                 <TextField
                   floatingLabelText="Enter Skill name"
                   floatingLabelFixed={true}
