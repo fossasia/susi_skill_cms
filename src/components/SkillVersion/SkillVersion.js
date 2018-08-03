@@ -154,10 +154,14 @@ class SkillVersion extends Component {
         width: '100%',
         fontSize: '14px',
       },
+      actionButtons: {
+        display: 'flex',
+        justifyContent: 'flex-end',
+      },
     };
 
     const compareBtnStyle = {
-      margin: '20px',
+      margin: '10px',
     };
 
     var showCompareBtn = false;
@@ -302,7 +306,31 @@ class SkillVersion extends Component {
                 </span>
               </p>
               <div style={compareBtnStyle}>{commitHistoryTable}</div>
-              {showCompareBtn && (
+              <div style={styles.actionButtons}>
+                {showCompareBtn && (
+                  <Link
+                    to={{
+                      pathname:
+                        '/' +
+                        this.state.skillMeta.groupValue +
+                        '/' +
+                        this.state.skillMeta.skillName +
+                        '/compare/' +
+                        this.state.skillMeta.languageValue +
+                        '/' +
+                        checkedCommits[0].commitID +
+                        '/' +
+                        checkedCommits[1].commitID,
+                    }}
+                  >
+                    <RaisedButton
+                      label="Compare Selected Versions"
+                      backgroundColor={colors.header}
+                      labelColor="#fff"
+                      style={compareBtnStyle}
+                    />
+                  </Link>
+                )}
                 <Link
                   to={{
                     pathname:
@@ -310,30 +338,18 @@ class SkillVersion extends Component {
                       this.state.skillMeta.groupValue +
                       '/' +
                       this.state.skillMeta.skillName +
-                      '/compare/' +
-                      this.state.skillMeta.languageValue +
                       '/' +
-                      checkedCommits[0].commitID +
-                      '/' +
-                      checkedCommits[1].commitID,
+                      this.state.skillMeta.languageValue,
                   }}
                 >
                   <RaisedButton
-                    label="Compare Selected Versions"
+                    label="Back"
                     backgroundColor={colors.header}
                     labelColor="#fff"
                     style={compareBtnStyle}
                   />
                 </Link>
-              )}
-              <a href="../en">
-                <RaisedButton
-                  label="Back"
-                  backgroundColor={colors.header}
-                  labelColor="#fff"
-                  style={compareBtnStyle}
-                />
-              </a>
+              </div>
             </div>
           </div>
         )}
