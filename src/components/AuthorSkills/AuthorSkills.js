@@ -154,9 +154,8 @@ export default class AuthorSkills extends Component {
     let githubAvatarSrc = '';
 
     if (authorUrl) {
-      githubAvatarSrc = `https://avatars.githubusercontent.com/${
-        authorUrl.split('/')[3]
-      }?size=50`;
+      githubAvatarSrc =
+        urls.GITHUB_AVATAR_URL + '/' + authorUrl.split('/')[3] + '?size=50';
     } else {
       githubAvatarSrc = githubLogo;
     }

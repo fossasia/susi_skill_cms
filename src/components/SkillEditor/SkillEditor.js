@@ -123,8 +123,7 @@ class SkillEditor extends Component {
         this.state.languageValue
       }&group=${this.state.groupValue}&image=${skillData.image}`;
     } else {
-      this.imgUrl =
-        'https://pbs.twimg.com/profile_images/904617517489979392/6Hff65Th.jpg';
+      this.imgUrl = '/favicon-512x512.jpg';
     }
     this.setState({
       image: this.imgUrl,
@@ -485,7 +484,6 @@ class SkillEditor extends Component {
     this.setState({
       deleteDisabled: true,
     });
-    // console.log('http://127.0.0.1:4000/cms/deleteSkill.txt?skill='+this.name+'&group='+this.groupValue+'&language='+this.languageValue);
     $.ajax({
       url:
         urls.API_URL +

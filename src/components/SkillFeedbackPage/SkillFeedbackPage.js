@@ -256,12 +256,11 @@ class SkillFeedbackPage extends Component {
   };
 
   updateData = skillData => {
-    let imgUrl = `https://raw.githubusercontent.com/fossasia/susi_skill_data/master/models/general/${
-      this.groupValue
-    }/${this.languageValue}/${skillData.image}`;
+    let imgUrl = `${urls.API_URL}/cms/getImage.png?model=general&language=${
+      this.languageValue
+    }&group=${this.groupValue}&image=${skillData.image}`;
     if (!skillData.image) {
-      imgUrl =
-        'https://pbs.twimg.com/profile_images/904617517489979392/6Hff65Th.jpg';
+      imgUrl = '/favicon-512x512.jpg';
     }
     this.setState({
       imgUrl,

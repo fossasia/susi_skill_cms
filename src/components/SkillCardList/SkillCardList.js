@@ -7,7 +7,7 @@ import styles from './SkillCardStyle';
 import { urls } from '../../utils';
 
 function testExample(e, exampleText) {
-  let link = 'https://chat.susi.ai/?testExample=' + exampleText;
+  let link = urls.CHAT_URL + '/?testExample=' + exampleText;
   window.open(link, '_blank');
 }
 
