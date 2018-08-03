@@ -18,7 +18,7 @@ import Snackbar from 'material-ui/Snackbar';
 import { Paper, TextField } from 'material-ui';
 import ChevronLeft from 'material-ui/svg-icons/navigation/chevron-left';
 import ChevronRight from 'material-ui/svg-icons/navigation/chevron-right';
-import { urls, colors } from '../../utils';
+import { urls, colors, avatars } from '../../utils';
 import Icon from 'antd/lib/icon';
 import * as $ from 'jquery';
 import Cookies from 'universal-cookie';
@@ -66,6 +66,7 @@ class BotWizard extends React.Component {
 
   constructor(props) {
     super(props);
+    let avatarsIcons = avatars.slice();
     this.state = {
       finished: false,
       stepIndex: 0,
@@ -86,8 +87,8 @@ class BotWizard extends React.Component {
       languageValue: '',
       expertValue: '',
       file: null,
-      imageUrl: '',
-      image: '',
+      imageUrl: 'susi_image.jpg',
+      image: avatarsIcons[1].url,
       designData: null,
       preferUiView: 'code',
       newBot: true,
@@ -95,7 +96,7 @@ class BotWizard extends React.Component {
       skillGroup: '',
       skillLanguage: '',
       buildCode:
-        '::name <Bot_name>\n::category <Category>\n::language <Language>\n::author <author_name>\n::author_url <author_url>\n::description <description> \n::dynamic_content <Yes/No>\n::developer_privacy_policy <link>\n::image <image_url>\n::terms_of_use <link>\n\n\nUser query1|query2|quer3....\n!example:<The question that should be shown in public skill displays>\n!expect:<The answer expected for the above example>\nAnswer for the user query',
+        '::name <Bot_name>\n::category <Category>\n::language <Language>\n::author <author_name>\n::author_url <author_url>\n::description <description> \n::dynamic_content <Yes/No>\n::developer_privacy_policy <link>\n::image images/susi_image.jpg\n::terms_of_use <link>\n\n\nUser query1|query2|quer3....\n!example:<The question that should be shown in public skill displays>\n!expect:<The answer expected for the above example>\nAnswer for the user query',
       designCode:
         '::bodyBackground #ffffff\n::bodyBackgroundImage \n::userMessageBoxBackground #0077e5\n::userMessageTextColor #ffffff\n::botMessageBoxBackground #f8f8f8\n::botMessageTextColor #455a64\n::botIconColor #000000\n::botIconImage ',
       configCode:
@@ -127,11 +128,16 @@ class BotWizard extends React.Component {
             .split('::allow_bot_only_on_own_sites')[1]
             .split('::bodyBackground')[0];
         const imageNameMatch = buildCode.match(/^::image\s(.*)$/m);
-        let imagePreviewUrl = `${
-          urls.API_URL
-        }/cms/getImage.png?access_token=${cookies.get(
-          'loggedIn',
-        )}&language=${language}&group=${group}&image=${imageNameMatch[1]}`;
+        let imagePreviewUrl;
+        if (imageNameMatch[1] !== 'images/susi_image.jpg') {
+          imagePreviewUrl = `${
+            urls.API_URL
+          }/cms/getImage.png?access_token=${cookies.get(
+            'loggedIn',
+          )}&language=${language}&group=${group}&image=${imageNameMatch[1]}`;
+        } else {
+          imagePreviewUrl = this.state.image;
+        }
         let savedSkillOld = {
           OldGroup: group,
           OldLanguage: language,
@@ -369,14 +375,6 @@ class BotWizard extends React.Component {
       });
       return 0;
     }
-    if (this.state.file === null && this.state.updateSkillNow === false) {
-      notification.open({
-        message: 'Error Processing your Request',
-        description: 'Image Not Given',
-        icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
-      });
-      return 0;
-    }
 
     this.setState({
       savingSkill: true,
@@ -406,7 +404,11 @@ class BotWizard extends React.Component {
       form.append('skill', this.state.expertValue.trim().replace(/\s/g, '_'));
       form.append('image_name', this.state.imageUrl.replace('images/', ''));
     }
-    form.append('image', this.state.file);
+    if (this.state.file) {
+      form.append('image', this.state.file);
+    } else {
+      form.append('image', '');
+    }
     form.append('content', code);
     form.append('access_token', cookies.get('loggedIn'));
     form.append('private', '1');
