@@ -37,6 +37,8 @@ import CircleImage from '../CircleImage/CircleImage';
 import EditBtn from 'material-ui/svg-icons/editor/mode-edit';
 import VersionBtn from 'material-ui/svg-icons/action/history';
 import DeleteBtn from 'material-ui/svg-icons/action/delete';
+import NavigateDown from 'material-ui/svg-icons/navigation/expand-more';
+import NavigateUp from 'material-ui/svg-icons/navigation/expand-less';
 import ReactTooltip from 'react-tooltip';
 import { urls, colors, parseDate } from '../../utils';
 
@@ -88,6 +90,8 @@ class SkillListing extends Component {
       feedbackMessage: '',
       editStatus: true,
       showDeleteDialog: false,
+      skillExampleCount: 4,
+      seeMoreSkillExamples: true,
     };
 
     let clickedSkill = this.props.location.pathname.split('/')[2];
@@ -689,6 +693,14 @@ class SkillListing extends Component {
     });
   };
 
+  toggleSkillExamples = () => {
+    this.setState({
+      seeMoreSkillExamples: !this.state.seeMoreSkillExamples,
+      skillExampleCount:
+        this.state.skillExampleCount === 4 ? this.state.examples.length : 4,
+    });
+  };
+
   testExample = (e, exampleText) => {
     let link = urls.CHAT_URL + '/?testExample=' + exampleText;
     window.open(link, '_blank');
@@ -753,6 +765,26 @@ class SkillListing extends Component {
     let oldLanguageValue = this.props.location.pathname.split('/')[3];
     let oldImageValue = this.state.imgUrl;
     let imageValue = this.state.image;
+    let seeMoreSkillExamples = null;
+    if (this.state.examples.length > 4) {
+      seeMoreSkillExamples = this.state.seeMoreSkillExamples ? (
+        <div className="skill-read-more-container">
+          <p style={{ fontSize: '12px' }}>See more examples</p>
+          <NavigateDown
+            style={{ fill: '#555656', width: '12px' }}
+            className="skill-example-more-icon"
+          />
+        </div>
+      ) : (
+        <div className="skill-read-more-container">
+          <p style={{ fontSize: '12px' }}>Less</p>
+          <NavigateUp
+            style={{ fill: '#555656', width: '12px' }}
+            className="skill-example-more-icon"
+          />
+        </div>
+      );
+    }
     if (!this.state.dataReceived) {
       renderElement = (
         <div>
@@ -900,17 +932,25 @@ class SkillListing extends Component {
                     Object.keys(this.state.examples)[0]
                   ] === 'undefined'
                     ? ''
-                    : this.state.examples.map((data, index) => {
-                        return (
-                          <div
-                            key={index}
-                            className="example-comment"
-                            onClick={event => this.testExample(event, data)}
-                          >
-                            <q>{data}</q>
-                          </div>
-                        );
-                      })}
+                    : this.state.examples
+                        .slice(0, this.state.skillExampleCount)
+                        .map((data, index) => {
+                          return (
+                            <div
+                              key={index}
+                              className="example-comment"
+                              onClick={event => this.testExample(event, data)}
+                            >
+                              <q>{data}</q>
+                            </div>
+                          );
+                        })}
+                </div>
+                <div
+                  className="skill-example-see-more"
+                  onClick={this.toggleSkillExamples}
+                >
+                  {seeMoreSkillExamples}
                 </div>
               </div>
             </div>

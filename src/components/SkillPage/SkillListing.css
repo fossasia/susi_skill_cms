@@ -181,3 +181,17 @@ h1.name {
   border-style: solid;
   border-color: #f4f6f6 transparent transparent #f4f6f6;
 }
+
+.skill-example-more-icon {
+  width: 9px;
+  position: relative;
+  bottom: 3px;
+}
+
+.skill-read-more-container{
+  text-align: center;
+  margin-top: 10px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+}
