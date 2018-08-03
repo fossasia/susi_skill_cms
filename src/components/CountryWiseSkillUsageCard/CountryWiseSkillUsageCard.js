@@ -15,12 +15,13 @@ class CountryWiseSkillUsageCard extends PureComponent {
       return isoCountries[countryCode];
     }
   };
-  countryUsageList = props => {
+  countryUsageList = () => {
+    const { countryWiseSkillUsage } = this.props;
     return (
       <Table>
         <TableBody displayRowCheckbox={false}>
-          {this.props.country_wise_skill_usage &&
-            this.props.country_wise_skill_usage.map((data, id) => {
+          {countryWiseSkillUsage &&
+            countryWiseSkillUsage.map((data, id) => {
               let countryCode = data[0];
               let usage = data[1];
               let countryName = this.getCountryName(countryCode);
@@ -43,19 +44,28 @@ class CountryWiseSkillUsageCard extends PureComponent {
   };
 
   render() {
+    const { countryWiseSkillUsage } = this.props;
     return (
-      <div className="country-usage-container">
-        <div className="country-usage-graph">
-          <GeoChart data={this.props.country_wise_skill_usage} />
-        </div>
-        <div className="country-usage-list">{this.countryUsageList()}</div>
+      <div>
+        {countryWiseSkillUsage && countryWiseSkillUsage.length ? (
+          <div className="country-usage-container">
+            <div className="country-usage-graph">
+              <GeoChart data={countryWiseSkillUsage} />
+            </div>
+            <div className="country-usage-list">{this.countryUsageList()}</div>
+          </div>
+        ) : (
+          <div className="unavailable-message">
+            Country wise usage distribution is not available.
+          </div>
+        )}
       </div>
     );
   }
 }
 
 CountryWiseSkillUsageCard.propTypes = {
-  country_wise_skill_usage: PropTypes.array,
+  countryWiseSkillUsage: PropTypes.array,
 };
 
 export default CountryWiseSkillUsageCard;
