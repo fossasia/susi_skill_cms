@@ -191,7 +191,7 @@ class SkillHistory extends Component {
     const compareBtnStyle = {
       margin: '20px',
       position: 'absolute',
-      right: '12',
+      right: '24',
       top: '70',
     };
     let rightEditorWidth = '50%';
@@ -216,16 +216,28 @@ class SkillHistory extends Component {
                 <div>
                   <div>
                     Currently Viewing :{' '}
-                    <a href="../../../en">
+                    <Link
+                      to={{
+                        pathname:
+                          '/' +
+                          this.state.skillMeta.groupValue +
+                          '/' +
+                          this.state.skillMeta.skillName +
+                          '/' +
+                          this.state.skillMeta.languageValue,
+                      }}
+                    >
                       <RaisedButton
                         label="Back"
                         backgroundColor={colors.header}
                         labelColor="#fff"
                         style={compareBtnStyle}
                       />
-                    </a>
+                    </Link>
                   </div>
-                  <h3>{this.state.skillMeta.skillName}</h3>
+                  <h3 style={{ textTransform: 'capitalize' }}>
+                    {this.state.skillMeta.skillName.split('_').join(' ')}
+                  </h3>
                 </div>
               </Paper>
               <div className="version-code-left">
