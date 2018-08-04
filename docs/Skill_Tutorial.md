@@ -64,6 +64,11 @@ Therefore, we can access every expert with the 4-tuple
 ```
 {model, group, language, expert}
 ```
+### The Susi Skill Language: a Language of Thought
+As you will see in the tutorial levels below, the language looks like an extremely simple pattern-matching Question-Answer declaration. But that is just the facade, it is easy for beginners but under the hood there is an expert system which is able to do planning and proving. The artificial intelligence in Susi is implemented as a theorem prover which can explore the domain of possible answers and gives one which is _true_ in Susis universe of knowledge.
+
+However, we had to combine the complex world of declaration-based logic programming with natural language declarations.
+We believe that the result is a easy-to-learn skill language with the ability to advance to true artificial intelligence when we reach a certain level of experience.
 
 ### Tutorial Level 0: Fixed Query-Answer Phrase Collections
 
