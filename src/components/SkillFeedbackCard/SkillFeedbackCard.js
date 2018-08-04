@@ -15,6 +15,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
+import md5 from 'md5';
 
 // Icons
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
@@ -24,7 +25,7 @@ import EditBtn from 'material-ui/svg-icons/editor/mode-edit';
 // CSS
 import './SkillFeedbackCard.css';
 
-import { parseDate } from '../../utils';
+import { urls, parseDate } from '../../utils';
 
 const cookies = new Cookies();
 
@@ -97,6 +98,16 @@ class SkillFeedbackCard extends Component {
     return timestamp.join(' ');
   };
 
+  getAvatarProps = emailId => {
+    const emailHash = md5(emailId);
+    const GRAVATAR_IMAGE_URL = `${urls.GRAVATAR_URL}/${emailHash}.jpg`;
+    const avatarProps = {
+      name: emailId.toUpperCase(),
+      src: GRAVATAR_IMAGE_URL,
+    };
+    return avatarProps;
+  };
+
   render() {
     const editActions = [
       <FlatButton
@@ -141,13 +152,12 @@ class SkillFeedbackCard extends Component {
       feedbackCards = this.props.skill_feedback.map((data, index) => {
         if (loggedIn && emailId && data.email === emailId) {
           userFeedback = data.feedback;
+          const avatarProps = this.getAvatarProps(data.email);
           userFeedbackCard = (
             <div key={index}>
               <ListItem
                 key={index}
-                leftAvatar={
-                  <CircleImage name={data.email.toUpperCase()} size="40" />
-                }
+                leftAvatar={<CircleImage {...avatarProps} size="40" />}
                 primaryText={
                   <div>
                     <div>{data.email}</div>
@@ -181,12 +191,11 @@ class SkillFeedbackCard extends Component {
         }
         // eslint-disable-next-line
         else {
+          const avatarProps = this.getAvatarProps(data.email);
           return (
             <ListItem
               key={index}
-              leftAvatar={
-                <CircleImage name={data.email.toUpperCase()} size="40" />
-              }
+              leftAvatar={<CircleImage {...avatarProps} size="40" />}
               primaryText={
                 <div>
                   <div>{`${data.email.slice(
