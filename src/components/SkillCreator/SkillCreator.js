@@ -4,6 +4,7 @@ import CodeView from './SkillViews/CodeView';
 import ConversationView from './SkillViews/ConversationView';
 import TreeView from './SkillViews/TreeView';
 import { urls, colors } from '../../utils';
+import CircularProgress from 'material-ui/CircularProgress';
 import { Link } from 'react-router-dom';
 import ISO6391 from 'iso-639-1';
 import ReactTooltip from 'react-tooltip';
@@ -50,6 +51,7 @@ export default class SkillCreator extends Component {
       showImage: false,
       loading: false,
       file: null,
+      loadViews: false,
       imageUrl: '<image_url>',
       commitMessage: '',
       modelValue: null,
@@ -89,17 +91,22 @@ export default class SkillCreator extends Component {
             groupSelect: false,
             languageSelect: false,
             expertSelect: false,
+            loadViews: true,
           },
           () => this.handleGroupChange(null, 0, this.props.botBuilder.category),
         );
       }
       if (this.props.botBuilder.image) {
         this.setState({
+          showImage: true,
           image: this.props.botBuilder.image,
           file: this.props.botBuilder.imageFile,
           imageUrl: this.props.botBuilder.imageUrl,
+          loadViews: true,
         });
       }
+    } else {
+      this.setState({ loadViews: true });
     }
     this.generateSkillData();
   };
@@ -262,11 +269,10 @@ export default class SkillCreator extends Component {
       });
       return 0;
     }
-
     if (!new RegExp(/.+\.\w+/g).test(self.state.imageUrl)) {
       notification.open({
         message: 'Error Processing your Request',
-        description: 'image must be in format of images/imageName.jpg',
+        description: 'Image must be in format of images/imageName.jpg',
         icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
       });
       return 0;
@@ -800,13 +806,19 @@ export default class SkillCreator extends Component {
             </div>
           </div>
         </Paper>
-        {this.state.codeView ? (
+        {!this.state.loadViews ? (
+          <div className="center" style={{ padding: 10 }}>
+            <CircularProgress size={62} color="#4285f5" />
+            <h4>Loading</h4>
+          </div>
+        ) : null}
+        {this.state.codeView && this.state.loadViews ? (
           <CodeView
             skillCode={this.state.code}
             sendInfoToProps={this.sendInfoToProps}
           />
         ) : null}
-        {this.state.conversationView ? (
+        {this.state.conversationView && this.state.loadViews ? (
           <ConversationView
             skillData={this.state.skillData}
             handleDeleteNode={this.handleDeleteNode}
@@ -814,7 +826,7 @@ export default class SkillCreator extends Component {
             botbuilder={false}
           />
         ) : null}
-        {this.state.treeView ? (
+        {this.state.treeView && this.state.loadViews ? (
           <TreeView
             skillData={this.state.skillData}
             handleDeleteNode={this.handleDeleteNode}
