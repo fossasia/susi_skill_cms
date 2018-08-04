@@ -40,6 +40,7 @@ class UIView extends Component {
       uploadingBotbuilderIconImg: false,
       code,
       avatars: avatarsIcons,
+      originalAvatarsCount: avatarsIcons.length,
     };
   }
 
@@ -373,6 +374,10 @@ class UIView extends Component {
       '::bodyBackground #ffffff',
     );
     code = code.replace(
+      /^::bodyBackgroundImage\s(.*)$/m,
+      '::bodyBackgroundImage ',
+    );
+    code = code.replace(
       /^::userMessageBoxBackground\s(.*)$/m,
       '::userMessageBoxBackground #0077e5',
     );
@@ -389,11 +394,16 @@ class UIView extends Component {
       '::botMessageTextColor #455a64',
     );
     code = code.replace(/^::botIconColor\s(.*)$/m, '::botIconColor #000000');
+    code = code.replace(/^::botIconImage\s(.*)$/m, '::botIconImage ');
     this.setState(
       {
         code,
       },
       () => this.sendInfoToProps(),
+    );
+    let avatarsIcons = this.state.avatars.slice(
+      0,
+      this.state.originalAvatarsCount,
     );
     this.setState(
       {
@@ -405,6 +415,8 @@ class UIView extends Component {
         botbuilderBotMessageTextColor: '#455a64',
         botbuilderIconColor: '#000000',
         botbuilderIconImg: '',
+        iconSelected: 0,
+        avatars: avatarsIcons,
       },
       () => this.setState({ loadedSettings: true }),
     );
