@@ -81,7 +81,7 @@ class SkillUsageCard extends Component {
                       }}
                     >
                       <XAxis dataKey="date" padding={{ right: 20 }} />
-                      <YAxis />
+                      <YAxis allowDecimals={false} />
                       <Tooltip wrapperStyle={{ height: '60px' }} />
                       <Legend />
                       <Line
