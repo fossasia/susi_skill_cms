@@ -23,6 +23,7 @@ import Info from 'material-ui/svg-icons/action/info';
 import Code from 'material-ui/svg-icons/action/code';
 import QA from 'material-ui/svg-icons/action/question-answer';
 import Timeline from 'material-ui/svg-icons/action/timeline';
+import Add from 'material-ui/svg-icons/content/add';
 
 // Ant Design Components
 import notification from 'antd/lib/notification';
@@ -762,47 +763,75 @@ export default class SkillCreator extends Component {
                 style={{ marginLeft: 10, marginRight: 10 }}
                 onChange={this.handleExpertChange}
               />
-              {this.state.showImage && (
-                <img
-                  alt="preview"
-                  id="target"
-                  style={{
-                    width: 60,
-                    height: 60,
-                    borderRadius: '50%',
-                    marginRight: 20,
-                    border: 0,
-                  }}
-                  src={this.state.image}
-                />
-              )}
-              <RaisedButton
-                label="Choose an Image"
-                labelPosition="before"
-                backgroundColor={colors.header}
-                containerElement="label"
-                labelColor="#fff"
-              >
-                <input
-                  type="file"
-                  style={{
-                    cursor: 'pointer',
-                    position: 'absolute',
-                    top: 0,
-                    bottom: 0,
-                    right: 0,
-                    left: 0,
-                    width: '100%',
-                    opacity: 0,
-                  }}
-                  ref={c => {
-                    this.file = c;
-                  }}
-                  name="user[image]"
-                  multiple="false"
-                  onChange={this._onChange}
-                />
-              </RaisedButton>
+              <div style={{ paddingTop: 20 }}>
+                {this.state.showImage && (
+                  <img
+                    alt="preview"
+                    id="target"
+                    style={{
+                      width: 60,
+                      height: 60,
+                      borderRadius: '50%',
+                      marginRight: 20,
+                      border: 0,
+                    }}
+                    src={this.state.image}
+                  />
+                )}
+                {this.props.botBuilder ? (
+                  <form style={{ display: 'inline-block' }}>
+                    <label
+                      title="Upload bot image"
+                      style={styles.uploadCircularButton}
+                    >
+                      <input
+                        type="file"
+                        ref={c => {
+                          this.file = c;
+                        }}
+                        name="user[image]"
+                        multiple="false"
+                        onChange={this._onChange}
+                      />
+                      <Add
+                        style={{
+                          height: '30px',
+                          marginTop: '15px',
+                          color: 'rgb(66, 133, 245)',
+                        }}
+                      />
+                    </label>
+                  </form>
+                ) : (
+                  <RaisedButton
+                    label="Choose an Image"
+                    labelPosition="before"
+                    backgroundColor={colors.header}
+                    containerElement="label"
+                    labelColor="#fff"
+                  >
+                    <input
+                      type="file"
+                      style={{
+                        cursor: 'pointer',
+                        position: 'absolute',
+                        top: 0,
+                        bottom: 0,
+                        right: 0,
+                        left: 0,
+                        width: '100%',
+                        opacity: 0,
+                      }}
+                      ref={c => {
+                        this.file = c;
+                      }}
+                      name="user[image]"
+                      multiple="false"
+                      onChange={this._onChange}
+                    />
+                  </RaisedButton>
+                )}
+              </div>
             </div>
           </div>
         </Paper>
@@ -923,6 +952,15 @@ const styles = {
     width: '20px',
     cursor: 'pointer',
     color: 'rgb(158, 158, 158)',
+  },
+  uploadCircularButton: {
+    borderRadius: '50%',
+    height: '60px',
+    width: '60px',
+    backgroundColor: '#eee',
+    textAlign: 'center',
+    float: 'left',
+    cursor: 'pointer',
   },
 };
 
