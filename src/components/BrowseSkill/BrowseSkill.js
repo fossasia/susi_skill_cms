@@ -1062,7 +1062,9 @@ export default class BrowseSkill extends React.Component {
                         }}
                       >
                         {this.state.skills.length} result(s) for&nbsp;<b>
-                          SUSI Skills
+                          <Link to="/">
+                            <div className="susi-skills">SUSI Skills</div>
+                          </Link>
                         </b>
                         {this.props.routeValue && (
                           <div style={{ display: 'flex' }}>

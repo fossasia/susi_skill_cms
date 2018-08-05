@@ -22,6 +22,16 @@ div.scrolling-wrapper::-webkit-scrollbar {
     cursor: pointer;
 }
 
+.susi-skills {
+    color: rgba(0,0,0,.65);
+    width: fit-content;
+}
+
+.susi-skills:hover {
+    color: #4285f4;
+    cursor: pointer;
+}
+
 .category-sidebar-section {
     margin-top: 15px;
     margin-left: 12px;
