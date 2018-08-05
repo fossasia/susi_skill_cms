@@ -6,6 +6,9 @@ import initials from 'initials';
 import addPx from 'add-px';
 import contrast from 'contrast';
 
+/* CSS */
+import './CircleImage.css';
+
 const defaultColors = [
   '#2ecc71', // emerald
   '#3498db', // peter river
