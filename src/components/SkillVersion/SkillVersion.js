@@ -1,6 +1,9 @@
+// Packages
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+
+// Material-UI
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import {
   Table,
@@ -14,6 +17,8 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import { RaisedButton } from 'material-ui';
 import CircularProgress from 'material-ui/CircularProgress';
 import { RadioButton } from 'material-ui/RadioButton';
+
+// Other Utils
 import notification from 'antd/lib/notification';
 import Icon from 'antd/lib/icon';
 import $ from 'jquery';
@@ -297,8 +302,11 @@ class SkillVersion extends Component {
         ) : (
           <div className="skill_listing_container" style={styles.home}>
             <div className="margin-b-md margin-t-md skill">
-              <h1 className="title">
-                {this.state.skillMeta.skillName + ' : '}Revision History
+              <h1 style={{ display: 'flex' }}>
+                <div style={{ textTransform: 'capitalize' }}>
+                  {this.state.skillMeta.skillName.split('_').join(' ')}
+                </div>
+                &nbsp;:&nbsp;Revision History
               </h1>
               <p>
                 <span>
