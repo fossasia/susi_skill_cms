@@ -591,19 +591,21 @@ export default class SkillCreator extends Component {
             : this.state.groupValue,
           imageUrl: value.imageUrl ? value.imageUrl : this.state.imageUrl,
         },
-        () => this.generateSkillData(),
+        () => {
+          if (this.props.botBuilder) {
+            this.props.botBuilder.sendInfoToProps({
+              code: this.state.code,
+              expertValue: this.state.expertValue,
+              imageUrl: this.state.imageUrl,
+              image: this.state.image,
+              groupValue: this.state.groupValue,
+              languageValue: this.state.languageValue,
+              file: this.state.file,
+            });
+          }
+          this.generateSkillData();
+        },
       );
-    }
-    if (this.props.botBuilder) {
-      this.props.botBuilder.sendInfoToProps({
-        code: this.state.code,
-        expertValue: this.state.expertValue,
-        imageUrl: this.state.imageUrl,
-        image: this.state.image,
-        groupValue: this.state.groupValue,
-        languageValue: this.state.languageValue,
-        file: this.state.file,
-      });
     }
   };
 
