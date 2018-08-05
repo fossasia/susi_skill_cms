@@ -125,7 +125,9 @@ class UIView extends Component {
       name: websiteName,
       date: date.toString(),
     };
-    this.dataSource = [...this.dataSource, newData];
+    if (newData.name !== '') {
+      this.dataSource = [...this.dataSource, newData];
+    }
   };
 
   handleSave = row => {

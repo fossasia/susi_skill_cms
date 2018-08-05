@@ -945,9 +945,8 @@ const styles = {
     paddingTop: '10px',
   },
   helpIcon: {
-    position: 'absolute',
-    top: '150px',
-    right: '43px',
+    position: 'relative',
+    float: 'right',
     height: '20px',
     width: '20px',
     cursor: 'pointer',
