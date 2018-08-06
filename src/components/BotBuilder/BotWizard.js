@@ -663,11 +663,7 @@ class BotWizard extends React.Component {
                   >
                     <Preview
                       designData={this.state.designData}
-                      newBot={this.state.newBot}
-                      isDeployed={this.state.updateSkillNow}
-                      skillName={this.state.skillName}
-                      skillGroup={this.state.skillGroup}
-                      skillLanguage={this.state.skillLanguage}
+                      skill={this.state.buildCode}
                     />
                   </div>
                 </Paper>

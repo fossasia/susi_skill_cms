@@ -98,7 +98,7 @@ export default class CodeView extends React.Component {
     const categoryMatch = newValue.match(/^::category\s(.*)$/m);
     const languageMatch = newValue.match(/^::language\s(.*)$/m);
 
-    self.setState(
+    this.setState(
       {
         expertValue: nameMatch ? nameMatch[1] : '',
         groupValue: categoryMatch ? categoryMatch[1] : '',
@@ -106,7 +106,7 @@ export default class CodeView extends React.Component {
         imageUrl: match ? match[1] : '',
         code: newValue,
       },
-      () => self.sendInfoToProps(),
+      () => this.sendInfoToProps(),
     );
   };
 
