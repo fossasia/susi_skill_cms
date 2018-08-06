@@ -11,7 +11,12 @@
 
 .device-usage {
     margin: 16px 16px 16px 16px;
-    padding: 8px 8px 32px 8px;
+    padding: 8px 8px 8px 8px;
+}
+
+.country-usage {
+  margin: 16px 16px 16px 16px;
+  padding: 8px 8px 32px 8px;
 }
 
 .total-hits {
