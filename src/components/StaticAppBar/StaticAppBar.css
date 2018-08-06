@@ -42,6 +42,12 @@ header {
     box-shadow: none;
 }
 
+.topRightMenu {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 @media only screen and (min-width: 1400px){
     .topAppBarFix{
         width: 1050px !important;
