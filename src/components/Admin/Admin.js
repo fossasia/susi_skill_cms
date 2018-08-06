@@ -221,9 +221,6 @@ class Admin extends Component {
                       <TabPane tab="Skills" key="3">
                         <ListSkills />
                       </TabPane>
-                      <TabPane tab="Permissions" key="4">
-                        Permission Content Tab
-                      </TabPane>
                     </Tabs>
                   </Paper>
                 </div>
