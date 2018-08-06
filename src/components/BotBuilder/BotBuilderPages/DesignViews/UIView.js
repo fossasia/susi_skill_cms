@@ -8,6 +8,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import Snackbar from 'material-ui/Snackbar';
 import Close from 'material-ui/svg-icons/navigation/close';
 import Add from 'material-ui/svg-icons/content/add';
+import Toggle from 'material-ui/Toggle';
 import ColorPicker from 'material-ui-color-picker';
 import { urls, colors, avatars } from '../../../../utils';
 import TiTick from 'react-icons/lib/ti/tick';
@@ -41,6 +42,7 @@ class UIView extends Component {
       code,
       avatars: avatarsIcons,
       originalAvatarsCount: avatarsIcons.length,
+      showBackgroundImageChange: false,
     };
   }
 
@@ -316,6 +318,11 @@ class UIView extends Component {
           '/',
         )[5],
       });
+      if (bodyBackgroundImageMatch[1].length > 0) {
+        this.setState({
+          showBackgroundImageChange: true,
+        });
+      }
     }
     if (userMessageBoxBackgroundMatch) {
       this.setState({
@@ -456,6 +463,22 @@ class UIView extends Component {
     $('#colorPicker' + id).click();
   };
 
+  handleShowBackgroundImageChangeToggle = (object, isInputChecked) => {
+    if (isInputChecked === false) {
+      let code = this.state.code.replace(
+        /^::bodyBackgroundImage\s(.*)$/m,
+        '::bodyBackgroundImage ',
+      );
+      this.setState(
+        {
+          botbuilderBodyBackgroundImg: '',
+          code,
+        },
+        () => this.sendInfoToProps(),
+      );
+    }
+    this.setState({ showBackgroundImageChange: isInputChecked });
+  };
   render() {
     // Custom Theme feature Component
     const customiseOptionsList = [
@@ -549,11 +572,36 @@ class UIView extends Component {
                     >
                       {component.helperText}
                     </div>
+                    {component.id === 1 && (
+                      <div style={{ textAlign: 'right' }}>
+                        <Toggle
+                          label="Choose background image"
+                          labelStyle={{
+                            width: 'auto',
+                            fontSize: '14px',
+                            fontWeight: '300',
+                          }}
+                          defaultToggled={this.state.showBackgroundImageChange}
+                          onToggle={this.handleShowBackgroundImageChangeToggle}
+                          style={{ textAlign: 'right', marginTop: '10px' }}
+                          thumbSwitchedStyle={{
+                            backgroundColor: 'rgb(66, 133, 245)',
+                          }}
+                          trackSwitchedStyle={{
+                            backgroundColor: 'rgba(151, 184, 238, 0.85)',
+                          }}
+                        />
+                      </div>
+                    )}
                   </div>
                 )}
               </Col>
               <Col xs={12} md={6} lg={6}>
-                {component.id !== 7 ? (
+                {component.id !== 7 &&
+                !(
+                  component.id === 1 &&
+                  this.state.showBackgroundImageChange === true
+                ) ? (
                   <div style={{ display: 'flex', flexDirection: 'row' }}>
                     <div className="color-picker-wrap">
                       <ColorPicker
@@ -576,46 +624,47 @@ class UIView extends Component {
                     </div>
                   </div>
                 ) : null}
-                {component.component === 'botbuilderBackgroundBody' && (
-                  <div>
-                    <br />
-                    <form style={{ display: 'inline-block' }}>
-                      <label
-                        className="file-upload-btn"
-                        title="Upload Background Image"
-                      >
-                        <input
-                          disabled={this.state.uploadingBodyBackgroundImg}
-                          type="file"
-                          onChange={this.handleChangeBodyBackgroundImage}
-                          accept="image/x-png,image/gif,image/jpeg"
-                        />
-                        {this.state.uploadingBodyBackgroundImg ? (
-                          <CircularProgress color="#ffffff" size={32} />
-                        ) : (
-                          'Upload Image'
-                        )}
-                      </label>
-                    </form>
-                    {this.state.botbuilderBodyBackgroundImg && (
-                      <div
-                        style={{
-                          display: 'flex',
-                          flexDirection: 'row',
-                          marginTop: '10px',
-                        }}
-                      >
-                        <h3>{this.state.botbuilderBodyBackgroundImgName}</h3>
-                        <span title="Remove image">
-                          <Close
-                            className="remove-icon"
-                            onTouchTap={this.handleRemoveUrlBody}
+                {component.component === 'botbuilderBackgroundBody' &&
+                  this.state.showBackgroundImageChange === true && (
+                    <div>
+                      <br />
+                      <form style={{ display: 'inline-block' }}>
+                        <label
+                          className="file-upload-btn"
+                          title="Upload Background Image"
+                        >
+                          <input
+                            disabled={this.state.uploadingBodyBackgroundImg}
+                            type="file"
+                            onChange={this.handleChangeBodyBackgroundImage}
+                            accept="image/x-png,image/gif,image/jpeg"
                           />
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                )}
+                          {this.state.uploadingBodyBackgroundImg ? (
+                            <CircularProgress color="#ffffff" size={32} />
+                          ) : (
+                            'Upload Image'
+                          )}
+                        </label>
+                      </form>
+                      {this.state.botbuilderBodyBackgroundImg && (
+                        <div
+                          style={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            marginTop: '10px',
+                          }}
+                        >
+                          <h3>{this.state.botbuilderBodyBackgroundImgName}</h3>
+                          <span title="Remove image">
+                            <Close
+                              className="remove-icon"
+                              onTouchTap={this.handleRemoveUrlBody}
+                            />
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  )}
               </Col>
             </Row>
           </Grid>
