@@ -366,6 +366,18 @@ class BotWizard extends React.Component {
       });
       return 0;
     }
+    if (
+      this.state.groupValue === null ||
+      this.state.languageValue === '' ||
+      this.state.expertValue === ''
+    ) {
+      notification.open({
+        message: 'Error Processing your Request',
+        description: 'Please select a group, language and a skill',
+        icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
+      });
+      return 0;
+    }
 
     if (!new RegExp(/.+\.\w+/g).test(self.state.imageUrl)) {
       notification.open({
