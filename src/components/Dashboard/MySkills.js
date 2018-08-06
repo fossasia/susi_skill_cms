@@ -15,13 +15,26 @@ import IconMenu from 'material-ui/IconMenu';
 import IconButton from 'material-ui/IconButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import CircularProgress from 'material-ui/CircularProgress';
+import CircleImage from '../CircleImage/CircleImage';
 import Snackbar from 'material-ui/Snackbar';
 import MenuItem from 'material-ui/MenuItem';
 import * as $ from 'jquery';
+import Img from 'react-image';
 import Add from 'material-ui/svg-icons/content/add';
 import { urls, colors } from '../../utils';
 
 const cookies = new Cookies();
+
+const styles = {
+  imageStyle: {
+    marginRight: 10,
+    position: 'relative',
+    height: '40px',
+    width: '40px',
+    verticalAlign: 'middle',
+    borderRadius: '50%',
+  },
+};
 
 class MySkills extends Component {
   constructor(props) {
@@ -144,7 +157,8 @@ class MySkills extends Component {
             <Table className="table-root" selectable={false}>
               <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
                 <TableRow>
-                  <TableHeaderColumn>Skill Name</TableHeaderColumn>
+                  <TableHeaderColumn>Image</TableHeaderColumn>
+                  <TableHeaderColumn>Name</TableHeaderColumn>
                   <TableHeaderColumn>Type</TableHeaderColumn>
                   <TableHeaderColumn>Status</TableHeaderColumn>
                 </TableRow>
@@ -153,6 +167,31 @@ class MySkills extends Component {
                 {skillsData.map((skill, index) => {
                   return (
                     <TableRow key={index}>
+                      <TableRowColumn>
+                        <Link
+                          to={{
+                            pathname:
+                              '/' +
+                              skill.group +
+                              '/' +
+                              skill.skill_tag.toLowerCase().replace(/ /g, '_') +
+                              '/' +
+                              skill.language,
+                          }}
+                        >
+                          <Img
+                            style={styles.imageStyle}
+                            src={`${
+                              urls.API_URL
+                            }/cms/getImage.png?model=general&language=${
+                              skill.language
+                            }&group=${skill.group}&image=/${skill.image}`}
+                            unloader={
+                              <CircleImage name={skill.skill_name} size="40" />
+                            }
+                          />
+                        </Link>
+                      </TableRowColumn>
                       <TableRowColumn style={{ fontSize: '16px' }}>
                         {skill.skill_name ? (
                           <Link
@@ -161,7 +200,7 @@ class MySkills extends Component {
                                 '/' +
                                 skill.group +
                                 '/' +
-                                skill.skill_name
+                                skill.skill_tag
                                   .toLowerCase()
                                   .replace(/ /g, '_') +
                                 '/' +
