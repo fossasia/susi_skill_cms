@@ -707,6 +707,7 @@ class SkillListing extends Component {
   };
 
   render() {
+    const showAdmin = cookies.get('showAdmin');
     const authorStyle = {
       cursor: 'pointer',
       textTransform: 'capitalize',
@@ -817,7 +818,7 @@ class SkillListing extends Component {
               )}
             </div>
             <div className="linkButtons">
-              {cookies.get('showAdmin') ? (
+              {showAdmin === 'true' && (
                 <div className="skillDeleteBtn">
                   <FloatingActionButton
                     onClick={this.handleDeleteToggle}
@@ -842,8 +843,6 @@ class SkillListing extends Component {
                     </div>
                   </Dialog>
                 </div>
-              ) : (
-                ''
               )}
               <div>
                 <Link
