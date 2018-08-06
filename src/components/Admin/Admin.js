@@ -11,6 +11,7 @@ import Paper from 'material-ui/Paper';
 import Tabs from 'antd/lib/tabs';
 import ListUser from './ListUser/ListUser';
 import ListSkills from './ListSkills/ListSkills';
+import { Avatar } from 'antd';
 import { urls } from '../../utils';
 
 const cookies = new Cookies();
@@ -23,8 +24,9 @@ class Admin extends Component {
 
     this.state = {
       userStats: {},
-      loadUserStats: true,
-      loading: true,
+      skillStats: {},
+      loadingUsers: true,
+      loadingSkills: true,
       isAdmin: false,
     };
   }
@@ -76,7 +78,26 @@ class Admin extends Component {
       success: function(response) {
         this.setState({
           userStats: response.userStats,
-          loadUserStats: false,
+          loadingUsers: false,
+        });
+      }.bind(this),
+      error: function(errorThrown) {
+        console.log(errorThrown);
+      },
+    });
+
+    url = `${urls.API_URL}/cms/getSkillList.json?access_token=${cookies.get(
+      'loggedIn',
+    )}`;
+    $.ajax({
+      url: url,
+      dataType: 'jsonp',
+      jsonp: 'callback',
+      crossDomain: true,
+      success: function(response) {
+        this.setState({
+          skillStats: response.skillStats,
+          loadingSkills: false,
         });
       }.bind(this),
       error: function(errorThrown) {
@@ -117,51 +138,7 @@ class Admin extends Component {
                           }}
                         >
                           <Card
-                            loading={this.state.loadUserStats}
-                            title={
-                              <span
-                                style={{ fontSize: '18px', fontWeight: 'bold' }}
-                              >
-                                Users
-                              </span>
-                            }
-                            style={{
-                              width: '300px',
-                              fontSize: '18px',
-                              fontWeight: 'bold',
-                              lineHeight: '2',
-                            }}
-                          >
-                            <p>
-                              Total :{' '}
-                              {this.state.userStats.totalUsers
-                                ? this.state.userStats.totalUsers
-                                : 0}
-                            </p>
-                            <p>
-                              Active :{' '}
-                              {this.state.userStats.activeUsers
-                                ? this.state.userStats.activeUsers
-                                : 0}
-                            </p>
-                            <p>
-                              Inactive :{' '}
-                              {this.state.userStats.inactiveUsers
-                                ? this.state.userStats.inactiveUsers
-                                : 0}
-                            </p>
-                          </Card>
-                        </span>
-
-                        <span
-                          style={{
-                            fontSize: '18px',
-                            fontWeight: '5000',
-                            float: 'left',
-                          }}
-                        >
-                          <Card
-                            loading={this.state.loadUserStats}
+                            loading={this.state.loadingUsers}
                             title={
                               <span
                                 style={{ fontSize: '18px', fontWeight: 'bold' }}
@@ -171,6 +148,8 @@ class Admin extends Component {
                             }
                             style={{
                               width: '300px',
+                              height: '310px',
+                              marginBottom: '20px',
                               fontSize: '18px',
                               fontWeight: 'bold',
                               lineHeight: '2',
@@ -210,6 +189,206 @@ class Admin extends Component {
                               Super Admins :{' '}
                               {this.state.userStats.superAdmins
                                 ? this.state.userStats.superAdmins
+                                : 0}
+                            </p>
+                          </Card>
+                        </span>
+
+                        <span
+                          style={{
+                            fontSize: '18px',
+                            fontWeight: '5000',
+                            float: 'left',
+                            marginRight: '20px',
+                          }}
+                        >
+                          <Card
+                            loading={this.state.loadingUsers}
+                            className="flexCard"
+                            title={
+                              <span
+                                style={{ fontSize: '18px', fontWeight: 'bold' }}
+                              >
+                                Users
+                              </span>
+                            }
+                          >
+                            <span
+                              style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                marginTop: '50px',
+                              }}
+                            >
+                              <span>
+                                <p>Total</p>
+                                <Avatar
+                                  style={{
+                                    backgroundColor: 'orange',
+                                    verticalAlign: 'middle',
+                                    marginLeft: '2px',
+                                  }}
+                                  size="large"
+                                  shape="square"
+                                >
+                                  {' '}
+                                  {this.state.userStats.totalUsers
+                                    ? this.state.userStats.totalUsers
+                                    : 0}
+                                </Avatar>
+                              </span>
+                              <span>
+                                <p>Active</p>
+                                <Avatar
+                                  style={{
+                                    backgroundColor: 'green',
+                                    verticalAlign: 'middle',
+                                    marginLeft: '7px',
+                                  }}
+                                  size="large"
+                                  shape="square"
+                                >
+                                  {this.state.userStats.activeUsers
+                                    ? this.state.userStats.activeUsers
+                                    : 0}
+                                </Avatar>
+                              </span>
+                              <span>
+                                <p>Inactive</p>
+                                <Avatar
+                                  style={{
+                                    backgroundColor: 'red',
+                                    verticalAlign: 'middle',
+                                    marginLeft: '13px',
+                                  }}
+                                  size="large"
+                                  shape="square"
+                                >
+                                  {' '}
+                                  {this.state.userStats.inactiveUsers
+                                    ? this.state.userStats.inactiveUsers
+                                    : 0}
+                                </Avatar>
+                              </span>
+                            </span>
+                          </Card>
+                        </span>
+
+                        <span
+                          style={{
+                            fontSize: '18px',
+                            fontWeight: '5000',
+                            float: 'left',
+                            marginRight: '20px',
+                          }}
+                        >
+                          <Card
+                            className="flexCard"
+                            loading={this.state.loadingSkills}
+                            title={
+                              <span
+                                style={{ fontSize: '18px', fontWeight: 'bold' }}
+                              >
+                                Skills
+                              </span>
+                            }
+                          >
+                            <span
+                              style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                marginTop: '50px',
+                              }}
+                            >
+                              <span>
+                                <p>Total</p>
+                                <Avatar
+                                  style={{
+                                    backgroundColor: 'orange',
+                                    verticalAlign: 'middle',
+                                    marginLeft: '2px',
+                                  }}
+                                  size="large"
+                                  shape="square"
+                                >
+                                  {this.state.skillStats.totalSkills
+                                    ? this.state.skillStats.totalSkills
+                                    : 0}
+                                </Avatar>
+                              </span>
+                              <span>
+                                <p>Reviewed</p>
+                                <Avatar
+                                  style={{
+                                    backgroundColor: 'green',
+                                    verticalAlign: 'middle',
+                                    marginLeft: '25px',
+                                  }}
+                                  size="large"
+                                  shape="square"
+                                >
+                                  {this.state.skillStats.reviewedSkills
+                                    ? this.state.skillStats.reviewedSkills
+                                    : 0}
+                                </Avatar>
+                              </span>
+                              <span>
+                                <p>Not Reviewed</p>
+                                <Avatar
+                                  style={{
+                                    backgroundColor: 'red',
+                                    verticalAlign: 'middle',
+                                    marginLeft: '45px',
+                                  }}
+                                  size="large"
+                                  shape="square"
+                                >
+                                  {' '}
+                                  {this.state.skillStats.nonReviewedSkills
+                                    ? this.state.skillStats.nonReviewedSkills
+                                    : 0}
+                                </Avatar>
+                              </span>
+                            </span>
+                          </Card>
+                        </span>
+
+                        <span
+                          style={{
+                            fontSize: '18px',
+                            fontWeight: '5000',
+                            float: 'left',
+                            marginRight: '20px',
+                          }}
+                        >
+                          <Card
+                            loading={this.state.loadingSkills}
+                            title={
+                              <span
+                                style={{ fontSize: '18px', fontWeight: 'bold' }}
+                              >
+                                Skill Types
+                              </span>
+                            }
+                            style={{
+                              width: '300px',
+                              height: '310px',
+                              marginBottom: '20px',
+                              fontSize: '18px',
+                              fontWeight: 'bold',
+                              lineHeight: '2',
+                            }}
+                          >
+                            <p>
+                              Editable :{' '}
+                              {this.state.skillStats.editableSkills
+                                ? this.state.skillStats.editableSkills
+                                : 0}
+                            </p>
+                            <p>
+                              Non Editable :{' '}
+                              {this.state.skillStats.nonEditableSkills
+                                ? this.state.skillStats.nonEditableSkills
                                 : 0}
                             </p>
                           </Card>

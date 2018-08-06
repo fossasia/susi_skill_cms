@@ -46,3 +46,18 @@
 .ant-tabs-tab-next {
     display: none;
 }
+
+.flexCard{
+    width: 400px;
+    height: 310px;
+    margin-bottom: 20px;
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 2;
+}
+
+@media screen and (max-width: 520px) {
+  .flexCard {
+    width: 310px;
+  }
+}
