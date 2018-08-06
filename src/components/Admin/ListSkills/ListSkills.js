@@ -195,12 +195,14 @@ class ListSkills extends React.Component {
       crossDomain: true,
       success: data => {
         let groups = [];
-        for (let i of data.groups) {
-          let group = {
-            text: i,
-            value: i,
-          };
-          groups.push(group);
+        if (data) {
+          for (let i of data.groups) {
+            let group = {
+              text: i,
+              value: i,
+            };
+            groups.push(group);
+          }
         }
         this.setState({
           groups: groups,
@@ -227,23 +229,26 @@ class ListSkills extends React.Component {
       crossDomain: true,
       success: function(data) {
         let skills = [];
-        for (let i of data.filteredData) {
-          let skill = {
-            skillName: i.skill_name,
-            model: i.model,
-            group: i.group,
-            language: i.language,
-            skillTag: i.skill_tag,
-            reviewStatus: i.reviewed,
-            editStatus: i.editable,
-            staffPickStatus: i.staffPick,
-            type: 'public',
-            author: i.author,
-            reviewed: i.reviewed ? 'Approved' : 'Not Reviewed',
-            editable: i.editable ? 'Editable' : 'Not Editable',
-          };
-          skills.push(skill);
+        if (data) {
+          for (let i of data.filteredData) {
+            let skill = {
+              skillName: i.skill_name,
+              model: i.model,
+              group: i.group,
+              language: i.language,
+              skillTag: i.skill_tag,
+              reviewStatus: i.reviewed,
+              editStatus: i.editable,
+              staffPickStatus: i.staffPick,
+              type: 'public',
+              author: i.author,
+              reviewed: i.reviewed ? 'Approved' : 'Not Reviewed',
+              editable: i.editable ? 'Editable' : 'Not Editable',
+            };
+            skills.push(skill);
+          }
         }
+
         self.setState({
           skillsData: skills,
           loading: false,
