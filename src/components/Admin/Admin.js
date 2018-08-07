@@ -391,6 +391,12 @@ class Admin extends Component {
                                 ? this.state.skillStats.nonEditableSkills
                                 : 0}
                             </p>
+                            <p>
+                              Staff Picks :{' '}
+                              {this.state.skillStats.staffPicks
+                                ? this.state.skillStats.staffPicks
+                                : 0}
+                            </p>
                           </Card>
                         </span>
                       </TabPane>
