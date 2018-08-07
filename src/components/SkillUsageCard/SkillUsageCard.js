@@ -65,78 +65,85 @@ class SkillUsageCard extends Component {
       <div>
         <Paper className="margin-b-md margin-t-md">
           <h1 className="title">Skill Usage</h1>
-          {totalSkillUsage > 0 ? (
-            <div>
-              <div className="time-chart">
-                <div className="sub-title">Time wise Usage</div>
-                <div>
-                  <ResponsiveContainer width={this.state.width} height={300}>
-                    <LineChart
-                      data={this.props.skill_usage}
-                      margin={{
-                        top: 5,
-                        right: 30,
-                        left: 20,
-                        bottom: 5,
-                      }}
-                    >
-                      <XAxis dataKey="date" padding={{ right: 20 }} />
-                      <YAxis allowDecimals={false} />
-                      <Tooltip wrapperStyle={{ height: '60px' }} />
-                      <Legend />
-                      <Line
-                        name="Skill usage count"
-                        type="monotone"
-                        dataKey="count"
-                        stroke="#82ca9d"
-                        activeDot={{ r: 8 }}
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
-              <div className="total-hits">
-                <div className="large-text">{totalSkillUsage}</div>
-                Hits this week
-              </div>
-              {this.props.device_usage_data !== [] ? (
-                <div className="device-usage">
-                  <div className="sub-title">Device wise Usage</div>
-                  <div className="pie-chart">
-                    <ResponsiveContainer width={600} height={350}>
-                      <PieChart>
-                        <Pie
-                          activeIndex={this.state.activePieIndex}
-                          activeShape={renderActiveShape}
-                          data={this.props.device_usage_data}
-                          cx={300}
-                          cy={175}
-                          innerRadius={80}
-                          nameKey="device_type"
+          <div>
+            <div className="sub-title" style={{ paddingLeft: '20px' }}>
+              Time wise Usage
+            </div>
+            {totalSkillUsage > 0 ? (
+              <div>
+                <div className="time-chart">
+                  <div>
+                    <ResponsiveContainer width={this.state.width} height={300}>
+                      <LineChart
+                        data={this.props.skill_usage}
+                        margin={{
+                          top: 5,
+                          right: 30,
+                          left: 20,
+                          bottom: 5,
+                        }}
+                      >
+                        <XAxis dataKey="date" padding={{ right: 20 }} />
+                        <YAxis allowDecimals={false} />
+                        <Tooltip wrapperStyle={{ height: '60px' }} />
+                        <Legend />
+                        <Line
+                          name="Skill usage count"
+                          type="monotone"
                           dataKey="count"
-                          outerRadius={120}
-                          fill="#8884d8"
-                          onMouseEnter={this.onPieEnter}
-                        >
-                          {this.props.device_usage_data.map((entry, index) => (
-                            <Cell key={index} fill={entry.color} />
-                          ))}
-                        </Pie>
-                        <Legend wrapperStyle={{ position: 'relative' }} />
-                      </PieChart>
+                          stroke="#82ca9d"
+                          activeDot={{ r: 8 }}
+                        />
+                      </LineChart>
                     </ResponsiveContainer>
                   </div>
                 </div>
+                <div className="total-hits">
+                  <div className="large-text">{totalSkillUsage}</div>
+                  Hits this week
+                </div>
+              </div>
+            ) : (
+              <div className="default-message">
+                No time wise skill usage data available.
+              </div>
+            )}
+            <div className="device-usage">
+              <div className="sub-title">Device wise Usage</div>
+              {this.props.device_usage_data &&
+              this.props.device_usage_data.length ? (
+                <div className="pie-chart">
+                  <ResponsiveContainer width={600} height={350}>
+                    <PieChart>
+                      <Pie
+                        activeIndex={this.state.activePieIndex}
+                        activeShape={renderActiveShape}
+                        data={this.props.device_usage_data}
+                        cx={300}
+                        cy={175}
+                        innerRadius={80}
+                        nameKey="device_type"
+                        dataKey="count"
+                        outerRadius={120}
+                        fill="#8884d8"
+                        onMouseEnter={this.onPieEnter}
+                      >
+                        {this.props.device_usage_data.map((entry, index) => (
+                          <Cell key={index} fill={entry.color} />
+                        ))}
+                      </Pie>
+                      <Legend wrapperStyle={{ position: 'relative' }} />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
               ) : (
-                ''
+                <div className="default-message">
+                  No device wise usage data available.
+                </div>
               )}
             </div>
-          ) : (
-            <div className="default-message">
-              No usage data available, try this skill now!
-            </div>
-          )}
-          <div className="device-usage">
+          </div>
+          <div className="country-usage">
             <div className="sub-title">Country wise Usage</div>
             <CountryWiseSkillUsageCard
               countryWiseSkillUsage={this.props.countryWiseSkillUsage}
