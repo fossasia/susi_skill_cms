@@ -29,6 +29,7 @@ class BotWizard extends React.Component {
   componentDidMount() {
     if (
       this.getQueryStringValue('template') ||
+      this.getQueryStringValue('draftID') ||
       (this.getQueryStringValue('name') &&
         this.getQueryStringValue('group') &&
         this.getQueryStringValue('language'))
@@ -43,6 +44,9 @@ class BotWizard extends React.Component {
             });
           }
         }
+      } else if (this.getQueryStringValue('draftID')) {
+        let draftID = this.getQueryStringValue('draftID');
+        this.getDraftBotDetails(draftID);
       } else {
         // editing a saved bot
         let name = this.getQueryStringValue('name');
@@ -103,6 +107,90 @@ class BotWizard extends React.Component {
         "::allow_bot_only_on_own_sites no\n!Write all the domains below separated by commas on which you want to enable your chatbot\n::allowed_sites \n!Choose if you want to enable the default susi skills or not\n::enable_default_skills yes\n!Choose if you want to enable chatbot in your devices or not\n::enable_bot_in_my_devices no\n!Choose if you want to enable chatbot in other user's devices or not\n::enable_bot_for_other_users no",
     };
   }
+
+  saveDraft = () => {
+    let designCode = this.state.designCode.replace(/#/g, '');
+    let skillData = {
+      group: this.state.groupValue,
+      language: this.state.languageValue,
+      name: this.state.expertValue,
+      buildCode: this.state.buildCode,
+      designCode: designCode,
+      configCode: this.state.configCode,
+    };
+    let object = JSON.stringify(skillData);
+    let url;
+    url = urls.API_URL + '/cms/storeDraft.json?object=' + object;
+    $.ajax({
+      url: url,
+      dataType: 'jsonp',
+      crossDomain: true,
+      success: function(data) {
+        this.setState({
+          openSnackbar: true,
+          msgSnackbar: 'Successfully saved draft of your chatbot.',
+        });
+      }.bind(this),
+      error: function(error) {
+        this.setState({
+          openSnackbar: true,
+          msgSnackbar: "Couldn't save the draft. Please try again.",
+        });
+      }.bind(this),
+    });
+  };
+
+  getDraftBotDetails = id => {
+    let url = urls.API_URL + '/cms/readDraft.json?id=' + id;
+    $.ajax({
+      url: url,
+      dataType: 'jsonp',
+      crossDomain: true,
+      success: function(data) {
+        if (data.drafts[id]) {
+          let skillName = data.drafts[id].name;
+          let skillLanguage = data.drafts[id].language;
+          let skillGroup = data.drafts[id].group;
+          let buildCode = data.drafts[id].buildCode;
+          let designCode = data.drafts[id].designCode;
+          let configCode = data.drafts[id].configCode;
+          designCode.replace('bodyBackground', 'bodyBackground #');
+          designCode.replace(
+            'userMessageBoxBackground',
+            'userMessageBoxBackground #',
+          );
+          designCode.replace('userMessageTextColor', 'userMessageTextColor #');
+          designCode.replace(
+            'botMessageBoxBackground',
+            'botMessageBoxBackground #',
+          );
+          designCode.replace('botMessageTextColor', 'botMessageTextColor #');
+          designCode.replace('botIconColor', 'botIconColor #');
+          this.setState({
+            groupValue: skillGroup,
+            languageValue: skillLanguage,
+            expertValue: skillName,
+            buildCode,
+            designCode,
+            configCode,
+            loaded: true,
+          });
+        } else {
+          this.setState({
+            openSnackbar: true,
+            msgSnackbar:
+              "Couldn't get your draft details. Please reload the page.",
+          });
+        }
+      }.bind(this),
+      error: function(error) {
+        this.setState({
+          openSnackbar: true,
+          msgSnackbar: "Couldn't get your drafts. Please reload the page.",
+        });
+      }.bind(this),
+    });
+  };
 
   getBotDetails = (name, group, language) => {
     let url;
@@ -221,6 +309,7 @@ class BotWizard extends React.Component {
     }
     this.setState({ designData });
   };
+
   getQueryStringValue = key => {
     return decodeURIComponent(
       window.location.search.replace(
@@ -598,6 +687,12 @@ class BotWizard extends React.Component {
                       />
                     ) : null}
                   </div>
+                  {this.state.stepIndex < 2 ? (
+                    <RaisedButton
+                      label="Save Draft"
+                      onTouchTap={this.saveDraft}
+                    />
+                  ) : null}
                   <div
                     style={{
                       float: 'right',

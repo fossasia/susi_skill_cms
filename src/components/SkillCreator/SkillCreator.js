@@ -571,7 +571,7 @@ export default class SkillCreator extends Component {
         {
           codeView: !codeState,
         },
-        () => this.setState({ codeView: codeState }),
+        () => this.setState({ codeView: codeState }, this.sendInfoToProps),
       );
     }
   };
