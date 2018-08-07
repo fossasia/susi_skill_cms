@@ -8,7 +8,10 @@
 }
 
 .country-usage-list {
-    width: 15%;
+    width: 25%;
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 16px;
 }
 
 @media only screen and (max-width: 800px) {
