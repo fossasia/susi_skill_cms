@@ -110,6 +110,55 @@ export default class SkillCreator extends Component {
       this.setState({ loadViews: true });
     }
     this.generateSkillData();
+    this.prefillCode();
+  };
+
+  prefillCode = () => {
+    if (cookies.get('username')) {
+      const code = this.state.code.replace(
+        /^::author\s(.*)$/m,
+        '::author ' + cookies.get('username'),
+      );
+
+      this.setState(
+        {
+          code,
+        },
+        () => this.handleReload(),
+      );
+    }
+
+    if (cookies.get('emailId')) {
+      $.ajax({
+        url: 'https://api.github.com/search/users?q=' + cookies.get('emailId'),
+        dataType: 'jsonp',
+        jsonp: 'callback',
+        crossDomain: true,
+        success: function(data) {
+          if (data.data.items) {
+            data = data.data.items;
+            for (let i = 0; i < data.length; i++) {
+              if (data[i].type === 'User') {
+                const code = this.state.code.replace(
+                  /^::author_url\s(.*)$/m,
+                  '::author_url ' + data[i].html_url,
+                );
+                this.setState(
+                  {
+                    code,
+                  },
+                  () => this.handleReload(),
+                );
+                break;
+              }
+            }
+          }
+        }.bind(this),
+        error: function(e) {
+          console.log('Error while fetching github url', e);
+        },
+      });
+    }
   };
 
   loadgroups() {
@@ -230,7 +279,6 @@ export default class SkillCreator extends Component {
       /^::language\s(.*)$/m,
       `::language ${value}`,
     );
-
     this.setState(
       {
         languageValue: value,
