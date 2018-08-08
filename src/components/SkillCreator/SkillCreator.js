@@ -531,12 +531,6 @@ export default class SkillCreator extends Component {
     this.setState({ skillData }, this.generateSkillCode());
   };
 
-  handleAddNode = value => {
-    let code = this.state.code;
-    code += '\n' + value;
-    this.setState({ code: code }, () => this.generateSkillData());
-  };
-
   generateSkillCode = () => {
     let { code, skillData } = this.state;
     let lines = code.split('\n');
@@ -899,10 +893,8 @@ export default class SkillCreator extends Component {
         ) : null}
         {this.state.conversationView && this.state.loadViews ? (
           <ConversationView
+            skillCode={this.state.code}
             skillData={this.state.skillData}
-            handleDeleteNode={this.handleDeleteNode}
-            handleAddNode={this.handleAddNode}
-            botbuilder={false}
           />
         ) : null}
         {this.state.treeView && this.state.loadViews ? (
