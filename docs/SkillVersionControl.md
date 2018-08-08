@@ -1,6 +1,6 @@
 # Skill Version Control in SUSI Skill CMS
 
-With SUSI Skill CMS, users can browse through all the previous revisions of a skill and roll back to a selected version. Users can modify existing skills and push the changes. So a skill could have been edited many times by the same or different users and so have many revisions. The version control functionalities help users to :
+With SUSI Skill CMS, users can browse through all the previous revisions of a skill and roll back to a selected version. Users can modify existing skills and push the changes. So a skill could have been edited many times by the same or different users and so have many revisions. The version control functionalities help users to:
 
   - Browse through all the revisions of a selected skill
   - View the content of a selected revision

@@ -156,37 +156,37 @@ class Admin extends Component {
                             }}
                           >
                             <p>
-                              Anonymous :{' '}
+                              Anonymous:{' '}
                               {this.state.userStats.anonymous
                                 ? this.state.userStats.anonymous
                                 : 0}
                             </p>
                             <p>
-                              Users :{' '}
+                              Users:{' '}
                               {this.state.userStats.users
                                 ? this.state.userStats.users
                                 : 0}
                             </p>
                             <p>
-                              Reviewers :{' '}
+                              Reviewers:{' '}
                               {this.state.userStats.reviewers
                                 ? this.state.userStats.reviewers
                                 : 0}
                             </p>
                             <p>
-                              Operators :{' '}
+                              Operators:{' '}
                               {this.state.userStats.operators
                                 ? this.state.userStats.operators
                                 : 0}
                             </p>
                             <p>
-                              Admins :{' '}
+                              Admins:{' '}
                               {this.state.userStats.admins
                                 ? this.state.userStats.admins
                                 : 0}
                             </p>
                             <p>
-                              Super Admins :{' '}
+                              Super Admins:{' '}
                               {this.state.userStats.superAdmins
                                 ? this.state.userStats.superAdmins
                                 : 0}
@@ -380,13 +380,13 @@ class Admin extends Component {
                             }}
                           >
                             <p>
-                              Editable :{' '}
+                              Editable:{' '}
                               {this.state.skillStats.editableSkills
                                 ? this.state.skillStats.editableSkills
                                 : 0}
                             </p>
                             <p>
-                              Non Editable :{' '}
+                              Non Editable:{' '}
                               {this.state.skillStats.nonEditableSkills
                                 ? this.state.skillStats.nonEditableSkills
                                 : 0}

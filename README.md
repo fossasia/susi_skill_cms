@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/fossasia/susi_skill_cms.svg?branch=master)](https://travis-ci.org/fossasia/susi_skill_cms)
 
-A web application framework to edit susi skills
+A web application framework to edit SUSI Skills
 
 ## Communication
 
@@ -27,22 +27,22 @@ Our chat channel is on gitter here: https://gitter.im/fossasia/susi_server
 ### Running on localhost:
 * **Step 1:** Fork [susi_skill_cms](https://github.com/fossasia/susi_skill_cms) repository and clone it to your desktop
 * **Step 2:** Then cd into that cloned folder
-* **Step 3:** Install all the dependencies by running :```$ npm install```
-* **Step 4:** Run on http://localhost:3000 by running :```$ npm run start```
-* **Step 5:** Build locally by running : ```$ npm run build ```
-* **Step 6:** To deploy at a url use : ```$ npm run deploy ```
+* **Step 3:** Install all the dependencies by running: ```$ npm install```
+* **Step 4:** Run on http://localhost:3000 by running: ```$ npm run start```
+* **Step 5:** Build locally by running: ```$ npm run build ```
+* **Step 6:** To deploy at a url use: ```$ npm run deploy ```
 
 ### For deploying with [Surge](https://surge.sh/):
 
 Surge will automatically generate deployment link whenever a pull request passes Travis CI. 
 
-* **Step 1:** Install Surge:```$ npm install -g surge```
+* **Step 1:** Install Surge: ```$ npm install -g surge```
 * **Step 2:** Then cd into that cloned folder of susi_skill_cms .
-* **Step 3:** Run the App build:```$ npm run build```
-* **Step 4:** Switch into the build directory:```cd build```
-* **Step 5:** Run surge:```surge```
+* **Step 3:** Run the App build: ```$ npm run build```
+* **Step 4:** Switch into the build directory: ```cd build```
+* **Step 5:** Run surge: ```surge```
 * **Step 6:** Follow the prompts and provide an email and a password.
-* **Step 7:** Go to URL that appears after the above process and provide this link in PR for testing your Changes. 
+* **Step 7:** Go to URL that appears after the above process and provide this link in PR for testing your changes. 
 
 ### Learn the skill language
 

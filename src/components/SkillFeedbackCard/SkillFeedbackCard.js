@@ -298,7 +298,7 @@ class SkillFeedbackCard extends Component {
           open={this.state.openDeleteDialog}
           onRequestClose={this.handleEditClose}
         >
-          Are you sure, you want to delete your feedback ?
+          Are you sure, you want to delete your feedback?
         </Dialog>
       </Paper>
     );

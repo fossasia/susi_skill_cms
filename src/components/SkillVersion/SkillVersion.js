@@ -306,7 +306,7 @@ class SkillVersion extends Component {
                 <div style={{ textTransform: 'capitalize' }}>
                   {this.state.skillMeta.skillName.split('_').join(' ')}
                 </div>
-                &nbsp;:&nbsp;Revision History
+                :&nbsp;Revision History
               </h1>
               <p>
                 <span>
