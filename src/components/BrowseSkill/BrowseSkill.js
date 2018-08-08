@@ -88,6 +88,7 @@ export default class BrowseSkill extends React.Component {
       skillsLoaded: false,
       filter: '&applyFilter=true&filter_name=descending&filter_type=rating',
       searchQuery: '',
+      staffPicksSkills: [],
       topRatedSkills: [],
       topUsedSkills: [],
       topFeedbackSkills: [],
@@ -357,6 +358,7 @@ export default class BrowseSkill extends React.Component {
       success: function(data) {
         self.setState({
           skillsLoaded: true,
+          staffPicksSkills: data.metrics.staffPicks,
           topRatedSkills: data.metrics.rating,
           topUsedSkills: data.metrics.usage,
           latestUpdatedSkills: data.metrics.latest,
@@ -902,6 +904,30 @@ export default class BrowseSkill extends React.Component {
 
             {this.state.skillsLoaded ? (
               <div style={styles.container}>
+                {this.state.staffPicksSkills.length &&
+                !this.state.searchQuery.length &&
+                !this.state.ratingRefine &&
+                !this.state.timeFilter ? (
+                  <div style={metricsContainerStyle}>
+                    <div
+                      style={styles.metricsHeader}
+                      className="metrics-header"
+                    >
+                      <h4>{'Staff Picks'}</h4>
+                    </div>
+                    {/* Scroll Id must be unique for all instances of SkillCardList*/}
+                    {!this.props.routeType && (
+                      <SkillCardScrollList
+                        scrollId="staffPicks"
+                        skills={this.state.staffPicksSkills}
+                        modelValue={this.state.modelValue}
+                        languageValue={this.state.languageValue}
+                        skillUrl={this.state.skillUrl}
+                      />
+                    )}
+                  </div>
+                ) : null}
+
                 {this.state.topRatedSkills.length &&
                 !this.state.searchQuery.length &&
                 !this.state.ratingRefine &&
