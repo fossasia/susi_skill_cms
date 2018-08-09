@@ -196,8 +196,9 @@ export default class CodeView extends React.Component {
               editorProps={{ $blockScrolling: true }}
               style={{
                 resize: 'vertical',
-                overflowY: 'auto',
+                overflowY: 'scroll',
                 minHeight: '200px',
+                maxHeight: '560px',
               }}
             />
           </div>
