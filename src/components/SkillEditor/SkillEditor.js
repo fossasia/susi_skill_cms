@@ -644,7 +644,7 @@ class SkillEditor extends Component {
           if (data.accepted === true) {
             notification.open({
               message: 'Accepted',
-              description: 'Your Skill has been uploaded to the server',
+              description: 'Skill has been updated at the server.',
               icon: <Icon type="check-circle" style={{ color: '#00C853' }} />,
             });
             setTimeout(() => {
