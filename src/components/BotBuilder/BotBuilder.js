@@ -21,10 +21,12 @@ class BotBuilder extends React.Component {
     super(props);
     this.state = {
       chatbots: [],
+      drafts: [],
       openSnackbar: false,
       msgSnackbar: '',
     };
     this.getChatbots();
+    this.getDrafts();
   }
 
   getChatbots = () => {
@@ -135,6 +137,76 @@ class BotBuilder extends React.Component {
     });
   };
 
+  getDrafts = () => {
+    let url = BASE_URL + '/cms/readDraft.json';
+    $.ajax({
+      url: url,
+      dataType: 'jsonp',
+      crossDomain: true,
+      success: function(data) {
+        this.showDrafts(data.drafts);
+      }.bind(this),
+      error: function(error) {
+        this.setState({
+          openSnackbar: true,
+          msgSnackbar: "Couldn't get your drafts. Please reload the page.",
+        });
+      }.bind(this),
+    });
+  };
+
+  showDrafts = drafts => {
+    if (drafts) {
+      let draftsOfBots = [];
+      for (let draft in drafts) {
+        draftsOfBots.push(
+          <Card key={draft} className="bot-template-card">
+            <Link to={'/botbuilder/botwizard?draftID=' + draft}>
+              <RaisedButton
+                label={drafts[draft].name === '' ? draft : drafts[draft].name}
+                labelPosition="before"
+                labelStyle={{ verticalAlign: 'middle' }}
+                backgroundColor={colors.header}
+                labelColor="#fff"
+              />
+            </Link>
+            <div className="bot-delete">
+              <Delete
+                color="rgb(255, 255, 255)"
+                onClick={() => this.deleteDrafts(draft)}
+              />
+            </div>
+          </Card>,
+        );
+      }
+      this.setState({ drafts: draftsOfBots });
+    }
+  };
+
+  deleteDrafts = id => {
+    let url = BASE_URL + '/cms/deleteDraft.json?id=' + id;
+    $.ajax({
+      url: url,
+      dataType: 'jsonp',
+      crossDomain: true,
+      success: function(data) {
+        this.setState(
+          {
+            openSnackbar: true,
+            msgSnackbar: 'Draft successfully deleted.',
+          },
+          () => this.getDrafts(),
+        );
+      }.bind(this),
+      error: function(error) {
+        this.setState({
+          openSnackbar: true,
+          msgSnackbar: 'Unable to delete your draft. Please try again.',
+        });
+      }.bind(this),
+    });
+  };
+
   render() {
     if (!cookies.get('loggedIn')) {
       return (
@@ -189,6 +261,8 @@ class BotBuilder extends React.Component {
             zDepth={1}
           >
             <h1 style={styles.heading}>My bots</h1>
+            <br />
+            <h2 style={styles.heading}>Saved Bots</h2>
             <div className="bot-template-wrap">
               <Link to="/botbuilder/botwizard">
                 <Card className="bot-template-card">
@@ -211,6 +285,8 @@ class BotBuilder extends React.Component {
               </Link>
               {this.state.chatbots}
             </div>
+            <h2 style={styles.heading}>Drafts</h2>
+            <div className="bot-template-wrap">{this.state.drafts}</div>
           </Paper>
         </div>
         <Snackbar
