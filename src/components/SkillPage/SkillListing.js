@@ -750,7 +750,7 @@ class SkillListing extends Component {
       <FlatButton
         label="Delete"
         key="delete"
-        style={{ color: 'rgb(66, 133, 244)' }}
+        style={{ color: colors.warningColor }}
         onClick={this.deleteSkill}
       />,
       <FlatButton
@@ -823,7 +823,7 @@ class SkillListing extends Component {
                   <FloatingActionButton
                     onClick={this.handleDeleteToggle}
                     data-tip="Delete Skill"
-                    backgroundColor={colors.header}
+                    backgroundColor={colors.warningColor}
                   >
                     <DeleteBtn />
                   </FloatingActionButton>
