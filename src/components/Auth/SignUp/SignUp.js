@@ -144,13 +144,11 @@ export default class SignUp extends Component {
     } = this.state;
     const { updateSnackbar, closeDialog } = this.props;
 
-    let API_ENDPOINT = `${urls.API_URL}/aaa/signup.json`;
-    API_ENDPOINT =
-      API_ENDPOINT +
-      '?signup=' +
-      email +
-      'password=' +
-      encodeURIComponent(passwordValue);
+    let API_ENDPOINT = `${
+      urls.API_URL
+    }/aaa/signup.json?signup=${email}&password=${encodeURIComponent(
+      passwordValue,
+    )}`;
     let message = '';
     let success = false;
 
