@@ -5,3 +5,4 @@ export { default as isoCountries } from './isoCountries';
 export { default as parseDate } from './parseDate';
 export { default as request } from './request';
 export { default as urls } from './urls';
+export { default as getAvatarProps } from './getAvatarProps';

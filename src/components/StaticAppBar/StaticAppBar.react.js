@@ -16,10 +16,11 @@ import Info from 'material-ui/svg-icons/action/info';
 import Settings from 'material-ui/svg-icons/action/settings';
 import Chat from 'material-ui/svg-icons/communication/chat';
 import SkillIcon from 'material-ui/svg-icons/action/dashboard';
+import CircleImage from '../CircleImage/CircleImage';
 import MenuItem from 'material-ui/MenuItem';
 import { Link } from 'react-router-dom';
 import susiWhite from '../images/SUSIAI-white.png';
-import { urls, colors, isProduction } from '../../utils';
+import { urls, colors, isProduction, getAvatarProps } from '../../utils';
 import $ from 'jquery';
 import './StaticAppBar.css';
 // import ListUser from '../Admin/ListUser/ListUser';
@@ -192,16 +193,30 @@ class StaticAppBar extends Component {
     const headerStyle = {
       background: colors.header,
     };
+
+    const isLoggedIn = !!cookies.get('loggedIn');
+    let avatarProps = null;
+    if (isLoggedIn) {
+      avatarProps = getAvatarProps(cookies.get('emailId'));
+    }
+
     let TopRightMenu = props => (
-      <div onScroll={this.handleScroll}>
-        <div>
-          {cookies.get('loggedIn') ? (
+      <div className="topRightMenu" onScroll={this.handleScroll}>
+        {isLoggedIn && (
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}
+          >
+            <CircleImage {...avatarProps} size="32" />
             <label
               className="useremail"
               style={{
                 color: 'white',
                 fontSize: '16px',
-                verticalAlign: 'super',
+                marginRight: '5px',
               }}
             >
               {cookies.get('username') === '' ||
@@ -209,85 +224,83 @@ class StaticAppBar extends Component {
                 ? cookies.get('emailId')
                 : cookies.get('username')}
             </label>
+          </div>
+        )}
+        <IconMenu
+          {...props}
+          iconButtonElement={
+            <IconButton iconStyle={{ fill: 'white' }}>
+              <MoreVertIcon />
+            </IconButton>
+          }
+          targetOrigin={{ horizontal: 'right', vertical: 'top' }}
+          anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
+          onTouchTap={this.showOptions}
+        />
+        <Popover
+          {...props}
+          animated={false}
+          style={{
+            float: 'right',
+            position: 'relative',
+            marginTop: '46px',
+            marginRight: '8px',
+          }}
+          open={this.state.showOptions}
+          anchorEl={this.state.anchorEl}
+          anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+          targetOrigin={{ horizontal: 'right', vertical: 'top' }}
+          onRequestClose={this.closeOptions}
+        >
+          {cookies.get('loggedIn') ? (
+            <MenuItem
+              primaryText="Dashboard"
+              containerElement={<Link to="/dashboard" />}
+              rightIcon={<Assessment />}
+            />
+          ) : null}
+          <TopRightMenuItems />
+          {cookies.get('loggedIn') ? (
+            <MenuItem
+              primaryText="Botbuilder"
+              containerElement={<Link to="/botbuilder" />}
+              rightIcon={<Extension />}
+            />
+          ) : null}
+          {cookies.get('loggedIn') ? (
+            <MenuItem
+              href={urls.ACC_URL + '/settings'}
+              rightIcon={<Settings />}
+            >
+              Settings
+            </MenuItem>
+          ) : null}
+          {cookies.get('loggedIn') ? (
+            <MenuItem href={urls.CHAT_URL + '/overview'} rightIcon={<Info />}>
+              About
+            </MenuItem>
+          ) : null}
+          {this.state.showAdmin === true ? (
+            <MenuItem
+              primaryText="Admin"
+              containerElement={<Link to="/admin" />}
+              rightIcon={<List />}
+            />
+          ) : null}
+          {cookies.get('loggedIn') ? (
+            <MenuItem
+              primaryText="Logout"
+              containerElement={<Link to="/logout" />}
+              rightIcon={<Exit />}
+            />
           ) : (
-            <label />
+            <MenuItem
+              primaryText="Login"
+              onClick={this.handleLogin}
+              rightIcon={<LoginIcon />}
+            />
           )}
-          <IconMenu
-            {...props}
-            iconButtonElement={
-              <IconButton iconStyle={{ fill: 'white' }}>
-                <MoreVertIcon />
-              </IconButton>
-            }
-            targetOrigin={{ horizontal: 'right', vertical: 'top' }}
-            anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
-            onTouchTap={this.showOptions}
-          />
-          <Popover
-            {...props}
-            animated={false}
-            style={{
-              float: 'right',
-              position: 'relative',
-              marginTop: '46px',
-              marginRight: '8px',
-            }}
-            open={this.state.showOptions}
-            anchorEl={this.state.anchorEl}
-            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-            targetOrigin={{ horizontal: 'right', vertical: 'top' }}
-            onRequestClose={this.closeOptions}
-          >
-            {cookies.get('loggedIn') ? (
-              <MenuItem
-                primaryText="Dashboard"
-                containerElement={<Link to="/dashboard" />}
-                rightIcon={<Assessment />}
-              />
-            ) : null}
-            <TopRightMenuItems />
-            {cookies.get('loggedIn') ? (
-              <MenuItem
-                primaryText="Botbuilder"
-                containerElement={<Link to="/botbuilder" />}
-                rightIcon={<Extension />}
-              />
-            ) : null}
-            {cookies.get('loggedIn') ? (
-              <MenuItem
-                href={urls.ACC_URL + '/settings'}
-                rightIcon={<Settings />}
-              >
-                Settings
-              </MenuItem>
-            ) : null}
-            {cookies.get('loggedIn') ? (
-              <MenuItem href={urls.CHAT_URL + '/overview'} rightIcon={<Info />}>
-                About
-              </MenuItem>
-            ) : null}
-            {this.state.showAdmin === true ? (
-              <MenuItem
-                primaryText="Admin"
-                containerElement={<Link to="/admin" />}
-                rightIcon={<List />}
-              />
-            ) : null}
-            {cookies.get('loggedIn') ? (
-              <MenuItem
-                primaryText="Logout"
-                containerElement={<Link to="/logout" />}
-                rightIcon={<Exit />}
-              />
-            ) : (
-              <MenuItem
-                primaryText="Login"
-                onClick={this.handleLogin}
-                rightIcon={<LoginIcon />}
-              />
-            )}
-          </Popover>
-        </div>
+        </Popover>
       </div>
     );
 
