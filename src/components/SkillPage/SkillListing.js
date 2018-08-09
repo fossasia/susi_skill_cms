@@ -1116,8 +1116,8 @@ class SkillListing extends Component {
               skill_language={this.languageValue}
             />
             <SkillUsageCard
-              skill_usage={this.state.skill_usage}
-              device_usage_data={this.state.device_usage_data}
+              skillUsage={this.state.skill_usage}
+              deviceUsageData={this.state.device_usage_data}
               countryWiseSkillUsage={this.state.countryWiseSkillUsage}
             />
           </div>

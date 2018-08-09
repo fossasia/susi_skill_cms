@@ -1,6 +1,8 @@
 // Packages
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+
+// Components
 import {
   LineChart,
   Line,
@@ -14,13 +16,21 @@ import {
   Cell,
   ResponsiveContainer,
 } from 'recharts';
-import { Paper } from 'material-ui';
 import CountryWiseSkillUsageCard from '../CountryWiseSkillUsageCard/CountryWiseSkillUsageCard';
+
+// Material UI
+import { Paper } from 'material-ui';
 
 // Static assets
 import './SkillUsage.css';
 
-class SkillUsageCard extends Component {
+export default class SkillUsageCard extends Component {
+  static propTypes = {
+    skillUsage: PropTypes.array,
+    deviceUsageData: PropTypes.array,
+    countryWiseSkillUsage: PropTypes.array,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -50,17 +60,25 @@ class SkillUsageCard extends Component {
     });
   };
 
-  render() {
+  totalUsage = (skillUsage = []) => {
     let totalSkillUsage = 0;
-    if (this.props.skill_usage) {
-      // eslint-disable-next-line
-      totalSkillUsage = this.props.skill_usage.reduce((totalCount, day) => {
+    if (skillUsage) {
+      totalSkillUsage = skillUsage.reduce((totalCount, day) => {
         if (day) {
           return totalCount + day.count;
         }
         return totalCount;
       }, 0);
     }
+    return totalSkillUsage;
+  };
+
+  render() {
+    const { skillUsage, deviceUsageData, countryWiseSkillUsage } = this.props;
+    const { width, activePieIndex } = this.state;
+
+    let totalSkillUsage = this.totalUsage(skillUsage);
+
     return (
       <div>
         <Paper className="margin-b-md margin-t-md">
@@ -73,9 +91,9 @@ class SkillUsageCard extends Component {
               <div>
                 <div className="time-chart">
                   <div>
-                    <ResponsiveContainer width={this.state.width} height={300}>
+                    <ResponsiveContainer width={width} height={300}>
                       <LineChart
-                        data={this.props.skill_usage}
+                        data={skillUsage}
                         margin={{
                           top: 5,
                           right: 30,
@@ -110,15 +128,14 @@ class SkillUsageCard extends Component {
             )}
             <div className="device-usage">
               <div className="sub-title">Device wise Usage</div>
-              {this.props.device_usage_data &&
-              this.props.device_usage_data.length ? (
+              {deviceUsageData && deviceUsageData.length ? (
                 <div className="pie-chart">
                   <ResponsiveContainer width={600} height={350}>
                     <PieChart>
                       <Pie
-                        activeIndex={this.state.activePieIndex}
+                        activeIndex={activePieIndex}
                         activeShape={renderActiveShape}
-                        data={this.props.device_usage_data}
+                        data={deviceUsageData}
                         cx={300}
                         cy={175}
                         innerRadius={80}
@@ -128,7 +145,7 @@ class SkillUsageCard extends Component {
                         fill="#8884d8"
                         onMouseEnter={this.onPieEnter}
                       >
-                        {this.props.device_usage_data.map((entry, index) => (
+                        {deviceUsageData.map((entry, index) => (
                           <Cell key={index} fill={entry.color} />
                         ))}
                       </Pie>
@@ -146,7 +163,7 @@ class SkillUsageCard extends Component {
           <div className="country-usage">
             <div className="sub-title">Country wise Usage</div>
             <CountryWiseSkillUsageCard
-              countryWiseSkillUsage={this.props.countryWiseSkillUsage}
+              countryWiseSkillUsage={countryWiseSkillUsage}
             />
           </div>
         </Paper>
@@ -241,11 +258,3 @@ renderActiveShape.propTypes = {
   value: PropTypes.number,
   name: PropTypes.string,
 };
-
-SkillUsageCard.propTypes = {
-  skill_usage: PropTypes.array,
-  device_usage_data: PropTypes.array,
-  countryWiseSkillUsage: PropTypes.array,
-};
-
-export default SkillUsageCard;
