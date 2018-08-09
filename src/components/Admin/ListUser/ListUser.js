@@ -103,6 +103,34 @@ export default class ListUser extends Component {
         },
       },
     ];
+
+    this.devicesColumns = [
+      {
+        title: 'Device Name',
+        dataIndex: 'devicename',
+        width: '10%',
+      },
+      {
+        title: 'Mac Id',
+        dataIndex: 'macid',
+        width: '10%',
+      },
+      {
+        title: 'Room',
+        dataIndex: 'room',
+        width: '10%',
+      },
+      {
+        title: 'Latitude',
+        dataIndex: 'latitude',
+        width: '10%',
+      },
+      {
+        title: 'Longitude',
+        dataIndex: 'longitude',
+        width: '10%',
+      },
+    ];
   }
 
   apiCall = () => {
@@ -357,9 +385,21 @@ export default class ListUser extends Component {
         // console.log(response.users);
         let userList = response.users;
         let users = [];
-        userList.map((data, i) => {
+        userList.map((data, dataIndex) => {
+          let devices = [];
+          let keys = Object.keys(data.devices);
+          keys.forEach(deviceIndex => {
+            let device = {
+              macid: deviceIndex,
+              devicename: data.devices[deviceIndex].name,
+              room: data.devices[deviceIndex].room,
+              latitude: data.devices[deviceIndex].geolocation.latitude,
+              longitude: data.devices[deviceIndex].geolocation.longitude,
+            };
+            devices.push(device);
+          });
           let user = {
-            serialNum: ++i + (page - 1) * 50,
+            serialNum: ++dataIndex + (page - 1) * 50,
             email: data.name,
             confirmed: data.confirmed,
             signup: data.signupTime,
@@ -367,6 +407,7 @@ export default class ListUser extends Component {
             ipLastLogin: data.lastLoginIP,
             userRole: data.userRole,
             userName: data.userName,
+            devices: devices,
           };
 
           if (user.confirmed) {
@@ -575,6 +616,16 @@ export default class ListUser extends Component {
           <Table
             columns={this.columns}
             rowKey={record => record.serialNum}
+            expandedRowRender={record => (
+              <Table
+                style={{ width: '80%', backgroundColor: 'white' }}
+                columns={this.devicesColumns}
+                dataSource={record.devices}
+                pagination={false}
+                locale={{ emptyText: 'No devices found!' }}
+                bordered
+              />
+            )}
             dataSource={this.state.data}
             loading={this.state.loading}
             pagination={false}
@@ -582,7 +633,17 @@ export default class ListUser extends Component {
         ) : (
           <Table
             columns={this.columns}
-            rowKey={record => record.registered}
+            rowKey={record => record.serialNum}
+            expandedRowRender={record => (
+              <Table
+                style={{ width: '80%', backgroundColor: 'white' }}
+                columns={this.devicesColumns}
+                dataSource={record.devices}
+                pagination={false}
+                locale={{ emptyText: 'No devices found!' }}
+                bordered
+              />
+            )}
             dataSource={this.state.data}
             pagination={this.state.pagination}
             loading={this.state.loading}
