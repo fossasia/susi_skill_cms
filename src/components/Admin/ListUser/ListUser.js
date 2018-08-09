@@ -26,7 +26,10 @@ export default class ListUser extends Component {
       loading: false,
       search: false,
       showEditDialog: false,
+      showDeleteDialog: false,
       changeRoleDialog: false,
+      deleteSuccessDialog: false,
+      deleteFailedDialog: false,
     };
     this.columns = [
       {
@@ -56,7 +59,7 @@ export default class ListUser extends Component {
       {
         title: 'Signup',
         dataIndex: 'signup',
-        width: '15%',
+        width: '12%',
       },
       {
         title: 'Last Login',
@@ -77,17 +80,24 @@ export default class ListUser extends Component {
       {
         title: 'Action',
         sorter: false,
-        width: '5%',
+        width: '8%',
         key: 'action',
         render: (text, record) => {
           return (
             <span>
-              <div
+              <span
                 style={{ cursor: 'pointer', color: '#4285f4' }}
                 onClick={() => this.editUserRole(record.email, record.userRole)}
               >
                 Edit
-              </div>
+              </span>
+              <span style={{ marginLeft: '5px', marginRight: '5px' }}> | </span>
+              <span
+                style={{ cursor: 'pointer', color: '#4285f4' }}
+                onClick={() => this.handleDelete(record.email)}
+              >
+                Delete
+              </span>
             </span>
           );
         },
@@ -133,6 +143,33 @@ export default class ListUser extends Component {
       error: function(errorThrown) {
         console.log(errorThrown);
       },
+    });
+  };
+
+  deleteUser = () => {
+    let url = `${urls.API_URL}/aaa/deleteUserAccount.json?email=${
+      this.state.userEmail
+    }&access_token=${cookies.get('loggedIn')}`;
+    $.ajax({
+      url: url,
+      dataType: 'jsonp',
+      crossDomain: true,
+      timeout: 3000,
+      async: false,
+      success: response => {
+        this.setState({ deleteSuccessDialog: true });
+      },
+      error: function(errorThrown) {
+        console.log(errorThrown);
+        this.setState({ deleteFailedDialog: true });
+      },
+    });
+  };
+
+  handleDelete = email => {
+    this.setState({
+      userEmail: email,
+      showDeleteDialog: true,
     });
   };
 
@@ -286,6 +323,8 @@ export default class ListUser extends Component {
   handleClose = () => {
     this.setState({
       showEditDialog: false,
+      showDeleteDialog: false,
+      deleteFailedDialog: false,
     });
   };
 
@@ -367,6 +406,20 @@ export default class ListUser extends Component {
         onTouchTap={this.handleClose}
       />,
     ];
+    const deleteActions = [
+      <FlatButton
+        key={1}
+        label="Delete"
+        labelStyle={{ color: '#4285f4' }}
+        onTouchTap={this.deleteUser}
+      />,
+      <FlatButton
+        key={2}
+        label="Cancel"
+        primary={false}
+        onTouchTap={this.handleClose}
+      />,
+    ];
 
     const blueThemeColor = { color: 'rgb(66, 133, 244)' };
     const themeForegroundColor = '#272727';
@@ -427,6 +480,62 @@ export default class ListUser extends Component {
                   className="setting-item"
                 />
               </DropDownMenu>
+            </div>
+          </Dialog>
+          <Dialog
+            title="Delete User Account"
+            actions={deleteActions}
+            modal={true}
+            open={this.state.showDeleteDialog}
+          >
+            <div>
+              Are you sure you want to delete the account associated with
+              <span style={{ fontWeight: 'bold', marginLeft: '5px' }}>
+                {this.state.userEmail}
+              </span>
+              ?
+            </div>
+          </Dialog>
+          <Dialog
+            title="Success"
+            actions={
+              <FlatButton
+                key={1}
+                label="Ok"
+                labelStyle={{ color: '#4285f4' }}
+                onTouchTap={this.handleSuccess}
+              />
+            }
+            modal={true}
+            open={this.state.deleteSuccessDialog}
+          >
+            <div>
+              Account associated with
+              <span style={{ fontWeight: 'bold', margin: '0 5px' }}>
+                {this.state.userEmail}
+              </span>
+              is deleted successfully!
+            </div>
+          </Dialog>
+          <Dialog
+            title="Failed"
+            actions={
+              <FlatButton
+                key={1}
+                label="Ok"
+                labelStyle={{ color: '#4285f4' }}
+                onTouchTap={this.handleClose}
+              />
+            }
+            modal={true}
+            open={this.state.deleteFailedDialog}
+          >
+            <div>
+              Account associated with
+              <span style={{ fontWeight: 'bold', margin: '0 5px' }}>
+                {this.state.userEmail}
+              </span>
+              cannot be deleted!
             </div>
           </Dialog>
           <Dialog
