@@ -28,6 +28,7 @@ class Admin extends Component {
       loadingUsers: true,
       loadingSkills: true,
       isAdmin: false,
+      loading: true,
     };
   }
 
