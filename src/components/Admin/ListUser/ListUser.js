@@ -3,6 +3,7 @@ import './ListUser.css';
 import $ from 'jquery';
 import Cookies from 'universal-cookie';
 import Table from 'antd/lib/table';
+import { Input } from 'antd';
 import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'material-ui/Dialog';
 import MenuItem from 'material-ui/MenuItem';
@@ -11,6 +12,8 @@ import { urls } from '../../../utils';
 import 'antd/lib/table/style/index.css';
 
 const cookies = new Cookies();
+
+const Search = Input.Search;
 
 export default class ListUser extends Component {
   constructor(props) {
@@ -21,6 +24,7 @@ export default class ListUser extends Component {
       middle: '50',
       pagination: {},
       loading: false,
+      search: false,
       showEditDialog: false,
       changeRoleDialog: false,
     };
@@ -144,6 +148,66 @@ export default class ListUser extends Component {
       sortField: sorter.field,
       sortOrder: sorter.order,
       ...filters,
+    });
+  };
+
+  handleSearch = value => {
+    this.setState({
+      search: true,
+    });
+    let url;
+    url = `${urls.API_URL}/aaa/getUsers.json?access_token=${cookies.get(
+      'loggedIn',
+    )}&search=${value}`;
+    $.ajax({
+      url: url,
+      dataType: 'jsonp',
+      jsonpCallback: 'pvsdu',
+      jsonp: 'callback',
+      crossDomain: true,
+      success: function(response) {
+        let userList = response.users;
+        let users = [];
+        userList.map((data, dataIndex) => {
+          let devices = [];
+          let keys = Object.keys(data.devices);
+          keys.forEach(deviceIndex => {
+            let device = {
+              macid: deviceIndex,
+              devicename: data.devices[deviceIndex].name,
+              room: data.devices[deviceIndex].room,
+              latitude: data.devices[deviceIndex].geolocation.latitude,
+              longitude: data.devices[deviceIndex].geolocation.longitude,
+            };
+            devices.push(device);
+          });
+          let user = {
+            serialNum: ++dataIndex,
+            email: data.name,
+            signup: data.signupTime,
+            lastLogin: data.lastLoginTime,
+            ipLastLogin: data.lastLoginIP,
+            userRole: data.userRole,
+            devices: devices,
+          };
+
+          if (data.confirmed) {
+            user.confirmed = 'Activated';
+          } else {
+            user.confirmed = 'Not Activated';
+          }
+
+          users.push(user);
+          return 1;
+        });
+        this.setState({
+          data: users,
+          loading: false,
+        });
+      }.bind(this),
+      error: function(errorThrown) {
+        console.log(errorThrown);
+      },
     });
   };
 
@@ -392,14 +456,30 @@ export default class ListUser extends Component {
           </Dialog>
         </div>
 
-        <Table
-          columns={this.columns}
-          rowKey={record => record.registered}
-          dataSource={this.state.data}
-          pagination={this.state.pagination}
-          loading={this.state.loading}
-          onChange={this.handleTableChange}
+        <Search
+          placeholder="Search by email"
+          style={{ margin: '5px 25% 20px 25%', width: '50%', height: '38px' }}
+          size="large"
+          onSearch={value => this.handleSearch(value)}
         />
+        {this.state.search ? (
+          <Table
+            columns={this.columns}
+            rowKey={record => record.serialNum}
+            dataSource={this.state.data}
+            loading={this.state.loading}
+            pagination={false}
+          />
+        ) : (
+          <Table
+            columns={this.columns}
+            rowKey={record => record.registered}
+            dataSource={this.state.data}
+            pagination={this.state.pagination}
+            loading={this.state.loading}
+            onChange={this.handleTableChange}
+          />
+        )}
       </div>
     );
   }
