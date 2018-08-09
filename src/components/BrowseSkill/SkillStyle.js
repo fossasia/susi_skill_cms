@@ -23,9 +23,12 @@ const styles = {
     textAlign: 'left',
     fontSize: '15px',
     color: '#4285f4',
-    marginBottom: '6px',
     border: '1px',
     height: '20px',
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: '6px',
   },
   feedback: {
     color: '#4285f4',
@@ -213,6 +216,9 @@ const styles = {
     height: '100vh',
     display: 'flex',
     flexDirection: 'column',
+  },
+  staffPick: {
+    margin: '4px 0 0 6px',
   },
 };
 

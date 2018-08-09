@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Card } from 'material-ui/Card';
 import PropTypes from 'prop-types';
 import CircleImage from '../CircleImage/CircleImage';
+import StaffPick from '../images/staff_pick.png';
 
 import styles from '../BrowseSkill/SkillStyle';
 import { urls } from '../../utils';
@@ -35,7 +36,10 @@ class SkillCardGrid extends Component {
     let cards = [];
     Object.keys(this.state.skills).forEach(el => {
       let skill = this.state.skills[el];
-      let skill_name, examples, image; // , description;
+      let skill_name,
+        examples,
+        image,
+        staffPick = false; // , description;
       let average_rating = 0,
         total_rating = 0;
       if (skill.skill_name) {
@@ -60,6 +64,10 @@ class SkillCardGrid extends Component {
       if (skill.skill_rating) {
         average_rating = parseFloat(skill.skill_rating.stars.avg_star);
         total_rating = parseInt(skill.skill_rating.stars.total_star, 10);
+      }
+
+      if (skill.staffPick) {
+        staffPick = true;
       }
       cards.push(
         <Card style={styles.skillCard} key={el}>
@@ -97,6 +105,11 @@ class SkillCardGrid extends Component {
             </div>
             <div style={styles.name}>
               <span>{skill_name}</span>
+              {staffPick && (
+                <div style={styles.staffPick}>
+                  <img src={StaffPick} className="staffPickIcon" />
+                </div>
+              )}
             </div>
           </Link>
           <div style={styles.rating}>

@@ -48,9 +48,12 @@ const styles = {
     textAlign: 'left',
     fontSize: 18,
     color: '#4285f4',
-    marginBottom: '6px',
+    margin: '6px 0',
     border: '1px',
     height: '20px',
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   authorName: {
     fontSize: 12,
@@ -134,6 +137,9 @@ const styles = {
     fontSize: '13px',
     paddingLeft: '5px',
     color: '#108ee9',
+  },
+  staffPick: {
+    marginLeft: 8,
   },
 };
 

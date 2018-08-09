@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import CircleImage from '../CircleImage/CircleImage';
 import styles from './SkillCardStyle';
+import StaffPick from '../images/staff_pick.png';
 import { urls } from '../../utils';
 
 function testExample(e, exampleText) {
@@ -23,6 +24,7 @@ function createListCard(
   examples,
   totalRating,
   averageRating,
+  staffPick,
 ) {
   const mobileView = window.innerWidth < 430;
   if (mobileView) {
@@ -148,6 +150,11 @@ function createListCard(
             >
               <span>{skillName}</span>
             </Link>
+            {staffPick && (
+              <div style={styles.staffPick}>
+                <img src={StaffPick} className="staffPickIcon" />
+              </div>
+            )}
           </div>
           <div style={styles.authorName}>
             <span>{authorName}</span>
@@ -251,7 +258,8 @@ class SkillCardList extends Component {
         authorName = 'Author',
         skillUrl = this.props.skillUrl,
         averageRating = 0,
-        totalRating = 0;
+        totalRating = 0,
+        staffPick = false;
       if (skill.skill_name) {
         skillName = skill.skill_name;
         skillName = skillName.charAt(0).toUpperCase() + skillName.slice(1);
@@ -276,6 +284,10 @@ class SkillCardList extends Component {
         totalRating = parseInt(skill.skill_rating.stars.total_star, 10);
       }
 
+      if (skill.staffPick) {
+        staffPick = true;
+      }
+
       let language = this.props.languageValue;
       cards.push(
         createListCard(
@@ -290,6 +302,7 @@ class SkillCardList extends Component {
           examples,
           totalRating,
           averageRating,
+          staffPick,
         ),
       );
     });
