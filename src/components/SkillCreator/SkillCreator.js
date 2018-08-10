@@ -36,9 +36,13 @@ let self;
 export default class SkillCreator extends Component {
   constructor(props) {
     super(props);
+    let skillBuildCode =
+      '::name <Skill_name>\n::category <Category>\n::language <Language>\n::author <author_name>\n::author_url <author_url>\n::description <description> \n::dynamic_content <Yes/No>\n::developer_privacy_policy <link>\n::image <image_url>\n::terms_of_use <link>\n\n\nUser query1|query2|quer3....\n!example:<The question that should be shown in public skill displays>\n!expect:<The answer expected for the above example>\nAnswer for the user query';
+    if (this.props.botBuilder) {
+      skillBuildCode = this.props.botBuilder.code;
+    }
     this.state = {
-      code:
-        '::name <Skill_name>\n::category <Category>\n::language <Language>\n::author <author_name>\n::author_url <author_url>\n::description <description> \n::dynamic_content <Yes/No>\n::developer_privacy_policy <link>\n::image <image_url>\n::terms_of_use <link>\n\n\nUser query1|query2|quer3....\n!example:<The question that should be shown in public skill displays>\n!expect:<The answer expected for the above example>\nAnswer for the user query',
+      code: skillBuildCode,
       skillData: {
         name: 'Welcome!', // Starting message of chatbot
         children: [], // contains subsequent user queries and bot responses
@@ -73,9 +77,6 @@ export default class SkillCreator extends Component {
     self.loadgroups();
     // send code to CodeView in botbuilder
     if (this.props.botBuilder) {
-      this.setState({
-        code: this.props.botBuilder.code,
-      });
       if (
         this.props.botBuilder.category &&
         this.props.botBuilder.language &&
@@ -198,9 +199,7 @@ export default class SkillCreator extends Component {
       /^::name\s(.*)$/m,
       `::name ${expertValue}`,
     );
-    let commitMessage =
-      (this.props.botBuilder ? 'Created Bot Skill - ' : 'Created Skill - ') +
-      expertValue;
+    let commitMessage = 'Created Skill ' + expertValue;
     this.setState(
       {
         expertValue,
@@ -208,6 +207,7 @@ export default class SkillCreator extends Component {
         commitMessage,
       },
       () => self.handleReload(),
+      this.sendInfoToProps(),
     );
   };
 
@@ -224,6 +224,7 @@ export default class SkillCreator extends Component {
         code,
       },
       () => this.handleReload(),
+      this.sendInfoToProps(),
     );
     if (languages.length === 0) {
       $.ajax({
@@ -286,6 +287,7 @@ export default class SkillCreator extends Component {
         code,
       },
       () => self.handleReload(),
+      self.sendInfoToProps(),
     );
   };
 
@@ -649,6 +651,16 @@ export default class SkillCreator extends Component {
           this.generateSkillData();
         },
       );
+    } else if (this.props.botBuilder) {
+      this.props.botBuilder.sendInfoToProps({
+        code: this.state.code,
+        expertValue: this.state.expertValue,
+        imageUrl: this.state.imageUrl,
+        image: this.state.image,
+        groupValue: this.state.groupValue,
+        languageValue: this.state.languageValue,
+        file: this.state.file,
+      });
     }
   };
 

@@ -49,8 +49,7 @@ export default class CodeView extends React.Component {
       groupValue: null,
       languageValue: null,
       expertValue: '',
-      code:
-        '::name <Skill_name>\n::category <Category>\n::language <Language>\n::author <author_name>\n::author_url <author_url>\n::description <description> \n::dynamic_content <Yes/No>\n::developer_privacy_policy <link>\n::image <image_url>\n::terms_of_use <link>\n\n\nUser query1|query2|quer3....\n!example:<The question that should be shown in public skill displays>\n!expect:<The answer expected for the above example>\nAnswer for the user query',
+      code: this.props.skillCode,
       fontSizeCode: 14,
       editorTheme: 'github',
       groups: [],
