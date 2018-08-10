@@ -528,148 +528,143 @@ class UIView extends Component {
     const customizeComponents = customiseOptionsList.map(component => {
       return (
         <div key={component.id} className="circleChoose">
-          <Grid>
-            <Row>
-              <Col xs={12} md={6} lg={6}>
-                {component.id === 7 ? (
-                  <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <div
-                      style={{
-                        fontSize: '18px',
-                        paddingTop: '12px',
-                        fontWeight: '400',
-                      }}
-                    >
-                      {component.name}
-                    </div>
-                    <div
-                      style={{
-                        fontSize: '15px',
-                        paddingTop: '12px',
-                        fontWeight: '300',
-                      }}
-                    >
-                      {component.helperText}
-                    </div>
+          <Row style={{ marginBottom: '15px' }}>
+            <Col xs={12} md={6} lg={6}>
+              {component.id === 7 ? (
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <div
+                    style={{
+                      fontSize: '18px',
+                      fontWeight: '400',
+                    }}
+                  >
+                    {component.name}
                   </div>
-                ) : (
-                  <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <div
-                      style={{
-                        fontSize: '18px',
-                        paddingTop: '12px',
-                        fontWeight: '400',
-                      }}
-                    >
-                      Color of {component.name}
+                  <div
+                    style={{
+                      fontSize: '15px',
+                      fontWeight: '300',
+                    }}
+                  >
+                    {component.helperText}
+                  </div>
+                </div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <div
+                    style={{
+                      fontSize: '18px',
+                      paddingTop: '12px',
+                      fontWeight: '400',
+                    }}
+                  >
+                    Color of {component.name}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: '15px',
+                      fontWeight: '300',
+                    }}
+                  >
+                    {component.helperText}
+                  </div>
+                  {component.id === 1 && (
+                    <div style={{ textAlign: 'right' }}>
+                      <Toggle
+                        label="Choose background image"
+                        labelStyle={{
+                          width: 'auto',
+                          fontSize: '14px',
+                          fontWeight: '300',
+                        }}
+                        defaultToggled={this.state.showBackgroundImageChange}
+                        onToggle={this.handleShowBackgroundImageChangeToggle}
+                        style={{ textAlign: 'right', marginTop: '10px' }}
+                        thumbSwitchedStyle={{
+                          backgroundColor: 'rgb(66, 133, 245)',
+                        }}
+                        trackSwitchedStyle={{
+                          backgroundColor: 'rgba(151, 184, 238, 0.85)',
+                        }}
+                      />
                     </div>
-                    <div
+                  )}
+                </div>
+              )}
+            </Col>
+            <Col xs={12} md={6} lg={6}>
+              {component.id !== 7 &&
+              !(
+                component.id === 1 &&
+                this.state.showBackgroundImageChange === true
+              ) ? (
+                <div style={{ display: 'flex', flexDirection: 'row' }}>
+                  <div className="color-picker-wrap">
+                    <span
+                      className="color-box"
+                      onClick={() => this.handleClickColorBox(component.id)}
                       style={{
-                        fontSize: '15px',
-                        paddingTop: '12px',
-                        fontWeight: '300',
+                        backgroundColor: this.state[component.component],
                       }}
-                    >
-                      {component.helperText}
-                    </div>
-                    {component.id === 1 && (
-                      <div style={{ textAlign: 'right' }}>
-                        <Toggle
-                          label="Choose background image"
-                          labelStyle={{
-                            width: 'auto',
-                            fontSize: '14px',
-                            fontWeight: '300',
-                          }}
-                          defaultToggled={this.state.showBackgroundImageChange}
-                          onToggle={this.handleShowBackgroundImageChangeToggle}
-                          style={{ textAlign: 'right', marginTop: '10px' }}
-                          thumbSwitchedStyle={{
-                            backgroundColor: 'rgb(66, 133, 245)',
-                          }}
-                          trackSwitchedStyle={{
-                            backgroundColor: 'rgba(151, 184, 238, 0.85)',
-                          }}
+                    />
+                    <ColorPicker
+                      className="color-picker"
+                      style={{ display: 'inline-block', width: '60px' }}
+                      name="color"
+                      id={'colorPicker' + component.id}
+                      defaultValue={this.state[component.component]}
+                      onChange={color =>
+                        this.handleChangeColor(component.component, color)
+                      }
+                    />
+                  </div>
+                </div>
+              ) : null}
+              {component.component === 'botbuilderBackgroundBody' &&
+                this.state.showBackgroundImageChange === true && (
+                  <div>
+                    <br />
+                    <form style={{ display: 'inline-block' }}>
+                      <label
+                        className="file-upload-btn"
+                        title="Upload Background Image"
+                      >
+                        <input
+                          disabled={this.state.uploadingBodyBackgroundImg}
+                          type="file"
+                          onChange={this.handleChangeBodyBackgroundImage}
+                          accept="image/x-png,image/gif,image/jpeg"
                         />
+                        {this.state.uploadingBodyBackgroundImg ? (
+                          <CircularProgress color="#ffffff" size={32} />
+                        ) : (
+                          'Upload Image'
+                        )}
+                      </label>
+                    </form>
+                    {this.state.botbuilderBodyBackgroundImg && (
+                      <div
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'row',
+                          marginTop: '10px',
+                        }}
+                      >
+                        <h3>{this.state.botbuilderBodyBackgroundImgName}</h3>
+                        <span title="Remove image">
+                          <Close
+                            className="remove-icon"
+                            onTouchTap={this.handleRemoveUrlBody}
+                          />
+                        </span>
                       </div>
                     )}
                   </div>
                 )}
-              </Col>
-              <Col xs={12} md={6} lg={6}>
-                {component.id !== 7 &&
-                !(
-                  component.id === 1 &&
-                  this.state.showBackgroundImageChange === true
-                ) ? (
-                  <div style={{ display: 'flex', flexDirection: 'row' }}>
-                    <div className="color-picker-wrap">
-                      <ColorPicker
-                        className="color-picker"
-                        style={{ display: 'inline-block', float: 'left' }}
-                        name="color"
-                        id={'colorPicker' + component.id}
-                        defaultValue={this.state[component.component]}
-                        onChange={color =>
-                          this.handleChangeColor(component.component, color)
-                        }
-                      />
-                      <span
-                        className="color-box"
-                        onClick={() => this.handleClickColorBox(component.id)}
-                        style={{
-                          backgroundColor: this.state[component.component],
-                        }}
-                      />
-                    </div>
-                  </div>
-                ) : null}
-                {component.component === 'botbuilderBackgroundBody' &&
-                  this.state.showBackgroundImageChange === true && (
-                    <div>
-                      <br />
-                      <form style={{ display: 'inline-block' }}>
-                        <label
-                          className="file-upload-btn"
-                          title="Upload Background Image"
-                        >
-                          <input
-                            disabled={this.state.uploadingBodyBackgroundImg}
-                            type="file"
-                            onChange={this.handleChangeBodyBackgroundImage}
-                            accept="image/x-png,image/gif,image/jpeg"
-                          />
-                          {this.state.uploadingBodyBackgroundImg ? (
-                            <CircularProgress color="#ffffff" size={32} />
-                          ) : (
-                            'Upload Image'
-                          )}
-                        </label>
-                      </form>
-                      {this.state.botbuilderBodyBackgroundImg && (
-                        <div
-                          style={{
-                            display: 'flex',
-                            flexDirection: 'row',
-                            marginTop: '10px',
-                          }}
-                        >
-                          <h3>{this.state.botbuilderBodyBackgroundImgName}</h3>
-                          <span title="Remove image">
-                            <Close
-                              className="remove-icon"
-                              onTouchTap={this.handleRemoveUrlBody}
-                            />
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  )}
-              </Col>
-            </Row>
-          </Grid>
+            </Col>
+          </Row>
           {component.component === 'botbuilderAvatar' && (
-            <div style={{ padding: '25px  0 25px 0' }}>
+            <div style={{ padding: '10px  0 25px 0' }}>
               {this.state.avatars.map(icon => {
                 return (
                   <span
@@ -726,7 +721,6 @@ class UIView extends Component {
               </form>
             </div>
           )}
-          <br />
         </div>
       );
     });
@@ -739,7 +733,7 @@ class UIView extends Component {
           </div>
         ) : (
           <div className="design-box">
-            {this.state.loadedSettings && customizeComponents}
+            {this.state.loadedSettings && <Grid>{customizeComponents}</Grid>}
             <RaisedButton
               label={
                 this.state.resetting ? (
