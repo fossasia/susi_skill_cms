@@ -11,6 +11,7 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 // Components
 import SkillEditor from './components/SkillEditor/SkillEditor';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import NotFound from './components/NotFound/NotFound.react';
 import Admin from './components/Admin/Admin';
 import Dashboard from './components/Dashboard/Dashboard';
@@ -27,16 +28,26 @@ import BotBuilderWrap from './components/BotBuilder/BotBuilderWrap';
 import setDefaults from './DefaultSettings';
 import BrowseSkillByCategory from './components/BrowseSkill/BrowseSkillByCategory';
 import BrowseSkillByLanguage from './components/BrowseSkill/BrowseSkillByLanguage';
+import { colors } from './utils';
 
 setDefaults();
 
 injectTapEventPlugin();
 
+const muiTheme = getMuiTheme({
+  checkbox: {
+    checkedColor: colors.primary,
+  },
+  stepper: {
+    iconColor: colors.primary,
+  },
+});
+
 class App extends React.Component {
   render() {
     return (
       <Router>
-        <MuiThemeProvider>
+        <MuiThemeProvider muiTheme={muiTheme}>
           <Switch>
             <Route
               exact
