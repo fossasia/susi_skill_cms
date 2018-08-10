@@ -43,10 +43,6 @@ export default class SkillCreator extends Component {
     }
     this.state = {
       code: skillBuildCode,
-      skillData: {
-        name: 'Welcome!', // Starting message of chatbot
-        children: [], // contains subsequent user queries and bot responses
-      },
       codeView: true,
       conversationView: false,
       treeView: false,
@@ -110,7 +106,6 @@ export default class SkillCreator extends Component {
     } else {
       this.setState({ loadViews: true });
     }
-    this.generateSkillData();
     this.prefillCode();
   };
 
@@ -426,148 +421,6 @@ export default class SkillCreator extends Component {
       });
   };
 
-  generateSkillData = () => {
-    let skillData_new = {
-      name: 'Welcome!',
-      children: [],
-    };
-    let user_index = 0;
-    let bot_index = 0;
-    let skill_children = [];
-    var lines = this.state.code.split('\n');
-    let skills = [];
-    for (let i = 0; i < lines.length; i++) {
-      let bot_response = null;
-      let line = lines[i];
-      if (
-        line &&
-        !line.startsWith('::') &&
-        !line.startsWith('!') &&
-        !line.startsWith('#')
-      ) {
-        let user_query = line;
-        while (true) {
-          i++;
-          if (i >= lines.length) {
-            break;
-          }
-          line = lines[i];
-          if (
-            line &&
-            !line.startsWith('::') &&
-            !line.startsWith('!') &&
-            !line.startsWith('#')
-          ) {
-            bot_response = line;
-            break;
-          }
-        }
-        let obj = {
-          user_query,
-          bot_response,
-        };
-        skills.push(obj);
-      }
-    }
-    for (let i = 0; i < skills.length; i++) {
-      // for each skill, add to the tree
-      let skill = skills[i];
-      let line_user = skill.user_query;
-      let line_bot = skill.bot_response;
-      let bot_responses = [];
-      if (line_bot) {
-        let responses_bot = line_bot.trim().split('|');
-        for (let response of responses_bot) {
-          let obj = {
-            name: response.trim(),
-            type: 'bot',
-          };
-          bot_responses.push(obj);
-        }
-      }
-      let queries = line_user.trim().split('|');
-
-      for (let query of queries) {
-        let obj = {
-          name: query.trim(),
-          type: 'user',
-          children: this.getChildren(bot_responses, bot_index),
-          id: 'u' + user_index++,
-        };
-        bot_index += bot_responses.length;
-        skill_children.push(obj);
-      }
-    }
-    skillData_new.children = skill_children;
-    this.setState({ skillData: skillData_new });
-  };
-
-  getChildren = (bot_responses, bot_index) => {
-    var arr = [];
-    for (let i of bot_responses) {
-      arr.push({
-        ...i,
-        id: 'b' + bot_index++,
-      });
-    }
-    return arr;
-  };
-
-  handleDeleteNode = node => {
-    let { skillData } = this.state;
-    for (let i = 0; i < skillData.children.length; i++) {
-      let child = skillData.children[i];
-      if (child.id === node.id) {
-        skillData.children.splice(i, 1);
-        break;
-      }
-      if (child.children) {
-        for (let j = 0; j < child.children.length; j++) {
-          let childNode = child.children[j];
-          if (childNode.id === node.id) {
-            skillData.children[i].children.splice(j, 1);
-          }
-        }
-      }
-    }
-    this.setState({ skillData }, this.generateSkillCode());
-  };
-
-  generateSkillCode = () => {
-    let { code, skillData } = this.state;
-    let lines = code.split('\n');
-    let newSkillCode = '';
-    let i = 0;
-    for (i = 0; i < lines.length; i++) {
-      let line = lines[i];
-      // add meta data from top
-      if (
-        line === '' ||
-        line.startsWith('::') ||
-        line.startsWith('!') ||
-        line.startsWith('#')
-      ) {
-        newSkillCode += line + '\n';
-      } else {
-        break;
-      }
-    }
-    for (let j = 0; j < skillData.children.length; j++) {
-      let node = skillData.children[j];
-      newSkillCode += node.name + '\n';
-      if (node.children) {
-        for (let k = 0; k < node.children.length; k++) {
-          if (k !== node.children.length - 1) {
-            newSkillCode += node.children[k].name + ' | ';
-          } else {
-            newSkillCode += node.children[k].name + '\n';
-          }
-        }
-      }
-    }
-    this.setState({ code: newSkillCode }, this.generateSkillData());
-  };
-
   _onChange = event => {
     // Assuming only image
     if (this.props.botBuilder) {
@@ -648,7 +501,6 @@ export default class SkillCreator extends Component {
               file: this.state.file,
             });
           }
-          this.generateSkillData();
         },
       );
     } else if (this.props.botBuilder) {
@@ -904,17 +756,10 @@ export default class SkillCreator extends Component {
           />
         ) : null}
         {this.state.conversationView && this.state.loadViews ? (
-          <ConversationView
-            skillCode={this.state.code}
-            skillData={this.state.skillData}
-          />
+          <ConversationView skillCode={this.state.code} />
         ) : null}
         {this.state.treeView && this.state.loadViews ? (
-          <TreeView
-            skillData={this.state.skillData}
-            handleDeleteNode={this.handleDeleteNode}
-            botbuilder={false}
-          />
+          <TreeView skillCode={this.state.code} botbuilder={false} />
         ) : null}
         {this.props.botBuilder ? null : (
           <div

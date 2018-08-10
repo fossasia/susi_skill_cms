@@ -15,27 +15,73 @@ class ConversationView extends Component {
       openSnackbar: false,
       msgSnackbar: '',
       code: this.props.skillCode,
+      userInputs: [],
       conversationsData: [],
       loaded: false,
     };
   }
 
   componentDidMount = () => {
-    this.getResponses(0);
+    this.fetchUserInputs();
+  };
+
+  fetchUserInputs = () => {
+    let code = this.state.code;
+    let userInputs = [];
+    let userQueries = [];
+    var lines = code.split('\n');
+    for (let i = 0; i < lines.length; i++) {
+      let line = lines[i];
+      if (
+        line &&
+        !line.startsWith('::') &&
+        !line.startsWith('!') &&
+        !line.startsWith('#') &&
+        !line.startsWith('{') &&
+        !line.startsWith('}') &&
+        !line.startsWith('"')
+      ) {
+        let user_query = line;
+        while (true) {
+          i++;
+          if (i >= lines.length) {
+            break;
+          }
+          line = lines[i];
+          if (
+            line &&
+            !line.startsWith('::') &&
+            !line.startsWith('!') &&
+            !line.startsWith('#')
+          ) {
+            break;
+          }
+        }
+        userQueries.push(user_query);
+      }
+    }
+    for (let i = 0; i < userQueries.length; i++) {
+      let queries = userQueries[i];
+      let queryArray = queries.trim().split('|');
+      for (let j = 0; j < queryArray.length; j++) {
+        userInputs.push(queryArray[j]);
+      }
+    }
+    this.setState({ userInputs }, () => this.getResponses(0));
   };
 
   getResponses = responseNumber => {
-    let skillData = this.props.skillData;
-    let i = skillData.children[responseNumber];
+    let userInputs = this.state.userInputs;
+    let userQuery = userInputs[responseNumber];
     let conversationsData = this.state.conversationsData;
-    if (i) {
+    if (userQuery) {
       let url = urls.API_URL + '/susi/chat.json?q=';
       conversationsData.push({
         type: 'user',
-        name: i.name,
+        name: userQuery,
         id: 'u' + responseNumber,
       });
-      url += `${encodeURIComponent(i.name)}&instant=${encodeURIComponent(
+      url += `${encodeURIComponent(userQuery)}&instant=${encodeURIComponent(
         this.state.code,
       )}`;
       $.ajax({
@@ -55,7 +101,7 @@ class ConversationView extends Component {
             name: answer,
             id: 'b' + responseNumber,
           });
-          if (responseNumber + 1 === skillData.children.length) {
+          if (responseNumber + 1 === userInputs.length) {
             this.setState({ loaded: true });
           }
           this.setState({ conversationsData }, () =>
@@ -151,6 +197,5 @@ const styles = {
 };
 ConversationView.propTypes = {
   skillCode: PropTypes.string,
-  skillData: PropTypes.object,
 };
 export default ConversationView;

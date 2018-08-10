@@ -1,25 +1,150 @@
 import React, { Component } from 'react';
 import OrgChart from 'react-orgchart';
 import PropTypes from 'prop-types';
+import CircularProgress from 'material-ui/CircularProgress';
 import Person from 'material-ui/svg-icons/social/person';
-import Delete from 'material-ui/svg-icons/action/delete';
+import Snackbar from 'material-ui/Snackbar';
 import ReactTooltip from 'react-tooltip';
+import { urls } from '../../../utils';
 import 'react-orgchart/index.css';
+import $ from 'jquery';
 
 class TreeView extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      code: this.props.skillCode,
+      skillData: {
+        name: 'Welcome!', // Starting message of chatbot
+        children: [], // contains subsequent user queries and bot responses
+      },
+      userInputs: [],
+      loaded: false,
+      openSnackbar: false,
+      msgSnackbar: '',
+    };
   }
+
+  componentDidMount = () => {
+    this.skills = [];
+    this.fetchUserInputs();
+  };
+
+  fetchUserInputs = () => {
+    let code = this.state.code;
+    let userInputs = [];
+    let userQueries = [];
+    var lines = code.split('\n');
+    for (let i = 0; i < lines.length; i++) {
+      let line = lines[i];
+      if (
+        line &&
+        !line.startsWith('::') &&
+        !line.startsWith('!') &&
+        !line.startsWith('#') &&
+        !line.startsWith('{') &&
+        !line.startsWith('}') &&
+        !line.startsWith('"')
+      ) {
+        let user_query = line;
+        while (true) {
+          i++;
+          if (i >= lines.length) {
+            break;
+          }
+          line = lines[i];
+          if (
+            line &&
+            !line.startsWith('::') &&
+            !line.startsWith('!') &&
+            !line.startsWith('#')
+          ) {
+            break;
+          }
+        }
+        userQueries.push(user_query);
+      }
+    }
+    for (let i = 0; i < userQueries.length; i++) {
+      let queries = userQueries[i];
+      let queryArray = queries.trim().split('|');
+      for (let j = 0; j < queryArray.length; j++) {
+        userInputs.push(queryArray[j]);
+      }
+    }
+    this.setState({ userInputs }, () => this.getResponses(0));
+  };
+
+  getResponses = responseNumber => {
+    let userInputs = this.state.userInputs;
+    let userQuery = userInputs[responseNumber];
+    let skillData = {
+      name: 'Welcome!',
+      children: [],
+    };
+    let nodeData = this.state.skillData.children; // nodes of tree
+    if (userQuery) {
+      let url = urls.API_URL + '/susi/chat.json?q=';
+      nodeData.push({
+        type: 'user',
+        name: userQuery,
+        id: 'u' + responseNumber,
+      });
+      url += `${encodeURIComponent(userQuery)}&instant=${encodeURIComponent(
+        this.state.code,
+      )}`;
+      $.ajax({
+        type: 'GET',
+        url: url,
+        contentType: 'application/json',
+        dataType: 'json',
+        success: function(data) {
+          let answer;
+          if (data.answers[0]) {
+            answer = data.answers[0].actions[0].expression;
+          } else {
+            answer = 'Sorry, I could not understand what you just said.';
+          }
+          if (!nodeData[responseNumber].children) {
+            nodeData[responseNumber].children = [];
+            nodeData[responseNumber].children.push({
+              id: 'b' + responseNumber,
+              name: answer.trim(),
+              type: 'bot',
+            });
+          } else {
+            nodeData[responseNumber].children.push({
+              id: 'b' + responseNumber,
+              name: answer.trim(),
+              type: 'bot',
+            });
+          }
+          skillData.children = nodeData;
+          this.setState({ skillData }, () =>
+            this.getResponses(++responseNumber),
+          );
+          if (responseNumber + 1 === userInputs.length) {
+            this.setState({ loaded: true });
+          }
+        }.bind(this),
+        error: function(err) {
+          console.log(err);
+          this.setState({
+            openSnackbar: true,
+            msgSnackbar: 'Unable to load tree view. Please try again.',
+          });
+        }.bind(this),
+      });
+    }
+  };
+
   getNodeText = text => {
     if (text.indexOf(' ') > 0) {
       return text.substr(0, text.indexOf(' ')) + '...';
     }
     return text;
   };
-  handleDeleteNode = node => {
-    this.props.handleDeleteNode(node);
-  };
+
   render() {
     const MyNodeComponent = ({ node }) => {
       return (
@@ -36,29 +161,37 @@ class TreeView extends Component {
               node.name,
             )}
           </span>
-          {(node.type === 'user' || node.type === 'bot') && (
-            <span title="delete" className="node-delete">
-              <Delete
-                style={{ height: '19px' }}
-                className="node-delete-icon"
-                onClick={() => this.handleDeleteNode(node)}
-              />
-            </span>
-          )}
         </div>
       );
     };
     return (
       <div>
-        <ReactTooltip effect="solid" place="bottom" />
-        <div style={{ padding: this.state.botbuilder ? '0px' : '30px' }}>
-          <OrgChart
-            tree={this.props.skillData}
-            NodeComponent={MyNodeComponent}
-          />
-          <br />
-          <br />
-        </div>
+        {!this.state.loaded ? (
+          <div className="center" style={{ padding: '20px' }}>
+            <CircularProgress size={62} color="#4285f5" />
+            <h4>Loading</h4>
+          </div>
+        ) : (
+          <div>
+            <ReactTooltip effect="solid" place="bottom" />
+            <div style={{ padding: this.state.botbuilder ? '0px' : '30px' }}>
+              <OrgChart
+                tree={this.state.skillData}
+                NodeComponent={MyNodeComponent}
+              />
+              <br />
+              <br />
+            </div>
+          </div>
+        )}
+        <Snackbar
+          open={this.state.openSnackbar}
+          message={this.state.msgSnackbar}
+          autoHideDuration={2000}
+          onRequestClose={() => {
+            this.setState({ openSnackbar: false });
+          }}
+        />
       </div>
     );
   }
@@ -79,8 +212,7 @@ const styles = {
   },
 };
 TreeView.propTypes = {
-  skillData: PropTypes.object,
-  handleDeleteNode: PropTypes.func,
+  skillCode: PropTypes.string,
   botbuilder: PropTypes.bool,
 };
 export default TreeView;
