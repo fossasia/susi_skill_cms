@@ -9,6 +9,8 @@ import Dialog from 'material-ui/Dialog';
 import MenuItem from 'material-ui/MenuItem';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import { urls } from '../../../utils';
+import { LocaleProvider } from 'antd';
+import enUS from 'antd/lib/locale-provider/en_US';
 import 'antd/lib/table/style/index.css';
 
 const cookies = new Cookies();
@@ -301,14 +303,13 @@ export default class ListUser extends Component {
             jsonp: 'callback',
             crossDomain: true,
             success: function(data) {
-              // console.log(data);
               pagination.total = data.userCount;
               pagination.pageSize = 50;
+              pagination.showQuickJumper = true;
               this.setState({
                 loading: false,
                 pagination,
               });
-              // console.log(pagination);
               this.fetch();
             }.bind(this),
             error: function(errorThrown) {
@@ -612,44 +613,46 @@ export default class ListUser extends Component {
           size="large"
           onSearch={value => this.handleSearch(value)}
         />
-        {this.state.search ? (
-          <Table
-            columns={this.columns}
-            rowKey={record => record.serialNum}
-            expandedRowRender={record => (
-              <Table
-                style={{ width: '80%', backgroundColor: 'white' }}
-                columns={this.devicesColumns}
-                dataSource={record.devices}
-                pagination={false}
-                locale={{ emptyText: 'No devices found!' }}
-                bordered
-              />
-            )}
-            dataSource={this.state.data}
-            loading={this.state.loading}
-            pagination={false}
-          />
-        ) : (
-          <Table
-            columns={this.columns}
-            rowKey={record => record.serialNum}
-            expandedRowRender={record => (
-              <Table
-                style={{ width: '80%', backgroundColor: 'white' }}
-                columns={this.devicesColumns}
-                dataSource={record.devices}
-                pagination={false}
-                locale={{ emptyText: 'No devices found!' }}
-                bordered
-              />
-            )}
-            dataSource={this.state.data}
-            pagination={this.state.pagination}
-            loading={this.state.loading}
-            onChange={this.handleTableChange}
-          />
-        )}
+        <LocaleProvider locale={enUS}>
+          {this.state.search ? (
+            <Table
+              columns={this.columns}
+              rowKey={record => record.serialNum}
+              expandedRowRender={record => (
+                <Table
+                  style={{ width: '80%', backgroundColor: 'white' }}
+                  columns={this.devicesColumns}
+                  dataSource={record.devices}
+                  pagination={false}
+                  locale={{ emptyText: 'No devices found!' }}
+                  bordered
+                />
+              )}
+              dataSource={this.state.data}
+              loading={this.state.loading}
+              pagination={false}
+            />
+          ) : (
+            <Table
+              columns={this.columns}
+              rowKey={record => record.serialNum}
+              expandedRowRender={record => (
+                <Table
+                  style={{ width: '80%', backgroundColor: 'white' }}
+                  columns={this.devicesColumns}
+                  dataSource={record.devices}
+                  pagination={false}
+                  locale={{ emptyText: 'No devices found!' }}
+                  bordered
+                />
+              )}
+              dataSource={this.state.data}
+              pagination={this.state.pagination}
+              loading={this.state.loading}
+              onChange={this.handleTableChange}
+            />
+          )}
+        </LocaleProvider>
       </div>
     );
   }

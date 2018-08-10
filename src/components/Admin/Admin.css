@@ -47,6 +47,16 @@
     display: none;
 }
 
+.ant-pagination-options-quick-jumper input {
+  height:unset;
+  width:46px;
+}
+
+.ant-pagination-item {
+    height: 30px;
+    width: 30px;
+}
+
 .flexCard{
     width: 400px;
     height: 310px;
