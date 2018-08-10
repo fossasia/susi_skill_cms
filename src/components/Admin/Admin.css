@@ -19,32 +19,38 @@
     margin-top: 30px;
     margin-left: 20px;
     margin-right: 20px;
-}
-
-.h1{
-    padding-top: 65px;
-    font-size: 40px;
-    margin-left: 21px;
+    background-color: #ffffff;
 }
 
 .h2{
-    padding-top: 65px;
-    font-size: 35px;
+    padding-top: 66px;
     margin-left: 23px;
+    font-size: 35px;
+    font-family: Helvetica Neue For Number,-apple-system,
+    BlinkMacSystemFont,Segoe UI,
+    Roboto,PingFang SC,
+    Hiragino Sans GB,Microsoft YaHei,
+    Helvetica Neue,Helvetica,Arial,sans-serif;
+    color: rgba(0,0,0,.65);
+    font-weight: bold;
+}
+
+.h3{
+    font-size: 25px;
+    margin-top: 30px;
+    margin-bottom: 20px;
+    font-family: Helvetica Neue For Number,-apple-system,
+    BlinkMacSystemFont,Segoe UI,Roboto,
+    PingFang SC,Hiragino Sans GB,
+    Microsoft YaHei,Helvetica Neue,Helvetica,Arial,sans-serif;
+    color: rgba(0,0,0);
+    font-weight: bold;
 }
 
 .containerPaper{
     margin-top: -68px;
     margin-left: 60px;
     margin-right: 40px;
-}
-
-.ant-tabs-tab-prev {
-    display: none;
-}
-
-.ant-tabs-tab-next {
-    display: none;
 }
 
 .flexCard{
