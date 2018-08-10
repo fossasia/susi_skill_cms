@@ -329,6 +329,7 @@ class BotWizard extends React.Component {
     this.setState({
       stepIndex: stepIndex + 1,
       finished: stepIndex >= 3,
+      commitMessage: 'Created Bot ' + this.state.expertValue,
     });
   };
 
