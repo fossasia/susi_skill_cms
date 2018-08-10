@@ -661,7 +661,7 @@ class ListSkills extends React.Component {
                   open={this.state.showDeleteDialog}
                 >
                   <div>
-                    Are you sure you want to delete {this.state.skillName} ?
+                    Are you sure you want to delete {this.state.skillName}?
                   </div>
                 </Dialog>
                 <Dialog
@@ -671,7 +671,7 @@ class ListSkills extends React.Component {
                   open={this.state.showRestoreDialog}
                 >
                   <div>
-                    Are you sure you want to restore {this.state.skillName} ?
+                    Are you sure you want to restore {this.state.skillName}?
                   </div>
                 </Dialog>
                 <Dialog

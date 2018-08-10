@@ -1094,7 +1094,7 @@ export default class BrowseSkill extends React.Component {
                         </b>
                         {this.props.routeValue && (
                           <div style={{ display: 'flex' }}>
-                            &nbsp;:&nbsp;<div
+                            :&nbsp;<div
                               style={{ color: '#4286f4', fontWeight: 'bold' }}
                             >
                               {this.props.routeValue}
@@ -1103,7 +1103,7 @@ export default class BrowseSkill extends React.Component {
                         )}
                         {this.state.searchQuery.length > 0 && (
                           <div style={{ display: 'flex' }}>
-                            &nbsp;:&nbsp;<div
+                            :&nbsp;<div
                               style={{ color: '#4286f4', fontWeight: 'bold' }}
                             >
                               &quot;{this.state.searchQuery}&quot;

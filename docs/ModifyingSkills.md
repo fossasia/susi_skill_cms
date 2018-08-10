@@ -6,15 +6,15 @@
 
 This endpoint accepts `POST` request with data supplied in the following parameters.
 
-   >- OldModel:general
-   >- OldGroup:Knowledge
-   >- OldLanguage:en
-   >- OldSkill:github
-   >- NewModel:general
-   >- NewGroup:Knowledge
-   >- NewLanguage:en
-   >- NewSkill:github
-   >- changelog:change image name
+   >- OldModel: general
+   >- OldGroup: Knowledge
+   >- OldLanguage: en
+   >- OldSkill: github
+   >- NewModel: general
+   >- NewGroup: Knowledge
+   >- NewLanguage: en
+   >- NewSkill: github
+   >- changelog: change image name
    >- content: 
       ::name GitHub
       ::author Chirag Wadhera
@@ -29,14 +29,14 @@ This endpoint accepts `POST` request with data supplied in the following paramet
       !expect:mariobehling is github username of Mario Behling
       !console:$1$ is github username of $object$
       {
-         "url":"https://api.github.com/users/$1$",
-         "path":"$.name"
+         "url": "https://api.github.com/users/$1$",
+         "path": "$.name"
       }
       eol
-   >- imageChanged:false
-   >- old_image_name:github.png
-   >- new_image_name:Github.png
-   >- image_name_changed:true
+   >- imageChanged: false
+   >- old_image_name: github.png
+   >- new_image_name: Github.png
+   >- image_name_changed: true
    >- image: <image oject>
 
 

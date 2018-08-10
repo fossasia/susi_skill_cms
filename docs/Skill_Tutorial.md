@@ -548,7 +548,7 @@ We will learn here how to connect those instances to each other so they can talk
 Every skill can be given an example query using the bang-notion which always starts with a '!' followed by 'example:' and then the example query for the skill:
 
 ```
-what is your name ? | What's your name ? | Who are you ?| what should i call you ? | do you have a name
+what is your name? | What's your name? | Who are you?| what should i call you? | do you have a name
 !example:what is your name?
 My name is SUSI.
 ```

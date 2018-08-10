@@ -6,11 +6,11 @@
 
 This endpoint accepts `POST` request with data supplied in the following parameters.
 
-   >- model:general (default)
-   >- group:All (default)
-   >- language:en (default)
+   >- model: general (default)
+   >- group: All (default)
+   >- language: en (default)
 
-The [Skill Browser Component](https://github.com/fossasia/susi_skill_cms/tree/master/src/components/BrowseSkill) we send request to the a forementioned endpoint to display all the skills in a category and language.
+The [Skill Browser Component](https://github.com/fossasia/susi_skill_cms/tree/master/src/components/BrowseSkill) we send request to the aforementioned endpoint to display all the skills in a category and language.
 
 To Browse skills,
 - Go to [http://skills.susi.ai](http://skills.susi.ai)

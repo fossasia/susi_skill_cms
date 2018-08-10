@@ -809,7 +809,7 @@ class SkillFeedbackPage extends Component {
           open={this.state.openDeleteDialog}
           onRequestClose={this.handleEditClose}
         >
-          Are you sure, you want to delete your feedback ?
+          Are you sure, you want to delete your feedback?
         </Dialog>
         <div>
           <AuthorSkills
