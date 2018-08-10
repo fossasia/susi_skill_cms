@@ -1,22 +1,31 @@
+/* Packages */
 import React from 'react';
 import Table from 'antd/lib/table';
+
+/* Material UI */
 import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'material-ui/Dialog';
-import enUS from 'antd/lib/locale-provider/en_US';
-import Checkbox from 'material-ui/Checkbox';
 import CircularProgress from 'material-ui/CircularProgress';
+import Checkbox from 'material-ui/Checkbox';
 import Snackbar from 'material-ui/Snackbar';
-import Cookies from 'universal-cookie';
-import './ListSkills.css';
-import { urls } from '../../../utils';
-import * as $ from 'jquery';
+
+/* Ant Design */
 import { LocaleProvider } from 'antd';
 import Tabs from 'antd/lib/tabs';
+import enUS from 'antd/lib/locale-provider/en_US';
+
+/* Utils */
+import { urls } from '../../../utils';
+import * as $ from 'jquery';
+import Cookies from 'universal-cookie';
+
+/* CSS */
+import './ListSkills.css';
 
 const cookies = new Cookies();
 const TabPane = Tabs.TabPane;
 
-class ListSkills extends React.Component {
+export default class ListSkills extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -45,12 +54,6 @@ class ListSkills extends React.Component {
       restoreSuccessDialog: false,
       restoreFailureDialog: false,
     };
-
-    this.handleChange = this.handleChange.bind(this);
-    this.handleClose = this.handleClose.bind(this);
-    this.handleOpen = this.handleOpen.bind(this);
-    this.handleDelete = this.handleDelete.bind(this);
-    this.handleFinish = this.handleFinish.bind(this);
   }
 
   componentDidMount() {
@@ -60,19 +63,35 @@ class ListSkills extends React.Component {
   }
 
   changeStatus = () => {
-    let url;
-    url =
-      urls.API_URL +
-      `/cms/changeSkillStatus.json?model=${this.state.skillModel}&group=${
-        this.state.skillGroup
-      }&language=${this.state.skillLanguage}&skill=${
-        this.state.skillTag
-      }&reviewed=${this.state.skillReviewStatus}&editable=${
-        this.state.skillEditStatus
-      }&staffPick=${this.state.skillStaffPickStatus}&access_token=` +
+    const {
+      skillModel,
+      skillGroup,
+      skillLanguage,
+      skillTag,
+      skillReviewStatus,
+      skillEditStatus,
+      skillStaffPickStatus,
+    } = this.state;
+    let url =
+      `${urls.API_URL}/cms/changeSkillStatus.json?` +
+      'model=' +
+      skillModel +
+      '&group=' +
+      skillGroup +
+      '&language=' +
+      skillLanguage +
+      '&skill=' +
+      skillTag +
+      '&reviewed=' +
+      skillReviewStatus +
+      '&editable=' +
+      skillEditStatus +
+      '&staffPick=' +
+      skillStaffPickStatus +
+      '&access_token=' +
       cookies.get('loggedIn');
     $.ajax({
-      url: url,
+      url,
       dataType: 'jsonp',
       jsonp: 'callback',
       crossDomain: true,
@@ -88,83 +107,80 @@ class ListSkills extends React.Component {
 
   deleteSkill = () => {
     this.setState({ loading: true });
-    let url;
-    url =
+    const { skillModel, skillGroup, skillLanguage, skillName } = this.state;
+    let url =
       `${urls.API_URL}/cms/deleteSkill.json?` +
       'model=' +
-      this.state.skillModel +
+      skillModel +
       '&group=' +
-      this.state.skillGroup +
+      skillGroup +
       '&language=' +
-      this.state.skillLanguage +
+      skillLanguage +
       '&skill=' +
-      this.state.skillName +
+      skillName +
       '&access_token=' +
       cookies.get('loggedIn');
     $.ajax({
-      url: url,
+      url,
       dataType: 'jsonp',
       jsonp: 'callback',
       crossDomain: true,
       success: function(data) {
-        this.setState({ loading: false });
-        this.setState({ deleteSuccessDialog: true });
+        this.setState({ loading: false, deleteSuccessDialog: true });
       }.bind(this),
       error: function(err) {
         console.log(err);
-        this.setState({ loading: false });
-        this.setState({ deleteFailureDialog: true });
+        this.setState({ loading: false, deleteFailureDialog: true });
       }.bind(this),
     });
   };
 
   restoreSkill = () => {
     this.setState({ loading: true });
-    let url;
-    url =
+    const { skillModel, skillGroup, skillLanguage, skillName } = this.state;
+    let url =
       `${urls.API_URL}/cms/undoDeleteSkill.json?` +
       'model=' +
-      this.state.skillModel +
+      skillModel +
       '&group=' +
-      this.state.skillGroup +
+      skillGroup +
       '&language=' +
-      this.state.skillLanguage +
+      skillLanguage +
       '&skill=' +
-      this.state.skillName +
+      skillName +
       '&access_token=' +
       cookies.get('loggedIn');
     $.ajax({
-      url: url,
+      url,
       dataType: 'jsonp',
       jsonp: 'callback',
       crossDomain: true,
       success: function(data) {
-        this.setState({ loading: false });
-        this.setState({ restoreSuccessDialog: true });
+        this.setState({ loading: false, restoreSuccessDialog: true });
       }.bind(this),
       error: function(err) {
         console.log(err);
-        this.setState({ loading: false });
-        this.setState({ restoreFailureDialog: true });
+        this.setState({ loading: false, restoreFailureDialog: true });
       }.bind(this),
     });
   };
 
   loadDeletedSkills = () => {
-    let url;
     let deletedSkills = [];
-    url =
-      `${urls.API_URL}/cms/skillsToBeDeleted.json?` +
-      'access_token=' +
-      cookies.get('loggedIn');
+    let url = `${
+      urls.API_URL
+    }/cms/skillsToBeDeleted.json?access_token=${cookies.get('loggedIn')}`;
     $.ajax({
-      url: url,
+      url,
       dataType: 'jsonp',
       jsonp: 'callback',
       crossDomain: true,
       success: response => {
-        for (let i of response.skills) {
-          const current = i.slice(i.indexOf('/models/') + 8, i.length - 4);
+        for (let deletedSkillPath of response.skills) {
+          const current = deletedSkillPath.slice(
+            deletedSkillPath.indexOf('/models/') + 8,
+            deletedSkillPath.length - 4,
+          );
           const splitString = current.split('/');
           let deletedSkill = {
             model: splitString[0],
@@ -175,7 +191,7 @@ class ListSkills extends React.Component {
           deletedSkills.push(deletedSkill);
         }
         this.setState({
-          deletedSkills: deletedSkills,
+          deletedSkills,
         });
       },
       error: function(err) {
@@ -185,10 +201,9 @@ class ListSkills extends React.Component {
   };
 
   loadGroups = () => {
-    let url;
-    url = `${urls.API_URL}/cms/getGroups.json`;
+    let url = `${urls.API_URL}/cms/getGroups.json`;
     $.ajax({
-      url: url,
+      url,
       jsonpCallback: 'pxcd',
       dataType: 'jsonp',
       jsonp: 'callback',
@@ -205,7 +220,7 @@ class ListSkills extends React.Component {
           }
         }
         this.setState({
-          groups: groups,
+          groups,
           loading: false,
         });
       },
@@ -216,13 +231,12 @@ class ListSkills extends React.Component {
   };
 
   loadSkills = () => {
-    let url;
-    url =
-      urls.API_URL +
-      '/cms/getSkillList.json?applyFilter=true&filter_name=ascending&filter_type=lexicographical';
+    let url =
+      `${urls.API_URL}/cms/getSkillList.json?` +
+      'applyFilter=true&filter_name=ascending&filter_type=lexicographical';
     let self = this;
     $.ajax({
-      url: url,
+      url,
       jsonpCallback: 'pxcd',
       dataType: 'jsonp',
       jsonp: 'callback',
@@ -230,20 +244,20 @@ class ListSkills extends React.Component {
       success: function(data) {
         let skills = [];
         if (data) {
-          for (let i of data.filteredData) {
+          for (let skillMetadata of data.filteredData) {
             let skill = {
-              skillName: i.skill_name,
-              model: i.model,
-              group: i.group,
-              language: i.language,
-              skillTag: i.skill_tag,
-              reviewStatus: i.reviewed,
-              editStatus: i.editable,
-              staffPickStatus: i.staffPick,
+              skillName: skillMetadata.skill_name,
+              model: skillMetadata.model,
+              group: skillMetadata.group,
+              language: skillMetadata.language,
+              skillTag: skillMetadata.skill_tag,
+              reviewStatus: skillMetadata.reviewed,
+              editStatus: skillMetadata.editable,
+              staffPickStatus: skillMetadata.staffPick,
               type: 'public',
-              author: i.author,
-              reviewed: i.reviewed ? 'Approved' : 'Not Reviewed',
-              editable: i.editable ? 'Editable' : 'Not Editable',
+              author: skillMetadata.author,
+              reviewed: skillMetadata.reviewed ? 'Approved' : 'Not Reviewed',
+              editable: skillMetadata.editable ? 'Editable' : 'Not Editable',
             };
             skills.push(skill);
           }
@@ -266,29 +280,21 @@ class ListSkills extends React.Component {
 
   handleChange = () => {
     this.changeStatus();
-    this.setState({
-      showDialog: false,
-    });
+    this.handleClose();
   };
 
   handleClose = () => {
-    this.setState({
-      showDialog: false,
-    });
+    this.handleClose();
   };
 
   confirmDelete = () => {
     this.deleteSkill();
-    this.setState({
-      showDeleteDialog: false,
-    });
+    this.handleClose();
   };
 
   confirmRestore = () => {
     this.restoreSkill();
-    this.setState({
-      showRestoreDialog: false,
-    });
+    this.handleClose();
   };
 
   handleDelete = (name, model, group, language) => {
@@ -368,7 +374,9 @@ class ListSkills extends React.Component {
   };
 
   render() {
-    const actions = [
+    const { groups, loading, skillName } = this.state;
+
+    const editButtons = [
       <FlatButton
         key={1}
         label="Change"
@@ -383,7 +391,7 @@ class ListSkills extends React.Component {
       />,
     ];
 
-    const deleteActions = [
+    const deleteButtons = [
       <FlatButton
         key={1}
         label="Delete"
@@ -398,7 +406,7 @@ class ListSkills extends React.Component {
       />,
     ];
 
-    const restoreActions = [
+    const restoreButtons = [
       <FlatButton
         key={1}
         label="Restore"
@@ -413,6 +421,15 @@ class ListSkills extends React.Component {
       />,
     ];
 
+    const okButton = [
+      <FlatButton
+        key={1}
+        label="Ok"
+        labelStyle={{ color: '#4285f4' }}
+        onTouchTap={this.handleFinish}
+      />,
+    ];
+
     let columns = [
       {
         title: 'Name',
@@ -422,7 +439,7 @@ class ListSkills extends React.Component {
       {
         title: 'Group',
         dataIndex: 'group',
-        filters: this.state.groups,
+        filters: groups,
         onFilter: (value, record) => record.group.indexOf(value) === 0,
         sorter: (a, b) => a.group.length - b.group.length,
         width: '10%',
@@ -547,7 +564,7 @@ class ListSkills extends React.Component {
       {
         title: 'Group',
         dataIndex: 'group',
-        filters: this.state.groups,
+        filters: groups,
         onFilter: (value, record) => record.group.indexOf(value) === 0,
         sorter: (a, b) => a.group.length - b.group.length,
         width: '15%',
@@ -586,7 +603,7 @@ class ListSkills extends React.Component {
 
     return (
       <div>
-        {this.state.loading ? (
+        {loading ? (
           <div className="center">
             <CircularProgress size={62} color="#4285f5" />
             <h4>Loading</h4>
@@ -600,8 +617,8 @@ class ListSkills extends React.Component {
             >
               <TabPane tab="Active" key="1">
                 <Dialog
-                  title={'Skill Settings for ' + this.state.skillName}
-                  actions={actions}
+                  title={'Skill Settings for ' + skillName}
+                  actions={editButtons}
                   model={true}
                   open={this.state.showDialog}
                   style={{
@@ -656,34 +673,23 @@ class ListSkills extends React.Component {
 
                 <Dialog
                   title="Delete Skill"
-                  actions={deleteActions}
+                  actions={deleteButtons}
                   model={true}
                   open={this.state.showDeleteDialog}
                 >
-                  <div>
-                    Are you sure you want to delete {this.state.skillName}?
-                  </div>
+                  <div>Are you sure you want to delete {skillName}?</div>
                 </Dialog>
                 <Dialog
                   title="Restore Skill"
-                  actions={restoreActions}
+                  actions={restoreButtons}
                   model={true}
                   open={this.state.showRestoreDialog}
                 >
-                  <div>
-                    Are you sure you want to restore {this.state.skillName}?
-                  </div>
+                  <div>Are you sure you want to restore {skillName}?</div>
                 </Dialog>
                 <Dialog
                   title="Success"
-                  actions={
-                    <FlatButton
-                      key={1}
-                      label="Ok"
-                      labelStyle={{ color: '#4285f4' }}
-                      onTouchTap={this.handleFinish}
-                    />
-                  }
+                  actions={okButton}
                   modal={true}
                   open={this.state.restoreSuccessDialog}
                 >
@@ -695,21 +701,14 @@ class ListSkills extends React.Component {
                         margin: '0 5px',
                       }}
                     >
-                      {this.state.skillName}
+                      {skillName}
                     </span>
                     !
                   </div>
                 </Dialog>
                 <Dialog
                   title="Failed!"
-                  actions={
-                    <FlatButton
-                      key={1}
-                      label="Ok"
-                      labelStyle={{ color: '#4285f4' }}
-                      onTouchTap={this.handleFinish}
-                    />
-                  }
+                  actions={okButton}
                   modal={true}
                   open={this.state.restoreFailureDialog}
                 >
@@ -721,21 +720,14 @@ class ListSkills extends React.Component {
                         margin: '0 5px',
                       }}
                     >
-                      {this.state.skillName}
+                      {skillName}
                     </span>
                     could not be restored!
                   </div>
                 </Dialog>
                 <Dialog
                   title="Success"
-                  actions={
-                    <FlatButton
-                      key={1}
-                      label="Ok"
-                      labelStyle={{ color: '#4285f4' }}
-                      onTouchTap={this.handleFinish}
-                    />
-                  }
+                  actions={okButton}
                   modal={true}
                   open={this.state.deleteSuccessDialog}
                 >
@@ -747,21 +739,14 @@ class ListSkills extends React.Component {
                         margin: '0 5px',
                       }}
                     >
-                      {this.state.skillName}
+                      {skillName}
                     </span>
                     !
                   </div>
                 </Dialog>
                 <Dialog
                   title="Failed!"
-                  actions={
-                    <FlatButton
-                      key={1}
-                      label="Ok"
-                      labelStyle={{ color: '#4285f4' }}
-                      onTouchTap={this.handleFinish}
-                    />
-                  }
+                  actions={okButton}
                   modal={true}
                   open={this.state.deleteFailureDialog}
                 >
@@ -773,7 +758,7 @@ class ListSkills extends React.Component {
                         margin: '0 5px',
                       }}
                     >
-                      {this.state.skillName}
+                      {skillName}
                     </span>
                     could not be deleted!
                   </div>
@@ -781,14 +766,7 @@ class ListSkills extends React.Component {
 
                 <Dialog
                   title="Success"
-                  actions={
-                    <FlatButton
-                      key={1}
-                      label="Ok"
-                      labelStyle={{ color: '#4285f4' }}
-                      onTouchTap={this.handleFinish}
-                    />
-                  }
+                  actions={okButton}
                   modal={true}
                   open={this.state.changeStatusSuccessDialog}
                 >
@@ -800,21 +778,14 @@ class ListSkills extends React.Component {
                         margin: '0 5px',
                       }}
                     >
-                      {this.state.skillName}
+                      {skillName}
                     </span>
                     has been changed successfully!
                   </div>
                 </Dialog>
                 <Dialog
                   title="Failed!"
-                  actions={
-                    <FlatButton
-                      key={1}
-                      label="Ok"
-                      labelStyle={{ color: '#4285f4' }}
-                      onTouchTap={this.handleFinish}
-                    />
-                  }
+                  actions={okButton}
                   modal={true}
                   open={this.state.changeStatusFailureDialog}
                 >
@@ -826,7 +797,7 @@ class ListSkills extends React.Component {
                         margin: '0 5px',
                       }}
                     >
-                      {this.state.skillName}
+                      {skillName}
                     </span>
                     could not be changed!
                   </div>
@@ -836,7 +807,7 @@ class ListSkills extends React.Component {
                     columns={columns}
                     rowKey={record => record.registered}
                     dataSource={this.state.skillsData}
-                    loading={this.state.loading}
+                    loading={loading}
                   />
                 </LocaleProvider>
               </TabPane>
@@ -864,5 +835,3 @@ class ListSkills extends React.Component {
     );
   }
 }
-
-export default ListSkills;
