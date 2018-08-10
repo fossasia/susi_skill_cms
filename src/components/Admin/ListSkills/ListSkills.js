@@ -834,6 +834,7 @@ class ListSkills extends React.Component {
                 <LocaleProvider locale={enUS}>
                   <Table
                     columns={columns}
+                    pagination={{ showQuickJumper: true }}
                     rowKey={record => record.registered}
                     dataSource={this.state.skillsData}
                     loading={this.state.loading}
@@ -844,6 +845,7 @@ class ListSkills extends React.Component {
                 <LocaleProvider locale={enUS}>
                   <Table
                     columns={delColumns}
+                    pagination={{ showQuickJumper: true }}
                     rowKey={record => record.registered}
                     dataSource={this.state.deletedSkills}
                   />
