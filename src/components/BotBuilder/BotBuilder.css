@@ -66,12 +66,17 @@
 	border-radius: 3px;
 	border: solid 1px #0000006e;
 	cursor: pointer;
+	margin-right: 10px;
+	margin-bottom: -8px;
 }
 .color-picker-wrap>div{
 	display: inline-block;
 }
-.color-picker-wrap>div>div{
-	width:200px;
+.color-picker-wrap>div>div {
+    width: 90px !important; /* csslint allow: known-properties, important */
+}
+.color-picker-wrap>div>div>input {
+    text-align: center;
 }
 .bot-avatar{
 	width: 60px;
