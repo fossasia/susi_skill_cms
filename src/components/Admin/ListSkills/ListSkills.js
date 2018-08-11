@@ -5,9 +5,9 @@ import Table from 'antd/lib/table';
 /* Material UI */
 import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'material-ui/Dialog';
-import CircularProgress from 'material-ui/CircularProgress';
 import Checkbox from 'material-ui/Checkbox';
 import Snackbar from 'material-ui/Snackbar';
+import Paper from 'material-ui/Paper';
 
 /* Ant Design */
 import { LocaleProvider } from 'antd';
@@ -18,6 +18,9 @@ import enUS from 'antd/lib/locale-provider/en_US';
 import { urls } from '../../../utils';
 import * as $ from 'jquery';
 import Cookies from 'universal-cookie';
+import StaticAppBar from '../../StaticAppBar/StaticAppBar.react';
+import NotFound from '../../NotFound/NotFound.react';
+import PropTypes from 'prop-types';
 
 /* CSS */
 import './ListSkills.css';
@@ -348,6 +351,15 @@ export default class ListSkills extends React.Component {
     });
   };
 
+  handleTabChange = activeKey => {
+    if (activeKey === '1') {
+      this.props.history.push('/admin');
+    }
+    if (activeKey === '2') {
+      this.props.history.push('/admin/users');
+    }
+  };
+
   handleReviewStatusChange = () => {
     let value = !this.state.skillReviewStatus;
     this.setState({
@@ -429,6 +441,13 @@ export default class ListSkills extends React.Component {
         onTouchTap={this.handleFinish}
       />,
     ];
+
+    const tabStyle = {
+      width: '100%',
+      animated: false,
+      textAlign: 'left',
+      display: 'inline-block',
+    };
 
     let columns = [
       {
@@ -603,237 +622,267 @@ export default class ListSkills extends React.Component {
 
     return (
       <div>
-        {loading ? (
-          <div className="center">
-            <CircularProgress size={62} color="#4285f5" />
-            <h4>Loading</h4>
+        {cookies.get('showAdmin') === 'true' ? (
+          <div>
+            <div className="heading">
+              <StaticAppBar {...this.props} />
+              <h2 className="h2">Skills Panel</h2>
+            </div>
+            <div className="tabs">
+              <Paper style={tabStyle} zDepth={0}>
+                <Tabs
+                  defaultActiveKey="3"
+                  onTabClick={this.handleTabChange}
+                  tabPosition={this.state.tabPosition}
+                  animated={false}
+                  type="card"
+                  style={{ minHeight: '500px' }}
+                >
+                  <TabPane tab="Admin" key="1" />
+                  <TabPane tab="Users" key="2" />
+                  <TabPane tab="Skills" key="3">
+                    <div>
+                      <div className="table">
+                        <Tabs
+                          tabPosition="top"
+                          animated={false}
+                          style={{ minHeight: '500px' }}
+                        >
+                          <TabPane tab="Active" key="1">
+                            <Dialog
+                              title={'Skill Settings for ' + skillName}
+                              actions={editButtons}
+                              model={true}
+                              open={this.state.showDialog}
+                              style={{
+                                width: '800px',
+                                left: '50%',
+                                marginLeft: '-400px',
+                              }}
+                            >
+                              <div>
+                                <Checkbox
+                                  label="Reviewed"
+                                  labelPosition="right"
+                                  className="select"
+                                  checked={this.state.skillReviewStatus}
+                                  labelStyle={{ fontSize: '14px' }}
+                                  iconStyle={{ left: '4px', fill: '#4285f4' }}
+                                  style={{
+                                    width: 'auto',
+                                    marginTop: '3px',
+                                  }}
+                                  onCheck={this.handleReviewStatusChange}
+                                />
+                                <Checkbox
+                                  label="Editable"
+                                  labelPosition="right"
+                                  className="select"
+                                  checked={this.state.skillEditStatus}
+                                  labelStyle={{ fontSize: '14px' }}
+                                  iconStyle={{ left: '4px', fill: '#4285f4' }}
+                                  style={{
+                                    width: 'auto',
+                                    marginTop: '3px',
+                                  }}
+                                  onCheck={this.handleEditStatusChange}
+                                />
+                                <Checkbox
+                                  label="Staff Pick"
+                                  labelPosition="right"
+                                  className="select"
+                                  checked={this.state.skillStaffPickStatus}
+                                  labelStyle={{ fontSize: '14px' }}
+                                  iconStyle={{ left: '4px', fill: '#4285f4' }}
+                                  style={{
+                                    width: 'auto',
+                                    marginTop: '3px',
+                                    whiteSpace: 'nowrap',
+                                  }}
+                                  onCheck={this.handleStaffPickStatusChange}
+                                />
+                              </div>
+                            </Dialog>
+
+                            <Dialog
+                              title="Delete Skill"
+                              actions={deleteButtons}
+                              model={true}
+                              open={this.state.showDeleteDialog}
+                            >
+                              <div>
+                                Are you sure you want to delete {skillName}?
+                              </div>
+                            </Dialog>
+                            <Dialog
+                              title="Restore Skill"
+                              actions={restoreButtons}
+                              model={true}
+                              open={this.state.showRestoreDialog}
+                            >
+                              <div>
+                                Are you sure you want to restore {skillName}?
+                              </div>
+                            </Dialog>
+                            <Dialog
+                              title="Success"
+                              actions={okButton}
+                              modal={true}
+                              open={this.state.restoreSuccessDialog}
+                            >
+                              <div>
+                                You successfully restored
+                                <span
+                                  style={{
+                                    fontWeight: 'bold',
+                                    margin: '0 5px',
+                                  }}
+                                >
+                                  {skillName}
+                                </span>
+                                !
+                              </div>
+                            </Dialog>
+                            <Dialog
+                              title="Failed!"
+                              actions={okButton}
+                              modal={true}
+                              open={this.state.restoreFailureDialog}
+                            >
+                              <div>
+                                Error!
+                                <span
+                                  style={{
+                                    fontWeight: 'bold',
+                                    margin: '0 5px',
+                                  }}
+                                >
+                                  {skillName}
+                                </span>
+                                could not be restored!
+                              </div>
+                            </Dialog>
+                            <Dialog
+                              title="Success"
+                              actions={okButton}
+                              modal={true}
+                              open={this.state.deleteSuccessDialog}
+                            >
+                              <div>
+                                You successfully deleted
+                                <span
+                                  style={{
+                                    fontWeight: 'bold',
+                                    margin: '0 5px',
+                                  }}
+                                >
+                                  {skillName}
+                                </span>
+                                !
+                              </div>
+                            </Dialog>
+                            <Dialog
+                              title="Failed!"
+                              actions={okButton}
+                              modal={true}
+                              open={this.state.deleteFailureDialog}
+                            >
+                              <div>
+                                Error!
+                                <span
+                                  style={{
+                                    fontWeight: 'bold',
+                                    margin: '0 5px',
+                                  }}
+                                >
+                                  {skillName}
+                                </span>
+                                could not be deleted!
+                              </div>
+                            </Dialog>
+
+                            <Dialog
+                              title="Success"
+                              actions={okButton}
+                              modal={true}
+                              open={this.state.changeStatusSuccessDialog}
+                            >
+                              <div>
+                                Status of
+                                <span
+                                  style={{
+                                    fontWeight: 'bold',
+                                    margin: '0 5px',
+                                  }}
+                                >
+                                  {skillName}
+                                </span>
+                                has been changed successfully!
+                              </div>
+                            </Dialog>
+                            <Dialog
+                              title="Failed!"
+                              actions={okButton}
+                              modal={true}
+                              open={this.state.changeStatusFailureDialog}
+                            >
+                              <div>
+                                Error! Status of
+                                <span
+                                  style={{
+                                    fontWeight: 'bold',
+                                    margin: '0 5px',
+                                  }}
+                                >
+                                  {skillName}
+                                </span>
+                                could not be changed!
+                              </div>
+                            </Dialog>
+                            <LocaleProvider locale={enUS}>
+                              <Table
+                                columns={columns}
+                                pagination={{ showQuickJumper: true }}
+                                rowKey={record => record.registered}
+                                dataSource={this.state.skillsData}
+                                loading={loading}
+                              />
+                            </LocaleProvider>
+                          </TabPane>
+                          <TabPane tab="Deleted" key="2">
+                            <LocaleProvider locale={enUS}>
+                              <Table
+                                columns={delColumns}
+                                pagination={{ showQuickJumper: true }}
+                                rowKey={record => record.registered}
+                                dataSource={this.state.deletedSkills}
+                              />
+                            </LocaleProvider>
+                          </TabPane>
+                        </Tabs>
+                      </div>
+                      <Snackbar
+                        open={this.state.openSnackbar}
+                        message={this.state.msgSnackbar}
+                        autoHideDuration={2000}
+                        onRequestClose={() => {
+                          this.setState({ openSnackbar: false });
+                        }}
+                      />
+                    </div>
+                  </TabPane>
+                </Tabs>
+              </Paper>
+            </div>
           </div>
         ) : (
-          <div className="table">
-            <Tabs
-              tabPosition="top"
-              animated={false}
-              style={{ minHeight: '500px' }}
-            >
-              <TabPane tab="Active" key="1">
-                <Dialog
-                  title={'Skill Settings for ' + skillName}
-                  actions={editButtons}
-                  model={true}
-                  open={this.state.showDialog}
-                  style={{
-                    width: '800px',
-                    left: '50%',
-                    marginLeft: '-400px',
-                  }}
-                >
-                  <div>
-                    <Checkbox
-                      label="Reviewed"
-                      labelPosition="right"
-                      className="select"
-                      checked={this.state.skillReviewStatus}
-                      labelStyle={{ fontSize: '14px' }}
-                      iconStyle={{ left: '4px', fill: '#4285f4' }}
-                      style={{
-                        width: 'auto',
-                        marginTop: '3px',
-                      }}
-                      onCheck={this.handleReviewStatusChange}
-                    />
-                    <Checkbox
-                      label="Editable"
-                      labelPosition="right"
-                      className="select"
-                      checked={this.state.skillEditStatus}
-                      labelStyle={{ fontSize: '14px' }}
-                      iconStyle={{ left: '4px', fill: '#4285f4' }}
-                      style={{
-                        width: 'auto',
-                        marginTop: '3px',
-                      }}
-                      onCheck={this.handleEditStatusChange}
-                    />
-                    <Checkbox
-                      label="Staff Pick"
-                      labelPosition="right"
-                      className="select"
-                      checked={this.state.skillStaffPickStatus}
-                      labelStyle={{ fontSize: '14px' }}
-                      iconStyle={{ left: '4px', fill: '#4285f4' }}
-                      style={{
-                        width: 'auto',
-                        marginTop: '3px',
-                        whiteSpace: 'nowrap',
-                      }}
-                      onCheck={this.handleStaffPickStatusChange}
-                    />
-                  </div>
-                </Dialog>
-
-                <Dialog
-                  title="Delete Skill"
-                  actions={deleteButtons}
-                  model={true}
-                  open={this.state.showDeleteDialog}
-                >
-                  <div>Are you sure you want to delete {skillName}?</div>
-                </Dialog>
-                <Dialog
-                  title="Restore Skill"
-                  actions={restoreButtons}
-                  model={true}
-                  open={this.state.showRestoreDialog}
-                >
-                  <div>Are you sure you want to restore {skillName}?</div>
-                </Dialog>
-                <Dialog
-                  title="Success"
-                  actions={okButton}
-                  modal={true}
-                  open={this.state.restoreSuccessDialog}
-                >
-                  <div>
-                    You successfully restored
-                    <span
-                      style={{
-                        fontWeight: 'bold',
-                        margin: '0 5px',
-                      }}
-                    >
-                      {skillName}
-                    </span>
-                    !
-                  </div>
-                </Dialog>
-                <Dialog
-                  title="Failed!"
-                  actions={okButton}
-                  modal={true}
-                  open={this.state.restoreFailureDialog}
-                >
-                  <div>
-                    Error!
-                    <span
-                      style={{
-                        fontWeight: 'bold',
-                        margin: '0 5px',
-                      }}
-                    >
-                      {skillName}
-                    </span>
-                    could not be restored!
-                  </div>
-                </Dialog>
-                <Dialog
-                  title="Success"
-                  actions={okButton}
-                  modal={true}
-                  open={this.state.deleteSuccessDialog}
-                >
-                  <div>
-                    You successfully deleted
-                    <span
-                      style={{
-                        fontWeight: 'bold',
-                        margin: '0 5px',
-                      }}
-                    >
-                      {skillName}
-                    </span>
-                    !
-                  </div>
-                </Dialog>
-                <Dialog
-                  title="Failed!"
-                  actions={okButton}
-                  modal={true}
-                  open={this.state.deleteFailureDialog}
-                >
-                  <div>
-                    Error!
-                    <span
-                      style={{
-                        fontWeight: 'bold',
-                        margin: '0 5px',
-                      }}
-                    >
-                      {skillName}
-                    </span>
-                    could not be deleted!
-                  </div>
-                </Dialog>
-
-                <Dialog
-                  title="Success"
-                  actions={okButton}
-                  modal={true}
-                  open={this.state.changeStatusSuccessDialog}
-                >
-                  <div>
-                    Status of
-                    <span
-                      style={{
-                        fontWeight: 'bold',
-                        margin: '0 5px',
-                      }}
-                    >
-                      {skillName}
-                    </span>
-                    has been changed successfully!
-                  </div>
-                </Dialog>
-                <Dialog
-                  title="Failed!"
-                  actions={okButton}
-                  modal={true}
-                  open={this.state.changeStatusFailureDialog}
-                >
-                  <div>
-                    Error! Status of
-                    <span
-                      style={{
-                        fontWeight: 'bold',
-                        margin: '0 5px',
-                      }}
-                    >
-                      {skillName}
-                    </span>
-                    could not be changed!
-                  </div>
-                </Dialog>
-                <LocaleProvider locale={enUS}>
-                  <Table
-                    columns={columns}
-                    pagination={{ showQuickJumper: true }}
-                    rowKey={record => record.registered}
-                    dataSource={this.state.skillsData}
-                    loading={loading}
-                  />
-                </LocaleProvider>
-              </TabPane>
-              <TabPane tab="Deleted" key="2">
-                <LocaleProvider locale={enUS}>
-                  <Table
-                    columns={delColumns}
-                    pagination={{ showQuickJumper: true }}
-                    rowKey={record => record.registered}
-                    dataSource={this.state.deletedSkills}
-                  />
-                </LocaleProvider>
-              </TabPane>
-            </Tabs>
-          </div>
+          <NotFound />
         )}
-        <Snackbar
-          open={this.state.openSnackbar}
-          message={this.state.msgSnackbar}
-          autoHideDuration={2000}
-          onRequestClose={() => {
-            this.setState({ openSnackbar: false });
-          }}
-        />
       </div>
     );
   }
 }
+
+ListSkills.propTypes = {
+  history: PropTypes.object,
+};
