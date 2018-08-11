@@ -33,6 +33,19 @@
     margin-left: 23px;
 }
 
+.h3{
+    font-size: 25px;
+    margin-top: 26px;
+    margin-bottom: 24px;
+    font-family: Helvetica Neue For Number,-apple-system,
+    BlinkMacSystemFont,Segoe UI,Roboto,
+    PingFang SC,Hiragino Sans GB,
+    Microsoft YaHei,Helvetica Neue,Helvetica,Arial,sans-serif;
+    color: rgba(0,0,0);
+    font-weight: bold;
+    height: 28px;
+}
+
 .containerPaper{
     margin-top: -68px;
     margin-left: 60px;

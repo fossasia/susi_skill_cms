@@ -68,6 +68,9 @@ class SystemLogs extends React.Component {
     if (activeKey === '3') {
       this.props.history.push('/admin/skills');
     }
+    if (activeKey === '4') {
+      this.props.history.push('/admin/settings');
+    }
   };
 
   handleCustom = e => {
@@ -117,6 +120,7 @@ class SystemLogs extends React.Component {
                   <TabPane tab="Admin" key="1" />
                   <TabPane tab="Users" key="2" />
                   <TabPane tab="Skills" key="3" />
+                  <TabPane tab="System Settings" key="4" />
                   <TabPane tab="System Logs" key="5">
                     <div>
                       <div style={{ marginBottom: '20px' }}>

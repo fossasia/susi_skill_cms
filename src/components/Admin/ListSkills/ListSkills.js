@@ -56,6 +56,7 @@ export default class ListSkills extends React.Component {
       deleteFailureDialog: false,
       restoreSuccessDialog: false,
       restoreFailureDialog: false,
+      zIndex: -1,
     };
   }
 
@@ -340,6 +341,7 @@ export default class ListSkills extends React.Component {
       skillEditStatus: editStatus,
       skillStaffPickStatus: staffPickStatus,
       showDialog: true,
+      zIndex: 1500,
     });
   };
 
@@ -349,6 +351,12 @@ export default class ListSkills extends React.Component {
       showDeleteDialog: false,
       showRestoreDialog: false,
     });
+
+    setTimeout(() => {
+      this.setState({
+        zIndex: -1,
+      });
+    }, 200);
   };
 
   handleTabChange = activeKey => {
@@ -357,6 +365,9 @@ export default class ListSkills extends React.Component {
     }
     if (activeKey === '2') {
       this.props.history.push('/admin/users');
+    }
+    if (activeKey === '4') {
+      this.props.history.push('/admin/settings');
     }
     if (activeKey === '5') {
       this.props.history.push('/admin/logs');
@@ -661,6 +672,7 @@ export default class ListSkills extends React.Component {
                                 width: '800px',
                                 left: '50%',
                                 marginLeft: '-400px',
+                                zIndex: this.state.zIndex,
                               }}
                             >
                               <div>
@@ -874,6 +886,7 @@ export default class ListSkills extends React.Component {
                       />
                     </div>
                   </TabPane>
+                  <TabPane tab="System Settings" key="4" />
                   <TabPane tab="System Logs" key="5" />
                 </Tabs>
               </Paper>
