@@ -3,11 +3,13 @@ import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import CodeView from './SkillViews/CodeView';
 import ConversationView from './SkillViews/ConversationView';
 import TreeView from './SkillViews/TreeView';
+import Preview from '../BotBuilder/Preview/Preview';
 import { urls, colors } from '../../utils';
 import CircularProgress from 'material-ui/CircularProgress';
 import { Link } from 'react-router-dom';
 import ISO6391 from 'iso-639-1';
 import ReactTooltip from 'react-tooltip';
+import { Grid, Col, Row } from 'react-flexbox-grid';
 import PropTypes from 'prop-types';
 import Cookies from 'universal-cookie';
 import * as $ from 'jquery';
@@ -24,6 +26,8 @@ import Code from 'material-ui/svg-icons/action/code';
 import QA from 'material-ui/svg-icons/action/question-answer';
 import Timeline from 'material-ui/svg-icons/action/timeline';
 import Add from 'material-ui/svg-icons/content/add';
+import ChevronLeft from 'material-ui/svg-icons/navigation/chevron-left';
+import ChevronRight from 'material-ui/svg-icons/navigation/chevron-right';
 
 // Ant Design Components
 import notification from 'antd/lib/notification';
@@ -60,6 +64,10 @@ export default class SkillCreator extends Component {
       languageValue: null,
       expertValue: '',
       groups: [],
+      slideState: 1, // 1 means in middle, 2 means preview collapsed
+      colSkill: 8,
+      colPreview: 4,
+      prevButton: 0, // 0 means disappear, 1 means appear
       anchorOrigin: {
         horizontal: 'left',
         vertical: 'bottom',
@@ -73,6 +81,12 @@ export default class SkillCreator extends Component {
     self.loadgroups();
     // send code to CodeView in botbuilder
     if (this.props.botBuilder) {
+      this.setState({
+        slideState: 0,
+        colSkill: 12,
+        colPreview: 0,
+        prevButton: 0,
+      });
       if (
         this.props.botBuilder.category &&
         this.props.botBuilder.language &&
@@ -107,6 +121,25 @@ export default class SkillCreator extends Component {
       this.setState({ loadViews: true });
     }
     this.prefillCode();
+  };
+
+  handlePreviewToggle = () => {
+    let { slideState } = this.state;
+    if (slideState === 2) {
+      this.setState({
+        slideState: 1,
+        colSkill: 8,
+        colPreview: 4,
+        prevButton: 0,
+      });
+    } else if (slideState === 1) {
+      this.setState({
+        slideState: 2,
+        colSkill: 12,
+        colPreview: 0,
+        prevButton: 1,
+      });
+    }
   };
 
   prefillCode = () => {
@@ -528,285 +561,343 @@ export default class SkillCreator extends Component {
       );
     }
     return (
-      <div
-        style={{
-          padding: this.props.botBuilder ? '0px' : '40px 30px 30px',
-          width: '100%',
-        }}
-      >
-        {this.props.botBuilder ? null : <StaticAppBar {...this.props} />}
+      <div>
         <div
           style={{
-            display: 'flex',
-            flexDirection: 'row',
-            paddingTop: this.props.botBuilder ? '0px' : '28px',
+            padding: this.props.botBuilder ? '0px' : '40px 30px 30px',
+            width: '100%',
           }}
         >
-          {this.props.botBuilder ? (
-            <h1 style={{ lineHeight: '50px' }}>
-              1. Add a new skill to your bot
-            </h1>
-          ) : (
-            <div style={styles.heading}>Create a SUSI Skill</div>
-          )}
-          <div
-            style={{
-              marginLeft: 'auto',
-              marginRight: this.props.botBuilder ? '0px' : '30px',
-            }}
-          >
-            <IconButton
-              tooltip="Code View"
-              onTouchTap={() => {
-                this.setState({
-                  codeView: true,
-                  conversationView: false,
-                  treeView: false,
-                });
-              }}
-              disableTouchRipple={true}
-            >
-              <Code
-                color={
-                  this.state.codeView
-                    ? 'rgb(66, 133, 244)'
-                    : 'rgb(158, 158, 158)'
-                }
-              />
-            </IconButton>
-            <IconButton
-              tooltip="Conversation View"
-              onTouchTap={() => {
-                this.setState({
-                  codeView: false,
-                  conversationView: true,
-                  treeView: false,
-                });
-              }}
-              disableTouchRipple={true}
-            >
-              <QA
-                color={
-                  this.state.conversationView
-                    ? 'rgb(66, 133, 244)'
-                    : 'rgb(158, 158, 158)'
-                }
-              />
-            </IconButton>
-            <IconButton
-              tooltip="Tree View"
-              onTouchTap={() => {
-                this.setState({
-                  codeView: false,
-                  conversationView: false,
-                  treeView: true,
-                });
-              }}
-              disableTouchRipple={true}
-            >
-              <Timeline
-                color={
-                  this.state.treeView
-                    ? 'rgb(66, 133, 244)'
-                    : 'rgb(158, 158, 158)'
-                }
-              />
-            </IconButton>
-          </div>
-        </div>
-        <ReactTooltip
-          effect="solid"
-          place="bottom"
-          className="tooltipSkill"
-          delayHide={500}
-          html={true}
-        />
-        <Paper style={styles.paperStyle} zDepth={1}>
-          <Info
-            style={styles.helpIcon}
-            data-tip={`Learn more about <a href=${urls.CMS_GITHUB_URL +
-              '/blob/master/docs/Skill_Tutorial.md'} rel="noopener noreferrer" target="_blank" >SUSI Skill Language</a>`}
-          />
-          <div style={styles.center}>
-            <div style={styles.dropdownDiv}>
-              <div
+          {this.props.botBuilder ? null : <StaticAppBar {...this.props} />}
+          <Grid fluid>
+            <Row>
+              <Col
+                md={this.state.colSkill}
                 style={{
-                  fontSize: 15,
-                  paddingTop: '8px',
-                  paddingLeft: '10px',
+                  display: this.state.colSkill === 0 ? 'none' : 'block',
                 }}
               >
-                Category:
-              </div>
-              <DropDownMenu
-                style={{ width: 300 }}
-                value={this.state.groupValue}
-                onChange={this.handleGroupChange}
-                anchorOrigin={this.state.anchorOrigin}
-                autoWidth={true}
-                maxHeight={300}
-              >
-                {this.state.groups}
-              </DropDownMenu>
-              <div style={{ fontSize: 15, paddingTop: '8px' }}>Language:</div>
-              <DropDownMenu
-                disabled={this.state.languageSelect}
-                style={{ width: 200 }}
-                value={this.state.languageValue}
-                anchorOrigin={this.state.anchorOrigin}
-                onChange={this.handleLanguageChange}
-                autoWidth={true}
-                maxHeight={300}
-              >
-                {languages}
-              </DropDownMenu>
-              <TextField
-                disabled={this.state.expertSelect}
-                floatingLabelText={
-                  this.props.botBuilder ? 'Bot Name' : 'Skill Name'
-                }
-                floatingLabelFixed={false}
-                value={this.state.expertValue}
-                hintText={this.props.botBuilder ? 'Bot Name' : 'Skill Name'}
-                style={{ marginLeft: 10, marginRight: 10 }}
-                onChange={this.handleExpertChange}
-              />
-              <div style={{ paddingTop: 20 }}>
-                {this.state.showImage && (
-                  <img
-                    alt="preview"
-                    id="target"
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    paddingTop: this.props.botBuilder ? '0px' : '28px',
+                  }}
+                >
+                  {this.props.botBuilder ? (
+                    <h1 style={{ lineHeight: '50px' }}>
+                      1. Add a new skill to your bot
+                    </h1>
+                  ) : (
+                    <div style={styles.heading}>Create a SUSI Skill</div>
+                  )}
+                  <div
                     style={{
-                      width: 60,
-                      height: 60,
-                      borderRadius: '50%',
-                      marginRight: 20,
-                      border: 0,
+                      marginLeft: 'auto',
+                      marginRight: this.props.botBuilder ? '0px' : '30px',
                     }}
-                    src={this.state.image}
-                  />
-                )}
-                {this.props.botBuilder ? (
-                  <form style={{ display: 'inline-block' }}>
-                    <label
-                      title="Upload bot image"
-                      style={styles.uploadCircularButton}
-                    >
-                      <input
-                        type="file"
-                        ref={c => {
-                          this.file = c;
-                        }}
-                        name="user[image]"
-                        multiple="false"
-                        onChange={this._onChange}
-                      />
-                      <Add
-                        style={{
-                          height: '30px',
-                          marginTop: '15px',
-                          color: 'rgb(66, 133, 245)',
-                        }}
-                      />
-                    </label>
-                  </form>
-                ) : (
-                  <RaisedButton
-                    label="Choose an Image"
-                    labelPosition="before"
-                    backgroundColor={colors.header}
-                    containerElement="label"
-                    labelColor="#fff"
                   >
-                    <input
-                      type="file"
-                      style={{
-                        cursor: 'pointer',
-                        position: 'absolute',
-                        top: 0,
-                        bottom: 0,
-                        right: 0,
-                        left: 0,
-                        width: '100%',
-                        opacity: 0,
+                    <IconButton
+                      tooltip="Code View"
+                      onTouchTap={() => {
+                        this.setState({
+                          codeView: true,
+                          conversationView: false,
+                          treeView: false,
+                        });
                       }}
-                      ref={c => {
-                        this.file = c;
+                      disableTouchRipple={true}
+                    >
+                      <Code
+                        color={
+                          this.state.codeView
+                            ? 'rgb(66, 133, 244)'
+                            : 'rgb(158, 158, 158)'
+                        }
+                      />
+                    </IconButton>
+                    <IconButton
+                      tooltip="Conversation View"
+                      onTouchTap={() => {
+                        this.setState({
+                          codeView: false,
+                          conversationView: true,
+                          treeView: false,
+                        });
                       }}
-                      name="user[image]"
-                      multiple="false"
-                      onChange={this._onChange}
-                    />
-                  </RaisedButton>
-                )}
-              </div>
-            </div>
-          </div>
-        </Paper>
-        {!this.state.loadViews ? (
-          <div className="center" style={{ padding: 10 }}>
-            <CircularProgress size={62} color="#4285f5" />
-            <h4>Loading</h4>
-          </div>
-        ) : null}
-        {this.state.codeView && this.state.loadViews ? (
-          <CodeView
-            skillCode={this.state.code}
-            sendInfoToProps={this.sendInfoToProps}
-          />
-        ) : null}
-        {this.state.conversationView && this.state.loadViews ? (
-          <ConversationView skillCode={this.state.code} />
-        ) : null}
-        {this.state.treeView && this.state.loadViews ? (
-          <TreeView skillCode={this.state.code} botbuilder={false} />
-        ) : null}
-        {this.props.botBuilder ? null : (
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              marginTop: 10,
-            }}
-          >
-            <Paper
-              style={{
-                width: '100%',
-                padding: 10,
-                display: 'flex',
-                alignItems: 'center',
-                textAlign: 'center',
-                justifyContent: 'center',
-              }}
-              zDepth={1}
-            >
-              <TextField
-                floatingLabelText="Commit message"
-                floatingLabelFixed={true}
-                hintText="Enter Commit Message"
-                style={{ width: '80%' }}
-                value={this.state.commitMessage}
-                onChange={this.handleCommitMessageChange}
-              />
-              <RaisedButton
-                label="Save"
-                backgroundColor={colors.header}
-                labelColor="#fff"
-                style={{ marginLeft: 10 }}
-                onTouchTap={this.saveClick}
-              />
-              <Link to="/">
-                <RaisedButton
-                  label="Cancel"
-                  backgroundColor={colors.header}
-                  labelColor="#fff"
-                  style={{ marginLeft: 10 }}
+                      disableTouchRipple={true}
+                    >
+                      <QA
+                        color={
+                          this.state.conversationView
+                            ? 'rgb(66, 133, 244)'
+                            : 'rgb(158, 158, 158)'
+                        }
+                      />
+                    </IconButton>
+                    <IconButton
+                      tooltip="Tree View"
+                      onTouchTap={() => {
+                        this.setState({
+                          codeView: false,
+                          conversationView: false,
+                          treeView: true,
+                        });
+                      }}
+                      disableTouchRipple={true}
+                    >
+                      <Timeline
+                        color={
+                          this.state.treeView
+                            ? 'rgb(66, 133, 244)'
+                            : 'rgb(158, 158, 158)'
+                        }
+                      />
+                    </IconButton>
+                  </div>
+                </div>
+                <ReactTooltip
+                  effect="solid"
+                  place="bottom"
+                  className="tooltipSkill"
+                  delayHide={500}
+                  html={true}
                 />
-              </Link>
-            </Paper>
-          </div>
-        )}
+                <Paper style={styles.paperStyle} zDepth={1}>
+                  <Info
+                    style={styles.helpIcon}
+                    data-tip={`Learn more about <a href=${urls.CMS_GITHUB_URL +
+                      '/blob/master/docs/Skill_Tutorial.md'} rel="noopener noreferrer" target="_blank" >SUSI Skill Language</a>`}
+                  />
+                  <div style={styles.center}>
+                    <div style={styles.dropdownDiv}>
+                      <div
+                        style={{
+                          fontSize: 15,
+                          paddingTop: '8px',
+                          paddingLeft: '10px',
+                        }}
+                      >
+                        Category:
+                      </div>
+                      <DropDownMenu
+                        style={{ width: 300 }}
+                        value={this.state.groupValue}
+                        onChange={this.handleGroupChange}
+                        anchorOrigin={this.state.anchorOrigin}
+                        autoWidth={true}
+                        maxHeight={300}
+                      >
+                        {this.state.groups}
+                      </DropDownMenu>
+                      <div style={{ fontSize: 15, paddingTop: '8px' }}>
+                        Language:
+                      </div>
+                      <DropDownMenu
+                        disabled={this.state.languageSelect}
+                        style={{ width: 200 }}
+                        value={this.state.languageValue}
+                        anchorOrigin={this.state.anchorOrigin}
+                        onChange={this.handleLanguageChange}
+                        autoWidth={true}
+                        maxHeight={300}
+                      >
+                        {languages}
+                      </DropDownMenu>
+                      <TextField
+                        disabled={this.state.expertSelect}
+                        floatingLabelText={
+                          this.props.botBuilder ? 'Bot Name' : 'Skill Name'
+                        }
+                        floatingLabelFixed={false}
+                        value={this.state.expertValue}
+                        hintText={
+                          this.props.botBuilder ? 'Bot Name' : 'Skill Name'
+                        }
+                        style={{ marginLeft: 10, marginRight: 10 }}
+                        onChange={this.handleExpertChange}
+                      />
+                      <div style={{ paddingTop: 20 }}>
+                        {this.state.showImage && (
+                          <img
+                            alt="preview"
+                            id="target"
+                            style={{
+                              width: 60,
+                              height: 60,
+                              borderRadius: '50%',
+                              marginRight: 20,
+                              border: 0,
+                            }}
+                            src={this.state.image}
+                          />
+                        )}
+                        {this.props.botBuilder ? (
+                          <form style={{ display: 'inline-block' }}>
+                            <label
+                              title="Upload bot image"
+                              style={styles.uploadCircularButton}
+                            >
+                              <input
+                                type="file"
+                                ref={c => {
+                                  this.file = c;
+                                }}
+                                name="user[image]"
+                                multiple="false"
+                                onChange={this._onChange}
+                              />
+                              <Add
+                                style={{
+                                  height: '30px',
+                                  marginTop: '15px',
+                                  color: 'rgb(66, 133, 245)',
+                                }}
+                              />
+                            </label>
+                          </form>
+                        ) : (
+                          <RaisedButton
+                            label="Choose an Image"
+                            labelPosition="before"
+                            backgroundColor={colors.header}
+                            containerElement="label"
+                            labelColor="#fff"
+                          >
+                            <input
+                              type="file"
+                              style={{
+                                cursor: 'pointer',
+                                position: 'absolute',
+                                top: 0,
+                                bottom: 0,
+                                right: 0,
+                                left: 0,
+                                width: '100%',
+                                opacity: 0,
+                              }}
+                              ref={c => {
+                                this.file = c;
+                              }}
+                              name="user[image]"
+                              multiple="false"
+                              onChange={this._onChange}
+                            />
+                          </RaisedButton>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </Paper>
+                {!this.state.loadViews ? (
+                  <div className="center" style={{ padding: 10 }}>
+                    <CircularProgress size={62} color="#4285f5" />
+                    <h4>Loading</h4>
+                  </div>
+                ) : null}
+                {this.state.codeView && this.state.loadViews ? (
+                  <CodeView
+                    skillCode={this.state.code}
+                    sendInfoToProps={this.sendInfoToProps}
+                  />
+                ) : null}
+                {this.state.conversationView && this.state.loadViews ? (
+                  <ConversationView skillCode={this.state.code} />
+                ) : null}
+                {this.state.treeView && this.state.loadViews ? (
+                  <TreeView skillCode={this.state.code} botbuilder={false} />
+                ) : null}
+                {this.props.botBuilder ? null : (
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      marginTop: 10,
+                    }}
+                  >
+                    <Paper
+                      style={{
+                        width: '100%',
+                        padding: 10,
+                        display: 'flex',
+                        alignItems: 'center',
+                        textAlign: 'center',
+                        justifyContent: 'center',
+                      }}
+                      zDepth={1}
+                    >
+                      <TextField
+                        floatingLabelText="Commit message"
+                        floatingLabelFixed={true}
+                        hintText="Enter Commit Message"
+                        style={{ width: '80%' }}
+                        value={this.state.commitMessage}
+                        onChange={this.handleCommitMessageChange}
+                      />
+                      <RaisedButton
+                        label="Save"
+                        backgroundColor={colors.header}
+                        labelColor="#fff"
+                        style={{ marginLeft: 10 }}
+                        onTouchTap={this.saveClick}
+                      />
+                      <Link to="/">
+                        <RaisedButton
+                          label="Cancel"
+                          backgroundColor={colors.header}
+                          labelColor="#fff"
+                          style={{ marginLeft: 10 }}
+                        />
+                      </Link>
+                    </Paper>
+                    {this.state.prevButton === 1 ? (
+                      <div className="preview-button" style={{ top: '68px' }}>
+                        <span title="See Preview">
+                          <ChevronLeft
+                            onClick={this.handlePreviewToggle}
+                            style={styles.chevronButton}
+                          />
+                        </span>
+                      </div>
+                    ) : null}
+                  </div>
+                )}
+              </Col>
+              {this.props.botBuilder ? null : (
+                <Col
+                  xs={12}
+                  md={this.state.colPreview}
+                  style={{
+                    display: this.state.colPreview === 0 ? 'none' : 'block',
+                    paddingTop: '15px',
+                  }}
+                >
+                  <Paper style={styles.paperStyle} zDepth={1}>
+                    <div style={{ display: 'flex', flexDirection: 'row' }}>
+                      <span title="collapse preview">
+                        <ChevronRight
+                          onClick={this.handlePreviewToggle}
+                          style={styles.chevron}
+                        />
+                      </span>
+                      <h2 style={{ margin: 'auto' }}>Preview</h2>
+                    </div>
+                    <div
+                      style={{
+                        position: 'relative',
+                        overflow: 'hidden',
+                        marginTop: '20px',
+                      }}
+                    >
+                      <Preview skill={this.state.code} botBuilder={false} />
+                    </div>
+                  </Paper>
+                </Col>
+              )}
+            </Row>
+          </Grid>
+        </div>
       </div>
     );
   }
@@ -859,6 +950,26 @@ const styles = {
     textAlign: 'center',
     float: 'left',
     cursor: 'pointer',
+  },
+  chevron: {
+    position: 'relative',
+    left: '-20px',
+    top: '-10px',
+    width: '35px',
+    height: '35px',
+    color: 'rgb(158, 158, 158)',
+    cursor: 'pointer',
+    display: window.innerWidth < 769 ? 'none' : 'inherit',
+  },
+  chevronButton: {
+    position: 'absolute',
+    left: '4px',
+    top: '4px',
+    width: '35px',
+    height: '35px',
+    color: 'white',
+    cursor: 'pointer',
+    display: window.innerWidth < 769 ? 'none' : 'inherit',
   },
 };
 
