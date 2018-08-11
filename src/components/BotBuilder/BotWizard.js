@@ -567,6 +567,18 @@ class BotWizard extends React.Component {
       });
   };
 
+  check = () => {
+    if (this.state.updateSkillNow) {
+      this.setStep(3);
+    } else {
+      this.setState({
+        openSnackbar: true,
+        msgSnackbar:
+          'Please save the chatbot in Configure tab before deploying.',
+      });
+    }
+  };
+
   render() {
     const muiTheme = getMuiTheme({
       stepper: {
@@ -626,7 +638,7 @@ class BotWizard extends React.Component {
                             </StepButton>
                           </Step>
                           <Step>
-                            <StepButton onClick={() => this.setStep(3)}>
+                            <StepButton onClick={() => this.check()}>
                               Deploy
                             </StepButton>
                           </Step>
