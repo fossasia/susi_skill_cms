@@ -13,10 +13,11 @@ import SkillEditor from './components/SkillEditor/SkillEditor';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import NotFound from './components/NotFound/NotFound.react';
 import Admin from './components/Admin/Admin';
+import Users from './components/Admin/ListUser/ListUser.js';
+import Skills from './components/Admin/ListSkills/ListSkills.js';
 import Dashboard from './components/Dashboard/Dashboard';
 import BrowseSkill from './components/BrowseSkill/BrowseSkill';
 import SkillListing from './components/SkillPage/SkillListing';
-import ListUser from './components/Admin/ListUser/ListUser';
 import Logout from './components/Auth/Logout.react';
 import SkillCreator from './components/SkillCreator/SkillCreator';
 import SkillVersion from './components/SkillVersion/SkillVersion';
@@ -49,7 +50,8 @@ class App extends React.Component {
               component={SkillEditor}
             />
             <Route exact path="/admin" component={Admin} />
-            <Route path="/listUser" component={ListUser} />
+            <Route exact path="/admin/users" component={Users} />
+            <Route exact path="/admin/skills" component={Skills} />
             <Route
               exact
               path="/:category/:skill/:lang"

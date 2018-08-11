@@ -9,8 +9,6 @@ import Cookies from 'universal-cookie';
 import PropTypes from 'prop-types';
 import Paper from 'material-ui/Paper';
 import Tabs from 'antd/lib/tabs';
-import ListUser from './ListUser/ListUser';
-import ListSkills from './ListSkills/ListSkills';
 import { Avatar } from 'antd';
 import { urls } from '../../utils';
 
@@ -112,6 +110,15 @@ class Admin extends Component {
     window.location.reload();
   };
 
+  handleTabChange = activeKey => {
+    if (activeKey === '2') {
+      this.props.history.push('/admin/users');
+    }
+    if (activeKey === '3') {
+      this.props.history.push('/admin/skills');
+    }
+  };
+
   render() {
     return (
       <div>
@@ -128,7 +135,12 @@ class Admin extends Component {
                 <h2 className="h2">Admin Panel</h2>
                 <div style={styles.tabStyle} className="tabs">
                   <Paper style={styles.tabStyle} zDepth={0}>
-                    <Tabs tabPosition="top" animated={false} type="card">
+                    <Tabs
+                      onTabClick={this.handleTabChange}
+                      tabPosition="top"
+                      animated={false}
+                      type="card"
+                    >
                       <TabPane tab="Admin" key="1">
                         <span
                           style={{
@@ -401,12 +413,8 @@ class Admin extends Component {
                           </Card>
                         </span>
                       </TabPane>
-                      <TabPane tab="Users" key="2">
-                        <ListUser />
-                      </TabPane>
-                      <TabPane tab="Skills" key="3">
-                        <ListSkills />
-                      </TabPane>
+                      <TabPane tab="Users" key="2" />
+                      <TabPane tab="Skills" key="3" />
                     </Tabs>
                   </Paper>
                 </div>
