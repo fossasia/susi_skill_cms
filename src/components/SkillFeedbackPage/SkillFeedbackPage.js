@@ -23,11 +23,10 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import Delete from 'material-ui/svg-icons/action/delete';
 import EditBtn from 'material-ui/svg-icons/editor/mode-edit';
 import NavigationChevronRight from 'material-ui/svg-icons/navigation/chevron-right';
-import md5 from 'md5';
 
 import '../SkillFeedbackCard/SkillFeedbackCard.css';
 import './SkillFeedbackPage.css';
-import { urls, parseDate } from '../../utils';
+import { urls, parseDate, getAvatarProps } from '../../utils';
 
 const cookies = new Cookies();
 
@@ -428,16 +427,6 @@ class SkillFeedbackPage extends Component {
     this.setState({ showAuthorSkills: false });
   };
 
-  getAvatarProps = emailId => {
-    const emailHash = md5(emailId);
-    const GRAVATAR_IMAGE_URL = `${urls.GRAVATAR_URL}/${emailHash}.jpg`;
-    const avatarProps = {
-      name: emailId.toUpperCase(),
-      src: GRAVATAR_IMAGE_URL,
-    };
-    return avatarProps;
-  };
-
   render() {
     const { currentPage } = this.state;
     const pages = this.fetchPageNumbers();
@@ -495,7 +484,7 @@ class SkillFeedbackPage extends Component {
         this.state.skill_feedback.findIndex(x => x.email === emailId)
       ];
       if (userFeedback && this.state.currentPage === 1) {
-        const avatarProps = this.getAvatarProps(userFeedback.email);
+        const avatarProps = getAvatarProps(userFeedback.email);
         userFeedbackCard = (
           <div>
             <ListItem
@@ -539,7 +528,7 @@ class SkillFeedbackPage extends Component {
         )
         .map((data, index) => {
           if (data.email !== emailId) {
-            const avatarProps = this.getAvatarProps(data.email);
+            const avatarProps = getAvatarProps(data.email);
             return (
               <ListItem
                 key={index}
