@@ -358,6 +358,9 @@ export default class ListSkills extends React.Component {
     if (activeKey === '2') {
       this.props.history.push('/admin/users');
     }
+    if (activeKey === '5') {
+      this.props.history.push('/admin/logs');
+    }
   };
 
   handleReviewStatusChange = () => {
@@ -871,6 +874,7 @@ export default class ListSkills extends React.Component {
                       />
                     </div>
                   </TabPane>
+                  <TabPane tab="System Logs" key="5" />
                 </Tabs>
               </Paper>
             </div>

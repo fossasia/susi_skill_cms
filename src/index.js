@@ -16,6 +16,7 @@ import NotFound from './components/NotFound/NotFound.react';
 import Admin from './components/Admin/Admin';
 import Users from './components/Admin/ListUser/ListUser.js';
 import Skills from './components/Admin/ListSkills/ListSkills.js';
+import SystemLogs from './components/Admin/SystemLogs/SystemLogs.js';
 import Dashboard from './components/Dashboard/Dashboard';
 import BrowseSkill from './components/BrowseSkill/BrowseSkill';
 import SkillListing from './components/SkillPage/SkillListing';
@@ -63,6 +64,7 @@ class App extends React.Component {
             <Route exact path="/admin" component={Admin} />
             <Route exact path="/admin/users" component={Users} />
             <Route exact path="/admin/skills" component={Skills} />
+            <Route exact path="/admin/logs" component={SystemLogs} />
             <Route
               exact
               path="/:category/:skill/:lang"
