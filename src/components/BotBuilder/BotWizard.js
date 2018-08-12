@@ -2,8 +2,6 @@ import React from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import { Step, Stepper, StepButton } from 'material-ui/Stepper';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import { Grid, Col, Row } from 'react-flexbox-grid';
 import Build from './BotBuilderPages/Build';
 import PropTypes from 'prop-types';
@@ -580,11 +578,6 @@ class BotWizard extends React.Component {
   };
 
   render() {
-    const muiTheme = getMuiTheme({
-      stepper: {
-        iconColor: 'rgb(66, 133, 244)',
-      },
-    });
     if (!cookies.get('loggedIn')) {
       return (
         <div>
@@ -620,30 +613,28 @@ class BotWizard extends React.Component {
                     </div>
                   ) : (
                     <div>
-                      <MuiThemeProvider muiTheme={muiTheme}>
-                        <Stepper activeStep={stepIndex} linear={false}>
-                          <Step>
-                            <StepButton onClick={() => this.setStep(0)}>
-                              Build
-                            </StepButton>
-                          </Step>
-                          <Step>
-                            <StepButton onClick={() => this.setStep(1)}>
-                              Design
-                            </StepButton>
-                          </Step>
-                          <Step>
-                            <StepButton onClick={() => this.setStep(2)}>
-                              Configure
-                            </StepButton>
-                          </Step>
-                          <Step>
-                            <StepButton onClick={() => this.check()}>
-                              Deploy
-                            </StepButton>
-                          </Step>
-                        </Stepper>
-                      </MuiThemeProvider>
+                      <Stepper activeStep={stepIndex} linear={false}>
+                        <Step>
+                          <StepButton onClick={() => this.setStep(0)}>
+                            Build
+                          </StepButton>
+                        </Step>
+                        <Step>
+                          <StepButton onClick={() => this.setStep(1)}>
+                            Design
+                          </StepButton>
+                        </Step>
+                        <Step>
+                          <StepButton onClick={() => this.setStep(2)}>
+                            Configure
+                          </StepButton>
+                        </Step>
+                        <Step>
+                          <StepButton onClick={() => this.check()}>
+                            Deploy
+                          </StepButton>
+                        </Step>
+                      </Stepper>
                       <div style={contentStyle}>
                         <div>{this.getStepContent(stepIndex)}</div>
                         <div style={{ marginTop: '20px' }} />
