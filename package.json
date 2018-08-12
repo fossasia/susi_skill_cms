@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": false,
   "homepage": "http://skills.susi.ai/",
+  "repository": "https://github.com/fossasia/susi_skill_cms",
   "dependencies": {
     "add-px": "1.0.0",
     "antd": "2.13.14",
@@ -84,5 +85,6 @@
       "eslint --fix",
       "git add ."
     ]
-  }
+  },
+  "license": "LGPL-2.1-only"
 }
