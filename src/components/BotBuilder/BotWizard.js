@@ -411,7 +411,10 @@ class BotWizard extends React.Component {
   }
 
   setStep = stepIndex => {
-    this.setState({ stepIndex });
+    this.setState({
+      stepIndex,
+      commitMessage: 'Created Bot ' + this.state.expertValue,
+    });
   };
 
   handlePreviewToggle = () => {
