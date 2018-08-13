@@ -1074,12 +1074,11 @@ export default class BrowseSkill extends React.Component {
                   </div>
                 ) : null}
 
-                {(this.state.skills.length && this.props.routeType) ||
-                (this.state.searchQuery.length && this.state.skills.length) ||
-                this.state.ratingRefine ||
-                (this.state.timeFilter && this.state.skills.length) ? (
+                {metricsHidden ? (
                   <div>
-                    {this.state.searchQuery.length || this.props.routeType ? (
+                    {this.state.searchQuery.length ||
+                    this.props.routeType ||
+                    this.state.ratingRefine ? (
                       <div
                         style={{
                           display: 'flex',
@@ -1107,6 +1106,15 @@ export default class BrowseSkill extends React.Component {
                               style={{ color: '#4286f4', fontWeight: 'bold' }}
                             >
                               &quot;{this.state.searchQuery}&quot;
+                            </div>
+                          </div>
+                        )}
+                        {this.state.ratingRefine > 0 && (
+                          <div style={{ display: 'flex' }}>
+                            :&nbsp;<div
+                              style={{ color: '#4286f4', fontWeight: 'bold' }}
+                            >
+                              {this.state.ratingRefine} Stars & Up
                             </div>
                           </div>
                         )}
