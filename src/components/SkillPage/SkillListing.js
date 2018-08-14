@@ -733,16 +733,16 @@ class SkillListing extends Component {
 
     const reportDialogActions = [
       <FlatButton
+        label="Report"
+        key="submit"
+        style={{ color: colors.warningColor }}
+        onClick={this.handleReportSubmit}
+      />,
+      <FlatButton
         label="Cancel"
         key="cancel"
         style={{ color: 'rgb(66, 133, 244)' }}
         onClick={this.handleReportToggle}
-      />,
-      <FlatButton
-        label="Submit"
-        key="submit"
-        style={{ color: 'rgb(66, 133, 244)' }}
-        onClick={this.handleReportSubmit}
       />,
     ];
 
