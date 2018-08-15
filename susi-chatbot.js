@@ -19,7 +19,6 @@ var userid = script_tag.getAttribute("data-userid");
 var group = script_tag.getAttribute("data-group");
 var language = script_tag.getAttribute("data-language");
 var skill = script_tag.getAttribute("data-skill");
-var theme_settings = script_tag.getAttribute("data-theme")?script_tag.getAttribute("data-theme"):null;
 var botWindow = script_tag.getAttribute("data-bot-type")?(script_tag.getAttribute("data-bot-type")==="botWindow"?true:false):false;
 
 // custom theme variables
@@ -36,28 +35,15 @@ if(typeof jQuery=='undefined') {
 	var jqTag = document.createElement('script');
 	jqTag.type = 'text/javascript';
 	jqTag.src = 'https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js';
-	jqTag.onload = enableBot;
+	jqTag.onload = getTheme;
 	headTag.appendChild(jqTag);
 } else {
 	// to ensure jquery has loaded
-	enableBot();
+	getTheme();
 }
 
 // get custom theme from user
 function getTheme(){
-	if(theme_settings){
-		let settings = JSON.parse(theme_settings);
-		botbuilderBackgroundBody = settings.botbuilderBackgroundBody?settings.botbuilderBackgroundBody:botbuilderBackgroundBody;
-		botbuilderBodyBackgroundImg = settings.botbuilderBodyBackgroundImg?settings.botbuilderBodyBackgroundImg:botbuilderBodyBackgroundImg;
-		botbuilderUserMessageBackground = settings.botbuilderUserMessageBackground?settings.botbuilderUserMessageBackground:botbuilderUserMessageBackground;
-		botbuilderUserMessageTextColor = settings.botbuilderUserMessageTextColor?settings.botbuilderUserMessageTextColor:botbuilderUserMessageTextColor;
-		botbuilderBotMessageBackground = settings.botbuilderBotMessageBackground?settings.botbuilderBotMessageBackground:botbuilderBotMessageBackground;
-		botbuilderBotMessageTextColor = settings.botbuilderBotMessageTextColor?settings.botbuilderBotMessageTextColor:botbuilderBotMessageTextColor;
-		botbuilderIconColor = settings.botbuilderIconColor?settings.botbuilderIconColor:botbuilderIconColor;
-		botbuilderIconImg = settings.botbuilderIconImg?settings.botbuilderIconImg:botbuilderIconImg;
-		applyTheme();
-	}
-	else{
 		$.ajax({
 			type: "GET",
 			url: `${api_url}/cms/getSkillMetadata.json?userid=${userid}&group=${group}&language=${language}&skill=${skill}`,
@@ -67,6 +53,12 @@ function getTheme(){
 			jsonp: 'callback',
 			crossDomain: true,
 			success: function(data) {
+				if (!data.accepted) {
+					// not allowed to use. Exit.
+					console.log(data.message);
+					return;
+				}
+				enableBot();
 				if(data.skill_metadata && data.skill_metadata.design){
 				let settings = data.skill_metadata.design;
 				botbuilderBackgroundBody = settings.bodyBackground?settings.bodyBackground:botbuilderBackgroundBody;
@@ -79,12 +71,12 @@ function getTheme(){
 				botbuilderIconImg = settings.botIconImage?settings.botIconImage:botbuilderIconImg;
 				applyTheme();
 			}
+
 			},
 			error: function(e) {
 				console.log(e);
 			}
 		});
-	}
 }
 
 // to apply custom theme
@@ -111,10 +103,9 @@ function applyTheme(){
 }
 
 function enableBot() {
-	getTheme();
 	$(document).ready(function() {
 
-		var baseUrl = "https://api.susi.ai/susi/chat.json?q=";
+		var baseUrl = api_url + "/susi/chat.json?q=";
 		var msgNumber = 0;//stores the message number to set id
 
 		// Add dynamic html bot content(Widget style)
@@ -161,50 +152,6 @@ function enableBot() {
 
 		$("body").append(mybot);
 
-		// Resizing preview based on screen width
-		$(window).on('resize', function() {
-			if(botWindow) {
-				let widthOfScreen = $(window).width();
-				if(widthOfScreen > 280 && widthOfScreen <= 380){
-					document.getElementById("susi-frame-container").style.width = ((widthOfScreen/1.2)).toString() + 'px';
-				}else if(widthOfScreen <= 280 && widthOfScreen > 190){
-					document.getElementById("susi-frame-container").style.width = ((widthOfScreen/1.15)).toString() + 'px';
-				}else if(widthOfScreen <= 190){
-					document.getElementById("susi-frame-container").style.width = ((widthOfScreen/1.18)).toString() + 'px';
-				}else{
-					document.getElementById("susi-frame-container").style.width = ((widthOfScreen/1.12)).toString() + 'px';
-				}
-				// Preventing chatbot from going to full screen when screen width is less
-				document.getElementById("susi-frame-container").style.right = '20px';
-				document.getElementById("susi-frame-container").style.left = 'auto';
-				document.getElementById("susi-frame-container").style.height = '460px';
-				document.getElementById("susi-frame-container").style.top = 'auto';
-				document.getElementById("susi-frame-container").style.borderRadius = '8px';
-			}
-		});
-		// Toggle chatbot
-		if(botWindow) {
-			let widthOfScreen = $(window).width();
-			if(widthOfScreen > 280 && widthOfScreen <= 380){
-				document.getElementById("susi-frame-container").style.width = ((widthOfScreen/1.2)).toString() + 'px';
-			}else if(widthOfScreen <= 280 && widthOfScreen > 190){
-				document.getElementById("susi-frame-container").style.width = ((widthOfScreen/1.15)).toString() + 'px';
-			}else if(widthOfScreen <= 190){
-				document.getElementById("susi-frame-container").style.width = ((widthOfScreen/1.18)).toString() + 'px';
-			}else{
-				document.getElementById("susi-frame-container").style.width = ((widthOfScreen/1.12)).toString() + 'px';
-			}
-			// Preventing chatbot from going to full screen when screen width is less
-			document.getElementById("susi-frame-container").style.right = '20px';
-			document.getElementById("susi-frame-container").style.left = 'auto';
-			document.getElementById("susi-frame-container").style.height = '460px';
-			document.getElementById("susi-frame-container").style.top = 'auto';
-			document.getElementById("susi-frame-container").style.borderRadius = '8px';
-			// Opening chatbot by default during preview
-			$('.susi-frame-container-active').toggle();
-			$('#susi-avatar-text').toggle();
-			$('#susi-launcher-close').toggle();
-		}
 		$('#susi-launcher').click(function() {
 			$('.susi-frame-container-active').toggle();
 			$('#susi-avatar-text').toggle();
@@ -270,14 +217,39 @@ function enableBot() {
 
 
 		// Main function
-		function main(data) {
-			var ans;
-			if(data.answers[0])
-			ans = data.answers[0].actions[0].expression;
-			else
-			ans = "Sorry, I could not understand what you just said."
+		function main(data, thisMsgNumber) {
+			if (!data || !data.answers || data.answers.length === 0) {
+				createSusiMessageAnswer("Sorry, I could not understand what you just said.", thisMsgNumber);
+				return;
+			}
+			var actions=data.answers[0].actions;
 
-			setBotResponse(ans);
+			for(var action_index = 0;action_index<actions.length;action_index++){
+				var action=actions[action_index];
+				var type=action.type;
+				var expression="";
+				if(action_index!==0){
+					thisMsgNumber = ++msgNumber;
+					if (type === "answer" || type === "anchor" || type === "table") {
+						setLoadingMessage(thisMsgNumber);
+					}
+				}
+				if(type==="answer"){
+					expression=action.expression;
+					createSusiMessageAnswer(expression, thisMsgNumber);
+				}
+				else if(type==="anchor"){
+					var text=action.text;
+					var link=action.link;
+					createSusiMessageAnchor(text,link, thisMsgNumber);
+				}
+				else if(type==="table"){
+					var tableData = data.answers[0].data;
+					var columns = Object.keys(action.columns);
+					var columnsData = Object.values(action.columns);
+					createSusiMessageTable(tableData, columns, columnsData, thisMsgNumber);
+				}
+			}
 		}
 
 		function setLoadingMessage(msgNumber){
@@ -303,25 +275,67 @@ function enableBot() {
 				scrollToBottomOfResults();
 		}
 
-		// Main function
-		function main(data,msgNumber) {
-			var ans;
-			if(data && data.answers[0])
-				ans = data.answers[0].actions[0].expression;
-			else
-				ans = "Sorry, I could not understand what you just said."
-
-			setBotResponse(ans,msgNumber);
-		}
-
-
-		// Set bot response
-		function setBotResponse(val,msgNumber) {
-			val = val.replace(new RegExp('\r?\n','g'), '<br />');
-			$("#susiMsg-"+msgNumber+" .susi-msg-content-div").text(val);
+		// Create SUSI message for answer
+		function createSusiMessageAnswer(message,msgNumber) {
+			if(message.match(/.*\.(jpg|png|gif)\b/)){
+				message=message.replace(/.*\.(jpg|png|gif)\b/,function composeImgLink(link){
+					return "<img style='max-width:100%' src='"+link+"'>";
+				});
+			}
+			else{
+				message=message.replace(/https?:[/|.|\w]*/gi,function composeLink(link){
+					return "<a href='"+link+"' target='_blank'>"+link+"</a>";
+				});
+			}
+			message = message.replace(new RegExp('\r?\n','g'), '<br />');
+			$("#susiMsg-"+msgNumber+" .susi-msg-content-div").html(message);
 			scrollToBottomOfResults();
 		}
 
+		// Create SUSI message for anchor
+		function createSusiMessageAnchor(text, link, msgNumber) {
+			$("#susiMsg-"+msgNumber+" .susi-msg-content-div").html("<a href='"+link+"' target='_blank'>"+text+"</a>");
+			scrollToBottomOfResults();
+		}
+
+		// Create SUSI message for table
+		function createSusiMessageTable(tableData, columns, columnsData, msgNumber) {
+			var table = "<div style='overflow-x: scroll'><table><tbody><tr>";
+			var i = 0 ;
+			var j =0 ;
+
+			//create headers for the table
+			for(i = 0 ; i < columnsData.length ; i++){
+				table = table.concat("<th>"+columnsData[i]+"</th>");
+
+			}
+			table =table.concat("</tr>");
+
+			for(i = 0 ; i < tableData.length ; i++){
+				table = table.concat("<tr>");
+
+				for(j= 0; j < columns.length ;  j++){
+					//check if such column value exists for that record
+					if(tableData[i][columns[j]]){
+						var cellData  = tableData[i][columns[j]];
+						if (typeof cellData === "object") {
+							cellData = cellData[0];
+						}
+						cellData.replace(/https?:[/|.|\w]*/gi,function composeLink(link){
+							cellData="<a href='"+cellData+"' target='_blank'>"+cellData+"</a>";
+						});
+
+						table = table.concat("<td>"+cellData + "</td>" );
+					}
+				}
+
+				table = table.concat("</tr>");
+
+			}
+			table =table.concat("</tbody></table></div>");
+			$("#susiMsg-"+msgNumber+" .susi-msg-content-div").html(table);
+			scrollToBottomOfResults();
+		}
 
 		// Set user response
 		function setUserResponse(val) {
