@@ -2,6 +2,11 @@
     font-weight: bold;
 }
 
+.staffPickIcon {
+    height: 24px;
+    width: 24px;
+}
+
 div.scrolling-wrapper::-webkit-scrollbar {
     display: none;
 }

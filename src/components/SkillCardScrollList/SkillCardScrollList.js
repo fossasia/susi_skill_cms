@@ -7,6 +7,7 @@ import CircleImage from '../CircleImage/CircleImage';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import NavigationChevronLeft from 'material-ui/svg-icons/navigation/chevron-left';
 import NavigationChevronRight from 'material-ui/svg-icons/navigation/chevron-right';
+import StaffPick from '../images/staff_pick.png';
 import { urls } from '../../utils';
 
 import styles from './ScrollStyle';
@@ -105,7 +106,10 @@ class SkillCardScrollList extends Component {
     let cards = [];
     Object.keys(this.state.skills).forEach(el => {
       let skill = this.state.skills[el];
-      let skill_name, examples, image; // , description;
+      let skill_name,
+        examples,
+        image,
+        staffPick = false; // , description;
       let average_rating = 0,
         total_rating = 0;
       if (skill.skill_name) {
@@ -131,6 +135,11 @@ class SkillCardScrollList extends Component {
         average_rating = parseFloat(skill.skill_rating.stars.avg_star);
         total_rating = parseInt(skill.skill_rating.stars.total_star, 10);
       }
+
+      if (skill.staffPick) {
+        staffPick = true;
+      }
+
       cards.push(
         <Card style={styles.skillCard} key={el}>
           <Link
@@ -188,6 +197,11 @@ class SkillCardScrollList extends Component {
             >
               <span>{skill_name}</span>
             </Link>
+            {staffPick && (
+              <div style={styles.staffPick}>
+                <img src={StaffPick} className="staffPickIcon" />
+              </div>
+            )}
           </div>
           <div style={styles.rating}>
             <Link

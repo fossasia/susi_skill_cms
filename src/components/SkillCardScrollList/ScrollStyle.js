@@ -36,10 +36,12 @@ const styles = {
     textAlign: 'left',
     fontSize: '15px',
     color: '#4285f4',
-    marginBottom: '6px',
     border: '1px',
     height: '20px',
-    width: 'fit-content',
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: '6px',
   },
   example: {
     whiteSpace: 'normal',
@@ -83,6 +85,9 @@ const styles = {
     right: 0,
     marginTop: 75,
     marginRight: 10,
+  },
+  staffPick: {
+    margin: '4px 0 0 6px',
   },
 };
 
