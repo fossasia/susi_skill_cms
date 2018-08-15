@@ -661,6 +661,14 @@ class BotWizard extends React.Component {
                       onChange={this.handleCommitMessageChange}
                     />
                   ) : null}
+                  {this.state.stepIndex === 2 ? (
+                    <div style={{ float: 'left', paddingTop: '20px' }}>
+                      <RaisedButton
+                        label="Save Draft"
+                        onTouchTap={this.saveDraft}
+                      />
+                    </div>
+                  ) : null}
                   <div
                     style={{
                       float: 'right',
