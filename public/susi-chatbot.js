@@ -35,11 +35,11 @@ if(typeof jQuery=='undefined') {
 	var jqTag = document.createElement('script');
 	jqTag.type = 'text/javascript';
 	jqTag.src = 'https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js';
-	jqTag.onload = enableBot;
+	jqTag.onload = getTheme;
 	headTag.appendChild(jqTag);
 } else {
 	// to ensure jquery has loaded
-	enableBot();
+	getTheme();
 }
 
 // get custom theme from user
@@ -53,6 +53,12 @@ function getTheme(){
 			jsonp: 'callback',
 			crossDomain: true,
 			success: function(data) {
+				if (!data.accepted) {
+					// not allowed to use. Exit.
+					console.log(data.message);
+					return;
+				}
+				enableBot();
 				if(data.skill_metadata && data.skill_metadata.design){
 				let settings = data.skill_metadata.design;
 				botbuilderBackgroundBody = settings.bodyBackground?settings.bodyBackground:botbuilderBackgroundBody;
@@ -65,6 +71,7 @@ function getTheme(){
 				botbuilderIconImg = settings.botIconImage?settings.botIconImage:botbuilderIconImg;
 				applyTheme();
 			}
+
 			},
 			error: function(e) {
 				console.log(e);
@@ -96,10 +103,9 @@ function applyTheme(){
 }
 
 function enableBot() {
-	getTheme();
 	$(document).ready(function() {
 
-		var baseUrl = "https://api.susi.ai/susi/chat.json?q=";
+		var baseUrl = api_url + "/susi/chat.json?q=";
 		var msgNumber = 0;//stores the message number to set id
 
 		// Add dynamic html bot content(Widget style)
