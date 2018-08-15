@@ -726,7 +726,8 @@ export default class ListSkills extends React.Component {
                               open={this.state.showDeleteDialog}
                             >
                               <div>
-                                Are you sure you want to delete {skillName}?
+                                Are you sure you want to delete{' '}
+                                <span className="skillName">{skillName}</span>?
                               </div>
                             </Dialog>
                             <Dialog
@@ -736,7 +737,8 @@ export default class ListSkills extends React.Component {
                               open={this.state.showRestoreDialog}
                             >
                               <div>
-                                Are you sure you want to restore {skillName}?
+                                Are you sure you want to restore{' '}
+                                <span className="skillName">{skillName}</span>?
                               </div>
                             </Dialog>
                             <Dialog
@@ -746,15 +748,8 @@ export default class ListSkills extends React.Component {
                               open={this.state.restoreSuccessDialog}
                             >
                               <div>
-                                You successfully restored
-                                <span
-                                  style={{
-                                    fontWeight: 'bold',
-                                    margin: '0 5px',
-                                  }}
-                                >
-                                  {skillName}
-                                </span>
+                                You successfully restored{' '}
+                                <span className="skillName">{skillName}</span>
                                 !
                               </div>
                             </Dialog>
@@ -765,15 +760,8 @@ export default class ListSkills extends React.Component {
                               open={this.state.restoreFailureDialog}
                             >
                               <div>
-                                Error!
-                                <span
-                                  style={{
-                                    fontWeight: 'bold',
-                                    margin: '0 5px',
-                                  }}
-                                >
-                                  {skillName}
-                                </span>
+                                Error!{' '}
+                                <span className="skillName">{skillName}</span>{' '}
                                 could not be restored!
                               </div>
                             </Dialog>
@@ -784,15 +772,8 @@ export default class ListSkills extends React.Component {
                               open={this.state.deleteSuccessDialog}
                             >
                               <div>
-                                You successfully deleted
-                                <span
-                                  style={{
-                                    fontWeight: 'bold',
-                                    margin: '0 5px',
-                                  }}
-                                >
-                                  {skillName}
-                                </span>
+                                You successfully deleted{' '}
+                                <span className="skillName">{skillName}</span>
                                 !
                               </div>
                             </Dialog>
@@ -803,15 +784,8 @@ export default class ListSkills extends React.Component {
                               open={this.state.deleteFailureDialog}
                             >
                               <div>
-                                Error!
-                                <span
-                                  style={{
-                                    fontWeight: 'bold',
-                                    margin: '0 5px',
-                                  }}
-                                >
-                                  {skillName}
-                                </span>
+                                Error!{' '}
+                                <span className="skillName">{skillName}</span>{' '}
                                 could not be deleted!
                               </div>
                             </Dialog>
@@ -823,15 +797,8 @@ export default class ListSkills extends React.Component {
                               open={this.state.changeStatusSuccessDialog}
                             >
                               <div>
-                                Status of
-                                <span
-                                  style={{
-                                    fontWeight: 'bold',
-                                    margin: '0 5px',
-                                  }}
-                                >
-                                  {skillName}
-                                </span>
+                                Status of{' '}
+                                <span className="skillName">{skillName}</span>{' '}
                                 has been changed successfully!
                               </div>
                             </Dialog>
@@ -842,15 +809,8 @@ export default class ListSkills extends React.Component {
                               open={this.state.changeStatusFailureDialog}
                             >
                               <div>
-                                Error! Status of
-                                <span
-                                  style={{
-                                    fontWeight: 'bold',
-                                    margin: '0 5px',
-                                  }}
-                                >
-                                  {skillName}
-                                </span>
+                                Error! Status of{' '}
+                                <span className="skillName">{skillName}</span>{' '}
                                 could not be changed!
                               </div>
                             </Dialog>
