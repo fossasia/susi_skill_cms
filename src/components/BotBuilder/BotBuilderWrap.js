@@ -15,7 +15,7 @@ const templates = [
     image: '/botTemplates/event-registration.jpg',
     // source: https://pixabay.com/en/event-auditorium-conference-1597531/
     code:
-      '::name <Skill_name>\n::author <author_name>\n::author_url <author_url>\n::description <description>\n::dynamic_content <Yes/No>\n::developer_privacy_policy <link>\n::image <image_url>\n::terms_of_use <link>\n\n*\nWhat is your name? | What is your email? | Can you come to the event?\n!example: Jimmy | user@example.com | yes\n',
+      '::name <Bot_name>\n::category <Category>\n::language <Language>\n::author <author_name>\n::author_url <author_url>\n::description <description> \n::dynamic_content <Yes/No>\n::developer_privacy_policy <link>\n::image images/susi_image.jpg\n::terms_of_use <link>\n\n\nWhat is your name? | What is your email? | Can you come to the event?\n!example: Jimmy | user@example.com | yes\n',
   },
   {
     name: 'Job Application',
@@ -23,7 +23,7 @@ const templates = [
     image: '/botTemplates/job-application.jpg',
     // source: https://pixabay.com/en/application-request-pen-coolie-1915343/
     code:
-      '::name <Skill_name>\n::author <author_name>\n::author_url <author_url>\n::description <description>\n::dynamic_content <Yes/No>\n::developer_privacy_policy <link>\n::image <image_url>\n::terms_of_use <link>\n\n*\nWhat is your name? | Why do you want this job? | What are your skills?\n!example: Jimmy | It will be helpful for my career | Web developement\n',
+      '::name <Bot_name>\n::category <Category>\n::language <Language>\n::author <author_name>\n::author_url <author_url>\n::description <description> \n::dynamic_content <Yes/No>\n::developer_privacy_policy <link>\n::image images/susi_image.jpg\n::terms_of_use <link>\n\n\nWhat is your name? | Why do you want this job? | What are your skills?\n!example: Jimmy | It will be helpful for my career | Web developement\n',
   },
   {
     name: 'Contact Form',
@@ -31,7 +31,7 @@ const templates = [
     image: '/botTemplates/contact-us.png',
     // source: https://pixabay.com/en/need-help-contact-us-idea-like-2939262/
     code:
-      '::name <Skill_name>\n::author <author_name>\n::author_url <author_url>\n::description <description>\n::dynamic_content <Yes/No>\n::developer_privacy_policy <link>\n::image <image_url>\n::terms_of_use <link>\n\n*\nWhat is your name? | What is your email? | What is your message?\n!example: Jimmy | user@example.com | i want to know about sales\n',
+      '::name <Bot_name>\n::category <Category>\n::language <Language>\n::author <author_name>\n::author_url <author_url>\n::description <description> \n::dynamic_content <Yes/No>\n::developer_privacy_policy <link>\n::image images/susi_image.jpg\n::terms_of_use <link>\n\n\nWhat is your name? | What is your email? | What is your message?\n!example: Jimmy | user@example.com | i want to know about sales\n',
   },
 ];
 
