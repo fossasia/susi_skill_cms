@@ -79,6 +79,7 @@ export default class BrowseSkill extends React.Component {
       languageValue: cookies.get('languages') || ['en'],
       showSkills: '',
       showReviewedSkills: false,
+      showStaffPicks: false,
       expertValue: null,
       skills: [],
       groups: [],
@@ -149,19 +150,28 @@ export default class BrowseSkill extends React.Component {
     });
   };
 
-  handleShowSkills = () => {
-    $('.select')
-      .find('svg')
-      .css({ fill: '#4285f4' });
-    let value = !this.state.showReviewedSkills;
-    let showSkills = value ? '&reviewed=true' : '';
+  handleShowSkills = ({ reviewed, staffPicks }) => {
+    let showSkills;
+    if (reviewed !== undefined) {
+      showSkills = `&reviewed=${reviewed}`;
+      this.setState({ showReviewedSkills: reviewed });
+    } else {
+      showSkills = `&reviewed=${this.state.showReviewedSkills}`;
+    }
+
+    if (staffPicks !== undefined) {
+      showSkills += `&staffPicks=${staffPicks}`;
+      this.setState({ showStaffPicks: staffPicks });
+    } else {
+      showSkills += `&staffPicks=${this.state.showStaffPicks}`;
+    }
+
     this.setState(
       {
-        showReviewedSkills: value,
-        showSkills: showSkills,
+        showSkills,
         skillsLoaded: false,
       },
-      function() {
+      () => {
         this.loadCards();
       },
     );
@@ -585,6 +595,22 @@ export default class BrowseSkill extends React.Component {
                   }}
                 >
                   <Checkbox
+                    label="Staff Picks"
+                    labelPosition="right"
+                    className="select"
+                    checked={this.state.showStaffPicks}
+                    labelStyle={{ fontSize: '14px' }}
+                    iconStyle={{ left: '4px' }}
+                    style={{
+                      width: '256px',
+                      paddingLeft: '8px',
+                      top: '3px',
+                    }}
+                    onCheck={(event, isInputChecked) => {
+                      this.handleShowSkills({ staffPicks: isInputChecked });
+                    }}
+                  />
+                  <Checkbox
                     label="Show Only Reviewed Skills"
                     labelPosition="right"
                     className="select"
@@ -596,7 +622,9 @@ export default class BrowseSkill extends React.Component {
                       paddingLeft: '8px',
                       top: '3px',
                     }}
-                    onCheck={this.handleShowSkills}
+                    onCheck={(event, isInputChecked) => {
+                      this.handleShowSkills({ reviewed: isInputChecked });
+                    }}
                   />
                 </div>
               )}
