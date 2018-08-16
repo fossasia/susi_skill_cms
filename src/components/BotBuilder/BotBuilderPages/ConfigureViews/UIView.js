@@ -375,7 +375,7 @@ class UIView extends Component {
             than SUSI skills.
           </div>
           <Checkbox
-            label="Enable bot in my devices"
+            label="(Coming Soon) Enable bot in my devices"
             labelPosition="right"
             checked={this.state.myDevices}
             labelStyle={{ fontSize: '16px' }}
@@ -386,7 +386,7 @@ class UIView extends Component {
             Allow the chatbot to run on your devices.
           </div>
           <Checkbox
-            label="Enable bot for other users"
+            label="(Coming Soon) Enable bot for other users"
             labelPosition="right"
             checked={this.state.publicDevices}
             labelStyle={{ fontSize: '16px' }}
@@ -394,7 +394,8 @@ class UIView extends Component {
             onCheck={this.handleChangeIncludeInPublicDevices}
           />
           <div style={{ fontSize: '14px', padding: '0px 0px 2px 40px' }}>
-            Allow the chatbot to run on other devices specified by you.
+            List the chatbot publicly. Users won&apos;t be able to see/edit the
+            code of your chatbot.
           </div>
         </div>
         <Snackbar
