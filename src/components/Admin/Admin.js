@@ -399,6 +399,18 @@ class Admin extends Component {
                             }}
                           >
                             <p>
+                              System Skills:{' '}
+                              {this.state.skillStats.systemSkills
+                                ? this.state.skillStats.systemSkills
+                                : 0}
+                            </p>
+                            <p>
+                              Staff Picks:{' '}
+                              {this.state.skillStats.staffPicks
+                                ? this.state.skillStats.staffPicks
+                                : 0}
+                            </p>
+                            <p>
                               Editable:{' '}
                               {this.state.skillStats.editableSkills
                                 ? this.state.skillStats.editableSkills
@@ -408,12 +420,6 @@ class Admin extends Component {
                               Non Editable:{' '}
                               {this.state.skillStats.nonEditableSkills
                                 ? this.state.skillStats.nonEditableSkills
-                                : 0}
-                            </p>
-                            <p>
-                              Staff Picks :{' '}
-                              {this.state.skillStats.staffPicks
-                                ? this.state.skillStats.staffPicks
                                 : 0}
                             </p>
                           </Card>
