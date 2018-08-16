@@ -51,7 +51,7 @@ class BotWizard extends React.Component {
         let group = this.getQueryStringValue('group');
         let language = this.getQueryStringValue('language');
         this.setState({
-          commitMessage: `Updated Skill ${name}`,
+          commitMessage: `Updated Bot ${name}`,
           newBot: false,
           skillName: name,
           skillGroup: group,
@@ -542,7 +542,7 @@ class BotWizard extends React.Component {
           );
           notification.open({
             message: 'Accepted',
-            description: 'Your Skill has been saved',
+            description: 'Your Bot has been saved',
             icon: <Icon type="check-circle" style={{ color: '#00C853' }} />,
           });
         } else {
