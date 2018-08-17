@@ -103,6 +103,15 @@
 .icon-selected .bot-avatar{
 	border: solid 2px #4285f5;
 }
+.toggle-label-right{
+	margin-right: 10px;
+	vertical-align: bottom;
+	line-height: 24px;
+	color: rgba(0, 0, 0, 0.87);
+	font-size: 14px;
+	font-weight: 300;
+	cursor: pointer;
+}
 iframe{
 	border-radius: 12px;
 	margin:0;
