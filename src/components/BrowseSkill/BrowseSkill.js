@@ -932,10 +932,7 @@ export default class BrowseSkill extends React.Component {
 
             {this.state.skillsLoaded ? (
               <div style={styles.container}>
-                {this.state.staffPicksSkills.length &&
-                !this.state.searchQuery.length &&
-                !this.state.ratingRefine &&
-                !this.state.timeFilter ? (
+                {this.state.staffPicksSkills.length && !metricsHidden ? (
                   <div style={metricsContainerStyle}>
                     <div
                       style={styles.metricsHeader}
@@ -956,10 +953,7 @@ export default class BrowseSkill extends React.Component {
                   </div>
                 ) : null}
 
-                {this.state.topRatedSkills.length &&
-                !this.state.searchQuery.length &&
-                !this.state.ratingRefine &&
-                !this.state.timeFilter ? (
+                {this.state.topRatedSkills.length && !metricsHidden ? (
                   <div style={metricsContainerStyle}>
                     <div
                       style={styles.metricsHeader}
@@ -980,10 +974,7 @@ export default class BrowseSkill extends React.Component {
                   </div>
                 ) : null}
 
-                {this.state.topUsedSkills.length &&
-                !this.state.searchQuery.length &&
-                !this.state.ratingRefine &&
-                !this.state.timeFilter ? (
+                {this.state.topUsedSkills.length && !metricsHidden ? (
                   <div style={metricsContainerStyle}>
                     <div
                       style={styles.metricsHeader}
@@ -1004,10 +995,7 @@ export default class BrowseSkill extends React.Component {
                   </div>
                 ) : null}
 
-                {this.state.newestSkills.length &&
-                !this.state.searchQuery.length &&
-                !this.state.ratingRefine &&
-                !this.state.timeFilter ? (
+                {this.state.newestSkills.length && !metricsHidden ? (
                   <div style={metricsContainerStyle}>
                     <div
                       style={styles.metricsHeader}
@@ -1028,10 +1016,7 @@ export default class BrowseSkill extends React.Component {
                   </div>
                 ) : null}
 
-                {this.state.latestUpdatedSkills.length &&
-                !this.state.searchQuery.length &&
-                !this.state.ratingRefine &&
-                !this.state.timeFilter ? (
+                {this.state.latestUpdatedSkills.length && !metricsHidden ? (
                   <div style={metricsContainerStyle}>
                     <div
                       style={styles.metricsHeader}
@@ -1052,10 +1037,7 @@ export default class BrowseSkill extends React.Component {
                   </div>
                 ) : null}
 
-                {this.state.topFeedbackSkills.length &&
-                !this.state.searchQuery.length &&
-                !this.state.ratingRefine &&
-                !this.state.timeFilter ? (
+                {this.state.topFeedbackSkills.length && !metricsHidden ? (
                   <div style={metricsContainerStyle}>
                     <div
                       style={styles.metricsHeader}
@@ -1078,10 +1060,7 @@ export default class BrowseSkill extends React.Component {
                   </div>
                 ) : null}
 
-                {this.state.topGames.length &&
-                !this.state.searchQuery.length &&
-                !this.state.ratingRefine &&
-                !this.state.timeFilter ? (
+                {this.state.topGames.length && !metricsHidden ? (
                   <div style={metricsContainerStyle}>
                     <div
                       style={styles.metricsHeader}
