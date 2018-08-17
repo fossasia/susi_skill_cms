@@ -48,6 +48,7 @@ export default class ListSkills extends React.Component {
       skillReviewStatus: false,
       skillEditStatus: true,
       skillStaffPickStatus: false,
+      systemSkillStatus: false,
       changeStatusSuccessDialog: false,
       changeStatusFailureDialog: false,
       showDeleteDialog: false,
@@ -75,6 +76,7 @@ export default class ListSkills extends React.Component {
       skillReviewStatus,
       skillEditStatus,
       skillStaffPickStatus,
+      systemSkillStatus,
     } = this.state;
     let url =
       `${urls.API_URL}/cms/changeSkillStatus.json?` +
@@ -92,6 +94,8 @@ export default class ListSkills extends React.Component {
       skillEditStatus +
       '&staffPick=' +
       skillStaffPickStatus +
+      '&systemSkill=' +
+      systemSkillStatus +
       '&access_token=' +
       cookies.get('loggedIn');
     $.ajax({
@@ -258,6 +262,7 @@ export default class ListSkills extends React.Component {
               reviewStatus: skillMetadata.reviewed,
               editStatus: skillMetadata.editable,
               staffPickStatus: skillMetadata.staffPick,
+              systemSkillStatus: skillMetadata.systemSkill,
               type: 'public',
               author: skillMetadata.author,
               reviewed: skillMetadata.reviewed ? 'Approved' : 'Not Reviewed',
@@ -329,6 +334,7 @@ export default class ListSkills extends React.Component {
     reviewStatus,
     editStatus,
     staffPickStatus,
+    systemSkillStatus,
     skillTag,
   ) => {
     this.setState({
@@ -340,6 +346,7 @@ export default class ListSkills extends React.Component {
       skillReviewStatus: reviewStatus,
       skillEditStatus: editStatus,
       skillStaffPickStatus: staffPickStatus,
+      systemSkillStatus: systemSkillStatus,
       showDialog: true,
       zIndex: 1500,
     });
@@ -392,6 +399,13 @@ export default class ListSkills extends React.Component {
     let value = !this.state.skillStaffPickStatus;
     this.setState({
       skillStaffPickStatus: value,
+    });
+  };
+
+  handleSystemSkillStatusChange = () => {
+    let value = !this.state.systemSkillStatus;
+    this.setState({
+      systemSkillStatus: value,
     });
   };
 
@@ -557,6 +571,7 @@ export default class ListSkills extends React.Component {
                     record.reviewStatus,
                     record.editStatus,
                     record.staffPickStatus,
+                    record.systemSkillStatus,
                     record.skillTag,
                   )
                 }
@@ -715,6 +730,20 @@ export default class ListSkills extends React.Component {
                                     whiteSpace: 'nowrap',
                                   }}
                                   onCheck={this.handleStaffPickStatusChange}
+                                />
+                                <Checkbox
+                                  label="System Skill"
+                                  labelPosition="right"
+                                  className="select"
+                                  checked={this.state.systemSkillStatus}
+                                  labelStyle={{ fontSize: '14px' }}
+                                  iconStyle={{ left: '4px', fill: '#4285f4' }}
+                                  style={{
+                                    width: 'auto',
+                                    marginTop: '3px',
+                                    whiteSpace: 'nowrap',
+                                  }}
+                                  onCheck={this.handleSystemSkillStatusChange}
                                 />
                               </div>
                             </Dialog>
