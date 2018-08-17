@@ -152,7 +152,11 @@ function createListCard(
             </Link>
             {staffPick && (
               <div style={styles.staffPick}>
-                <img src={StaffPick} className="staffPickIcon" />
+                <img
+                  alt="Staff Pick Badge"
+                  src={StaffPick}
+                  className="staffPickIcon"
+                />
               </div>
             )}
           </div>

@@ -107,7 +107,11 @@ class SkillCardGrid extends Component {
               <span>{skill_name}</span>
               {staffPick && (
                 <div style={styles.staffPick}>
-                  <img src={StaffPick} className="staffPickIcon" />
+                  <img
+                    alt="Staff Pick Badge"
+                    src={StaffPick}
+                    className="staffPickIcon"
+                  />
                 </div>
               )}
             </div>
