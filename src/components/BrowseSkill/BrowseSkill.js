@@ -160,10 +160,10 @@ export default class BrowseSkill extends React.Component {
     }
 
     if (staffPicks !== undefined) {
-      showSkills += `&staffPicks=${staffPicks}`;
+      showSkills += `&staff_picks=${staffPicks}`;
       this.setState({ showStaffPicks: staffPicks });
     } else {
-      showSkills += `&staffPicks=${this.state.showStaffPicks}`;
+      showSkills += `&staff_picks=${this.state.showStaffPicks}`;
     }
 
     this.setState(
