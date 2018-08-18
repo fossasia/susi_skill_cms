@@ -1,5 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import MenuItem from 'material-ui/MenuItem';
+import DropDownMenu from 'material-ui/DropDownMenu';
 import Paper from 'material-ui/Paper';
 import Tabs from 'antd/lib/tabs';
 import StaticAppBar from '../../StaticAppBar/StaticAppBar.react';
@@ -7,15 +9,11 @@ import NotFound from '../../NotFound/NotFound.react';
 import Cookies from 'universal-cookie';
 import { urls } from '../../../utils';
 import * as $ from 'jquery';
-import { Alert, Radio, Input } from 'antd';
+import { Spin, Alert } from 'antd';
 
 const cookies = new Cookies();
 
 const TabPane = Tabs.TabPane;
-
-const RadioButton = Radio.Button;
-
-const RadioGroup = Radio.Group;
 
 class SystemLogs extends React.Component {
   constructor(props) {
@@ -26,12 +24,12 @@ class SystemLogs extends React.Component {
       logs: '',
       error: false,
       loading: true,
-      showCustom: false,
+      currentCount: '1000',
     };
   }
 
   componentDidMount() {
-    this.loadSystemLogs(5);
+    this.loadSystemLogs(1000);
   }
 
   loadSystemLogs = count => {
@@ -73,22 +71,12 @@ class SystemLogs extends React.Component {
     }
   };
 
-  handleCustom = e => {
-    this.loadSystemLogs(e.target.value);
-  };
-
-  handleCountChange = e => {
-    if (e.target.value !== 'custom') {
-      this.setState({
-        showCustom: false,
-      });
-      this.loadSystemLogs(e.target.value);
-    }
-    if (e.target.value === 'custom') {
-      this.setState({
-        showCustom: true,
-      });
-    }
+  handleCountChange = (event, index, value) => {
+    this.setState({
+      currentCount: value,
+      loading: true,
+    });
+    this.loadSystemLogs(value);
   };
 
   render() {
@@ -98,6 +86,10 @@ class SystemLogs extends React.Component {
       textAlign: 'left',
       display: 'inline-block',
     };
+
+    const blueThemeColor = { color: 'rgb(66, 133, 244)' };
+    const themeForegroundColor = '#272727';
+    const themeBackgroundColor = '#fff';
 
     return (
       <div>
@@ -123,50 +115,84 @@ class SystemLogs extends React.Component {
                   <TabPane tab="System Settings" key="4" />
                   <TabPane tab="System Logs" key="5">
                     <div>
-                      <div style={{ marginBottom: '20px' }}>
-                        <RadioGroup
+                      <div style={{ height: '50px', width: '100%' }}>
+                        <DropDownMenu
+                          selectedMenuItemStyle={blueThemeColor}
+                          labelStyle={{ color: themeForegroundColor }}
+                          menuStyle={{
+                            backgroundColor: themeBackgroundColor,
+                          }}
+                          menuItemStyle={{ color: themeForegroundColor }}
                           onChange={this.handleCountChange}
-                          defaultValue="5"
-                          size="large"
+                          value={this.state.currentCount}
+                          style={{
+                            width: '180px',
+                            margin: '-20px -20px 0',
+                            float: 'right',
+                          }}
+                          autoWidth={false}
                         >
-                          <RadioButton value="1">1</RadioButton>
-                          <RadioButton value="2">2</RadioButton>
-                          <RadioButton value="5">5</RadioButton>
-                          <RadioButton value="10">10</RadioButton>
-                          <RadioButton value="20">20</RadioButton>
-                          <RadioButton value="30">30</RadioButton>
-                          <RadioButton value="50">50</RadioButton>
-                          <RadioButton value="100">100</RadioButton>
-                          <RadioButton value="custom">Custom</RadioButton>
-                        </RadioGroup>
-                        {this.state.showCustom === true ? (
-                          <Input
-                            style={{
-                              width: '116px',
-                              marginLeft: '20px',
-                              height: '30px',
-                            }}
-                            onPressEnter={e => this.handleCustom(e)}
-                            placeholder="Enter count"
+                          <MenuItem
+                            primaryText="Last 10 logs"
+                            value="10"
+                            className="setting-item"
                           />
-                        ) : null}
+                          <MenuItem
+                            primaryText="Last 20 logs"
+                            value="20"
+                            className="setting-item"
+                          />
+                          <MenuItem
+                            primaryText="Last 50 logs"
+                            value="50"
+                            className="setting-item"
+                          />
+                          <MenuItem
+                            primaryText="Last 100 logs"
+                            value="100"
+                            className="setting-item"
+                          />
+                          <MenuItem
+                            primaryText="Last 200 logs"
+                            value="200"
+                            className="setting-item"
+                          />
+                          <MenuItem
+                            primaryText="Last 500 logs"
+                            value="500"
+                            className="setting-item"
+                          />
+                          <MenuItem
+                            primaryText="Last 1000 logs"
+                            value="1000"
+                            className="setting-item"
+                          />
+                        </DropDownMenu>
                       </div>
                       <div>
-                        <Alert
-                          description={
-                            <p
-                              style={{
-                                fontSize: '18px',
-                                lineHeight: '2',
-                                overflowWrap: 'break-word',
-                              }}
-                            >
-                              {this.state.logs}
-                            </p>
-                          }
-                          type={this.state.error === true ? 'error' : 'success'}
-                          showIcon
-                        />
+                        <Spin
+                          tip="Loading logs..."
+                          spinning={this.state.loading}
+                          size="large"
+                        >
+                          <Alert
+                            description={
+                              <p
+                                style={{
+                                  fontSize: '18px',
+                                  lineHeight: '2',
+                                  overflowWrap: 'break-word',
+                                }}
+                              >
+                                {this.state.logs}
+                              </p>
+                            }
+                            type={
+                              this.state.error === true ? 'error' : 'success'
+                            }
+                            showIcon
+                          />
+                        </Spin>
                       </div>
                     </div>
                   </TabPane>
