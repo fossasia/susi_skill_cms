@@ -353,9 +353,11 @@ class UIView extends Component {
               <Table
                 components={components}
                 rowClassName={() => 'editable-row'}
+                locale={{ emptyText: 'No websites added!' }}
                 bordered
                 dataSource={dataSource}
                 columns={columns}
+                pagination={false}
               />
             </div>
           ) : null}
