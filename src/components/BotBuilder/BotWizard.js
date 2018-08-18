@@ -774,6 +774,7 @@ class BotWizard extends React.Component {
                     <Preview
                       designData={this.state.designData}
                       skill={this.state.buildCode}
+                      configCode={this.state.configCode}
                       botBuilder={true}
                     />
                   </div>

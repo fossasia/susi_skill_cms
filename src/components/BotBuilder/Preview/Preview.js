@@ -158,6 +158,12 @@ class Preview extends Component {
   send = text => {
     let url = urls.API_URL + '/susi/chat.json?q=' + encodeURIComponent(text);
     url += '&instant=' + encodeURIComponent(this.props.skill);
+    const enableDefaultSkillsMatch = this.props.configCode.match(
+      /^::enable_default_skills\s(.*)$/m,
+    );
+    if (enableDefaultSkillsMatch && enableDefaultSkillsMatch[1] === 'no') {
+      url += '&excludeDefaultSkills=1';
+    }
     var thisMsgNumber = this.msgNumber;
     this.msgNumber++;
     this.setLoadingMessage(thisMsgNumber);
@@ -353,6 +359,7 @@ class Preview extends Component {
 Preview.propTypes = {
   designData: PropTypes.object,
   skill: PropTypes.string,
+  configCode: PropTypes.string,
   botBuilder: PropTypes.bool,
 };
 export default Preview;
