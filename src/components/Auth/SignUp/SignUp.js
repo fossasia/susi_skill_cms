@@ -77,6 +77,9 @@ export default class SignUp extends Component {
       passwordValue = event.target.value;
       validPassword = passwordValue.length >= 6;
       passwordError = !(passwordValue && validPassword);
+      passwordConfirmError = !(
+        passwordValue === this.state.confirmPasswordValue
+      );
     } else if (event.target.name === 'confirmPassword') {
       confirmPasswordValue = event.target.value;
       validPassword = confirmPasswordValue === passwordValue;
