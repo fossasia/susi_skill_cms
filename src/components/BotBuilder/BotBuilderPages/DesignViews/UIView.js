@@ -463,7 +463,8 @@ class UIView extends Component {
     $('#colorPicker' + id).click();
   };
 
-  handleShowBackgroundImageChangeToggle = (object, isInputChecked) => {
+  handleShowBackgroundImageChangeToggle = () => {
+    let isInputChecked = !this.state.showBackgroundImageChange;
     if (isInputChecked === false) {
       let code = this.state.code.replace(
         /^::bodyBackgroundImage\s(.*)$/m,
@@ -485,44 +486,37 @@ class UIView extends Component {
       {
         id: 1,
         component: 'botbuilderBackgroundBody',
-        name: 'background',
-        helperText: 'Change the background color of your chatbot.',
+        name: 'Change background',
       },
       {
         id: 2,
         component: 'botbuilderUserMessageBackground',
-        name: "User's message box background",
-        helperText: 'Change the color of user message bubble.',
+        name: 'User message bubble',
       },
       {
         id: 3,
         component: 'botbuilderUserMessageTextColor',
-        name: "User's message text color",
-        helperText: 'Change the text color of user messages.',
+        name: 'User message text',
       },
       {
         id: 4,
         component: 'botbuilderBotMessageBackground',
-        name: "Bot's message box background",
-        helperText: 'Change the color of bot message bubble.',
+        name: 'Bot message bubble',
       },
       {
         id: 5,
         component: 'botbuilderBotMessageTextColor',
-        name: "Bot's message text color",
-        helperText: 'Change the text color of bot messages.',
+        name: 'Bot message text',
       },
       {
         id: 6,
         component: 'botbuilderIconColor',
-        name: 'Bot Icon',
-        helperText: 'Change the background color of bot avatar.',
+        name: 'Avatar background',
       },
       {
         id: 7,
         component: 'botbuilderAvatar',
         name: 'Choose your bot avatar',
-        helperText: 'Choose a different avatar.',
       },
     ];
     const customizeComponents = customiseOptionsList.map(component => {
@@ -540,14 +534,6 @@ class UIView extends Component {
                   >
                     {component.name}
                   </div>
-                  <div
-                    style={{
-                      fontSize: '15px',
-                      fontWeight: '300',
-                    }}
-                  >
-                    {component.helperText}
-                  </div>
                 </div>
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -558,20 +544,19 @@ class UIView extends Component {
                       fontWeight: '400',
                     }}
                   >
-                    Color of {component.name}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: '15px',
-                      fontWeight: '300',
-                    }}
-                  >
-                    {component.helperText}
+                    {component.name}
                   </div>
                   {component.id === 1 && (
-                    <div style={{ textAlign: 'right' }}>
+                    <div>
+                      <span
+                        className="toggle-label-right"
+                        onClick={this.handleShowBackgroundImageChangeToggle}
+                      >
+                        Color
+                      </span>
                       <Toggle
-                        label="Choose background image"
+                        label="Image"
+                        labelPosition="right"
                         labelStyle={{
                           width: 'auto',
                           fontSize: '14px',
@@ -579,7 +564,12 @@ class UIView extends Component {
                         }}
                         defaultToggled={this.state.showBackgroundImageChange}
                         onToggle={this.handleShowBackgroundImageChangeToggle}
-                        style={{ textAlign: 'right', marginTop: '10px' }}
+                        style={{
+                          textAlign: 'right',
+                          marginTop: '10px',
+                          display: 'inline-block',
+                          width: 'auto',
+                        }}
                         thumbSwitchedStyle={{
                           backgroundColor: 'rgb(66, 133, 245)',
                         }}
