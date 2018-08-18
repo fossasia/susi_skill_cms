@@ -24,7 +24,7 @@ import EditBtn from 'material-ui/svg-icons/editor/mode-edit';
 // CSS
 import './SkillFeedbackCard.css';
 
-import { parseDate, getAvatarProps } from '../../utils';
+import { parseDate } from '../../utils';
 
 const cookies = new Cookies();
 
@@ -133,15 +133,24 @@ class SkillFeedbackCard extends Component {
     ];
 
     let userFeedback = null;
+    let userName = '';
+    let userAvatarLink = '';
+    let userEmail = '';
     let userFeedbackCard = null;
     let emailId = cookies.get('emailId');
     let loggedIn = cookies.get('loggedIn');
     let feedbackCards;
     if (this.props.skill_feedback) {
       feedbackCards = this.props.skill_feedback.map((data, index) => {
-        if (loggedIn && emailId && data.email === emailId) {
-          userFeedback = data.feedback;
-          const avatarProps = getAvatarProps(data.email);
+        userEmail = data.email;
+        userFeedback = data.feedback;
+        userAvatarLink = data.avatar;
+        userName = data.user_name;
+        const avatarProps = {
+          src: userAvatarLink,
+          name: userName === '' ? userEmail : userName,
+        };
+        if (loggedIn && emailId && userEmail === emailId) {
           userFeedbackCard = (
             <div key={index}>
               <ListItem
@@ -149,7 +158,7 @@ class SkillFeedbackCard extends Component {
                 leftAvatar={<CircleImage {...avatarProps} size="40" />}
                 primaryText={
                   <div>
-                    <div>{data.email}</div>
+                    <div>{userName === '' ? userEmail : userName}</div>
                     <div className="feedback-timestamp">
                       {this.formatDate(parseDate(data.timestamp))}
                     </div>
@@ -180,17 +189,17 @@ class SkillFeedbackCard extends Component {
         }
         // eslint-disable-next-line
         else {
-          const avatarProps = getAvatarProps(data.email);
           return (
             <ListItem
               key={index}
               leftAvatar={<CircleImage {...avatarProps} size="40" />}
               primaryText={
                 <div>
-                  <div>{`${data.email.slice(
-                    0,
-                    data.email.indexOf('@') + 1,
-                  )}...`}</div>
+                  <div>
+                    {userName !== ''
+                      ? userName
+                      : `${userEmail.slice(0, userEmail.indexOf('@') + 1)}...`}
+                  </div>
                   <div className="feedback-timestamp">
                     {this.formatDate(parseDate(data.timestamp))}
                   </div>
