@@ -54,7 +54,7 @@
   },
   "devDependencies": {
     "enzyme": "2.9.1",
-    "eslint": "4.19.1",
+    "eslint": "3.19.0",
     "eslint-config-prettier": "2.9.0",
     "eslint-plugin-babel": "4.1.2",
     "eslint-plugin-jsx": "0.0.2",
@@ -62,7 +62,6 @@
     "eslint-plugin-react": "7.10.0",
     "husky": "0.14.3",
     "lint-staged": "7.2.0",
-    "match-media": "0.2.0",
     "prettier": "1.13.5",
     "react-scripts": "1.0.7",
     "react-test-renderer": "15.6.2"
