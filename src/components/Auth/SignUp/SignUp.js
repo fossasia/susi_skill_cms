@@ -16,18 +16,6 @@ import './SignUp.css';
 
 const cookies = new Cookies();
 
-const styles = {
-  fieldStyle: {
-    width: '256px',
-  },
-  fontStyle: {
-    fontSize: '16px',
-  },
-  underlineFocusStyle: {
-    color: '#4285f4',
-  },
-};
-
 export default class SignUp extends Component {
   static propTypes = {
     history: PropTypes.object,
@@ -199,7 +187,39 @@ export default class SignUp extends Component {
   handleLogin = () => this.props.updateAuthDialog('login');
 
   render() {
-    const { fieldStyle, fontStyle, underlineFocusStyle } = styles;
+    const styles = {
+      emailStyle: {
+        height: '35px',
+        borderRadius: 4,
+        border: '1px solid #ced4da',
+        fontSize: 16,
+        padding: '0px 10px',
+        width: '272px',
+        marginTop: '10px',
+      },
+      fieldStyle: {
+        height: '35px',
+        borderRadius: 4,
+        border: '1px solid #ced4da',
+        fontSize: 16,
+        padding: '0px 10px',
+        width: '250px',
+        marginTop: '10px',
+      },
+      inputStyle: {
+        height: '35px',
+        marginBottom: '10px',
+        webkitTextFillColor: 'unset',
+      },
+      inputpassStyle: {
+        height: '35px',
+        marginBottom: '10px',
+        marginRight: '50px',
+        width: '90%',
+        webkitTextFillColor: 'unset',
+      },
+    };
+
     const {
       email,
       passwordValue,
@@ -217,41 +237,69 @@ export default class SignUp extends Component {
           <div>
             <TextField
               name="email"
+              type="email"
               value={email}
+              className="textFields"
               onChange={this.handleChange}
+              style={styles.emailStyle}
+              inputStyle={styles.inputStyle}
+              labelText={{ color: '#878faf' }}
+              underlineStyle={{ display: 'none' }}
+              placeholder="Email"
               errorText={emailErrorMessage}
-              floatingLabelStyle={fontStyle}
-              underlineFocusStyle={underlineFocusStyle}
-              floatingLabelFocusStyle={underlineFocusStyle}
-              floatingLabelText="Email"
             />
           </div>
           <div>
             <PasswordField
               name="password"
-              style={fieldStyle}
+              style={styles.fieldStyle}
+              inputStyle={styles.inputpassStyle}
               value={passwordValue}
+              placeholder="Password"
+              underlineStyle={{ display: 'none' }}
               onChange={this.handleChange}
               errorText={passwordErrorMessage}
-              floatingLabelStyle={fontStyle}
-              underlineFocusStyle={underlineFocusStyle}
-              floatingLabelFocusStyle={underlineFocusStyle}
-              floatingLabelText="Password"
+              visibilityButtonStyle={{
+                marginTop: '-3px',
+              }}
+              visibilityIconStyle={{
+                marginTop: '-3px',
+              }}
+              textFieldStyle={{ padding: '0px' }}
             />
           </div>
           <div>
             <PasswordField
               name="confirmPassword"
-              style={fieldStyle}
+              style={styles.fieldStyle}
+              className="textFields"
+              inputStyle={styles.inputpassStyle}
               value={confirmPasswordValue}
+              placeholder="Confirm Password"
+              underlineStyle={{ display: 'none' }}
               onChange={this.handleChange}
               errorText={passwordConfirmErrorMessage}
-              floatingLabelStyle={fontStyle}
-              underlineFocusStyle={underlineFocusStyle}
-              floatingLabelFocusStyle={underlineFocusStyle}
-              floatingLabelText="Confirm Password"
+              visibilityButtonStyle={{
+                marginTop: '-3px',
+              }}
+              visibilityIconStyle={{
+                marginTop: '-3px',
+              }}
+              textFieldStyle={{ padding: '0px' }}
             />
           </div>
+
+          <div>
+            <RaisedButton
+              label="Sign Up"
+              type="submit"
+              disabled={!validForm}
+              backgroundColor={colors.header}
+              labelColor="#fff"
+              style={{ width: '275px', margin: '10px 0px' }}
+            />
+          </div>
+
           <span
             style={{
               display: 'inline-block',
@@ -262,17 +310,6 @@ export default class SignUp extends Component {
           >
             Already have an account? Login here
           </span>
-
-          <div>
-            <RaisedButton
-              label="Sign Up"
-              type="submit"
-              disabled={!validForm}
-              backgroundColor={colors.header}
-              labelColor="#fff"
-              style={{ margin: '15px 0 0 0 ' }}
-            />
-          </div>
         </form>
       </div>
     );

@@ -45,12 +45,14 @@ const styles = {
   inputStyle: {
     height: '35px',
     marginBottom: '10px',
+    webkitTextFillColor: 'unset',
   },
   inputPasswordStyle: {
     height: '35px',
     marginBottom: '10px',
     marginRight: '50px',
     width: '90%',
+    webkitTextFillColor: 'unset',
   },
 };
 
