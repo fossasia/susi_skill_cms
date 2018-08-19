@@ -20,7 +20,7 @@ import CircleImage from '../CircleImage/CircleImage';
 import MenuItem from 'material-ui/MenuItem';
 import { Link } from 'react-router-dom';
 import susiWhite from '../images/SUSIAI-white.png';
-import { urls, colors, isProduction, getAvatarProps } from '../../utils';
+import { urls, colors, isProduction } from '../../utils';
 import $ from 'jquery';
 import './StaticAppBar.css';
 // import ListUser from '../Admin/ListUser/ListUser';
@@ -197,7 +197,12 @@ class StaticAppBar extends Component {
     const isLoggedIn = !!cookies.get('loggedIn');
     let avatarProps = null;
     if (isLoggedIn) {
-      avatarProps = getAvatarProps(cookies.get('emailId'));
+      avatarProps = {
+        name: cookies.get('emailId'),
+        src: `${urls.API_URL}/getAvatar.png?access_token=${cookies.get(
+          'loggedIn',
+        )}`,
+      };
     }
 
     let TopRightMenu = props => (
