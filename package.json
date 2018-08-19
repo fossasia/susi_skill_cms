@@ -35,6 +35,7 @@
     "react-copy-to-clipboard": "5.0.1",
     "react-diff": "0.0.7",
     "react-dom": "15.6.2",
+    "react-emoji-render": "0.4.5",
     "react-flexbox-grid": "2.1.2",
     "react-icons": "2.2.7",
     "react-image": "1.3.1",
