@@ -432,7 +432,7 @@ export default class BrowseSkill extends React.Component {
     let backToHome = null;
 
     let metricsContainerStyle = {
-      width: '1090px',
+      width: '100%',
       margin: window.innerWidth >= 430 ? '10px' : '10px 0px 10px 0px',
     };
 
