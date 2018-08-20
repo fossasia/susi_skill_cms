@@ -23,6 +23,7 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import Delete from 'material-ui/svg-icons/action/delete';
 import EditBtn from 'material-ui/svg-icons/editor/mode-edit';
 import NavigationChevronRight from 'material-ui/svg-icons/navigation/chevron-right';
+import Emoji from 'react-emoji-render';
 
 import '../SkillFeedbackCard/SkillFeedbackCard.css';
 import './SkillFeedbackPage.css';
@@ -513,7 +514,7 @@ class SkillFeedbackPage extends Component {
                   </MenuItem>
                 </IconMenu>
               }
-              secondaryText={<p>{userFeedback.feedback}</p>}
+              secondaryText={<Emoji text={userFeedback.feedback} />}
             />
             <Divider inset={true} />
           </div>
@@ -544,7 +545,7 @@ class SkillFeedbackPage extends Component {
                     </div>
                   </div>
                 }
-                secondaryText={<p>{data.feedback}</p>}
+                secondaryText={<Emoji text={data.feedback} />}
               />
             );
           }

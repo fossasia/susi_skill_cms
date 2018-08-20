@@ -15,6 +15,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
+import Emoji from 'react-emoji-render';
 
 // Icons
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
@@ -171,7 +172,7 @@ class SkillFeedbackCard extends Component {
                     </MenuItem>
                   </IconMenu>
                 }
-                secondaryText={<p>{data.feedback}</p>}
+                secondaryText={<Emoji text={data.feedback} />}
               />
               <Divider inset={true} />
             </div>
@@ -196,7 +197,7 @@ class SkillFeedbackCard extends Component {
                   </div>
                 </div>
               }
-              secondaryText={<p>{data.feedback}</p>}
+              secondaryText={<Emoji text={data.feedback} />}
             />
           );
         }
