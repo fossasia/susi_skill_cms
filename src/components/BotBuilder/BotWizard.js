@@ -152,27 +152,39 @@ class BotWizard extends React.Component {
           let buildCode = data.drafts[id].buildCode;
           let designCode = data.drafts[id].designCode;
           let configCode = data.drafts[id].configCode;
-          designCode.replace('bodyBackground', 'bodyBackground #');
-          designCode.replace(
-            'userMessageBoxBackground',
+          designCode = designCode.replace(
+            'bodyBackground ',
+            'bodyBackground #',
+          );
+          designCode = designCode.replace(
+            'userMessageBoxBackground ',
             'userMessageBoxBackground #',
           );
-          designCode.replace('userMessageTextColor', 'userMessageTextColor #');
-          designCode.replace(
-            'botMessageBoxBackground',
+          designCode = designCode.replace(
+            'userMessageTextColor ',
+            'userMessageTextColor #',
+          );
+          designCode = designCode.replace(
+            'botMessageBoxBackground ',
             'botMessageBoxBackground #',
           );
-          designCode.replace('botMessageTextColor', 'botMessageTextColor #');
-          designCode.replace('botIconColor', 'botIconColor #');
-          this.setState({
-            groupValue: skillGroup,
-            languageValue: skillLanguage,
-            expertValue: skillName,
-            buildCode,
-            designCode,
-            configCode,
-            loaded: true,
-          });
+          designCode = designCode.replace(
+            'botMessageTextColor ',
+            'botMessageTextColor #',
+          );
+          designCode = designCode.replace('botIconColor ', 'botIconColor #');
+          this.setState(
+            {
+              groupValue: skillGroup,
+              languageValue: skillLanguage,
+              expertValue: skillName,
+              buildCode,
+              designCode,
+              configCode,
+              loaded: true,
+            },
+            () => this.generateDesignData(),
+          );
         } else {
           this.setState({
             openSnackbar: true,
