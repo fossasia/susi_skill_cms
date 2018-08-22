@@ -27,7 +27,7 @@ import Emoji from 'react-emoji-render';
 
 import '../SkillFeedbackCard/SkillFeedbackCard.css';
 import './SkillFeedbackPage.css';
-import { urls, parseDate, getAvatarProps } from '../../utils';
+import { urls, parseDate } from '../../utils';
 
 const cookies = new Cookies();
 
@@ -479,20 +479,29 @@ class SkillFeedbackPage extends Component {
     let feedbackCards = [];
     let userFeedbackCard;
     let userFeedback;
+    let userName = '';
+    let userAvatarLink = '';
+    let userEmail = '';
 
     if (this.state.skill_feedback) {
       userFeedback = this.state.skill_feedback[
         this.state.skill_feedback.findIndex(x => x.email === emailId)
       ];
       if (userFeedback && this.state.currentPage === 1) {
-        const avatarProps = getAvatarProps(userFeedback.email);
+        userEmail = userFeedback.email;
+        userAvatarLink = userFeedback.avatar;
+        userName = userFeedback.user_name;
+        const avatarProps = {
+          src: userAvatarLink,
+          name: userName === '' ? userEmail : userName,
+        };
         userFeedbackCard = (
           <div>
             <ListItem
               leftAvatar={<CircleImage {...avatarProps} size="40" />}
               primaryText={
                 <div>
-                  <div>{userFeedback.email}</div>
+                  <div>{userName === '' ? userEmail : userName}</div>
                   <div className="feedback-timestamp">
                     {this.formatDate(parseDate(userFeedback.timestamp))}
                   </div>
@@ -528,18 +537,28 @@ class SkillFeedbackPage extends Component {
           this.state.currentPage * pageLimit,
         )
         .map((data, index) => {
-          if (data.email !== emailId) {
-            const avatarProps = getAvatarProps(data.email);
+          userEmail = data.email;
+          userAvatarLink = data.avatar;
+          userName = data.user_name;
+          const avatarProps = {
+            src: userAvatarLink,
+            name: userName === '' ? userEmail : userName,
+          };
+          if (userEmail !== emailId) {
             return (
               <ListItem
                 key={index}
                 leftAvatar={<CircleImage {...avatarProps} size="40" />}
                 primaryText={
                   <div>
-                    <div>{`${data.email.slice(
-                      0,
-                      data.email.indexOf('@') + 1,
-                    )}...`}</div>
+                    <div>
+                      {userName !== ''
+                        ? userName
+                        : `${userEmail.slice(
+                            0,
+                            userEmail.indexOf('@') + 1,
+                          )}...`}
+                    </div>
                     <div className="feedback-timestamp">
                       {this.formatDate(parseDate(data.timestamp))}
                     </div>
