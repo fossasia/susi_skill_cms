@@ -162,7 +162,7 @@ class Preview extends Component {
       /^::enable_default_skills\s(.*)$/m,
     );
     if (enableDefaultSkillsMatch && enableDefaultSkillsMatch[1] === 'no') {
-      url += '&excludeDefaultSkills=1';
+      url += '&excludeDefaultSkills=true';
     }
     var thisMsgNumber = this.msgNumber;
     this.msgNumber++;
