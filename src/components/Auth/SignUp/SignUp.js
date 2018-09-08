@@ -10,6 +10,8 @@ import TextField from 'material-ui/TextField';
 import $ from 'jquery';
 import Cookies from 'universal-cookie';
 import { colors, urls } from '../../../utils';
+import Recaptcha from 'react-recaptcha';
+import KEY from '../../../utils/config';
 
 /* CSS */
 import './SignUp.css';
@@ -42,6 +44,8 @@ export default class SignUp extends Component {
       open: false,
       openLogin: false,
       openForgotPassword: false,
+      isCaptchaVerified: false,
+      captchaVerifyErrorMessage: '',
       validForm: false,
       serverUrl: '',
       msgOpen: false,
@@ -52,6 +56,22 @@ export default class SignUp extends Component {
       window.location.reload();
     }
   }
+
+  onCaptchaLoad = () => {
+    this.setState({
+      isCaptchaVerified: false,
+      captchaVerifyErrorMessage: '',
+    });
+  };
+
+  verifyCaptchaCallback = response => {
+    if (response) {
+      this.setState({
+        isCaptchaVerified: true,
+        captchaVerifyErrorMessage: '',
+      });
+    }
+  };
 
   handleChange = event => {
     let {
@@ -67,6 +87,9 @@ export default class SignUp extends Component {
       passwordErrorMessage,
       passwordConfirmErrorMessage,
       validForm,
+      isCaptchaVerified,
+      // eslint-disable-next-line
+      captchaVerifyErrorMessage,
     } = this.state;
 
     if (event.target.name === 'email') {
@@ -92,17 +115,30 @@ export default class SignUp extends Component {
       emailErrorMessage = '';
       passwordErrorMessage = 'Minimum 6 characters required';
       passwordConfirmErrorMessage = '';
+      captchaVerifyErrorMessage = '';
     } else if (passwordConfirmError) {
       emailErrorMessage = '';
       passwordErrorMessage = '';
       passwordConfirmErrorMessage = 'Check your password again';
+      captchaVerifyErrorMessage = '';
+    } else if (!isCaptchaVerified) {
+      emailErrorMessage = '';
+      passwordErrorMessage = '';
+      passwordConfirmErrorMessage = '';
+      captchaVerifyErrorMessage = 'Please confirm you are a human';
     } else {
       emailErrorMessage = '';
       passwordErrorMessage = '';
       passwordConfirmErrorMessage = '';
+      captchaVerifyErrorMessage = '';
     }
 
-    if (!emailError && !passwordError && !passwordConfirmError) {
+    if (
+      !emailError &&
+      !passwordError &&
+      !passwordConfirmError &&
+      isCaptchaVerified
+    ) {
       validForm = true;
     } else {
       validForm = false;
@@ -132,6 +168,7 @@ export default class SignUp extends Component {
       passwordValue,
       emailError,
       passwordConfirmError,
+      isCaptchaVerified,
     } = this.state;
     const { updateSnackbar, closeDialog } = this.props;
 
@@ -143,7 +180,13 @@ export default class SignUp extends Component {
     let message = '';
     let success = false;
 
-    if (!emailError && !passwordConfirmError) {
+    if (!isCaptchaVerified) {
+      this.setState({
+        captchaVerifyErrorMessage: 'Please verify that you are a human.',
+      });
+    }
+
+    if (!emailError && !passwordConfirmError && isCaptchaVerified) {
       $.ajax({
         url: API_ENDPOINT,
         dataType: 'jsonp',
@@ -291,7 +334,23 @@ export default class SignUp extends Component {
               textFieldStyle={{ padding: '0px' }}
             />
           </div>
-
+          <div style={{ width: '304px', margin: '10px auto 0' }}>
+            <Recaptcha
+              sitekey={KEY.CAPTCHA_KEY}
+              render="explicit"
+              onloadCallback={this.onCaptchaLoad}
+              verifyCallback={this.verifyCaptchaCallback}
+              badge="inline"
+              type="audio"
+              size="normal"
+            />
+            {!this.state.isCaptchaVerified &&
+              this.state.captchaVerifyErrorMessage && (
+                <p className="error-message">
+                  {this.state.captchaVerifyErrorMessage}
+                </p>
+              )}
+          </div>
           <div>
             <RaisedButton
               label="Sign Up"
