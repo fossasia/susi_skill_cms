@@ -53,6 +53,7 @@ class StaticAppBar extends Component {
       showOptions: false,
       showAdmin: false,
       anchorEl: null,
+      timestamp: new Date().getTime(),
     };
   }
 
@@ -67,7 +68,6 @@ class StaticAppBar extends Component {
   componentDidMount() {
     window.addEventListener('scroll', this.handleScroll);
     let url;
-
     if (cookies.get('loggedIn')) {
       url =
         urls.API_URL +
@@ -196,14 +196,12 @@ class StaticAppBar extends Component {
 
     const isLoggedIn = !!cookies.get('loggedIn');
     let avatarProps = null;
-    const date = new Date();
-    const timestamp = date.getTime();
     if (isLoggedIn) {
       avatarProps = {
         name: cookies.get('emailId'),
         src: `${urls.API_URL}/getAvatar.png?access_token=${cookies.get(
           'loggedIn',
-        )}&q=${timestamp}`,
+        )}&q=${this.state.timestamp}`,
       };
     }
 
