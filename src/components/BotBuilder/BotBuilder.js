@@ -6,6 +6,8 @@ import { Card, CardText } from 'material-ui/Card';
 import Snackbar from 'material-ui/Snackbar';
 import Add from 'material-ui/svg-icons/content/add';
 import Delete from 'material-ui/svg-icons/action/delete';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
 import { FloatingActionButton, Paper } from 'material-ui';
 import './BotBuilder.css';
 import { urls, colors } from '../../utils';
@@ -24,6 +26,7 @@ class BotBuilder extends React.Component {
       drafts: [],
       openSnackbar: false,
       msgSnackbar: '',
+      deleteAlert: null,
     };
     this.getChatbots();
     this.getDrafts();
@@ -89,7 +92,11 @@ class BotBuilder extends React.Component {
               <Delete
                 color="rgb(255, 255, 255)"
                 onClick={() =>
-                  this.deleteBot(bot.name, bot.language, bot.group)
+                  this.openDeleteAlert('bot', [
+                    bot.name,
+                    bot.language,
+                    bot.group,
+                  ])
                 }
               />
             </div>
@@ -125,13 +132,17 @@ class BotBuilder extends React.Component {
             openSnackbar: true,
             msgSnackbar: 'Successfully ' + data.message,
           },
-          () => this.getChatbots(),
+          () => {
+            this.closeDeleteAlert();
+            this.getChatbots();
+          },
         );
       }.bind(this),
       error: function(error) {
         this.setState({
           openSnackbar: true,
           msgSnackbar: 'Unable to delete your chatbot. Please try again.',
+          deleteAlert: null,
         });
       }.bind(this),
     });
@@ -173,7 +184,7 @@ class BotBuilder extends React.Component {
             <div className="bot-delete">
               <Delete
                 color="rgb(255, 255, 255)"
-                onClick={() => this.deleteDrafts(draft)}
+                onClick={() => this.openDeleteAlert('draft', [draft])}
               />
             </div>
           </Card>,
@@ -195,16 +206,37 @@ class BotBuilder extends React.Component {
             openSnackbar: true,
             msgSnackbar: 'Draft successfully deleted.',
           },
-          () => this.getDrafts(),
+          () => {
+            this.closeDeleteAlert();
+            this.getDrafts();
+          },
         );
       }.bind(this),
       error: function(error) {
         this.setState({
           openSnackbar: true,
           msgSnackbar: 'Unable to delete your draft. Please try again.',
+          deleteAlert: null,
         });
       }.bind(this),
     });
+  };
+
+  openDeleteAlert = (type, params) => {
+    this.setState({ deleteAlert: { type, params } });
+  };
+
+  closeDeleteAlert = () => {
+    this.setState({ deleteAlert: null });
+  };
+
+  handleDelete = () => {
+    const { type, params } = this.state.deleteAlert;
+    if (type === 'bot') {
+      this.deleteBot(...params);
+    } else if (type === 'draft') {
+      this.deleteDrafts(...params);
+    }
   };
 
   render() {
@@ -220,6 +252,7 @@ class BotBuilder extends React.Component {
         </div>
       );
     }
+
     return (
       <div>
         <StaticAppBar {...this.props} />
@@ -297,6 +330,32 @@ class BotBuilder extends React.Component {
             this.setState({ openSnackbar: false });
           }}
         />
+        <Dialog
+          actions={[
+            <FlatButton
+              label="Cancel"
+              onClick={this.closeDeleteAlert}
+              key={'Cancel'}
+              primary={true}
+              style={{ marginRight: '10px' }}
+            />,
+            <FlatButton
+              label="Delete"
+              onClick={this.handleDelete}
+              key={'Delete'}
+              backgroundColor={'#f50057'}
+              labelStyle={{ color: '#fff' }}
+              hoverColor={'#ff1744'}
+            />,
+          ]}
+          modal={false}
+          open={this.state.deleteAlert !== null}
+          onRequestClose={this.closeDeleteAlert}
+        >
+          {`Are you sure you want to delete this ${
+            this.state.deleteAlert !== null ? this.state.deleteAlert.type : ''
+          }?`}
+        </Dialog>
       </div>
     );
   }
