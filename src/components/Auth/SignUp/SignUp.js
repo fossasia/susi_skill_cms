@@ -133,12 +133,7 @@ export default class SignUp extends Component {
       captchaVerifyErrorMessage = '';
     }
 
-    if (
-      !emailError &&
-      !passwordError &&
-      !passwordConfirmError &&
-      isCaptchaVerified
-    ) {
+    if (!emailError && !passwordError && !passwordConfirmError) {
       validForm = true;
     } else {
       validForm = false;
@@ -272,6 +267,8 @@ export default class SignUp extends Component {
       passwordErrorMessage,
       emailErrorMessage,
       validForm,
+      isCaptchaVerified,
+      captchaVerifyErrorMessage,
       confirmPasswordValue,
       passwordConfirmErrorMessage,
     } = this.state;
@@ -285,7 +282,6 @@ export default class SignUp extends Component {
               name="email"
               type="email"
               value={email}
-              className="textFields"
               onChange={this.handleChange}
               style={styles.emailStyle}
               inputStyle={styles.inputStyle}
@@ -318,7 +314,6 @@ export default class SignUp extends Component {
             <PasswordField
               name="confirmPassword"
               style={styles.fieldStyle}
-              className="textFields"
               inputStyle={styles.inputpassStyle}
               value={confirmPasswordValue}
               placeholder="Confirm Password"
@@ -344,18 +339,16 @@ export default class SignUp extends Component {
               type="audio"
               size="normal"
             />
-            {!this.state.isCaptchaVerified &&
-              this.state.captchaVerifyErrorMessage && (
-                <p className="error-message">
-                  {this.state.captchaVerifyErrorMessage}
-                </p>
+            {!isCaptchaVerified &&
+              captchaVerifyErrorMessage && (
+                <p className="error-message">{captchaVerifyErrorMessage}</p>
               )}
           </div>
           <div>
             <RaisedButton
               label="Sign Up"
               type="submit"
-              disabled={!validForm}
+              disabled={!validForm || !isCaptchaVerified}
               backgroundColor={colors.header}
               labelColor="#fff"
               style={{ width: '275px', margin: '10px 0px' }}
