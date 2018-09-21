@@ -43,7 +43,8 @@ class BotBuilder extends React.Component {
         jsonp: 'callback',
         crossDomain: true,
         success: function(data) {
-          this.showChatbots(data.chatbots);
+          this.setState({ chatbots: data.chatbots });
+          this.getBotImages();
         }.bind(this),
         error: function(error) {
           if (error.status !== 404) {
@@ -58,15 +59,83 @@ class BotBuilder extends React.Component {
     }
   };
 
-  showChatbots = bots => {
+  getBotImages = () => {
+    let bots = this.state.chatbots;
+    if (bots) {
+      bots.forEach((bot, index) => {
+        let name = bot.name;
+        let language = bot.language;
+        let group = bot.group;
+        let url =
+          BASE_URL +
+          '/cms/getSkill.json?group=' +
+          group +
+          '&language=' +
+          language +
+          '&skill=' +
+          name +
+          '&private=1&access_token=' +
+          cookies.get('loggedIn');
+        $.ajax({
+          url: url,
+          dataType: 'jsonp',
+          crossDomain: true,
+          success: function(data) {
+            let image_match = data.text.match(/^::image\s(.*)$/m);
+            if (image_match) {
+              bot.image = image_match[1];
+            }
+            bots[index] = bot;
+            this.setState({ chatbots: bots });
+          }.bind(this),
+          error: function(error) {
+            if (error.status !== 404) {
+              this.setState({
+                openSnackbar: true,
+                msgSnackbar:
+                  "Couldn't get your chatbot image. Please reload the page.",
+              });
+            }
+          }.bind(this),
+        });
+      });
+    }
+  };
+
+  showChatbots = () => {
     let chatbots = [];
-    this.setState({
-      chatbots: [],
-    });
+    let bots = this.state.chatbots;
     if (bots) {
       bots.forEach(bot => {
+        let imageUrl;
+        if (bot.image !== 'images/susi_image.jpg') {
+          imageUrl = bot.image
+            ? BASE_URL +
+              '/cms/getImage.png?access_token=' +
+              cookies.get('loggedIn') +
+              '&language=' +
+              bot.language +
+              '&group=' +
+              bot.group.replace(/ /g, '%20') +
+              '&image=' +
+              bot.image.replace(/ /g, '%20')
+            : null;
+        } else {
+          imageUrl =
+            window.location.protocol +
+            '//' +
+            window.location.host +
+            '/customAvatars/1.png';
+        }
         chatbots.push(
-          <Card key={bot.name} className="bot-template-card">
+          <Card
+            key={bot.name}
+            className="bot-template-card"
+            style={{
+              backgroundImage: 'url(' + imageUrl + ')',
+              backgroundSize: 'cover',
+            }}
+          >
             <Link
               to={
                 '/botbuilder/botwizard?name=' +
@@ -97,9 +166,7 @@ class BotBuilder extends React.Component {
         );
       });
     }
-    this.setState({
-      chatbots: chatbots,
-    });
+    return chatbots;
   };
 
   deleteBot = (name, language, group) => {
@@ -283,7 +350,7 @@ class BotBuilder extends React.Component {
                   <CardText style={styles.newBotBtn}>Create a new bot</CardText>
                 </Card>
               </Link>
-              {this.state.chatbots}
+              {this.showChatbots()}
             </div>
             <h2 style={styles.heading}>Drafts</h2>
             <div className="bot-template-wrap">{this.state.drafts}</div>
