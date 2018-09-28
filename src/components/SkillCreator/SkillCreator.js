@@ -836,7 +836,13 @@ export default class SkillCreator extends Component {
                         onChange={this.handleCommitMessageChange}
                       />
                       <RaisedButton
-                        label="Save"
+                        label={
+                          this.state.loading ? (
+                            <CircularProgress color="#ffffff" size={32} />
+                          ) : (
+                            'Save'
+                          )
+                        }
                         backgroundColor={colors.header}
                         labelColor="#fff"
                         style={{ marginLeft: 10 }}
