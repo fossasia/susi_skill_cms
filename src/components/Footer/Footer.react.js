@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import susi from '../images/susi-logo.svg';
+import susi from '../../images/susi-logo.svg';
 import './Footer.css';
 import { Link } from 'react-router-dom';
 import { urls } from '../../utils';
