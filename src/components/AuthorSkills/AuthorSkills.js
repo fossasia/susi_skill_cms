@@ -16,7 +16,7 @@ import {
 /* Utils */
 import * as $ from 'jquery';
 import CircleImage from '../CircleImage/CircleImage';
-import githubLogo from '../images/github-logo.png';
+import githubLogo from '../../images/github-logo.png';
 import Img from 'react-image';
 import ISO6391 from 'iso-639-1';
 import { urls } from '../../utils';

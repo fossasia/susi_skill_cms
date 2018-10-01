@@ -19,7 +19,7 @@ import SkillIcon from 'material-ui/svg-icons/action/dashboard';
 import CircleImage from '../CircleImage/CircleImage';
 import MenuItem from 'material-ui/MenuItem';
 import { Link } from 'react-router-dom';
-import susiWhite from '../images/SUSIAI-white.png';
+import susiWhite from '../../images/SUSIAI-white.png';
 import { urls, colors, isProduction } from '../../utils';
 import $ from 'jquery';
 import './StaticAppBar.css';

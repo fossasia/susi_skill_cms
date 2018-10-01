@@ -7,7 +7,7 @@ import CircleImage from '../CircleImage/CircleImage';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import NavigationChevronLeft from 'material-ui/svg-icons/navigation/chevron-left';
 import NavigationChevronRight from 'material-ui/svg-icons/navigation/chevron-right';
-import StaffPick from '../images/staff_pick.png';
+import StaffPick from '../../images/staff_pick.png';
 import { urls } from '../../utils';
 
 import styles from './ScrollStyle';
