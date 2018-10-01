@@ -72,16 +72,24 @@ class Preview extends Component {
   }
   componentDidMount() {
     $('#susi-launcher').click(function() {
-      $('.susi-frame-container-active').toggle();
-      $('#susi-avatar-text').toggle();
-      $('#susi-launcher-close').toggle();
+      let $el = $('.susi-frame-container-active');
+      if ($el.css('display') === 'none') {
+        $el.toggle();
+        $('#susi-avatar-text').toggle();
+        $('#susi-launcher-close').toggle();
+      } else {
+        $el.fadeToggle();
+        $('#susi-avatar-text').fadeToggle();
+        $('#susi-launcher-close').fadeToggle();
+      }
+
       document.getElementById('susiTextMessage').focus();
     });
 
     $('#susi-launcher-close').click(function() {
-      $('.susi-frame-container-active').toggle();
-      $('#susi-avatar-text').toggle();
-      $('#susi-launcher-close').toggle();
+      $('.susi-frame-container-active').fadeToggle();
+      $('#susi-avatar-text').fadeToggle();
+      $('#susi-launcher-close').fadeToggle();
     });
     // on input/text enter
     $('#susiTextMessage').on(
