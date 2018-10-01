@@ -89,7 +89,7 @@ class BotWizard extends React.Component {
       languageValue: '',
       expertValue: '',
       file: null,
-      imageUrl: 'susi_image.jpg',
+      imageUrl: '<image_name>',
       image: avatarsIcons[1].url,
       designData: null,
       preferUiView: 'code',
@@ -98,7 +98,7 @@ class BotWizard extends React.Component {
       skillGroup: '',
       skillLanguage: '',
       buildCode:
-        '::name <Bot_name>\n::category <Category>\n::language <Language>\n::author <author_name>\n::author_url <author_url>\n::description <description> \n::dynamic_content <Yes/No>\n::developer_privacy_policy <link>\n::image images/susi_image.jpg\n::terms_of_use <link>\n\n\nUser query1|query2|quer3....\n!example:<The question that should be shown in public skill displays>\n!expect:<The answer expected for the above example>\nAnswer for the user query',
+        '::name <Bot_name>\n::category <Category>\n::language <Language>\n::author <author_name>\n::author_url <author_url>\n::description <description> \n::dynamic_content <Yes/No>\n::developer_privacy_policy <link>\n::image images/<image_name>\n::terms_of_use <link>\n\n\nUser query1|query2|quer3....\n!example:<The question that should be shown in public skill displays>\n!expect:<The answer expected for the above example>\nAnswer for the user query',
       designCode:
         '::bodyBackground #ffffff\n::bodyBackgroundImage \n::userMessageBoxBackground #0077e5\n::userMessageTextColor #ffffff\n::botMessageBoxBackground #f8f8f8\n::botMessageTextColor #455a64\n::botIconColor #000000\n::botIconImage ',
       configCode:
@@ -227,7 +227,7 @@ class BotWizard extends React.Component {
             .split('::bodyBackground')[0];
         const imageNameMatch = buildCode.match(/^::image\s(.*)$/m);
         let imagePreviewUrl;
-        if (imageNameMatch[1] !== 'images/susi_image.jpg') {
+        if (imageNameMatch[1] !== 'images/<image_name>') {
           imagePreviewUrl = `${
             urls.API_URL
           }/cms/getImage.png?access_token=${cookies.get(
@@ -469,8 +469,11 @@ class BotWizard extends React.Component {
       });
       return 0;
     }
-
-    if (!new RegExp(/.+\.\w+/g).test(self.state.imageUrl)) {
+    if (
+      !new RegExp(/.+\.\w+/g).test(self.state.imageUrl) &&
+      self.state.imageUrl !== '<image_name>' &&
+      self.state.imageUrl !== 'images/<image_name>'
+    ) {
       notification.open({
         message: 'Error Processing your Request',
         description: 'image must be in format of images/imageName.jpg',

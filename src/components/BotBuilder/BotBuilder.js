@@ -111,7 +111,7 @@ class BotBuilder extends React.Component {
     if (bots) {
       bots.forEach(bot => {
         let imageUrl;
-        if (bot.image !== 'images/susi_image.jpg') {
+        if (bot.image !== 'images/<image_name>') {
           imageUrl = bot.image
             ? BASE_URL +
               '/cms/getImage.png?access_token=' +
