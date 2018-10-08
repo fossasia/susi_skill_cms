@@ -680,6 +680,8 @@ class BotWizard extends React.Component {
                     <div style={{ float: 'left', paddingTop: '20px' }}>
                       <RaisedButton
                         label="Save Draft"
+                        backgroundColor={colors.header}
+                        labelColor="#fff"
                         onTouchTap={this.saveDraft}
                       />
                     </div>
@@ -720,6 +722,8 @@ class BotWizard extends React.Component {
                   {this.state.stepIndex < 2 ? (
                     <RaisedButton
                       label="Save Draft"
+                      backgroundColor={colors.header}
+                      labelColor="#fff"
                       onTouchTap={this.saveDraft}
                     />
                   ) : null}
@@ -739,7 +743,11 @@ class BotWizard extends React.Component {
                     ) : null}
                     {stepIndex === 0 ? (
                       <Link to="/botbuilder">
-                        <RaisedButton label="Cancel" />
+                        <RaisedButton
+                          label="Cancel"
+                          backgroundColor={colors.header}
+                          labelColor="#fff"
+                        />
                       </Link>
                     ) : null}
                   </div>
