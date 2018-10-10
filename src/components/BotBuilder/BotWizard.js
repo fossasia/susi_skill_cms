@@ -770,11 +770,21 @@ class BotWizard extends React.Component {
                 md={this.state.colPreview}
                 style={{
                   display: this.state.colPreview === 0 ? 'none' : 'block',
-                  paddingTop: '25px',
+                  position: 'fixed',
+                  marginLeft: '65%',
+                  height: '88%',
+                  marginTop: '10px',
                 }}
               >
                 <Paper
-                  style={styles.paperStyle}
+                  style={
+                    (styles.paperStyle,
+                    {
+                      height: '99.9%',
+                      marginTop: '20px',
+                      position: 'relative',
+                    })
+                  }
                   className="botBuilder-page-card"
                   zDepth={1}
                 >
