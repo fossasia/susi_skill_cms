@@ -4,7 +4,7 @@ import CodeView from './SkillViews/CodeView';
 import ConversationView from './SkillViews/ConversationView';
 import TreeView from './SkillViews/TreeView';
 import Preview from '../BotBuilder/Preview/Preview';
-import { urls, colors } from '../../utils';
+import { urls } from '../../utils';
 import CircularProgress from 'material-ui/CircularProgress';
 import { Link } from 'react-router-dom';
 import ISO6391 from 'iso-639-1';
@@ -760,7 +760,7 @@ export default class SkillCreator extends Component {
                           <RaisedButton
                             label="Choose an Image"
                             labelPosition="before"
-                            backgroundColor={colors.header}
+                            secondary={true}
                             containerElement="label"
                             labelColor="#fff"
                           >
@@ -843,7 +843,7 @@ export default class SkillCreator extends Component {
                             'Save'
                           )
                         }
-                        backgroundColor={colors.header}
+                        secondary={true}
                         labelColor="#fff"
                         style={{ marginLeft: 10 }}
                         onTouchTap={this.saveClick}
@@ -851,7 +851,7 @@ export default class SkillCreator extends Component {
                       <Link to="/">
                         <RaisedButton
                           label="Cancel"
-                          backgroundColor={colors.header}
+                          secondary={true}
                           labelColor="#fff"
                           style={{ marginLeft: 10 }}
                         />

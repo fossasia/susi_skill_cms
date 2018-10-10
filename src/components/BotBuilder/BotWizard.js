@@ -16,7 +16,7 @@ import Snackbar from 'material-ui/Snackbar';
 import { Paper, TextField } from 'material-ui';
 import ChevronLeft from 'material-ui/svg-icons/navigation/chevron-left';
 import ChevronRight from 'material-ui/svg-icons/navigation/chevron-right';
-import { urls, colors, avatars } from '../../utils';
+import { urls, avatars } from '../../utils';
 import Icon from 'antd/lib/icon';
 import * as $ from 'jquery';
 import Cookies from 'universal-cookie';
@@ -694,7 +694,7 @@ class BotWizard extends React.Component {
                     {stepIndex < 2 ? (
                       <RaisedButton
                         label={'Next'}
-                        backgroundColor={colors.header}
+                        secondary={true}
                         labelColor="#fff"
                         onTouchTap={this.handleNext}
                       />
@@ -711,7 +711,7 @@ class BotWizard extends React.Component {
                             'Save and Deploy'
                           )
                         }
-                        backgroundColor={colors.header}
+                        secondary={true}
                         labelColor="#fff"
                         onTouchTap={this.saveClick}
                       />
@@ -732,7 +732,7 @@ class BotWizard extends React.Component {
                     {stepIndex !== 0 && stepIndex !== 3 ? (
                       <RaisedButton
                         label="Back"
-                        backgroundColor={colors.header}
+                        secondary={true}
                         labelColor="#fff"
                         onTouchTap={this.handlePrev}
                       />

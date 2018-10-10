@@ -27,7 +27,7 @@ import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import SkillCardList from '../SkillCardList/SkillCardList';
 import SkillCardGrid from '../SkillCardGrid/SkillCardGrid';
 import SkillCardScrollList from '../SkillCardScrollList/SkillCardScrollList';
-import { urls, colors } from '../../utils';
+import { urls } from '../../utils';
 import Footer from '../Footer/Footer.react';
 import SearchBar from 'material-ui-search-bar';
 import _ from 'lodash';
@@ -487,7 +487,7 @@ export default class BrowseSkill extends React.Component {
                     }}
                     label="Create"
                     icon={<Add />}
-                    backgroundColor="#4285f4"
+                    secondary={true}
                     labelStyle={{ color: '#fff' }}
                   />
                 }
@@ -769,12 +769,6 @@ export default class BrowseSkill extends React.Component {
                   listStyle={{
                     top: '100px',
                   }}
-                  selectedMenuItemStyle={{
-                    color: colors.header,
-                  }}
-                  underlineFocusStyle={{
-                    color: colors.header,
-                  }}
                 >
                   <MenuItem
                     value={
@@ -865,12 +859,6 @@ export default class BrowseSkill extends React.Component {
                 style={styles.selection}
                 listStyle={{
                   top: '100px',
-                }}
-                selectedMenuItemStyle={{
-                  color: colors.header,
-                }}
-                underlineFocusStyle={{
-                  color: colors.header,
                 }}
                 multiple={true}
                 hintText="Languages"
