@@ -280,18 +280,18 @@ class SkillCardScrollList extends Component {
           >
             <FloatingActionButton
               mini={true}
-              backgroundColor={'#4285f4'}
               style={leftFabStyle}
               onClick={this.scrollLeft}
+              secondary={true}
             >
               <NavigationChevronLeft />
             </FloatingActionButton>
             {this.state.cards}
             <FloatingActionButton
               mini={true}
-              backgroundColor={'#4285f4'}
               style={rightFabStyle}
               onClick={this.scrollRight}
+              secondary={true}
             >
               <NavigationChevronRight />
             </FloatingActionButton>

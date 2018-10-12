@@ -20,7 +20,7 @@ import CircleImage from '../CircleImage/CircleImage';
 import MenuItem from 'material-ui/MenuItem';
 import { Link } from 'react-router-dom';
 import susiWhite from '../../images/SUSIAI-white.png';
-import { urls, colors, isProduction } from '../../utils';
+import { urls, isProduction } from '../../utils';
 import $ from 'jquery';
 import './StaticAppBar.css';
 // import ListUser from '../Admin/ListUser/ListUser';
@@ -190,10 +190,6 @@ class StaticAppBar extends Component {
   closeAuthDialog = () => this.setState({ showAuth: false });
 
   render() {
-    const headerStyle = {
-      background: colors.header,
-    };
-
     const isLoggedIn = !!cookies.get('loggedIn');
     let avatarProps = null;
     if (isLoggedIn) {
@@ -311,7 +307,7 @@ class StaticAppBar extends Component {
 
     return (
       <div>
-        <header className="nav-down" style={headerStyle} id="headerSection">
+        <header className="nav-down" id="headerSection">
           <AppBar
             className="topAppBar"
             id="appBar"
@@ -331,7 +327,6 @@ class StaticAppBar extends Component {
               </div>
             }
             style={{
-              backgroundColor: colors.header,
               height: '46px',
               boxShadow: 'none',
               margin: '0 auto',

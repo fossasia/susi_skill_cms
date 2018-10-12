@@ -865,10 +865,7 @@ class SkillListing extends Component {
                     },
                   }}
                 >
-                  <FloatingActionButton
-                    data-tip="Edit Skill"
-                    backgroundColor={colors.header}
-                  >
+                  <FloatingActionButton data-tip="Edit Skill" secondary={true}>
                     <EditBtn />
                   </FloatingActionButton>
                   <ReactTooltip effect="solid" place="bottom" />
@@ -889,7 +886,7 @@ class SkillListing extends Component {
                   <div className="skillVersionBtn">
                     <FloatingActionButton
                       data-tip="Skill Versions"
-                      backgroundColor={colors.header}
+                      secondary={true}
                     >
                       <VersionBtn />
                     </FloatingActionButton>

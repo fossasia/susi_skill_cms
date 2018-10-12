@@ -10,7 +10,7 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import { FloatingActionButton, Paper } from 'material-ui';
 import './BotBuilder.css';
-import { urls, colors } from '../../utils';
+import { urls } from '../../utils';
 import { Link } from 'react-router-dom';
 import Cookies from 'universal-cookie';
 import * as $ from 'jquery';
@@ -153,7 +153,7 @@ class BotBuilder extends React.Component {
                 label={bot.name}
                 labelPosition="before"
                 labelStyle={{ verticalAlign: 'middle' }}
-                backgroundColor={colors.header}
+                secondary={true}
                 labelColor="#fff"
               />
             </Link>
@@ -244,7 +244,7 @@ class BotBuilder extends React.Component {
                 label={drafts[draft].name === '' ? draft : drafts[draft].name}
                 labelPosition="before"
                 labelStyle={{ verticalAlign: 'middle' }}
-                backgroundColor={colors.header}
+                secondary={true}
                 labelColor="#fff"
               />
             </Link>
@@ -346,7 +346,7 @@ class BotBuilder extends React.Component {
                     >
                       <RaisedButton
                         label={template.name}
-                        backgroundColor={colors.header}
+                        secondary={true}
                         labelColor="#fff"
                       />
                     </Card>
@@ -367,7 +367,7 @@ class BotBuilder extends React.Component {
               <Link to="/botbuilder/botwizard">
                 <Card className="bot-template-card">
                   <FloatingActionButton
-                    backgroundColor={colors.fabButton}
+                    secondary={true}
                     mini={true}
                     style={{
                       boxShadow:
@@ -403,7 +403,7 @@ class BotBuilder extends React.Component {
               label="Cancel"
               onClick={this.closeDeleteAlert}
               key={'Cancel'}
-              primary={true}
+              secondary={true}
               style={{ marginRight: '10px' }}
             />,
             <FlatButton
