@@ -680,6 +680,8 @@ class BotWizard extends React.Component {
                     <div style={{ float: 'left', paddingTop: '20px' }}>
                       <RaisedButton
                         label="Save Draft"
+                        backgroundColor={colors.header}
+                        labelColor="#fff"
                         onTouchTap={this.saveDraft}
                       />
                     </div>
@@ -720,6 +722,8 @@ class BotWizard extends React.Component {
                   {this.state.stepIndex < 2 ? (
                     <RaisedButton
                       label="Save Draft"
+                      backgroundColor={colors.header}
+                      labelColor="#fff"
                       onTouchTap={this.saveDraft}
                     />
                   ) : null}
@@ -739,7 +743,11 @@ class BotWizard extends React.Component {
                     ) : null}
                     {stepIndex === 0 ? (
                       <Link to="/botbuilder">
-                        <RaisedButton label="Cancel" />
+                        <RaisedButton
+                          label="Cancel"
+                          backgroundColor={colors.header}
+                          labelColor="#fff"
+                        />
                       </Link>
                     ) : null}
                   </div>
@@ -762,11 +770,21 @@ class BotWizard extends React.Component {
                 md={this.state.colPreview}
                 style={{
                   display: this.state.colPreview === 0 ? 'none' : 'block',
-                  paddingTop: '25px',
+                  position: 'fixed',
+                  marginLeft: '65%',
+                  height: '88%',
+                  marginTop: '10px',
                 }}
               >
                 <Paper
-                  style={styles.paperStyle}
+                  style={
+                    (styles.paperStyle,
+                    {
+                      height: '99.9%',
+                      marginTop: '20px',
+                      position: 'relative',
+                    })
+                  }
                   className="botBuilder-page-card"
                   zDepth={1}
                 >
