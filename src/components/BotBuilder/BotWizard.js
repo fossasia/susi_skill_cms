@@ -20,6 +20,7 @@ import { urls, colors, avatars } from '../../utils';
 import Icon from 'antd/lib/icon';
 import * as $ from 'jquery';
 import Cookies from 'universal-cookie';
+import './BotBuilder.css';
 
 const cookies = new Cookies();
 
@@ -783,6 +784,7 @@ class BotWizard extends React.Component {
                       height: '99.9%',
                       marginTop: '20px',
                       position: 'relative',
+                      marginRight: '30px',
                     })
                   }
                   className="botBuilder-page-card"
