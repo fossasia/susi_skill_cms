@@ -299,6 +299,14 @@ input[type=file]{
 	}
 }
 
+@media  (max-width:769px){
+	.botbuilder-col{
+		position: inherit !important ;
+		margin-left: 0px !important ;
+		margin-bottom: 40px;
+	}
+}
+
 .preview-button {
 	height: 45px;
 	width: 42px;
