@@ -42,9 +42,3 @@
   justify-content: center;
   align-content: center;
 }
-@media screen and (max-width: 450px){
-	.pie-chart{
-		display: block;
-	}
-	
-}
