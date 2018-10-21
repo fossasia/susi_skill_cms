@@ -543,6 +543,79 @@ export default class BrowseSkill extends React.Component {
       this.state.ratingRefine ||
       this.state.timeFilter;
 
+    let renderSkillCount = '';
+    if (this.state.skills.length > 0) {
+      renderSkillCount = (
+        <div
+          style={{
+            display: 'flex',
+          }}
+        >
+          {this.state.listOffset + 1}-{this.state.listOffset +
+            this.state.entriesPerPage >
+          this.state.skills.length
+            ? this.state.skills.length
+            : this.state.listOffset + this.state.entriesPerPage}{' '}
+          out of {this.state.skills.length} result(s) for&nbsp;<b>
+            <Link to="/">
+              <div className="susi-skills">SUSI Skills</div>
+            </Link>
+          </b>
+          {this.props.routeValue && (
+            <div style={{ display: 'flex' }}>
+              :&nbsp;<div style={{ color: '#4286f4', fontWeight: 'bold' }}>
+                {this.props.routeValue}
+              </div>
+            </div>
+          )}
+          {this.state.searchQuery.length > 0 && (
+            <div style={{ display: 'flex' }}>
+              :&nbsp;<div style={{ color: '#4286f4', fontWeight: 'bold' }}>
+                &quot;{this.state.searchQuery}&quot;
+              </div>
+            </div>
+          )}
+          {this.state.ratingRefine > 0 && (
+            <div style={{ display: 'flex' }}>
+              :&nbsp;<div style={{ color: '#4286f4', fontWeight: 'bold' }}>
+                {this.state.ratingRefine} Stars & Up
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    } else if (this.state.searchQuery.length > 0) {
+      renderSkillCount = (
+        <div style={{ padding: '10px' }}>
+          <h2 style={{ fontWeight: '400' }}>
+            Your search <b>&quot;{this.state.searchQuery}&quot;</b> did not
+            match any skills.
+          </h2>
+          <h3 style={{ margin: '15px 0 10px 0' }}>Try something like</h3>
+          <ul style={{ listStyle: 'inside' }}>
+            <li>Using more general terms</li>
+            <li>Checking your spelling</li>
+          </ul>
+        </div>
+      );
+    } else {
+      renderSkillCount = (
+        <div>
+          No result found for{' '}
+          <b>
+            <Link to="/">
+              <span className="susi-skills">SUSI Skills: </span>
+            </Link>
+          </b>
+          {this.props.routeValue && (
+            <span style={{ color: '#4286f4', fontWeight: 'bold' }}>
+              {this.props.routeValue}
+            </span>
+          )}
+        </div>
+      );
+    }
+
     return (
       <div style={styles.browseSkillRoot}>
         <StaticAppBar
@@ -1173,96 +1246,54 @@ export default class BrowseSkill extends React.Component {
                     this.props.routeType ||
                     this.state.ratingRefine ? (
                       <div id={'page-filter'}>
-                        <div
-                          style={{
-                            display: 'flex',
-                          }}
-                        >
-                          {this.state.listOffset + 1}-{this.state.listOffset +
-                            this.state.entriesPerPage >
-                          this.state.skills.length
-                            ? this.state.skills.length
-                            : this.state.listOffset +
-                              this.state.entriesPerPage}{' '}
-                          out of {this.state.skills.length} result(s) for&nbsp;<b
-                          >
-                            <Link to="/">
-                              <div className="susi-skills">SUSI Skills</div>
-                            </Link>
-                          </b>
-                          {this.props.routeValue && (
-                            <div style={{ display: 'flex' }}>
-                              :&nbsp;<div
-                                style={{ color: '#4286f4', fontWeight: 'bold' }}
-                              >
-                                {this.props.routeValue}
-                              </div>
-                            </div>
-                          )}
-                          {this.state.searchQuery.length > 0 && (
-                            <div style={{ display: 'flex' }}>
-                              :&nbsp;<div
-                                style={{ color: '#4286f4', fontWeight: 'bold' }}
-                              >
-                                &quot;{this.state.searchQuery}&quot;
-                              </div>
-                            </div>
-                          )}
-                          {this.state.ratingRefine > 0 && (
-                            <div style={{ display: 'flex' }}>
-                              :&nbsp;<div
-                                style={{ color: '#4286f4', fontWeight: 'bold' }}
-                              >
-                                {this.state.ratingRefine} Stars & Up
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                        <div id={'pagination'}>
-                          <SelectField
-                            floatingLabelText="Skills per page"
-                            floatingLabelFixed={false}
-                            hintText="Entries per page"
-                            style={{ width: '150px' }}
-                            value={this.state.entriesPerPage}
-                            onChange={this.handleEntriesPerPageChange}
-                          >
-                            <MenuItem
-                              value={10}
-                              key={10}
-                              primaryText={'10'}
-                              label={'10'}
-                            />
-                            <MenuItem
-                              value={20}
-                              key={20}
-                              primaryText={'20'}
-                              label={'20'}
-                            />
-                            <MenuItem
-                              value={50}
-                              key={50}
-                              primaryText={'50'}
-                              label={'50'}
-                            />
-                            <MenuItem
-                              value={100}
-                              key={100}
-                              primaryText={'100'}
-                              label={'100'}
-                            />
-                          </SelectField>
-                          <SelectField
-                            floatingLabelText="Page"
-                            floatingLabelFixed={false}
-                            hintText="Page"
-                            style={{ width: '150px' }}
-                            value={this.state.listPage}
-                            onChange={this.handlePageChange}
-                          >
-                            {this.pageMenuItems()}
-                          </SelectField>
-                        </div>
+                        {renderSkillCount}
+                        {this.state.skills.length > 10 && (
+                          <div id={'pagination'}>
+                            <SelectField
+                              floatingLabelText="Skills per page"
+                              floatingLabelFixed={false}
+                              hintText="Entries per page"
+                              style={{ width: '150px' }}
+                              value={this.state.entriesPerPage}
+                              onChange={this.handleEntriesPerPageChange}
+                            >
+                              <MenuItem
+                                value={10}
+                                key={10}
+                                primaryText={'10'}
+                                label={'10'}
+                              />
+                              <MenuItem
+                                value={20}
+                                key={20}
+                                primaryText={'20'}
+                                label={'20'}
+                              />
+                              <MenuItem
+                                value={50}
+                                key={50}
+                                primaryText={'50'}
+                                label={'50'}
+                              />
+                              <MenuItem
+                                value={100}
+                                key={100}
+                                primaryText={'100'}
+                                label={'100'}
+                              />
+                            </SelectField>
+                            <SelectField
+                              floatingLabelText="Page"
+                              floatingLabelFixed={false}
+                              hintText="Page"
+                              style={{ width: '150px' }}
+                              value={this.state.listPage}
+                              onChange={this.handlePageChange}
+                            >
+                              {this.pageMenuItems()}
+                            </SelectField>
+                          </div>
+                        )}
                       </div>
                     ) : (
                       ''
@@ -1284,29 +1315,31 @@ export default class BrowseSkill extends React.Component {
                         />
                       )}
                     </div>
-                    <div id={'pageNavigation'}>
-                      <FloatingActionButton
-                        disabled={this.state.listPage === 1}
-                        style={{ marginRight: '15px' }}
-                        backgroundColor={colors.header}
-                        onClick={this.handleNavigationBackward}
-                      >
-                        <NavigationArrowBack />
-                      </FloatingActionButton>
-                      <FloatingActionButton
-                        disabled={
-                          this.state.listPage ===
-                          Math.ceil(
-                            this.state.skills.length /
-                              this.state.entriesPerPage,
-                          )
-                        }
-                        backgroundColor={colors.header}
-                        onClick={this.handleNavigationForward}
-                      >
-                        <NavigationArrowForward />
-                      </FloatingActionButton>
-                    </div>
+                    {this.state.skills.length > 10 && (
+                      <div id={'pageNavigation'}>
+                        <FloatingActionButton
+                          disabled={this.state.listPage === 1}
+                          style={{ marginRight: '15px' }}
+                          backgroundColor={colors.header}
+                          onClick={this.handleNavigationBackward}
+                        >
+                          <NavigationArrowBack />
+                        </FloatingActionButton>
+                        <FloatingActionButton
+                          disabled={
+                            this.state.listPage ===
+                            Math.ceil(
+                              this.state.skills.length /
+                                this.state.entriesPerPage,
+                            )
+                          }
+                          backgroundColor={colors.header}
+                          onClick={this.handleNavigationForward}
+                        >
+                          <NavigationArrowForward />
+                        </FloatingActionButton>
+                      </div>
+                    )}
                   </div>
                 ) : (
                   <div>
