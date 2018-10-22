@@ -319,6 +319,10 @@ export default class BrowseSkill extends React.Component {
           data.sort();
           languages = [];
           for (let i = 0; i < data.length; i++) {
+            if (data[i] === '0' || data[i] === 'xx') {
+              continue;
+            }
+            console.log(data[i]);
             languages.push(data[i]);
           }
           this.setState({ languages: data });
