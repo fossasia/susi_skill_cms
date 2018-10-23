@@ -8,33 +8,20 @@ It's easy, DON'T PANIC. You don't need to be a software developer to enhance SUS
 
 ### What you have to do
 
-We have a SUSI Skill development environment based on an Etherpad. Are you unaware what an Etherpad is? It is a blank web page where you can just put in your text and everyone can collaborate.
-
-* open http://dream.susi.ai
-* name a dream (just pick a name for your tests in lower case letters)
-* the etherpad is filled with a welcome message, just delete the content completely
-
-ATTENTION: the Susi Dream zone is a TEMPORARY zone. We may clean up that place at any time. It is only for testing your new SUSI Skills
-If you want your new SUSI Skills to be permanent, please use the [CMS](http://skills.susi.ai/) to permanantly store skills in [susi_skill_data](https://github.com/fossasia/susi_skill_data).
+We have a SUSI Skill CMS at https://skills.susi.ai. Here you can create public skills in a simpled editor window or private skill bots. Both can be created in the same way except that one is public and can be edited by anyone and the other is private, which can be edited only by you. The private skill bot also provides a Javascript embed code, which you can add to your website. You can configure colors and icons to suite your style.
 
 ### Preparation to start testing
 
-To test the SUSI Skills you are editing, you require the Susi Android Application (see: https://github.com/fossasia/susi_android ) or you can also test them online at http://susi.ai/chat
+To test the SUSI Skills you are editing, you can use the public chat at:
+https://chat.susi.ai
 
-Within the SUSI chat dialog, enter
-
-```
-dream <testname>
-```
-
-where `<testname>` is the name of the etherpad you just entered in http://dream.susi.ai
-
-Now all Skills you enter in the dream zone are available instantly in your chat! That's easy, is it?
-
-To stop testing your new SUSI Skills, write `stop dreaming`.
+One you created a public skill you could also test it using the SUSI.AI Android Application at:
+https://play.google.com/store/apps/details?id=ai.susi
 
 ### Skill Format
-```
+
+Within the SUSI.AI skills editor window you find fields for meta-information, that you need to complete:
+
 ::name <Skill_name>
 ::author <author_name>
 ::author_url <author_url>
@@ -64,15 +51,15 @@ Therefore, we can access every expert with the 4-tuple
 ```
 {model, group, language, expert}
 ```
-### The Susi Skill Language: a Language of Thought
-As you will see in the tutorial levels below, the language looks like an extremely simple pattern-matching Question-Answer declaration. But that is just the facade, it is easy for beginners but under the hood there is an expert system which is able to do planning and proving. The artificial intelligence in Susi is implemented as a theorem prover which can explore the domain of possible answers and gives one which is _true_ in Susis universe of knowledge.
+### The SUSI.AI Skill Language: A Language of Thought
+As you will see in the tutorial levels below, the language looks like an extremely simple pattern-matching Question-Answer declaration. But that is just the facade, it is easy for beginners but under the hood there is an expert system which is able to do planning and proving. The artificial intelligence in Susi is implemented as a theorem prover which can explore the domain of possible answers and gives one which is _true_ in SUSI's universe of knowledge.
 
 However, we had to combine the complex world of declaration-based logic programming with natural language declarations.
 We believe that the result is a easy-to-learn skill language with the ability to advance to true artificial intelligence when we reach a certain level of experience.
 
 ### Tutorial Level 0: Fixed Query-Answer Phrase Collections
 
-In you dream test zone (the etherpad) write:
+In your editor window write:
 ```
 # SUSI Skill tutorial playground
 roses are red
@@ -88,7 +75,7 @@ Now you can test the new intent:
 The Skill file is just a text file where two lines which are not separated by an empty line represent a conversation pattern.
 You can actually add a third line to your file:
 ```
-# SUSI tutorial playground
+# SUSI.AI tutorial playground
 ::prior
 roses are red
 susi is a hack
