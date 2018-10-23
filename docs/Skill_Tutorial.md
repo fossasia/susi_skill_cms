@@ -30,7 +30,7 @@ Within the SUSI.AI skills editor window you find fields for meta-information, th
 ::developer_privacy_policy <link>
 ::image <image_url>
 ::term_of_use <link>
-```
+
 #Intent
 User query1|query2|quer3....
 Answer answer1|answer2|answer3...
