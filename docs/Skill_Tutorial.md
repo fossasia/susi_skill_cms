@@ -1,4 +1,4 @@
-# Susi Skill Development Tutorial
+# SUSI.AI Skill Development Tutorial
 
 Do you want your own AI Skills for SUSI? It's surprisingly easy to add more Skills to SUSI.
 
