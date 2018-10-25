@@ -13,6 +13,7 @@ import { Grid, Col, Row } from 'react-flexbox-grid';
 import PropTypes from 'prop-types';
 import Cookies from 'universal-cookie';
 import * as $ from 'jquery';
+import './SkillCreator.css';
 
 // Material-UI Components
 import { Paper, RaisedButton, TextField } from 'material-ui';
@@ -891,14 +892,25 @@ export default class SkillCreator extends Component {
               </Col>
               {this.props.botBuilder ? null : (
                 <Col
+                  className="skillcreator-col"
+                  id="skillcreator-col"
                   xs={12}
                   md={this.state.colPreview}
                   style={{
                     display: this.state.colPreview === 0 ? 'none' : 'block',
-                    paddingTop: '15px',
                   }}
                 >
-                  <Paper style={styles.paperStyle} zDepth={1}>
+                  <Paper
+                    style={
+                      (styles.paperStyle,
+                      {
+                        height: '99.9%',
+                        marginTop: '20px',
+                        position: 'relative',
+                      })
+                    }
+                    zDepth={1}
+                  >
                     <div style={{ display: 'flex', flexDirection: 'row' }}>
                       <span title="collapse preview">
                         <ChevronRight
@@ -978,8 +990,8 @@ const styles = {
   },
   chevron: {
     position: 'relative',
-    left: '-20px',
-    top: '-10px',
+    left: '-2px',
+    top: '-3px',
     width: '35px',
     height: '35px',
     color: 'rgb(158, 158, 158)',
