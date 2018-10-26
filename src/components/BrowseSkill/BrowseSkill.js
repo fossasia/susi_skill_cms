@@ -20,6 +20,10 @@ import Person from 'material-ui/svg-icons/social/person';
 import ActionViewModule from 'material-ui/svg-icons/action/view-module';
 import ActionViewStream from 'material-ui/svg-icons/action/view-stream';
 import ChevronRight from 'material-ui/svg-icons/navigation/chevron-right';
+import FloatingActionButton from 'material-ui/FloatingActionButton';
+import NavigationArrowBack from 'material-ui/svg-icons/navigation/arrow-back';
+import NavigationArrowForward from 'material-ui/svg-icons/navigation/arrow-forward';
+
 // eslint-disable-next-line
 import CircleImage from '../CircleImage/CircleImage';
 import CircularProgress from 'material-ui/CircularProgress';
@@ -82,6 +86,7 @@ export default class BrowseSkill extends React.Component {
       showStaffPicks: false,
       expertValue: null,
       skills: [],
+      listSkills: [],
       groups: [],
       languages: [],
       groupSelect: false,
@@ -99,6 +104,9 @@ export default class BrowseSkill extends React.Component {
       ratingRefine: null,
       timeFilter: null,
       viewType: 'list',
+      listOffset: 0,
+      listPage: 1,
+      entriesPerPage: 10,
     };
   }
 
@@ -147,6 +155,61 @@ export default class BrowseSkill extends React.Component {
       } else {
         this.loadMetricsSkills();
       }
+    });
+  };
+
+  handleEntriesPerPageChange = (event, index, values) => {
+    let { skills, listPage } = this.state;
+    let entriesPerPage = values;
+    let listOffset = entriesPerPage * (listPage - 1);
+    if (listOffset > skills.length - 1) {
+      listPage = Math.ceil(skills.length / entriesPerPage);
+      listOffset = entriesPerPage * (listPage - 1);
+    }
+    // console.log(listPage, listOffset);
+    this.setState({
+      entriesPerPage,
+      listOffset,
+      listPage,
+      listSkills: skills.slice(listOffset, listOffset + values),
+    });
+  };
+
+  handlePageChange = (event, index, value) => {
+    if (value !== undefined) {
+      let entriesPerPage = this.state.entriesPerPage;
+      let listPage = value;
+      let listOffset = entriesPerPage * (listPage - 1);
+      // console.log(listOffset);
+      let skills = this.state.skills;
+      this.setState({
+        listPage,
+        listOffset,
+        listSkills: skills.slice(listOffset, listOffset + entriesPerPage),
+      });
+    }
+  };
+
+  handleNavigationForward = () => {
+    let listPage = this.state.listPage + 1;
+    let listOffset = this.state.listOffset + this.state.entriesPerPage;
+    this.setState({
+      listPage,
+      listOffset,
+      listSkills: this.state.skills.slice(
+        listOffset,
+        listOffset + this.state.entriesPerPage,
+      ),
+    });
+  };
+
+  handleNavigationBackward = () => {
+    let listPage = this.state.listPage - 1;
+    let listOffset = this.state.listOffset - this.state.entriesPerPage;
+    this.setState({
+      listPage,
+      listOffset,
+      listSkills: this.state.skills.slice(listOffset, this.state.listOffset),
     });
   };
 
@@ -336,9 +399,13 @@ export default class BrowseSkill extends React.Component {
         self.setState(
           {
             skills: data.filteredData,
+            listSkills: data.filteredData.slice(0, self.state.entriesPerPage),
             // cards: cards,
             skillURL: url,
             skillsLoaded: true,
+            listOffset: 0,
+            listPage: 1,
+            entriesPerPage: 10,
           },
           function() {
             this.loadLanguages();
@@ -424,6 +491,25 @@ export default class BrowseSkill extends React.Component {
     ));
   }
 
+  pageMenuItems(values) {
+    let a = [];
+    for (
+      let i = 1;
+      i <= Math.ceil(this.state.skills.length / this.state.entriesPerPage);
+      i += 1
+    ) {
+      a.push(i);
+    }
+    return a.map(idx => (
+      <MenuItem
+        key={idx}
+        value={idx}
+        primaryText={idx.toString()}
+        label={idx.toString()}
+      />
+    ));
+  }
+
   render() {
     let { languageValue } = this.state;
     let sidebarStyle = styles.sidebar;
@@ -456,6 +542,79 @@ export default class BrowseSkill extends React.Component {
       this.state.searchQuery.length > 0 ||
       this.state.ratingRefine ||
       this.state.timeFilter;
+
+    let renderSkillCount = '';
+    if (this.state.skills.length > 0) {
+      renderSkillCount = (
+        <div
+          style={{
+            display: 'flex',
+          }}
+        >
+          {this.state.listOffset + 1}-{this.state.listOffset +
+            this.state.entriesPerPage >
+          this.state.skills.length
+            ? this.state.skills.length
+            : this.state.listOffset + this.state.entriesPerPage}{' '}
+          out of {this.state.skills.length} result(s) for&nbsp;<b>
+            <Link to="/">
+              <div className="susi-skills">SUSI Skills</div>
+            </Link>
+          </b>
+          {this.props.routeValue && (
+            <div style={{ display: 'flex' }}>
+              :&nbsp;<div style={{ color: '#4286f4', fontWeight: 'bold' }}>
+                {this.props.routeValue}
+              </div>
+            </div>
+          )}
+          {this.state.searchQuery.length > 0 && (
+            <div style={{ display: 'flex' }}>
+              :&nbsp;<div style={{ color: '#4286f4', fontWeight: 'bold' }}>
+                &quot;{this.state.searchQuery}&quot;
+              </div>
+            </div>
+          )}
+          {this.state.ratingRefine > 0 && (
+            <div style={{ display: 'flex' }}>
+              :&nbsp;<div style={{ color: '#4286f4', fontWeight: 'bold' }}>
+                {this.state.ratingRefine} Stars & Up
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    } else if (this.state.searchQuery.length > 0) {
+      renderSkillCount = (
+        <div style={{ padding: '10px' }}>
+          <h2 style={{ fontWeight: '400' }}>
+            Your search <b>&quot;{this.state.searchQuery}&quot;</b> did not
+            match any skills.
+          </h2>
+          <h3 style={{ margin: '15px 0 10px 0' }}>Try something like</h3>
+          <ul style={{ listStyle: 'inside' }}>
+            <li>Using more general terms</li>
+            <li>Checking your spelling</li>
+          </ul>
+        </div>
+      );
+    } else {
+      renderSkillCount = (
+        <div>
+          No result found for{' '}
+          <b>
+            <Link to="/">
+              <span className="susi-skills">SUSI Skills: </span>
+            </Link>
+          </b>
+          {this.props.routeValue && (
+            <span style={{ color: '#4286f4', fontWeight: 'bold' }}>
+              {this.props.routeValue}
+            </span>
+          )}
+        </div>
+      );
+    }
 
     return (
       <div style={styles.browseSkillRoot}>
@@ -1086,43 +1245,53 @@ export default class BrowseSkill extends React.Component {
                     {this.state.searchQuery.length ||
                     this.props.routeType ||
                     this.state.ratingRefine ? (
-                      <div
-                        style={{
-                          display: 'flex',
-                          margin: '0 0 10px 10px',
-                          fontSize: '16px',
-                        }}
-                      >
-                        {this.state.skills.length} result(s) for&nbsp;<b>
-                          <Link to="/">
-                            <div className="susi-skills">SUSI Skills</div>
-                          </Link>
-                        </b>
-                        {this.props.routeValue && (
-                          <div style={{ display: 'flex' }}>
-                            :&nbsp;<div
-                              style={{ color: '#4286f4', fontWeight: 'bold' }}
+                      <div id={'page-filter'}>
+                        {renderSkillCount}
+                        {this.state.skills.length > 10 && (
+                          <div id={'pagination'}>
+                            <SelectField
+                              floatingLabelText="Skills per page"
+                              floatingLabelFixed={false}
+                              hintText="Entries per page"
+                              style={{ width: '150px' }}
+                              value={this.state.entriesPerPage}
+                              onChange={this.handleEntriesPerPageChange}
                             >
-                              {this.props.routeValue}
-                            </div>
-                          </div>
-                        )}
-                        {this.state.searchQuery.length > 0 && (
-                          <div style={{ display: 'flex' }}>
-                            :&nbsp;<div
-                              style={{ color: '#4286f4', fontWeight: 'bold' }}
+                              <MenuItem
+                                value={10}
+                                key={10}
+                                primaryText={'10'}
+                                label={'10'}
+                              />
+                              <MenuItem
+                                value={20}
+                                key={20}
+                                primaryText={'20'}
+                                label={'20'}
+                              />
+                              <MenuItem
+                                value={50}
+                                key={50}
+                                primaryText={'50'}
+                                label={'50'}
+                              />
+                              <MenuItem
+                                value={100}
+                                key={100}
+                                primaryText={'100'}
+                                label={'100'}
+                              />
+                            </SelectField>
+                            <SelectField
+                              floatingLabelText="Page"
+                              floatingLabelFixed={false}
+                              hintText="Page"
+                              style={{ width: '150px' }}
+                              value={this.state.listPage}
+                              onChange={this.handlePageChange}
                             >
-                              &quot;{this.state.searchQuery}&quot;
-                            </div>
-                          </div>
-                        )}
-                        {this.state.ratingRefine > 0 && (
-                          <div style={{ display: 'flex' }}>
-                            :&nbsp;<div
-                              style={{ color: '#4286f4', fontWeight: 'bold' }}
-                            >
-                              {this.state.ratingRefine} Stars & Up
-                            </div>
+                              {this.pageMenuItems()}
+                            </SelectField>
                           </div>
                         )}
                       </div>
@@ -1132,20 +1301,45 @@ export default class BrowseSkill extends React.Component {
                     <div>
                       {this.state.viewType === 'list' ? (
                         <SkillCardList
-                          skills={this.state.skills}
+                          skills={this.state.listSkills}
                           modelValue={this.state.modelValue}
                           languageValue={this.state.languageValue}
                           skillUrl={this.state.skillUrl}
                         />
                       ) : (
                         <SkillCardGrid
-                          skills={this.state.skills}
+                          skills={this.state.listSkills}
                           modelValue={this.state.modelValue}
                           languageValue={this.state.languageValue}
                           skillUrl={this.state.skillUrl}
                         />
                       )}
                     </div>
+                    {this.state.skills.length > 10 && (
+                      <div id={'pageNavigation'}>
+                        <FloatingActionButton
+                          disabled={this.state.listPage === 1}
+                          style={{ marginRight: '15px' }}
+                          backgroundColor={colors.header}
+                          onClick={this.handleNavigationBackward}
+                        >
+                          <NavigationArrowBack />
+                        </FloatingActionButton>
+                        <FloatingActionButton
+                          disabled={
+                            this.state.listPage ===
+                            Math.ceil(
+                              this.state.skills.length /
+                                this.state.entriesPerPage,
+                            )
+                          }
+                          backgroundColor={colors.header}
+                          onClick={this.handleNavigationForward}
+                        >
+                          <NavigationArrowForward />
+                        </FloatingActionButton>
+                      </div>
+                    )}
                   </div>
                 ) : (
                   <div>

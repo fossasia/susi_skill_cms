@@ -13,6 +13,7 @@ import { Grid, Col, Row } from 'react-flexbox-grid';
 import PropTypes from 'prop-types';
 import Cookies from 'universal-cookie';
 import * as $ from 'jquery';
+import './SkillCreator.css';
 
 // Material-UI Components
 import { Paper, RaisedButton, TextField } from 'material-ui';
@@ -671,39 +672,58 @@ export default class SkillCreator extends Component {
                   />
                   <div style={styles.center}>
                     <div style={styles.dropdownDiv}>
-                      <div
-                        style={{
-                          fontSize: 15,
-                          paddingTop: '8px',
-                          paddingLeft: '10px',
-                        }}
-                      >
-                        Category:
+                      <div>
+                        <span
+                          style={{
+                            fontSize: 15,
+                            paddingTop: '43px',
+                            paddingLeft: '10px',
+                          }}
+                        >
+                          Category:
+                        </span>
+                        <DropDownMenu
+                          value={this.state.groupValue}
+                          onChange={this.handleGroupChange}
+                          anchorOrigin={this.state.anchorOrigin}
+                          autoWidth={true}
+                          maxHeight={300}
+                          style={{
+                            position: 'relative',
+                            top: '15px',
+                            width: '250px',
+                          }}
+                        >
+                          {this.state.groups}
+                        </DropDownMenu>
                       </div>
-                      <DropDownMenu
-                        style={{ width: 300 }}
-                        value={this.state.groupValue}
-                        onChange={this.handleGroupChange}
-                        anchorOrigin={this.state.anchorOrigin}
-                        autoWidth={true}
-                        maxHeight={300}
-                      >
-                        {this.state.groups}
-                      </DropDownMenu>
-                      <div style={{ fontSize: 15, paddingTop: '8px' }}>
-                        Language:
+                      <div>
+                        <span
+                          style={{
+                            fontSize: 15,
+                            paddingTop: '8px',
+                            marginLeft: '10px',
+                          }}
+                        >
+                          Language:
+                        </span>
+
+                        <DropDownMenu
+                          disabled={this.state.languageSelect}
+                          value={this.state.languageValue}
+                          anchorOrigin={this.state.anchorOrigin}
+                          onChange={this.handleLanguageChange}
+                          autoWidth={true}
+                          maxHeight={300}
+                          style={{
+                            position: 'relative',
+                            top: '15px',
+                            width: '250px',
+                          }}
+                        >
+                          {languages}
+                        </DropDownMenu>
                       </div>
-                      <DropDownMenu
-                        disabled={this.state.languageSelect}
-                        style={{ width: 200 }}
-                        value={this.state.languageValue}
-                        anchorOrigin={this.state.anchorOrigin}
-                        onChange={this.handleLanguageChange}
-                        autoWidth={true}
-                        maxHeight={300}
-                      >
-                        {languages}
-                      </DropDownMenu>
                       <TextField
                         disabled={this.state.expertSelect}
                         floatingLabelText={
@@ -872,14 +892,25 @@ export default class SkillCreator extends Component {
               </Col>
               {this.props.botBuilder ? null : (
                 <Col
+                  className="skillcreator-col"
+                  id="skillcreator-col"
                   xs={12}
                   md={this.state.colPreview}
                   style={{
                     display: this.state.colPreview === 0 ? 'none' : 'block',
-                    paddingTop: '15px',
                   }}
                 >
-                  <Paper style={styles.paperStyle} zDepth={1}>
+                  <Paper
+                    style={
+                      (styles.paperStyle,
+                      {
+                        height: '99.9%',
+                        marginTop: '20px',
+                        position: 'relative',
+                      })
+                    }
+                    zDepth={1}
+                  >
                     <div style={{ display: 'flex', flexDirection: 'row' }}>
                       <span title="collapse preview">
                         <ChevronRight
@@ -959,8 +990,8 @@ const styles = {
   },
   chevron: {
     position: 'relative',
-    left: '-20px',
-    top: '-10px',
+    left: '-2px',
+    top: '-3px',
     width: '35px',
     height: '35px',
     color: 'rgb(158, 158, 158)',
