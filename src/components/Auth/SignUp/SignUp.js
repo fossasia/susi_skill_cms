@@ -87,50 +87,57 @@ export default class SignUp extends Component {
       passwordErrorMessage,
       passwordConfirmErrorMessage,
       validForm,
-      isCaptchaVerified,
-      // eslint-disable-next-line
-      captchaVerifyErrorMessage,
     } = this.state;
 
-    if (event.target.name === 'email') {
-      email = event.target.value.trim();
-      isEmail = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
-      emailError = !(email && isEmail);
-    } else if (event.target.name === 'password') {
-      passwordValue = event.target.value;
-      validPassword = passwordValue.length >= 6;
-      passwordError = !(passwordValue && validPassword);
-      passwordConfirmError = !(
-        passwordValue === this.state.confirmPasswordValue
-      );
-    } else if (event.target.name === 'confirmPassword') {
-      confirmPasswordValue = event.target.value;
-      validPassword = confirmPasswordValue === passwordValue;
-      passwordConfirmError = !(validPassword && confirmPasswordValue);
-    }
+    // eslint-disable-next-line
+    switch (event.target.name) {
+      case 'email':
+        email = event.target.value.trim();
+        isEmail = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
+        emailError = !(email && isEmail);
+        if (emailError) {
+          emailErrorMessage = 'Enter a valid Email Address';
+        } else {
+          emailErrorMessage = '';
+        }
+        break;
 
-    if (emailError) {
-      emailErrorMessage = 'Enter a valid Email Address';
-    } else if (passwordError) {
-      emailErrorMessage = '';
-      passwordErrorMessage = 'Minimum 6 characters required';
-      passwordConfirmErrorMessage = '';
-      captchaVerifyErrorMessage = '';
-    } else if (passwordConfirmError) {
-      emailErrorMessage = '';
-      passwordErrorMessage = '';
-      passwordConfirmErrorMessage = 'Check your password again';
-      captchaVerifyErrorMessage = '';
-    } else if (!isCaptchaVerified) {
-      emailErrorMessage = '';
-      passwordErrorMessage = '';
-      passwordConfirmErrorMessage = '';
-      captchaVerifyErrorMessage = 'Please confirm you are a human';
-    } else {
-      emailErrorMessage = '';
-      passwordErrorMessage = '';
-      passwordConfirmErrorMessage = '';
-      captchaVerifyErrorMessage = '';
+      case 'password':
+        passwordValue = event.target.value;
+        validPassword = passwordValue.length >= 6;
+        let validConfirmPassword = confirmPasswordValue.length >= 1;
+        passwordError = !(passwordValue && validPassword);
+        passwordConfirmError = !(
+          passwordValue === this.state.confirmPasswordValue
+        );
+        if (passwordError) {
+          passwordErrorMessage = 'Minimum 6 characters required';
+        } else {
+          passwordErrorMessage = '';
+        }
+        if (passwordConfirmError && validConfirmPassword) {
+          passwordConfirmErrorMessage = 'Check your password again';
+        } else {
+          passwordConfirmErrorMessage = '';
+        }
+        break;
+
+      case 'confirmPassword':
+        confirmPasswordValue = event.target.value;
+        // let validConfirmPasswordLength = confirmPasswordValue.length >= 6;
+        validPassword = confirmPasswordValue === passwordValue;
+        passwordConfirmError = !(validPassword && confirmPasswordValue);
+        // if (passwordConfirmError && validConfirmPasswordLength) {
+        //   passwordConfirmErrorMessage = 'Check your password again';
+        // } else {
+        //   passwordConfirmErrorMessage = '';
+        // }
+        if (passwordConfirmError) {
+          passwordConfirmErrorMessage = 'Check your password again';
+        } else {
+          passwordConfirmErrorMessage = '';
+        }
+        break;
     }
 
     if (!emailError && !passwordError && !passwordConfirmError) {
