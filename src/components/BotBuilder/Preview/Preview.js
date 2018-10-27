@@ -95,8 +95,8 @@ class Preview extends Component {
     $('#susiTextMessage').on(
       'keyup keypress',
       function(e) {
-        var keyCode = e.keyCode || e.which;
-        var text = $('#susiTextMessage').val();
+        const keyCode = e.keyCode || e.which;
+        const text = $('#susiTextMessage').val();
         if (keyCode === 13) {
           if (text === '' || $.trim(text) === '') {
             e.preventDefault();
@@ -111,7 +111,7 @@ class Preview extends Component {
     );
     $('.susi-send-button').click(
       function() {
-        var text = $('#susiTextMessage').val();
+        const text = $('#susiTextMessage').val();
         if (text !== '') {
           $('#chat-input').blur();
           this.setUserResponse(text);
@@ -172,7 +172,7 @@ class Preview extends Component {
     if (enableDefaultSkillsMatch && enableDefaultSkillsMatch[1] === 'no') {
       url += '&excludeDefaultSkills=true';
     }
-    var thisMsgNumber = this.msgNumber;
+    const thisMsgNumber = this.msgNumber;
     this.msgNumber++;
     this.setLoadingMessage(thisMsgNumber);
     $.ajax({
@@ -192,7 +192,7 @@ class Preview extends Component {
 
   // Main function
   main = (data, msgNumber) => {
-    var ans;
+    let ans;
     if (data && data.answers[0]) {
       ans = data.answers[0].actions[0].expression;
     } else {
@@ -203,7 +203,7 @@ class Preview extends Component {
   };
 
   setLoadingMessage = msgNumber => {
-    var BotResponse =
+    const BotResponse =
       '<div id="susiMsg-' +
       msgNumber +
       '" class="susi-conversation-part susi-conversation-part-grouped-first">' +
@@ -243,7 +243,7 @@ class Preview extends Component {
 
   // Set user response
   setUserResponse = val => {
-    var UserResponse =
+    const UserResponse =
       '<div class="susi-conversation-part susi-conversation-part-grouped-first">' +
       '<div class=" susi-comment susi-comment-by-user ">' +
       '<div class="susi-comment-body-container susi-comment-body-container-user" style="background-color:' +
@@ -266,7 +266,7 @@ class Preview extends Component {
 
   // Scroll to the bottom
   scrollToBottomOfResults = () => {
-    var textsDiv = document.querySelector('.susi-sheet-content');
+    let textsDiv = document.querySelector('.susi-sheet-content');
     textsDiv.scrollTop = textsDiv.scrollHeight;
   };
 

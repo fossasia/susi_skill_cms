@@ -86,10 +86,10 @@ class SkillVersion extends Component {
     // console.log(commitsData);
     if (commitsData.accepted) {
       let commits = commitsData.commits ? commitsData.commits : [];
-      var initLeftChecked = null;
-      var initRightChecked = null;
-      var initLeftCheckBoxStates = [];
-      var initRightCheckBoxStates = [];
+      let initLeftChecked = null;
+      let initRightChecked = null;
+      let initLeftCheckBoxStates = [];
+      let initRightCheckBoxStates = [];
       commits.forEach((commit, index) => {
         if (index === 0) {
           commit.latest = true;
@@ -119,10 +119,10 @@ class SkillVersion extends Component {
   onCheck = event => {
     let side = event.target.name.split('-')[1];
     let index = parseInt(event.target.name.split('-')[0], 10);
-    var currLeft = this.state.currLeftChecked;
-    var currRight = this.state.currRightChecked;
-    var leftChecks = this.state.leftChecks;
-    var rightChecks = this.state.rightChecks;
+    let currLeft = this.state.currLeftChecked;
+    let currRight = this.state.currRightChecked;
+    let leftChecks = this.state.leftChecks;
+    let rightChecks = this.state.rightChecks;
     if (side === 'right') {
       if (!(index >= currLeft)) {
         rightChecks.fill(false);
@@ -146,8 +146,8 @@ class SkillVersion extends Component {
 
   getCheckedCommits = () => {
     let commits = this.state.commits;
-    var currLeft = this.state.currLeftChecked;
-    var currRight = this.state.currRightChecked;
+    let currLeft = this.state.currLeftChecked;
+    let currRight = this.state.currRightChecked;
     let commitOld = commits[currLeft];
     let commitRecent = commits[currRight];
     return [commitOld, commitRecent];
@@ -169,7 +169,7 @@ class SkillVersion extends Component {
       margin: '10px',
     };
 
-    var showCompareBtn = false;
+    let showCompareBtn = false;
     if (
       this.state.currLeftChecked != null &&
       this.state.currRightChecked != null
@@ -226,8 +226,8 @@ class SkillVersion extends Component {
         );
       }
       if (showCompareBtn) {
-        var currLeft = this.state.currLeftChecked;
-        var currRight = this.state.currRightChecked;
+        let currLeft = this.state.currLeftChecked;
+        let currRight = this.state.currRightChecked;
         if (index <= currRight) {
           leftRadioBtn = null;
         }
