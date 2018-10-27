@@ -715,7 +715,7 @@ class SkillListing extends Component {
 
     const styles = {
       home: {
-        width: '100%',
+        width: '500%',
         fontSize: '14px',
       },
       right: {
