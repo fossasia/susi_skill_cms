@@ -21,6 +21,8 @@ class SkillCardScrollList extends Component {
       cards: [],
       skills: this.props.skills,
       scrollCards: 4,
+      leftBtnDisplay: 'none',
+      rightBtnDisplay: 'inline',
     };
   }
 
@@ -86,20 +88,35 @@ class SkillCardScrollList extends Component {
     }
   }
 
+  changeBtnDisplay = (scrollValue, maxScrollValue) => {
+    scrollValue >= maxScrollValue
+      ? this.setState({ rightBtnDisplay: 'none' })
+      : this.setState({ rightBtnDisplay: 'inline' });
+    scrollValue <= 0
+      ? this.setState({ leftBtnDisplay: 'none' })
+      : this.setState({ leftBtnDisplay: 'inline' });
+  };
+
   scrollLeft = () => {
     let parentEle = document.getElementById(this.props.scrollId);
+    let maxScrollValue =
+      $(parentEle).get(0).scrollWidth - $(parentEle).get(0).clientWidth;
     let scrollValue = $(parentEle).scrollLeft() - 280 * this.state.scrollCards;
     $(parentEle)
       .stop()
       .animate({ scrollLeft: scrollValue }, 100);
+    this.changeBtnDisplay(scrollValue, maxScrollValue);
   };
 
   scrollRight = () => {
     let parentEle = document.getElementById(this.props.scrollId);
     let scrollValue = $(parentEle).scrollLeft() + 280 * this.state.scrollCards;
+    let maxScrollValue =
+      $(parentEle).get(0).scrollWidth - $(parentEle).get(0).clientWidth;
     $(parentEle)
       .stop()
       .animate({ scrollLeft: scrollValue }, 100);
+    this.changeBtnDisplay(scrollValue, maxScrollValue);
   };
 
   loadSkillCards = () => {
@@ -281,7 +298,10 @@ class SkillCardScrollList extends Component {
             <FloatingActionButton
               mini={true}
               backgroundColor={'#4285f4'}
-              style={leftFabStyle}
+              style={{
+                ...leftFabStyle,
+                display: this.state.leftBtnDisplay,
+              }}
               onClick={this.scrollLeft}
             >
               <NavigationChevronLeft />
@@ -290,7 +310,10 @@ class SkillCardScrollList extends Component {
             <FloatingActionButton
               mini={true}
               backgroundColor={'#4285f4'}
-              style={rightFabStyle}
+              style={{
+                ...rightFabStyle,
+                display: this.state.rightBtnDisplay,
+              }}
               onClick={this.scrollRight}
             >
               <NavigationChevronRight />
