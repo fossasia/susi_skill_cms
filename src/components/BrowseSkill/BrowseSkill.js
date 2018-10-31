@@ -107,6 +107,7 @@ export default class BrowseSkill extends React.Component {
       listOffset: 0,
       listPage: 1,
       entriesPerPage: 10,
+      innerWidth: window.innerWidth,
     };
   }
 
@@ -123,7 +124,19 @@ export default class BrowseSkill extends React.Component {
     } else {
       this.loadMetricsSkills();
     }
+    this.updateWindowDimensions();
+    window.addEventListener('resize', this.updateWindowDimensions);
   }
+
+  componentWillUnmount = () => {
+    window.removeEventListener('resize', this.updateWindowDimensions);
+  };
+
+  updateWindowDimensions = () => {
+    this.setState({
+      innerWidth: window.innerWidth,
+    });
+  };
 
   handleFilterChange = (event, index, value) => {
     this.setState({ filter: value, skillsLoaded: false }, function() {
@@ -519,10 +532,10 @@ export default class BrowseSkill extends React.Component {
 
     let metricsContainerStyle = {
       width: '100%',
-      margin: window.innerWidth >= 430 ? '10px' : '10px 0px 10px 0px',
+      margin: this.state.innerWidth >= 430 ? '10px' : '10px 0px 10px 0px',
     };
 
-    if (window.innerWidth < 430) {
+    if (this.state.innerWidth < 430) {
       sidebarStyle.display = 'none';
       topBarStyle.flexDirection = 'column';
       groupsMobile = groups;
@@ -535,6 +548,10 @@ export default class BrowseSkill extends React.Component {
           style={{ minHeight: '32px', textAlign: 'center', lineHeight: '32px' }}
         />
       );
+    }
+    if (this.state.innerWidth >= 430) {
+      sidebarStyle.display = 'block';
+      topBarStyle.flexDirection = 'row';
     }
 
     let metricsHidden =
@@ -1043,7 +1060,7 @@ export default class BrowseSkill extends React.Component {
                   name="view_type"
                   defaultSelected="list"
                   style={
-                    window.innerWidth < 430
+                    this.state.innerWidth < 430
                       ? {
                           right: 12,
                           position: 'absolute',
