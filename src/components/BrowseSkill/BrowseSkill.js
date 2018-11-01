@@ -204,6 +204,7 @@ export default class BrowseSkill extends React.Component {
   };
 
   handleNavigationForward = () => {
+    $('html, body').animate({ scrollTop: 0 }, 'fast');
     let listPage = this.state.listPage + 1;
     let listOffset = this.state.listOffset + this.state.entriesPerPage;
     this.setState({
@@ -217,6 +218,7 @@ export default class BrowseSkill extends React.Component {
   };
 
   handleNavigationBackward = () => {
+    $('html, body').animate({ scrollTop: 0 }, 'fast');
     let listPage = this.state.listPage - 1;
     let listOffset = this.state.listOffset - this.state.entriesPerPage;
     this.setState({
