@@ -699,7 +699,7 @@ class SkillEditor extends Component {
     const bold = {
       fontSize: '14px',
     };
-    var showTopBar = true;
+    let showTopBar = true;
     if (this.props.hasOwnProperty('showTopBar')) {
       showTopBar = this.props.showTopBar;
     }

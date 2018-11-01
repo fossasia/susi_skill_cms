@@ -29,7 +29,7 @@ class ConversationView extends Component {
     let code = this.state.code;
     let userInputs = [];
     let userQueries = [];
-    var lines = code.split('\n');
+    const lines = code.split('\n');
     for (let i = 0; i < lines.length; i++) {
       let line = lines[i];
       if (
