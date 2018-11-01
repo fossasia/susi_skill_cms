@@ -81,6 +81,12 @@ div.scrolling-wrapper::-webkit-scrollbar {
 #pagination > div {
     margin-right: 15px;
 }
+div[role=presentation] {
+    width: 256px !important; /* csslint allow: known-properties, important */
+}
+div[role=presentation]>div[role=menu] {
+    max-width: 256px;
+}
 
 @media screen and (max-width: 418px) {
     .metrics-header {
@@ -111,6 +117,3 @@ div.scrolling-wrapper::-webkit-scrollbar {
 .category-mobile-section div:last-child a {
     border-radius: 0 0 5px 5px;
 }
-
-
-
