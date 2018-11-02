@@ -20,6 +20,7 @@ import Snackbar from 'material-ui/Snackbar';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
 import Ratings from 'react-ratings-declarative';
+import NavigationArrowBack from 'material-ui/svg-icons/navigation/arrow-back';
 
 // Static Assets
 import 'brace/mode/markdown';
@@ -844,6 +845,19 @@ class SkillListing extends Component {
                   </Dialog>
                 </div>
               )}
+              <div>
+                <a href="https://skills.susi.ai">
+                  <div className="skillVersionBtn">
+                    <FloatingActionButton
+                      data-tip="Back"
+                      backgroundColor={colors.header}
+                    >
+                      <NavigationArrowBack />
+                    </FloatingActionButton>
+                    <ReactTooltip effect="solid" place="bottom" />
+                  </div>
+                </a>
+              </div>
               <div>
                 <Link
                   to={{
