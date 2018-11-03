@@ -9,7 +9,7 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 // import registerServiceWorker from './registerServiceWorker';
 
 // Components
-import SkillEditor from './components/SkillEditor/SkillEditor';
+import SkillRollBack from './components/SkillRollBack/SkillRollBack';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import NotFound from './components/NotFound/NotFound.react';
@@ -25,7 +25,6 @@ import Logout from './components/Auth/Logout.react';
 import SkillCreator from './components/SkillCreator/SkillCreator';
 import SkillVersion from './components/SkillVersion/SkillVersion';
 import SkillHistory from './components/SkillHistory/SkillHistory';
-import SkillRollBack from './components/SkillRollBack/SkillRollBack';
 import SkillFeedbackPage from './components/SkillFeedbackPage/SkillFeedbackPage';
 import BotBuilderWrap from './components/BotBuilder/BotBuilderWrap';
 import setDefaults from './DefaultSettings';
@@ -73,12 +72,12 @@ class App extends React.Component {
             <Route
               exact
               path="/:category/:skill/edit/:lang"
-              component={SkillEditor}
+              component={SkillCreator}
             />
             <Route
               exact
               path="/:category/:skill/edit/:lang/:commit"
-              component={SkillEditor}
+              component={SkillCreator}
             />
             <Route exact path="/admin" component={Admin} />
             <Route exact path="/admin/users" component={Users} />
