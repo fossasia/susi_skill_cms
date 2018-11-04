@@ -36,32 +36,6 @@ import './custom.css';
 
 const cookies = new Cookies();
 
-const createCategoryMenuItem = categoryName => {
-  const mobileView = window.innerWidth < 430;
-  const linkValue = '/category/' + categoryName;
-  if (mobileView) {
-    return (
-      <MenuItem
-        value={categoryName}
-        key={categoryName}
-        primaryText={categoryName}
-        containerElement={<Link to={linkValue} />}
-        style={styles.mobileMenuItem}
-        rightIcon={<ChevronRight style={{ top: -8 }} />}
-      />
-    );
-  }
-  return (
-    <MenuItem
-      value={categoryName}
-      key={categoryName}
-      primaryText={categoryName}
-      containerElement={<Link to={linkValue} />}
-      style={styles.categorySidebarMenuItem}
-    />
-  );
-};
-
 export default class BrowseSkill extends React.Component {
   constructor(props) {
     super(props);
@@ -282,6 +256,32 @@ export default class BrowseSkill extends React.Component {
     });
   };
 
+  createCategoryMenuItem = categoryName => {
+    const mobileView = window.innerWidth < 430;
+    const linkValue = '/category/' + categoryName;
+    if (mobileView) {
+      return (
+        <MenuItem
+          value={categoryName}
+          key={categoryName}
+          primaryText={categoryName}
+          containerElement={<Link to={linkValue} />}
+          style={styles.mobileMenuItem}
+          rightIcon={<ChevronRight style={{ top: -8 }} />}
+        />
+      );
+    }
+    return (
+      <MenuItem
+        value={categoryName}
+        key={categoryName}
+        primaryText={categoryName}
+        containerElement={<Link to={linkValue} />}
+        style={styles.categorySidebarMenuItem}
+      />
+    );
+  };
+
   loadGroups = () => {
     const { groups } = this.state;
     if (groups.length === 0) {
@@ -294,9 +294,9 @@ export default class BrowseSkill extends React.Component {
         success: data => {
           data = data.groups;
           data.sort();
-          this.groups.push(createCategoryMenuItem('All'));
+          this.groups.push(this.createCategoryMenuItem('All'));
           data.map(item => {
-            this.groups.push(createCategoryMenuItem(item));
+            this.groups.push(this.createCategoryMenuItem(item));
           });
           this.setState({ groups: this.groups });
         },
