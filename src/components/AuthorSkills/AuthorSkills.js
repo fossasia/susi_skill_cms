@@ -80,14 +80,14 @@ export default class AuthorSkills extends Component {
   }
 
   loadSkillCards = author => {
-    let url = `${urls.API_URL}/cms/getSkillsByAuthor.json?author=${author}`;
+    const url = `${urls.API_URL}/cms/getSkillsByAuthor.json?author=${author}`;
 
     $.ajax({
       url: url,
       dataType: 'jsonp',
       jsonp: 'callback',
       crossDomain: true,
-      success: function(data) {
+      success: data => {
         let skillKeys = Object.keys(data);
         skillKeys = skillKeys.slice(0, skillKeys.length - 1);
         // eslint-disable-next-line
@@ -141,15 +141,16 @@ export default class AuthorSkills extends Component {
           }
         });
         this.setState({ skills });
-      }.bind(this),
-      error: function(e) {
+      },
+      error: e => {
         console.log('Error while fetching author skills', e);
       },
     });
   };
 
   render() {
-    let { author, authorUrl, open, requestClose } = this.props;
+    const { author, authorUrl, open, requestClose } = this.props;
+    const { skills } = this.state;
     const { githubAvatarStyle, closingStyle, headingStyle } = styles;
     let githubAvatarSrc = '';
 
@@ -199,9 +200,7 @@ export default class AuthorSkills extends Component {
                   <TableHeaderColumn>Language</TableHeaderColumn>
                 </TableRow>
               </TableHeader>
-              <TableBody displayRowCheckbox={false}>
-                {this.state.skills}
-              </TableBody>
+              <TableBody displayRowCheckbox={false}>{skills}</TableBody>
             </Table>
           </div>
           <Close style={closingStyle} onTouchTap={requestClose} />
