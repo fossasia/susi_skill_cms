@@ -201,7 +201,7 @@ class SkillCardScrollList extends Component {
                   '/' +
                   skill.skill_tag +
                   '/' +
-                  this.props.languageValue,
+                  skill.language,
                 state: {
                   url: this.props.skillUrl,
                   element: el,
@@ -234,7 +234,7 @@ class SkillCardScrollList extends Component {
                   '/' +
                   skill.skill_tag +
                   '/' +
-                  this.props.languageValue +
+                  skill.language +
                   '/feedbacks',
                 state: {
                   url: this.props.skillUrl,
