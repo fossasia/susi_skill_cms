@@ -24,7 +24,25 @@ import Icon from 'antd/lib/icon';
 import $ from 'jquery';
 import { urls, colors } from '../../utils';
 
+const styles = {
+  home: {
+    width: '100%',
+    fontSize: '14px',
+  },
+  actionButtons: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+  },
+  compareBtnStyle: {
+    margin: '10px',
+  },
+};
+
 class SkillVersion extends Component {
+  static propTypes = {
+    location: PropTypes.object,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -45,33 +63,29 @@ class SkillVersion extends Component {
   }
 
   componentDidMount() {
+    const { skillMeta } = this.state;
     document.title = 'SUSI.AI - Skill Version';
-    let commitHistoryBaseURL = urls.API_URL + '/cms/getSkillHistory.json';
-    let commitHistoryURL =
-      commitHistoryBaseURL +
-      '?model=' +
-      this.state.skillMeta.modelValue +
-      '&group=' +
-      this.state.skillMeta.groupValue +
-      '&language=' +
-      this.state.skillMeta.languageValue +
-      '&skill=' +
-      this.state.skillMeta.skillName;
+    const commitHistoryBaseURL = `${urls.API_URL}/cms/getSkillHistory.json`;
+    const commitHistoryURL = `${commitHistoryBaseURL}?model=${
+      skillMeta.modelValue
+    }&group=${skillMeta.groupValue}&language=${skillMeta.languageValue}&skill=${
+      skillMeta.skillName
+    }`;
     this.getCommitHistory(commitHistoryURL);
   }
 
   getCommitHistory = commitHistoryURL => {
     // console.log(commitHistoryURL);
-    let self = this;
     $.ajax({
       url: commitHistoryURL,
       dataType: 'jsonp',
       jsonp: 'callback',
       crossDomain: true,
-      success: function(commitsData) {
-        self.setCommitHistory(commitsData);
+      success: commitsData => {
+        console.log(commitsData);
+        this.setCommitHistory(commitsData);
       },
-      error: function(xhr, status, error) {
+      error: (xhr, status, error) => {
         notification.open({
           message: 'Error Processing your Request',
           description: 'Failed to fetch data. Please Try Again',
@@ -86,94 +100,86 @@ class SkillVersion extends Component {
     // console.log(commitsData);
     if (commitsData.accepted) {
       let commits = commitsData.commits ? commitsData.commits : [];
-      let initLeftChecked = null;
-      let initRightChecked = null;
-      let initLeftCheckBoxStates = [];
-      let initRightCheckBoxStates = [];
+      let currLeftChecked = null;
+      let currRightChecked = null;
+      let leftChecks = [];
+      let rightChecks = [];
       commits.forEach((commit, index) => {
         if (index === 0) {
           commit.latest = true;
-          initRightCheckBoxStates.push(true);
-          initLeftCheckBoxStates.push(false);
-          initRightChecked = 0;
+          rightChecks.push(true);
+          leftChecks.push(false);
+          currRightChecked = 0;
         } else if (index === 1) {
-          initRightCheckBoxStates.push(false);
-          initLeftCheckBoxStates.push(true);
-          initLeftChecked = 1;
+          rightChecks.push(false);
+          leftChecks.push(true);
+          currLeftChecked = 1;
         } else {
-          initRightCheckBoxStates.push(false);
-          initLeftCheckBoxStates.push(false);
+          rightChecks.push(false);
+          leftChecks.push(false);
         }
       });
       this.setState({
         commits: commits,
         dataReceived: true,
-        leftChecks: initLeftCheckBoxStates,
-        rightChecks: initRightCheckBoxStates,
-        currLeftChecked: initLeftChecked,
-        currRightChecked: initRightChecked,
+        leftChecks,
+        rightChecks,
+        currLeftChecked,
+        currRightChecked,
       });
     }
   };
 
   onCheck = event => {
-    let side = event.target.name.split('-')[1];
-    let index = parseInt(event.target.name.split('-')[0], 10);
-    let currLeft = this.state.currLeftChecked;
-    let currRight = this.state.currRightChecked;
-    let leftChecks = this.state.leftChecks;
-    let rightChecks = this.state.rightChecks;
+    const side = event.target.name.split('-')[1];
+    const index = parseInt(event.target.name.split('-')[0], 10);
+    let {
+      currLeftChecked,
+      currRightChecked,
+      leftChecks,
+      rightChecks,
+    } = this.state;
     if (side === 'right') {
-      if (!(index >= currLeft)) {
+      if (!(index >= currLeftChecked)) {
         rightChecks.fill(false);
         rightChecks[index] = true;
-        currRight = index;
+        currRightChecked = index;
       }
     } else if (side === 'left') {
-      if (!(index <= currRight)) {
+      if (!(index <= currRightChecked)) {
         leftChecks.fill(false);
         leftChecks[index] = true;
-        currLeft = index;
+        currLeftChecked = index;
       }
     }
     this.setState({
-      currLeftChecked: currLeft,
-      currRightChecked: currRight,
-      leftChecks: leftChecks,
-      rightChecks: rightChecks,
+      currLeftChecked,
+      currRightChecked,
+      leftChecks,
+      rightChecks,
     });
   };
 
   getCheckedCommits = () => {
-    let commits = this.state.commits;
-    let currLeft = this.state.currLeftChecked;
-    let currRight = this.state.currRightChecked;
-    let commitOld = commits[currLeft];
-    let commitRecent = commits[currRight];
+    const { commits, currLeftChecked, currRightChecked } = this.state;
+    const commitOld = commits[currLeftChecked];
+    const commitRecent = commits[currRightChecked];
     return [commitOld, commitRecent];
   };
 
   render() {
-    const styles = {
-      home: {
-        width: '100%',
-        fontSize: '14px',
-      },
-      actionButtons: {
-        display: 'flex',
-        justifyContent: 'flex-end',
-      },
-    };
-
-    const compareBtnStyle = {
-      margin: '10px',
-    };
+    const {
+      currLeftChecked,
+      currRightChecked,
+      commits,
+      leftChecks,
+      rightChecks,
+      skillMeta,
+      dataReceived,
+    } = this.state;
 
     let showCompareBtn = false;
-    if (
-      this.state.currLeftChecked != null &&
-      this.state.currRightChecked != null
-    ) {
+    if (currLeftChecked != null && currRightChecked != null) {
       showCompareBtn = true;
     }
 
@@ -188,10 +194,7 @@ class SkillVersion extends Component {
       </TableRow>
     );
 
-    let commits = this.state.commits;
     let commitHistoryTableRows = commits.map((commit, index) => {
-      let leftChecks = this.state.leftChecks;
-      let rightChecks = this.state.rightChecks;
       let leftRadioBtn = null;
       let rightRadioBtn = null;
       if (leftChecks && rightChecks) {
@@ -226,12 +229,10 @@ class SkillVersion extends Component {
         );
       }
       if (showCompareBtn) {
-        let currLeft = this.state.currLeftChecked;
-        let currRight = this.state.currRightChecked;
-        if (index <= currRight) {
+        if (index <= currRightChecked) {
           leftRadioBtn = null;
         }
-        if (index >= currLeft) {
+        if (index >= currLeftChecked) {
           rightRadioBtn = null;
         }
       }
@@ -247,15 +248,9 @@ class SkillVersion extends Component {
           <TableRowColumn>
             <Link
               to={{
-                pathname:
-                  '/' +
-                  this.state.skillMeta.groupValue +
-                  '/' +
-                  this.state.skillMeta.skillName +
-                  '/edit/' +
-                  this.state.skillMeta.languageValue +
-                  '/' +
-                  commit.commitID,
+                pathname: `/${skillMeta.groupValue}/${
+                  skillMeta.skillName
+                }/edit/${skillMeta.languageValue}/${commit.commitID}`,
               }}
             >
               <abbr title={commit.commitDate}>{commit.commitDate}</abbr>
@@ -287,12 +282,12 @@ class SkillVersion extends Component {
       </MuiThemeProvider>
     );
 
-    let checkedCommits = this.getCheckedCommits();
+    const checkedCommits = this.getCheckedCommits();
 
     return (
       <div>
         <StaticAppBar {...this.props} />
-        {!this.state.dataReceived ? (
+        {!dataReceived ? (
           <h1 className="skill_loading_container">
             <div className="center">
               <CircularProgress size={62} color="#4285f5" />
@@ -304,7 +299,7 @@ class SkillVersion extends Component {
             <div className="margin-b-md margin-t-md skill">
               <h1 style={{ display: 'flex' }}>
                 <div style={{ textTransform: 'capitalize' }}>
-                  {this.state.skillMeta.skillName.split('_').join(' ')}
+                  {skillMeta.skillName.split('_').join(' ')}
                 </div>
                 :&nbsp;Revision History
               </h1>
@@ -313,48 +308,38 @@ class SkillVersion extends Component {
                   For any version listed below, click on its date to view it.
                 </span>
               </p>
-              <div style={compareBtnStyle}>{commitHistoryTable}</div>
+              <div style={styles.compareBtnStyle}>{commitHistoryTable}</div>
               <div style={styles.actionButtons}>
                 {showCompareBtn && (
                   <Link
                     to={{
-                      pathname:
-                        '/' +
-                        this.state.skillMeta.groupValue +
-                        '/' +
-                        this.state.skillMeta.skillName +
-                        '/compare/' +
-                        this.state.skillMeta.languageValue +
-                        '/' +
-                        checkedCommits[0].commitID +
-                        '/' +
-                        checkedCommits[1].commitID,
+                      pathname: `/${skillMeta.groupValue}/${
+                        skillMeta.skillName
+                      }/compare/${skillMeta.languageValue}/${
+                        checkedCommits[0].commitID
+                      }/${checkedCommits[1].commitID}`,
                     }}
                   >
                     <RaisedButton
                       label="Compare Selected Versions"
                       backgroundColor={colors.header}
                       labelColor="#fff"
-                      style={compareBtnStyle}
+                      style={styles.compareBtnStyle}
                     />
                   </Link>
                 )}
                 <Link
                   to={{
-                    pathname:
-                      '/' +
-                      this.state.skillMeta.groupValue +
-                      '/' +
-                      this.state.skillMeta.skillName +
-                      '/' +
-                      this.state.skillMeta.languageValue,
+                    pathname: `/${skillMeta.groupValue}/${
+                      skillMeta.skillName
+                    }/${skillMeta.languageValue}`,
                   }}
                 >
                   <RaisedButton
                     label="Back"
                     backgroundColor={colors.header}
                     labelColor="#fff"
-                    style={compareBtnStyle}
+                    style={styles.compareBtnStyle}
                   />
                 </Link>
               </div>
@@ -365,9 +350,5 @@ class SkillVersion extends Component {
     );
   }
 }
-
-SkillVersion.propTypes = {
-  location: PropTypes.object,
-};
 
 export default SkillVersion;
