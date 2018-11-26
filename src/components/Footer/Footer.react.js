@@ -8,37 +8,39 @@ const Footer = () => {
   // Footer Component
   return (
     <div className="footer-wrapper">
-      <div className="footer">
-        <div className="footer-left">
-          <Link to="/">
-            <img src={susi} alt="SUSI" className="susi-logo" />
-          </Link>
+      <div className="footer-container">
+        <Link className="susi-logo-container" to="/">
+          <img src={susi} alt="SUSI" className="susi-logo" />
+        </Link>
+        <div className="footer">
+          <div className="footer-left">
+            <ul>
+              <li>
+                <a href={urls.CHAT_URL + '/overview'}>Overview</a>
+              </li>
+              <li>
+                <a href={urls.CHAT_URL + '/blog'}>Blog</a>
+              </li>
+              <li>
+                <a href={urls.API_URL}>API</a>
+              </li>
+              <li>
+                <a href={urls.CMS_GITHUB_URL}>Code</a>
+              </li>
+            </ul>
+          </div>
           <ul>
             <li>
-              <a href={urls.CHAT_URL + '/overview'}>Overview</a>
+              <a href={urls.CHAT_URL + '/contact'}>Contact</a>
             </li>
             <li>
-              <a href={urls.CHAT_URL + '/blog'}>Blog</a>
+              <a href={urls.CHAT_URL + '/terms'}>Terms</a>
             </li>
             <li>
-              <a href={urls.API_URL}>API</a>
-            </li>
-            <li>
-              <a href={urls.CMS_GITHUB_URL}>Code</a>
+              <a href={urls.CHAT_URL + '/privacy'}>Privacy</a>
             </li>
           </ul>
         </div>
-        <ul>
-          <li>
-            <a href={urls.CHAT_URL + '/contact'}>Contact</a>
-          </li>
-          <li>
-            <a href={urls.CHAT_URL + '/terms'}>Terms</a>
-          </li>
-          <li>
-            <a href={urls.CHAT_URL + '/privacy'}>Privacy</a>
-          </li>
-        </ul>
       </div>
     </div>
   );
