@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import zxcvbn from 'zxcvbn';
 
 /* Material-UI */
 import PasswordField from 'material-ui-password-field';
@@ -40,6 +41,8 @@ export default class SignUp extends Component {
       passwordConfirmError: true,
       confirmPasswordValue: '',
       passwordConfirmErrorMessage: '',
+      passwordStrength: '',
+      passwordScore: -1,
       success: false,
       open: false,
       openLogin: false,
@@ -87,6 +90,8 @@ export default class SignUp extends Component {
       passwordErrorMessage,
       passwordConfirmErrorMessage,
       validForm,
+      passwordStrength,
+      passwordScore,
       isCaptchaVerified,
       // eslint-disable-next-line
       captchaVerifyErrorMessage,
@@ -103,6 +108,15 @@ export default class SignUp extends Component {
       passwordConfirmError = !(
         passwordValue === this.state.confirmPasswordValue
       );
+      if (validPassword) {
+        let result = zxcvbn(passwordValue);
+        passwordScore = result.score;
+        let strength = ['Worst', 'Bad', 'Weak', 'Good', 'Strong'];
+        passwordStrength = strength[result.score];
+      } else {
+        passwordStrength = '';
+        passwordScore = -1;
+      }
     } else if (event.target.name === 'confirmPassword') {
       confirmPasswordValue = event.target.value;
       validPassword = confirmPasswordValue === passwordValue;
@@ -152,6 +166,8 @@ export default class SignUp extends Component {
       passwordErrorMessage,
       passwordConfirmErrorMessage,
       validForm,
+      passwordStrength,
+      passwordScore,
     });
   };
 
@@ -261,6 +277,8 @@ export default class SignUp extends Component {
       },
     };
 
+    const PasswordClass = [`is-strength-${this.state.passwordScore}`];
+
     const {
       email,
       passwordValue,
@@ -291,7 +309,7 @@ export default class SignUp extends Component {
               errorText={emailErrorMessage}
             />
           </div>
-          <div>
+          <div className={PasswordClass.join(' ')}>
             <PasswordField
               name="password"
               style={styles.fieldStyle}
@@ -309,6 +327,10 @@ export default class SignUp extends Component {
               }}
               textFieldStyle={{ padding: '0px' }}
             />
+            <div className="ReactPasswordStrength-strength-bar" />
+            <div>
+              <p>{this.state.passwordStrength}</p>
+            </div>
           </div>
           <div>
             <PasswordField
