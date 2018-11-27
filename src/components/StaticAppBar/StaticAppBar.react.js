@@ -126,7 +126,7 @@ class StaticAppBar extends Component {
   componentDidMount() {
     window.addEventListener('scroll', this.handleScroll);
     if (cookies.get('loggedIn')) {
-      this.initializeAdminService();
+      this.initializeShowAdminService();
       this.initializeListUserSettings();
     }
 
