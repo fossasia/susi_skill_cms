@@ -410,9 +410,10 @@ class BotBuilder extends React.Component {
               label="Delete"
               onClick={this.handleDelete}
               key={'Delete'}
-              backgroundColor={'#f50057'}
+              backgroundColor={'#ff0000'}
+              primary={true}
               labelStyle={{ color: '#fff' }}
-              hoverColor={'#ff1744'}
+              hoverColor={'rgba(255,0,0,0.7)'}
             />,
           ]}
           modal={false}
