@@ -2,12 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styles from './SkillStyle';
 import ISO6391 from 'iso-639-1';
+import Cookies from 'universal-cookie';
+import * as $ from 'jquery';
+import _ from 'lodash';
+import Ratings from 'react-ratings-declarative';
+import { Link } from 'react-router-dom';
 import SelectField from 'material-ui/SelectField';
 import Checkbox from 'material-ui/Checkbox';
-// eslint-disable-next-line
-import { Card } from 'material-ui/Card';
-import * as $ from 'jquery';
-import { Link } from 'react-router-dom';
 import IconMenu from 'material-ui/IconMenu';
 import Menu from 'material-ui/Menu';
 import MenuItem from 'material-ui/MenuItem';
@@ -20,8 +21,10 @@ import Person from 'material-ui/svg-icons/social/person';
 import ActionViewModule from 'material-ui/svg-icons/action/view-module';
 import ActionViewStream from 'material-ui/svg-icons/action/view-stream';
 import ChevronRight from 'material-ui/svg-icons/navigation/chevron-right';
-// eslint-disable-next-line
-import CircleImage from '../CircleImage/CircleImage';
+import FloatingActionButton from 'material-ui/FloatingActionButton';
+import NavigationArrowBack from 'material-ui/svg-icons/navigation/arrow-back';
+import NavigationArrowForward from 'material-ui/svg-icons/navigation/arrow-forward';
+import SearchBar from 'material-ui-search-bar';
 import CircularProgress from 'material-ui/CircularProgress';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import SkillCardList from '../SkillCardList/SkillCardList';
@@ -29,44 +32,9 @@ import SkillCardGrid from '../SkillCardGrid/SkillCardGrid';
 import SkillCardScrollList from '../SkillCardScrollList/SkillCardScrollList';
 import { urls, colors } from '../../utils';
 import Footer from '../Footer/Footer.react';
-import SearchBar from 'material-ui-search-bar';
-import _ from 'lodash';
-
-// eslint-disable-next-line
-import Ratings from 'react-ratings-declarative';
-
 import './custom.css';
-import Cookies from 'universal-cookie';
+
 const cookies = new Cookies();
-
-let groups = [];
-let languages = [];
-
-function createCategoryMenuItem(categoryName) {
-  const mobileView = window.innerWidth < 430;
-  const linkValue = '/category/' + categoryName;
-  if (mobileView) {
-    return (
-      <MenuItem
-        value={categoryName}
-        key={categoryName}
-        primaryText={categoryName}
-        containerElement={<Link to={linkValue} />}
-        style={styles.mobileMenuItem}
-        rightIcon={<ChevronRight style={{ top: -8 }} />}
-      />
-    );
-  }
-  return (
-    <MenuItem
-      value={categoryName}
-      key={categoryName}
-      primaryText={categoryName}
-      containerElement={<Link to={linkValue} />}
-      style={styles.categorySidebarMenuItem}
-    />
-  );
-}
 
 export default class BrowseSkill extends React.Component {
   constructor(props) {
@@ -82,6 +50,7 @@ export default class BrowseSkill extends React.Component {
       showStaffPicks: false,
       expertValue: null,
       skills: [],
+      listSkills: [],
       groups: [],
       languages: [],
       groupSelect: false,
@@ -99,7 +68,14 @@ export default class BrowseSkill extends React.Component {
       ratingRefine: null,
       timeFilter: null,
       viewType: 'list',
+      listOffset: 0,
+      listPage: 1,
+      entriesPerPage: 10,
+      innerWidth: window.innerWidth,
     };
+
+    this.groups = [];
+    this.languages = [];
   }
 
   componentDidMount() {
@@ -115,30 +91,41 @@ export default class BrowseSkill extends React.Component {
     } else {
       this.loadMetricsSkills();
     }
+    this.updateWindowDimensions();
+    window.addEventListener('resize', this.updateWindowDimensions);
   }
 
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.updateWindowDimensions);
+  }
+
+  updateWindowDimensions = () => {
+    this.setState({
+      innerWidth: window.innerWidth,
+    });
+  };
+
   handleFilterChange = (event, index, value) => {
-    this.setState({ filter: value, skillsLoaded: false }, function() {
+    this.setState({ filter: value, skillsLoaded: false }, () => {
       this.loadCards();
     });
   };
 
   handleModelChange = (event, index) => {
-    this.setState({ groupSelect: false, skillsLoaded: false }, function() {
+    this.setState({ groupSelect: false, skillsLoaded: false }, () => {
       this.loadCards();
     });
   };
 
   handleGroupChange = (event, value) => {
-    this.setState({ groupValue: value, skillsLoaded: false }, function() {
-      // console.log(this.state);
+    this.setState({ groupValue: value, skillsLoaded: false }, () => {
       this.loadCards();
     });
   };
 
   handleLanguageChange = (event, index, values) => {
     cookies.set('languages', values);
-    this.setState({ languageValue: values }, function() {
+    this.setState({ languageValue: values }, () => {
       if (
         this.props.routeType ||
         ['category', 'language'].includes(window.location.href.split('/')[3])
@@ -150,20 +137,75 @@ export default class BrowseSkill extends React.Component {
     });
   };
 
+  handleEntriesPerPageChange = (event, index, values) => {
+    let { skills, listPage } = this.state;
+    const entriesPerPage = values;
+    let listOffset = entriesPerPage * (listPage - 1);
+    if (listOffset > skills.length - 1) {
+      listPage = Math.ceil(skills.length / entriesPerPage);
+      listOffset = entriesPerPage * (listPage - 1);
+    }
+
+    this.setState({
+      entriesPerPage,
+      listOffset,
+      listPage,
+      listSkills: skills.slice(listOffset, listOffset + values),
+    });
+  };
+
+  handlePageChange = (event, index, value) => {
+    if (value !== undefined) {
+      const { entriesPerPage, skills } = this.state;
+      const listPage = value;
+      const listOffset = entriesPerPage * (listPage - 1);
+      this.setState({
+        listPage,
+        listOffset,
+        listSkills: skills.slice(listOffset, listOffset + entriesPerPage),
+      });
+    }
+  };
+
+  handleNavigationForward = () => {
+    $('html, body').animate({ scrollTop: 0 }, 'fast');
+    const { skills, listPage, listOffset, entriesPerPage } = this.state;
+    const newListPage = listPage + 1;
+    const newListOffset = listOffset + entriesPerPage;
+    this.setState({
+      listPage: newListPage,
+      listOffset: newListOffset,
+      listSkills: skills.slice(newListOffset, newListOffset + entriesPerPage),
+    });
+  };
+
+  handleNavigationBackward = () => {
+    $('html, body').animate({ scrollTop: 0 }, 'fast');
+    const { listPage, listOffset, entriesPerPage, skills } = this.state;
+    const newListPage = listPage - 1;
+    const newListOffset = listOffset - entriesPerPage;
+    this.setState({
+      listPage: newListPage,
+      listOffset: newListOffset,
+      listSkills: skills.slice(listOffset, listOffset),
+    });
+  };
+
   handleShowSkills = ({ reviewed, staffPicks }) => {
+    const { showReviewedSkills, showStaffPicks } = this.state;
     let showSkills;
     if (reviewed !== undefined) {
       showSkills = `&reviewed=${reviewed}`;
       this.setState({ showReviewedSkills: reviewed });
     } else {
-      showSkills = `&reviewed=${this.state.showReviewedSkills}`;
+      showSkills = `&reviewed=${showReviewedSkills}`;
     }
 
     if (staffPicks !== undefined) {
       showSkills += `&staff_picks=${staffPicks}`;
       this.setState({ showStaffPicks: staffPicks });
     } else {
-      showSkills += `&staff_picks=${this.state.showStaffPicks}`;
+      showSkills += `&staff_picks=${showStaffPicks}`;
     }
 
     this.setState(
@@ -210,30 +252,55 @@ export default class BrowseSkill extends React.Component {
 
   handleSearch = value => {
     this.setState({ searchQuery: value, skillsLoaded: false }, function() {
-      // console.log(this.state);
       this.loadCards();
     });
   };
 
+  createCategoryMenuItem = categoryName => {
+    const mobileView = window.innerWidth < 430;
+    const linkValue = '/category/' + categoryName;
+    if (mobileView) {
+      return (
+        <MenuItem
+          value={categoryName}
+          key={categoryName}
+          primaryText={categoryName}
+          containerElement={<Link to={linkValue} />}
+          style={styles.mobileMenuItem}
+          rightIcon={<ChevronRight style={{ top: -8 }} />}
+        />
+      );
+    }
+    return (
+      <MenuItem
+        value={categoryName}
+        key={categoryName}
+        primaryText={categoryName}
+        containerElement={<Link to={linkValue} />}
+        style={styles.categorySidebarMenuItem}
+      />
+    );
+  };
+
   loadGroups = () => {
-    if (this.state.groups.length === 0) {
-      // Clear any group data already present
-      groups = [];
+    const { groups } = this.state;
+    if (groups.length === 0) {
+      this.groups = [];
       $.ajax({
         url: urls.API_URL + '/cms/getGroups.json',
         dataType: 'jsonp',
         jsonp: 'callback',
         crossDomain: true,
-        success: function(data) {
+        success: data => {
           data = data.groups;
           data.sort();
-          groups.push(createCategoryMenuItem('All'));
-          for (let i = 0; i < data.length; i++) {
-            groups.push(createCategoryMenuItem(data[i]));
-          }
-          this.setState({ groups });
-        }.bind(this),
-        error: function(e) {
+          this.groups.push(this.createCategoryMenuItem('All'));
+          data.map(item => {
+            this.groups.push(this.createCategoryMenuItem(item));
+          });
+          this.setState({ groups: this.groups });
+        },
+        error: e => {
           console.log('Error while fetching groups', e);
         },
       });
@@ -241,132 +308,145 @@ export default class BrowseSkill extends React.Component {
   };
 
   loadLanguages = () => {
+    const { groupValue } = this.state;
     let url = urls.API_URL + '/cms/getAllLanguages.json?';
-    if (this.state.groupValue != null) {
-      url += 'group=' + this.state.groupValue;
+    if (groupValue != null) {
+      url += 'group=' + groupValue;
     }
     $.ajax({
       url: url,
       dataType: 'jsonp',
       jsonp: 'callback',
       crossDomain: true,
-      success: function(data) {
+      success: data => {
         data = data.languagesArray;
         if (data) {
           data.sort();
-          languages = [];
-          for (let i = 0; i < data.length; i++) {
-            languages.push(data[i]);
-          }
+          this.languages = [];
+          data.map(item => {
+            if (item.length === 2 && item !== 'xx') {
+              this.languages.push(item);
+            }
+          });
           this.setState({ languages: data });
         }
-      }.bind(this),
-      error: function(e) {
+      },
+      error: e => {
         console.log('Error while fetching languages', e);
       },
     });
   };
 
   loadCards = () => {
+    const { routeType, routeValue, routeTitle } = this.props;
+    const {
+      languageValue,
+      filter,
+      showSkills,
+      groupValue,
+      modelValue,
+      searchQuery,
+      ratingRefine,
+      entriesPerPage,
+      languages,
+      groups,
+    } = this.state;
     let url;
-    if (this.props.routeType === 'category') {
+
+    if (routeType === 'category') {
       this.setState({
-        groupValue: this.props.routeValue,
-        text: this.props.routeTitle,
+        groupValue: routeValue,
+        text: routeTitle,
       });
       url =
         urls.API_URL +
         '/cms/getSkillList.json?group=' +
-        this.props.routeValue +
+        routeValue +
         '&language=' +
-        this.state.languageValue +
-        this.state.filter +
-        this.state.showSkills;
-    } else if (this.props.routeType === 'language') {
+        languageValue +
+        filter +
+        showSkills;
+    } else if (routeType === 'language') {
       this.setState({
-        languageValue: this.props.routeValue,
-        text: this.props.routeTitle,
+        languageValue: routeValue,
+        text: routeTitle,
       });
       url =
         urls.API_URL +
         '/cms/getSkillList.json?group=' +
-        this.state.groupValue +
+        groupValue +
         '&applyFilter=true&language=' +
-        this.props.routeValue +
-        this.state.filter +
-        this.state.showSkills;
-    } else if (
-      this.state.languages.length > 0 &&
-      this.state.groups.length > 0
-    ) {
+        routeValue +
+        filter +
+        showSkills;
+    } else if (languages.length > 0 && groups.length > 0) {
       url =
         urls.API_URL +
         '/cms/getSkillList.json?model=' +
-        this.state.modelValue +
+        modelValue +
         '&group=' +
-        this.state.groupValue +
+        groupValue +
         '&language=' +
-        this.state.languageValue +
-        this.state.filter +
-        this.state.showSkills;
-      // console.log(url);
+        languageValue +
+        filter +
+        showSkills;
     } else {
       url =
         urls.API_URL +
         '/cms/getSkillList.json?group=All&applyFilter=true&filter_name=descending&filter_type=rating';
     }
 
-    if (this.state.searchQuery.length > 0) {
-      url = url + '&q=' + this.state.searchQuery;
+    if (searchQuery.length > 0) {
+      url = url + '&q=' + searchQuery;
     }
 
-    let self = this;
     $.ajax({
       url: url,
       dataType: 'jsonp',
       jsonp: 'callback',
       crossDomain: true,
-      success: function(data) {
-        if (self.state.ratingRefine) {
-          data.filteredData = self.refineByRating(
+      success: data => {
+        if (ratingRefine) {
+          data.filteredData = this.refineByRating(
             data.filteredData,
-            self.state.ratingRefine,
+            ratingRefine,
           );
         }
-        self.setState(
+        this.setState(
           {
             skills: data.filteredData,
+            listSkills: data.filteredData.slice(0, entriesPerPage),
             // cards: cards,
             skillURL: url,
             skillsLoaded: true,
+            listOffset: 0,
+            listPage: 1,
+            entriesPerPage: 10,
           },
-          function() {
+          () => {
             this.loadLanguages();
           },
         );
-        // console.log(self.state)
       },
-      error: function(e) {
+      error: e => {
         console.log('Error while fetching skills', e);
-        return self.loadCards();
+        return this.loadCards();
       },
     });
   };
 
   loadMetricsSkills = () => {
+    const { languageValue } = this.state;
     let url;
     url =
-      urls.API_URL +
-      '/cms/getSkillMetricsData.json?language=' +
-      this.state.languageValue;
-    let self = this;
+      urls.API_URL + '/cms/getSkillMetricsData.json?language=' + languageValue;
     $.ajax({
       url: url,
       dataType: 'jsonp',
       jsonp: 'callback',
       crossDomain: true,
-      success: function(data) {
-        self.setState({
+      success: data => {
+        this.setState({
           skillsLoaded: true,
           staffPicksSkills: data.metrics.staffPicks,
           topRatedSkills: data.metrics.rating,
@@ -377,21 +457,22 @@ export default class BrowseSkill extends React.Component {
           topGames: data.metrics['Games, Trivia and Accessories'],
         });
       },
-      error: function(e) {
+      error: e => {
         console.log('Error while fetching skills based on top metrics', e);
-        return self.loadMetricsSkills();
+        return this.loadMetricsSkills();
       },
     });
   };
 
   handleRatingRefine = ratingRefine => {
-    let prevRatingRefine = this.state.ratingRefine;
+    const { skills } = this.state;
+    const prevRatingRefine = this.state.ratingRefine;
     this.setState({ ratingRefine, skillsLoaded: false });
     if (
       (!prevRatingRefine || ratingRefine > prevRatingRefine) &&
-      this.state.skills.length > 0
+      skills.length > 0
     ) {
-      let refinedSkills = this.refineByRating(this.state.skills, ratingRefine);
+      let refinedSkills = this.refineByRating(skills, ratingRefine);
       this.setState({
         skills: refinedSkills,
         skillsLoaded: true,
@@ -408,8 +489,8 @@ export default class BrowseSkill extends React.Component {
     );
   };
 
-  languageMenuItems(values) {
-    return languages.map(name => (
+  languageMenuItems = values => {
+    return this.languages.map(name => (
       <MenuItem
         key={name}
         insetChildren={true}
@@ -422,10 +503,52 @@ export default class BrowseSkill extends React.Component {
         }
       />
     ));
-  }
+  };
+
+  pageMenuItems = values => {
+    const { skills, entriesPerPage } = this.state;
+    let menuItems = [];
+    for (let i = 1; i <= Math.ceil(skills.length / entriesPerPage); i += 1) {
+      menuItems.push(i);
+    }
+    return menuItems.map(menuItem => (
+      <MenuItem
+        key={menuItem}
+        value={menuItem}
+        primaryText={menuItem.toString()}
+        label={menuItem.toString()}
+      />
+    ));
+  };
 
   render() {
-    let { languageValue } = this.state;
+    const {
+      languageValue,
+      innerWidth,
+      searchQuery,
+      ratingRefine,
+      timeFilter,
+      skills,
+      listOffset,
+      entriesPerPage,
+      showStaffPicks,
+      showReviewedSkills,
+      filter,
+      viewType,
+      skillsLoaded,
+      modelValue,
+      skillUrl,
+      topRatedSkills,
+      topUsedSkills,
+      newestSkills,
+      latestUpdatedSkills,
+      topFeedbackSkills,
+      topGames,
+      listPage,
+      listSkills,
+      staffPicksSkills,
+    } = this.state;
+    const { routeType, routeValue } = this.props;
     let sidebarStyle = styles.sidebar;
     let topBarStyle = styles.topBar;
     let groupsMobile = null;
@@ -433,13 +556,13 @@ export default class BrowseSkill extends React.Component {
 
     let metricsContainerStyle = {
       width: '100%',
-      margin: window.innerWidth >= 430 ? '10px' : '10px 0px 10px 0px',
+      margin: innerWidth >= 430 ? '10px' : '10px 0px 10px 0px',
     };
 
-    if (window.innerWidth < 430) {
+    if (innerWidth < 430) {
       sidebarStyle.display = 'none';
       topBarStyle.flexDirection = 'column';
-      groupsMobile = groups;
+      groupsMobile = this.groups;
       backToHome = (
         <MenuItem
           value="Back to SUSI Skills"
@@ -450,12 +573,84 @@ export default class BrowseSkill extends React.Component {
         />
       );
     }
+    if (innerWidth >= 430) {
+      sidebarStyle.display = 'block';
+      topBarStyle.flexDirection = 'row';
+    }
 
     let metricsHidden =
-      this.props.routeType ||
-      this.state.searchQuery.length > 0 ||
-      this.state.ratingRefine ||
-      this.state.timeFilter;
+      routeType || searchQuery.length > 0 || ratingRefine || timeFilter;
+
+    let renderSkillCount = '';
+    if (skills.length > 0) {
+      renderSkillCount = (
+        <div
+          style={{
+            display: 'flex',
+          }}
+        >
+          {listOffset + 1}-{listOffset + entriesPerPage > skills.length
+            ? skills.length
+            : listOffset + entriesPerPage}{' '}
+          out of {skills.length} result(s) for&nbsp;<b>
+            <Link to="/">
+              <div className="susi-skills">SUSI Skills</div>
+            </Link>
+          </b>
+          {routeValue && (
+            <div style={{ display: 'flex' }}>
+              :&nbsp;<div style={{ color: '#4286f4', fontWeight: 'bold' }}>
+                {routeValue}
+              </div>
+            </div>
+          )}
+          {searchQuery.length > 0 && (
+            <div style={{ display: 'flex' }}>
+              :&nbsp;<div style={{ color: '#4286f4', fontWeight: 'bold' }}>
+                &quot;{searchQuery}&quot;
+              </div>
+            </div>
+          )}
+          {ratingRefine > 0 && (
+            <div style={{ display: 'flex' }}>
+              :&nbsp;<div style={{ color: '#4286f4', fontWeight: 'bold' }}>
+                {ratingRefine} Stars & Up
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    } else if (searchQuery.length > 0) {
+      renderSkillCount = (
+        <div style={{ padding: '10px' }}>
+          <h2 style={{ fontWeight: '400' }}>
+            Your search <b>&quot;{searchQuery}&quot;</b> did not match any
+            skills.
+          </h2>
+          <h3 style={{ margin: '15px 0 10px 0' }}>Try something like</h3>
+          <ul style={{ listStyle: 'inside' }}>
+            <li>Using more general terms</li>
+            <li>Checking your spelling</li>
+          </ul>
+        </div>
+      );
+    } else {
+      renderSkillCount = (
+        <div>
+          No result found for{' '}
+          <b>
+            <Link to="/">
+              <span className="susi-skills">SUSI Skills: </span>
+            </Link>
+          </b>
+          {routeValue && (
+            <span style={{ color: '#4286f4', fontWeight: 'bold' }}>
+              {routeValue}
+            </span>
+          )}
+        </div>
+      );
+    }
 
     return (
       <div style={styles.browseSkillRoot}>
@@ -504,7 +699,7 @@ export default class BrowseSkill extends React.Component {
               </IconMenu>
             </div>
             <Menu desktop={true} disableAutoFocus={true}>
-              {this.state.timeFilter ? (
+              {timeFilter ? (
                 <div className="category-sidebar-section">
                   <div
                     className="index-link-sidebar"
@@ -519,7 +714,7 @@ export default class BrowseSkill extends React.Component {
                       fontSize: '14px',
                     }}
                   >
-                    {`Last ${this.state.timeFilter} Days`}
+                    {`Last ${timeFilter} Days`}
                   </div>
                 </div>
               ) : (
@@ -527,7 +722,7 @@ export default class BrowseSkill extends React.Component {
                   New Arrivals
                 </Subheader>
               )}
-              {!this.state.timeFilter && (
+              {!timeFilter && (
                 <MenuItem
                   value="&applyFilter=true&filter_name=descending&filter_type=creation_date&duration=7"
                   key="Last 7 Days"
@@ -536,7 +731,7 @@ export default class BrowseSkill extends React.Component {
                   style={styles.sidebarMenuItem}
                 />
               )}
-              {!this.state.timeFilter && (
+              {!timeFilter && (
                 <MenuItem
                   value="&applyFilter=true&filter_name=descending&filter_type=creation_date&duration=30"
                   key="Last 30 Days"
@@ -545,7 +740,7 @@ export default class BrowseSkill extends React.Component {
                   style={styles.sidebarMenuItem}
                 />
               )}
-              {!this.state.timeFilter && (
+              {!timeFilter && (
                 <MenuItem
                   value="&applyFilter=true&filter_name=descending&filter_type=creation_date&duration=90"
                   key="Last 90 Days"
@@ -556,7 +751,7 @@ export default class BrowseSkill extends React.Component {
               )}
               <Divider style={{ marginLeft: '16px', marginRight: '16px' }} />
 
-              {this.props.routeType === 'category' ? (
+              {routeType === 'category' ? (
                 <div className="category-sidebar-section">
                   <Link to="/">
                     <div className="index-link-sidebar">{'< SUSI Skills'}</div>
@@ -568,7 +763,7 @@ export default class BrowseSkill extends React.Component {
                       fontSize: '14px',
                     }}
                   >
-                    {this.props.routeValue}
+                    {routeValue}
                   </div>
                 </div>
               ) : (
@@ -576,7 +771,7 @@ export default class BrowseSkill extends React.Component {
                   <Subheader style={styles.sidebarSubheader}>
                     SUSI Skills
                   </Subheader>
-                  <div>{this.state.groups}</div>
+                  <div>{this.groups}</div>
                 </div>
               )}
 
@@ -598,7 +793,7 @@ export default class BrowseSkill extends React.Component {
                     label="Staff Picks"
                     labelPosition="right"
                     className="select"
-                    checked={this.state.showStaffPicks}
+                    checked={showStaffPicks}
                     labelStyle={{ fontSize: '14px' }}
                     iconStyle={{ left: '4px' }}
                     style={{
@@ -614,7 +809,7 @@ export default class BrowseSkill extends React.Component {
                     label="Show Only Reviewed Skills"
                     labelPosition="right"
                     className="select"
-                    checked={this.state.showReviewedSkills}
+                    checked={showReviewedSkills}
                     labelStyle={{ fontSize: '14px' }}
                     iconStyle={{ left: '4px' }}
                     style={{
@@ -638,7 +833,7 @@ export default class BrowseSkill extends React.Component {
               >
                 Avg. Customer Review
               </h4>
-              {this.state.ratingRefine ? (
+              {ratingRefine ? (
                 <div
                   className="clear-button"
                   style={styles.clearButton}
@@ -668,7 +863,7 @@ export default class BrowseSkill extends React.Component {
                   </Ratings>
                   <div
                     style={styles.ratingLabel}
-                    className={this.state.ratingRefine === 4 ? 'bold' : ''}
+                    className={ratingRefine === 4 ? 'bold' : ''}
                   >
                     & Up
                   </div>
@@ -691,7 +886,7 @@ export default class BrowseSkill extends React.Component {
                   </Ratings>
                   <div
                     style={styles.ratingLabel}
-                    className={this.state.ratingRefine === 3 ? 'bold' : ''}
+                    className={ratingRefine === 3 ? 'bold' : ''}
                   >
                     & Up
                   </div>
@@ -714,7 +909,7 @@ export default class BrowseSkill extends React.Component {
                   </Ratings>
                   <div
                     style={styles.ratingLabel}
-                    className={this.state.ratingRefine === 2 ? 'bold' : ''}
+                    className={ratingRefine === 2 ? 'bold' : ''}
                   >
                     & Up
                   </div>
@@ -737,7 +932,7 @@ export default class BrowseSkill extends React.Component {
                   </Ratings>
                   <div
                     style={styles.ratingLabel}
-                    className={this.state.ratingRefine === 1 ? 'bold' : ''}
+                    className={ratingRefine === 1 ? 'bold' : ''}
                   >
                     & Up
                   </div>
@@ -754,13 +949,13 @@ export default class BrowseSkill extends React.Component {
                   style={{
                     marginTop: '17px',
                   }}
-                  value={this.state.searchQuery}
+                  value={searchQuery}
                 />
               </div>
               {metricsHidden && (
                 <SelectField
                   floatingLabelText="Sort by"
-                  value={this.state.filter}
+                  value={filter}
                   floatingLabelFixed={false}
                   onChange={this.handleFilterChange}
                   style={styles.selection}
@@ -884,7 +1079,7 @@ export default class BrowseSkill extends React.Component {
                   name="view_type"
                   defaultSelected="list"
                   style={
-                    window.innerWidth < 430
+                    innerWidth < 430
                       ? {
                           right: 12,
                           position: 'absolute',
@@ -893,7 +1088,7 @@ export default class BrowseSkill extends React.Component {
                         }
                       : { display: 'flex', marginTop: 34 }
                   }
-                  valueSelected={this.state.viewType}
+                  valueSelected={viewType}
                   onChange={this.handleViewChange}
                 >
                   <RadioButton
@@ -919,7 +1114,7 @@ export default class BrowseSkill extends React.Component {
                 </RadioButtonGroup>
               )}
             </div>
-            {!this.state.skillsLoaded && (
+            {!skillsLoaded && (
               <div>
                 <h1 style={styles.loader}>
                   <div className="center">
@@ -930,9 +1125,9 @@ export default class BrowseSkill extends React.Component {
               </div>
             )}
 
-            {this.state.skillsLoaded ? (
+            {skillsLoaded ? (
               <div style={styles.container}>
-                {this.state.staffPicksSkills.length && !metricsHidden ? (
+                {staffPicksSkills.length && !metricsHidden ? (
                   <div style={metricsContainerStyle}>
                     <div
                       style={styles.metricsHeader}
@@ -941,19 +1136,19 @@ export default class BrowseSkill extends React.Component {
                       <h4>{'Staff Picks'}</h4>
                     </div>
                     {/* Scroll Id must be unique for all instances of SkillCardList*/}
-                    {!this.props.routeType && (
+                    {!routeType && (
                       <SkillCardScrollList
                         scrollId="staffPicks"
-                        skills={this.state.staffPicksSkills}
-                        modelValue={this.state.modelValue}
-                        languageValue={this.state.languageValue}
-                        skillUrl={this.state.skillUrl}
+                        skills={staffPicksSkills}
+                        modelValue={modelValue}
+                        languageValue={languageValue}
+                        skillUrl={skillUrl}
                       />
                     )}
                   </div>
                 ) : null}
 
-                {this.state.topRatedSkills.length && !metricsHidden ? (
+                {topRatedSkills.length && !metricsHidden ? (
                   <div style={metricsContainerStyle}>
                     <div
                       style={styles.metricsHeader}
@@ -962,19 +1157,19 @@ export default class BrowseSkill extends React.Component {
                       <h4>{'"SUSI, what are your highest rated skills?"'}</h4>
                     </div>
                     {/* Scroll Id must be unique for all instances of SkillCardList*/}
-                    {!this.props.routeType && (
+                    {!routeType && (
                       <SkillCardScrollList
                         scrollId="topRated"
-                        skills={this.state.topRatedSkills}
-                        modelValue={this.state.modelValue}
-                        languageValue={this.state.languageValue}
-                        skillUrl={this.state.skillUrl}
+                        skills={topRatedSkills}
+                        modelValue={modelValue}
+                        languageValue={languageValue}
+                        skillUrl={skillUrl}
                       />
                     )}
                   </div>
                 ) : null}
 
-                {this.state.topUsedSkills.length && !metricsHidden ? (
+                {topUsedSkills.length && !metricsHidden ? (
                   <div style={metricsContainerStyle}>
                     <div
                       style={styles.metricsHeader}
@@ -983,19 +1178,19 @@ export default class BrowseSkill extends React.Component {
                       <h4>{'"SUSI, what are your most used skills?"'}</h4>
                     </div>
                     {/* Scroll Id must be unique for all instances of SkillCardList*/}
-                    {!this.props.routeType && (
+                    {!routeType && (
                       <SkillCardScrollList
                         scrollId="topUsed"
-                        skills={this.state.topUsedSkills}
-                        modelValue={this.state.modelValue}
-                        languageValue={this.state.languageValue}
-                        skillUrl={this.state.skillUrl}
+                        skills={topUsedSkills}
+                        modelValue={modelValue}
+                        languageValue={languageValue}
+                        skillUrl={skillUrl}
                       />
                     )}
                   </div>
                 ) : null}
 
-                {this.state.newestSkills.length && !metricsHidden ? (
+                {newestSkills.length && !metricsHidden ? (
                   <div style={metricsContainerStyle}>
                     <div
                       style={styles.metricsHeader}
@@ -1004,19 +1199,19 @@ export default class BrowseSkill extends React.Component {
                       <h4>{'"SUSI, what are the newest skills?"'}</h4>
                     </div>
                     {/* Scroll Id must be unique for all instances of SkillCardList*/}
-                    {!this.props.routeType && (
+                    {!routeType && (
                       <SkillCardScrollList
                         scrollId="newestSkills"
-                        skills={this.state.newestSkills}
-                        modelValue={this.state.modelValue}
-                        languageValue={this.state.languageValue}
-                        skillUrl={this.state.skillUrl}
+                        skills={newestSkills}
+                        modelValue={modelValue}
+                        languageValue={languageValue}
+                        skillUrl={skillUrl}
                       />
                     )}
                   </div>
                 ) : null}
 
-                {this.state.latestUpdatedSkills.length && !metricsHidden ? (
+                {latestUpdatedSkills.length && !metricsHidden ? (
                   <div style={metricsContainerStyle}>
                     <div
                       style={styles.metricsHeader}
@@ -1025,19 +1220,19 @@ export default class BrowseSkill extends React.Component {
                       <h4>{'"SUSI, what are the recently updated skills?"'}</h4>
                     </div>
                     {/* Scroll Id must be unique for all instances of SkillCardList*/}
-                    {!this.props.routeType && (
+                    {!routeType && (
                       <SkillCardScrollList
                         scrollId="latestUpdatedSkills"
-                        skills={this.state.latestUpdatedSkills}
-                        modelValue={this.state.modelValue}
-                        languageValue={this.state.languageValue}
-                        skillUrl={this.state.skillUrl}
+                        skills={latestUpdatedSkills}
+                        modelValue={modelValue}
+                        languageValue={languageValue}
+                        skillUrl={skillUrl}
                       />
                     )}
                   </div>
                 ) : null}
 
-                {this.state.topFeedbackSkills.length && !metricsHidden ? (
+                {topFeedbackSkills.length && !metricsHidden ? (
                   <div style={metricsContainerStyle}>
                     <div
                       style={styles.metricsHeader}
@@ -1048,19 +1243,19 @@ export default class BrowseSkill extends React.Component {
                       </h4>
                     </div>
                     {/* Scroll Id must be unique for all instances of SkillCardList*/}
-                    {!this.props.routeType && (
+                    {!routeType && (
                       <SkillCardScrollList
                         scrollId="topFeedback"
-                        skills={this.state.topFeedbackSkills}
-                        modelValue={this.state.modelValue}
-                        languageValue={this.state.languageValue}
-                        skillUrl={this.state.skillUrl}
+                        skills={topFeedbackSkills}
+                        modelValue={modelValue}
+                        languageValue={languageValue}
+                        skillUrl={skillUrl}
                       />
                     )}
                   </div>
                 ) : null}
 
-                {this.state.topGames.length && !metricsHidden ? (
+                {topGames.length && !metricsHidden ? (
                   <div style={metricsContainerStyle}>
                     <div
                       style={styles.metricsHeader}
@@ -1069,13 +1264,13 @@ export default class BrowseSkill extends React.Component {
                       <h4>{'"SUSI, what are your top games?"'}</h4>
                     </div>
                     {/* Scroll Id must be unique for all instances of SkillCardList*/}
-                    {!this.props.routeType && (
+                    {!routeType && (
                       <SkillCardScrollList
                         scrollId="topGames"
-                        skills={this.state.topGames}
-                        modelValue={this.state.modelValue}
-                        languageValue={this.state.languageValue}
-                        skillUrl={this.state.skillUrl}
+                        skills={topGames}
+                        modelValue={modelValue}
+                        languageValue={languageValue}
+                        skillUrl={skillUrl}
                       />
                     )}
                   </div>
@@ -1083,46 +1278,54 @@ export default class BrowseSkill extends React.Component {
 
                 {metricsHidden ? (
                   <div>
-                    {this.state.searchQuery.length ||
-                    this.props.routeType ||
-                    this.state.ratingRefine ? (
-                      <div
-                        style={{
-                          display: 'flex',
-                          margin: '0 0 10px 10px',
-                          fontSize: '16px',
-                        }}
-                      >
-                        {this.state.skills.length} result(s) for&nbsp;<b>
-                          <Link to="/">
-                            <div className="susi-skills">SUSI Skills</div>
-                          </Link>
-                        </b>
-                        {this.props.routeValue && (
-                          <div style={{ display: 'flex' }}>
-                            :&nbsp;<div
-                              style={{ color: '#4286f4', fontWeight: 'bold' }}
+                    {searchQuery.length || routeType || ratingRefine ? (
+                      <div id={'page-filter'}>
+                        {renderSkillCount}
+                        {skills.length > 10 && (
+                          <div id={'pagination'}>
+                            <SelectField
+                              floatingLabelText="Skills per page"
+                              floatingLabelFixed={false}
+                              hintText="Entries per page"
+                              style={{ width: '150px' }}
+                              value={entriesPerPage}
+                              onChange={this.handleEntriesPerPageChange}
                             >
-                              {this.props.routeValue}
-                            </div>
-                          </div>
-                        )}
-                        {this.state.searchQuery.length > 0 && (
-                          <div style={{ display: 'flex' }}>
-                            :&nbsp;<div
-                              style={{ color: '#4286f4', fontWeight: 'bold' }}
+                              <MenuItem
+                                value={10}
+                                key={10}
+                                primaryText={'10'}
+                                label={'10'}
+                              />
+                              <MenuItem
+                                value={20}
+                                key={20}
+                                primaryText={'20'}
+                                label={'20'}
+                              />
+                              <MenuItem
+                                value={50}
+                                key={50}
+                                primaryText={'50'}
+                                label={'50'}
+                              />
+                              <MenuItem
+                                value={100}
+                                key={100}
+                                primaryText={'100'}
+                                label={'100'}
+                              />
+                            </SelectField>
+                            <SelectField
+                              floatingLabelText="Page"
+                              floatingLabelFixed={false}
+                              hintText="Page"
+                              style={{ width: '150px' }}
+                              value={listPage}
+                              onChange={this.handlePageChange}
                             >
-                              &quot;{this.state.searchQuery}&quot;
-                            </div>
-                          </div>
-                        )}
-                        {this.state.ratingRefine > 0 && (
-                          <div style={{ display: 'flex' }}>
-                            :&nbsp;<div
-                              style={{ color: '#4286f4', fontWeight: 'bold' }}
-                            >
-                              {this.state.ratingRefine} Stars & Up
-                            </div>
+                              {this.pageMenuItems()}
+                            </SelectField>
                           </div>
                         )}
                       </div>
@@ -1130,28 +1333,48 @@ export default class BrowseSkill extends React.Component {
                       ''
                     )}
                     <div>
-                      {this.state.viewType === 'list' ? (
+                      {viewType === 'list' ? (
                         <SkillCardList
-                          skills={this.state.skills}
-                          modelValue={this.state.modelValue}
-                          languageValue={this.state.languageValue}
-                          skillUrl={this.state.skillUrl}
+                          skills={listSkills}
+                          modelValue={modelValue}
+                          languageValue={languageValue}
+                          skillUrl={skillUrl}
                         />
                       ) : (
                         <SkillCardGrid
-                          skills={this.state.skills}
-                          modelValue={this.state.modelValue}
-                          languageValue={this.state.languageValue}
-                          skillUrl={this.state.skillUrl}
+                          skills={listSkills}
+                          modelValue={modelValue}
+                          languageValue={languageValue}
+                          skillUrl={skillUrl}
                         />
                       )}
                     </div>
+                    {skills.length > 10 && (
+                      <div id={'pageNavigation'}>
+                        <FloatingActionButton
+                          disabled={listPage === 1}
+                          style={{ marginRight: '15px' }}
+                          backgroundColor={colors.header}
+                          onClick={this.handleNavigationBackward}
+                        >
+                          <NavigationArrowBack />
+                        </FloatingActionButton>
+                        <FloatingActionButton
+                          disabled={
+                            listPage ===
+                            Math.ceil(skills.length / entriesPerPage)
+                          }
+                          backgroundColor={colors.header}
+                          onClick={this.handleNavigationForward}
+                        >
+                          <NavigationArrowForward />
+                        </FloatingActionButton>
+                      </div>
+                    )}
                   </div>
                 ) : (
                   <div>
-                    {this.props.routeType ||
-                    this.state.searchQuery.length ||
-                    this.state.timeFilter ? (
+                    {routeType || searchQuery.length || timeFilter ? (
                       <div style={styles.noSkill}>
                         No Skills found. Be the first one to
                         <Link to="/skillCreator"> create</Link> a skill in this
@@ -1164,9 +1387,7 @@ export default class BrowseSkill extends React.Component {
                 )}
                 {/* Check if mobile view is currently active*/}
                 <div className="category-mobile-section">
-                  {this.props.routeType === 'category'
-                    ? backToHome
-                    : groupsMobile}
+                  {routeType === 'category' ? backToHome : groupsMobile}
                 </div>
               </div>
             ) : null}

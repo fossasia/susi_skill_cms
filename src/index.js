@@ -38,11 +38,29 @@ setDefaults();
 injectTapEventPlugin();
 
 const muiTheme = getMuiTheme({
+  appBar: {
+    color: colors.primary,
+  },
   checkbox: {
     checkedColor: colors.primary,
   },
   stepper: {
     iconColor: colors.primary,
+  },
+  radioButton: {
+    backgroundColor: '#ffffff',
+    borderColor: colors.primary,
+    checkedColor: colors.primary,
+  },
+  raisedButton: {
+    primaryColor: colors.primary,
+    primaryTextColor: '#ffffff',
+    textColor: '#ffffff',
+  },
+  flatButton: {
+    color: '#FFFFFF',
+    primaryTextColor: colors.primary,
+    textColor: colors.primary,
   },
 });
 

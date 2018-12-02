@@ -117,7 +117,7 @@ class SkillListing extends Component {
         ? this.name
             .split('_')
             .map(data => {
-              var s = data.charAt(0).toUpperCase() + data.substring(1);
+              const s = data.charAt(0).toUpperCase() + data.substring(1);
               return s;
             })
             .join(' ')
@@ -715,7 +715,7 @@ class SkillListing extends Component {
 
     const styles = {
       home: {
-        width: '100%',
+        width: '500%',
         fontSize: '14px',
       },
       right: {

@@ -6,6 +6,8 @@ import { Card, CardText } from 'material-ui/Card';
 import Snackbar from 'material-ui/Snackbar';
 import Add from 'material-ui/svg-icons/content/add';
 import Delete from 'material-ui/svg-icons/action/delete';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
 import { FloatingActionButton, Paper } from 'material-ui';
 import './BotBuilder.css';
 import { urls, colors } from '../../utils';
@@ -24,6 +26,7 @@ class BotBuilder extends React.Component {
       drafts: [],
       openSnackbar: false,
       msgSnackbar: '',
+      deleteAlert: null,
     };
     this.getChatbots();
     this.getDrafts();
@@ -43,7 +46,8 @@ class BotBuilder extends React.Component {
         jsonp: 'callback',
         crossDomain: true,
         success: function(data) {
-          this.showChatbots(data.chatbots);
+          this.setState({ chatbots: data.chatbots });
+          this.getBotImages();
         }.bind(this),
         error: function(error) {
           if (error.status !== 404) {
@@ -58,15 +62,83 @@ class BotBuilder extends React.Component {
     }
   };
 
-  showChatbots = bots => {
+  getBotImages = () => {
+    let bots = this.state.chatbots;
+    if (bots) {
+      bots.forEach((bot, index) => {
+        let name = bot.name;
+        let language = bot.language;
+        let group = bot.group;
+        let url =
+          BASE_URL +
+          '/cms/getSkill.json?group=' +
+          group +
+          '&language=' +
+          language +
+          '&skill=' +
+          name +
+          '&private=1&access_token=' +
+          cookies.get('loggedIn');
+        $.ajax({
+          url: url,
+          dataType: 'jsonp',
+          crossDomain: true,
+          success: function(data) {
+            let image_match = data.text.match(/^::image\s(.*)$/m);
+            if (image_match) {
+              bot.image = image_match[1];
+            }
+            bots[index] = bot;
+            this.setState({ chatbots: bots });
+          }.bind(this),
+          error: function(error) {
+            if (error.status !== 404) {
+              this.setState({
+                openSnackbar: true,
+                msgSnackbar:
+                  "Couldn't get your chatbot image. Please reload the page.",
+              });
+            }
+          }.bind(this),
+        });
+      });
+    }
+  };
+
+  showChatbots = () => {
     let chatbots = [];
-    this.setState({
-      chatbots: [],
-    });
+    let bots = this.state.chatbots;
     if (bots) {
       bots.forEach(bot => {
+        let imageUrl;
+        if (bot.image !== 'images/<image_name>') {
+          imageUrl = bot.image
+            ? BASE_URL +
+              '/cms/getImage.png?access_token=' +
+              cookies.get('loggedIn') +
+              '&language=' +
+              bot.language +
+              '&group=' +
+              bot.group.replace(/ /g, '%20') +
+              '&image=' +
+              bot.image.replace(/ /g, '%20')
+            : null;
+        } else {
+          imageUrl =
+            window.location.protocol +
+            '//' +
+            window.location.host +
+            '/customAvatars/1.png';
+        }
         chatbots.push(
-          <Card key={bot.name} className="bot-template-card">
+          <Card
+            key={bot.name}
+            className="bot-template-card"
+            style={{
+              backgroundImage: 'url(' + imageUrl + ')',
+              backgroundSize: 'cover',
+            }}
+          >
             <Link
               to={
                 '/botbuilder/botwizard?name=' +
@@ -89,7 +161,11 @@ class BotBuilder extends React.Component {
               <Delete
                 color="rgb(255, 255, 255)"
                 onClick={() =>
-                  this.deleteBot(bot.name, bot.language, bot.group)
+                  this.openDeleteAlert('bot', [
+                    bot.name,
+                    bot.language,
+                    bot.group,
+                  ])
                 }
               />
             </div>
@@ -97,9 +173,7 @@ class BotBuilder extends React.Component {
         );
       });
     }
-    this.setState({
-      chatbots: chatbots,
-    });
+    return chatbots;
   };
 
   deleteBot = (name, language, group) => {
@@ -125,13 +199,17 @@ class BotBuilder extends React.Component {
             openSnackbar: true,
             msgSnackbar: 'Successfully ' + data.message,
           },
-          () => this.getChatbots(),
+          () => {
+            this.closeDeleteAlert();
+            this.getChatbots();
+          },
         );
       }.bind(this),
       error: function(error) {
         this.setState({
           openSnackbar: true,
           msgSnackbar: 'Unable to delete your chatbot. Please try again.',
+          deleteAlert: null,
         });
       }.bind(this),
     });
@@ -173,7 +251,7 @@ class BotBuilder extends React.Component {
             <div className="bot-delete">
               <Delete
                 color="rgb(255, 255, 255)"
-                onClick={() => this.deleteDrafts(draft)}
+                onClick={() => this.openDeleteAlert('draft', [draft])}
               />
             </div>
           </Card>,
@@ -195,16 +273,37 @@ class BotBuilder extends React.Component {
             openSnackbar: true,
             msgSnackbar: 'Draft successfully deleted.',
           },
-          () => this.getDrafts(),
+          () => {
+            this.closeDeleteAlert();
+            this.getDrafts();
+          },
         );
       }.bind(this),
       error: function(error) {
         this.setState({
           openSnackbar: true,
           msgSnackbar: 'Unable to delete your draft. Please try again.',
+          deleteAlert: null,
         });
       }.bind(this),
     });
+  };
+
+  openDeleteAlert = (type, params) => {
+    this.setState({ deleteAlert: { type, params } });
+  };
+
+  closeDeleteAlert = () => {
+    this.setState({ deleteAlert: null });
+  };
+
+  handleDelete = () => {
+    const { type, params } = this.state.deleteAlert;
+    if (type === 'bot') {
+      this.deleteBot(...params);
+    } else if (type === 'draft') {
+      this.deleteDrafts(...params);
+    }
   };
 
   render() {
@@ -220,6 +319,7 @@ class BotBuilder extends React.Component {
         </div>
       );
     }
+
     return (
       <div>
         <StaticAppBar {...this.props} />
@@ -283,7 +383,7 @@ class BotBuilder extends React.Component {
                   <CardText style={styles.newBotBtn}>Create a new bot</CardText>
                 </Card>
               </Link>
-              {this.state.chatbots}
+              {this.showChatbots()}
             </div>
             <h2 style={styles.heading}>Drafts</h2>
             <div className="bot-template-wrap">{this.state.drafts}</div>
@@ -297,6 +397,33 @@ class BotBuilder extends React.Component {
             this.setState({ openSnackbar: false });
           }}
         />
+        <Dialog
+          actions={[
+            <FlatButton
+              label="Cancel"
+              onClick={this.closeDeleteAlert}
+              key={'Cancel'}
+              primary={true}
+              style={{ marginRight: '10px' }}
+            />,
+            <FlatButton
+              label="Delete"
+              onClick={this.handleDelete}
+              key={'Delete'}
+              backgroundColor={'#ff0000'}
+              primary={true}
+              labelStyle={{ color: '#fff' }}
+              hoverColor={'rgba(255,0,0,0.7)'}
+            />,
+          ]}
+          modal={false}
+          open={this.state.deleteAlert !== null}
+          onRequestClose={this.closeDeleteAlert}
+        >
+          {`Are you sure you want to delete this ${
+            this.state.deleteAlert !== null ? this.state.deleteAlert.type : ''
+          }?`}
+        </Dialog>
       </div>
     );
   }

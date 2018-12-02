@@ -1,8 +1,8 @@
-var susi_skills_deployed_url = "https://skills.susi.ai/";
-var api_url = "https://api.susi.ai";
+const susi_skills_deployed_url = "https://skills.susi.ai/";
+const api_url = "https://api.susi.ai";
 //Appending CSS
-var headTag = document.getElementsByTagName("head")[0];
-var link  = document.createElement('link');
+let headTag = document.getElementsByTagName("head")[0];
+let link  = document.createElement('link');
 link.rel  = 'stylesheet';
 link.type = 'text/css';
 link.href = susi_skills_deployed_url+'chatbox-style.min.css';
@@ -14,25 +14,25 @@ link.type = 'text/css';
 link.href = susi_skills_deployed_url+'chat-style.css';
 link.media = 'all';
 headTag.appendChild(link);
-var script_tag = document.getElementById("susi-bot-script");
-var userid = script_tag.getAttribute("data-userid");
-var group = script_tag.getAttribute("data-group");
-var language = script_tag.getAttribute("data-language");
-var skill = script_tag.getAttribute("data-skill");
-var botWindow = script_tag.getAttribute("data-bot-type")?(script_tag.getAttribute("data-bot-type")==="botWindow"?true:false):false;
+const script_tag = document.getElementById("susi-bot-script");
+const userid = script_tag.getAttribute("data-userid");
+const group = script_tag.getAttribute("data-group");
+const language = script_tag.getAttribute("data-language");
+const skill = script_tag.getAttribute("data-skill");
+const botWindow = script_tag.getAttribute("data-bot-type")?(script_tag.getAttribute("data-bot-type")==="botWindow"?true:false):false;
 
 // custom theme variables
-var botbuilderBackgroundBody = "#ffffff";
-var botbuilderBodyBackgroundImg = "";
-var botbuilderUserMessageBackground = "#0077e5";
-var botbuilderUserMessageTextColor = "#ffffff";
-var botbuilderBotMessageBackground = "#f8f8f8";
-var botbuilderBotMessageTextColor = "#455a64";
-var botbuilderIconColor = "";
-var botbuilderIconImg = susi_skills_deployed_url + 'customAvatars/0.png';
+let botbuilderBackgroundBody = "#ffffff";
+let botbuilderBodyBackgroundImg = "";
+let botbuilderUserMessageBackground = "#0077e5";
+let botbuilderUserMessageTextColor = "#ffffff";
+let botbuilderBotMessageBackground = "#f8f8f8";
+let botbuilderBotMessageTextColor = "#455a64";
+let botbuilderIconColor = "";
+let botbuilderIconImg = susi_skills_deployed_url + 'customAvatars/0.png';
 
 if(typeof jQuery=='undefined') {
-	var jqTag = document.createElement('script');
+	let jqTag = document.createElement('script');
 	jqTag.type = 'text/javascript';
 	jqTag.src = 'https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js';
 	jqTag.onload = getTheme;
@@ -105,12 +105,12 @@ function applyTheme(){
 function enableBot() {
 	$(document).ready(function() {
 
-		var baseUrl = api_url + "/susi/chat.json?q=";
-		var msgNumber = 0;//stores the message number to set id
+		const baseUrl = api_url + "/susi/chat.json?q=";
+		let msgNumber = 0;//stores the message number to set id
 
 		// Add dynamic html bot content(Widget style)
 		let frameStyle=botWindow?"height:460px;top: inherit;":"";
-		var mybot = '<div id="susi-frame-container" class="susi-frame-container-active" style="display: none;'+frameStyle+'">'+
+		const mybot = '<div id="susi-frame-container" class="susi-frame-container-active" style="display: none;'+frameStyle+'">'+
 				'<div id="susi-frame-wrap">'+
 				'<div id="susi">'+
 				    '<div id="susi-container" class="susi-container susi-reset">'+
@@ -168,8 +168,8 @@ function enableBot() {
 
 		// on input/text enter
 		$('#susiTextMessage').on('keyup keypress', function(e) {
-			var keyCode = e.keyCode || e.which;
-			var text = $("#susiTextMessage").val();
+			const keyCode = e.keyCode || e.which;
+			const text = $("#susiTextMessage").val();
 			if (keyCode === 13) {
 				if(text == "" ||  $.trim(text) == '') {
 					e.preventDefault();
@@ -183,7 +183,7 @@ function enableBot() {
 			}
 		});
 		$('.susi-send-button').click(function(){
-			var text = $("#susiTextMessage").val();
+			const text = $("#susiTextMessage").val();
 			if(text !== '') {
 				$("#chat-input").blur();
 				setUserResponse(text);
@@ -197,7 +197,7 @@ function enableBot() {
 			if(userid && group && language && skill){
 				url += `&privateskill=1&userid=${userid}&group=${group}&language=${language}&skill=${skill}`;
 			}
-			var thisMsgNumber = msgNumber;
+			const thisMsgNumber = msgNumber;
 			msgNumber++;
 			setLoadingMessage(thisMsgNumber);
 			$.ajax({
@@ -222,12 +222,12 @@ function enableBot() {
 				createSusiMessageAnswer("Sorry, I could not understand what you just said.", thisMsgNumber);
 				return;
 			}
-			var actions=data.answers[0].actions;
+			const actions=data.answers[0].actions;
 
-			for(var action_index = 0;action_index<actions.length;action_index++){
-				var action=actions[action_index];
-				var type=action.type;
-				var expression="";
+			for(let action_index = 0;action_index<actions.length;action_index++){
+				let action=actions[action_index];
+				let type=action.type;
+				let expression="";
 				if(action_index!==0){
 					thisMsgNumber = ++msgNumber;
 					if (type === "answer" || type === "anchor" || type === "table") {
@@ -239,21 +239,21 @@ function enableBot() {
 					createSusiMessageAnswer(expression, thisMsgNumber);
 				}
 				else if(type==="anchor"){
-					var text=action.text;
-					var link=action.link;
+					const text=action.text;
+					const link=action.link;
 					createSusiMessageAnchor(text,link, thisMsgNumber);
 				}
 				else if(type==="table"){
-					var tableData = data.answers[0].data;
-					var columns = Object.keys(action.columns);
-					var columnsData = Object.values(action.columns);
+					const tableData = data.answers[0].data;
+					const columns = Object.keys(action.columns);
+					const columnsData = Object.values(action.columns);
 					createSusiMessageTable(tableData, columns, columnsData, thisMsgNumber);
 				}
 			}
 		}
 
 		function setLoadingMessage(msgNumber){
-		    var BotResponse = '<div id="susiMsg-'+msgNumber+'" class="susi-conversation-part susi-conversation-part-grouped-first">'+
+		    const BotResponse = '<div id="susiMsg-'+msgNumber+'" class="susi-conversation-part susi-conversation-part-grouped-first">'+
 		'<div style="background-image: url('+ botbuilderIconImg + ')" class="susi-comment-avatar susi-theme-bg">'+
 
 		'</div>'+
@@ -300,9 +300,9 @@ function enableBot() {
 
 		// Create SUSI message for table
 		function createSusiMessageTable(tableData, columns, columnsData, msgNumber) {
-			var table = "<div style='overflow-x: scroll'><table><tbody><tr>";
-			var i = 0 ;
-			var j =0 ;
+			let table = "<div style='overflow-x: scroll'><table><tbody><tr>";
+			let i = 0 ;
+			let j =0 ;
 
 			//create headers for the table
 			for(i = 0 ; i < columnsData.length ; i++){
@@ -317,7 +317,7 @@ function enableBot() {
 				for(j= 0; j < columns.length ;  j++){
 					//check if such column value exists for that record
 					if(tableData[i][columns[j]]){
-						var cellData  = tableData[i][columns[j]];
+						let cellData  = tableData[i][columns[j]];
 						if (typeof cellData === "object") {
 							cellData = cellData[0];
 						}
@@ -339,7 +339,7 @@ function enableBot() {
 
 		// Set user response
 		function setUserResponse(val) {
-			var UserResponse = '<div class="susi-conversation-part susi-conversation-part-grouped-first">'+
+			const UserResponse = '<div class="susi-conversation-part susi-conversation-part-grouped-first">'+
 			'<div class=" susi-comment susi-comment-by-user ">'+
 			'<div class="susi-comment-body-container susi-comment-body-container-user" style="background-color:'+botbuilderUserMessageBackground+';color:'+botbuilderUserMessageTextColor+'">'+
 			'<div class="susi-comment-body ">'+
@@ -357,7 +357,7 @@ function enableBot() {
 
 		// Scroll to the bottom
 		function scrollToBottomOfResults() {
-			var textsDiv = document.querySelector('.susi-sheet-content');
+			let textsDiv = document.querySelector('.susi-sheet-content');
 			textsDiv.scrollTop = textsDiv.scrollHeight;
 		}
 

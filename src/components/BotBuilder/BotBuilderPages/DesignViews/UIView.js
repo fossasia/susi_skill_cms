@@ -725,6 +725,7 @@ class UIView extends Component {
           <div className="design-box">
             {this.state.loadedSettings && <Grid>{customizeComponents}</Grid>}
             <RaisedButton
+              backgroundColor={colors.header}
               label={
                 this.state.resetting ? (
                   <CircularProgress color={colors.header} size={32} />

@@ -656,7 +656,7 @@ class SkillFeedbackPage extends Component {
                         this.name
                           .split(' ')
                           .map(data => {
-                            var s =
+                            let s =
                               data.charAt(0).toUpperCase() + data.substring(1);
                             return s;
                           })
@@ -766,7 +766,7 @@ class SkillFeedbackPage extends Component {
                       this.name
                         .split(' ')
                         .map(data => {
-                          var s =
+                          let s =
                             data.charAt(0).toUpperCase() + data.substring(1);
                           return s;
                         })
