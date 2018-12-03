@@ -10,6 +10,7 @@ After creation and a successfull build, your project should have the following f
    |-public
    |-src
    |---Utils
+   |---images
    |---__tests__
    |-----components
    |-------Admin
@@ -46,7 +47,6 @@ After creation and a successfull build, your project should have the following f
    |-----SkillRollBack
    |-----SkillVersion
    |-----StaticAppBar
-   |-----images
 ```
 
 * `public/index.html` is the page template;

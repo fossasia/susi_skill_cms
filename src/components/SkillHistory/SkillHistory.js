@@ -31,8 +31,8 @@ import './SkillHistory.css';
 class SkillHistory extends Component {
   constructor(props) {
     super(props);
-    var commits = [];
-    var parsePath = this.props.location.pathname.split('/');
+    let commits = [];
+    const parsePath = this.props.location.pathname.split('/');
     commits.push(parsePath[5]);
     if (parsePath.length === 7) {
       commits.push(parsePath[6]);
@@ -116,8 +116,8 @@ class SkillHistory extends Component {
 
   getCommitMeta = commitID => {
     let allCommits = this.state.allCommitsData;
-    for (var i = 0; i < allCommits.length; i++) {
-      var commitData = allCommits[i];
+    for (let i = 0; i < allCommits.length; i++) {
+      let commitData = allCommits[i];
       if (commitData.commitID === commitID) {
         return commitData;
       }
@@ -128,7 +128,7 @@ class SkillHistory extends Component {
     let baseUrl = this.getSkillAtCommitIDUrl();
     let self = this;
     if (this.state.commits.length === 2) {
-      var url1 = baseUrl + self.state.commits[0];
+      const url1 = baseUrl + self.state.commits[0];
       // console.log(url1);
       $.ajax({
         url: url1,
@@ -136,7 +136,7 @@ class SkillHistory extends Component {
         jsonp: 'callback',
         crossDomain: true,
         success: function(data1) {
-          var url2 = baseUrl + self.state.commits[1];
+          const url2 = baseUrl + self.state.commits[1];
           // console.log(url2);
           $.ajax({
             url: url2,

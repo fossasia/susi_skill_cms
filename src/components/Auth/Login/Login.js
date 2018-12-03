@@ -82,12 +82,10 @@ class Login extends Component {
       success: false,
       validForm: false,
       emailError: true,
-      passwordError: false,
       checked: false,
       loading: false,
       showDialog: false,
       emailErrorMessage: '',
-      passwordErrorMessage: '',
     };
   }
 
@@ -168,9 +166,7 @@ class Login extends Component {
       validEmail,
       validPassword,
       emailError,
-      passwordError,
       emailErrorMessage,
-      passwordErrorMessage,
       validForm,
     } = this.state;
 
@@ -180,8 +176,6 @@ class Login extends Component {
       emailError = !(email && validEmail);
     } else if (event.target.name === 'password') {
       password = event.target.value;
-      validPassword = password.length >= 6;
-      passwordError = !(password && validPassword);
     }
 
     if (emailError) {
@@ -189,12 +183,7 @@ class Login extends Component {
     } else {
       emailErrorMessage = '';
     }
-    if (passwordError) {
-      passwordErrorMessage = 'Minimum 6 characters required';
-    } else {
-      passwordErrorMessage = '';
-    }
-    if (!emailError && !passwordError && password !== '' && email !== '') {
+    if (!emailError && password !== '' && email !== '') {
       validForm = true;
     } else {
       validForm = false;
@@ -206,9 +195,7 @@ class Login extends Component {
       validEmail,
       validPassword,
       emailError,
-      passwordError,
       emailErrorMessage,
-      passwordErrorMessage,
       validForm,
     });
   };
@@ -256,7 +243,6 @@ class Login extends Component {
     const {
       email,
       password,
-      passwordErrorMessage,
       emailErrorMessage,
       loading,
       validForm,
@@ -289,7 +275,6 @@ class Login extends Component {
               placeholder="Password"
               underlineStyle={{ display: 'none' }}
               onChange={this.handleChange}
-              errorText={passwordErrorMessage}
               visibilityButtonStyle={{
                 marginTop: '-3px',
               }}

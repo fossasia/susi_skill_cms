@@ -1,25 +1,19 @@
-import React, { Component } from 'react';
-import susi from '../images/susi-logo.svg';
+import React from 'react';
+import susi from '../../images/susi-logo.svg';
 import './Footer.css';
 import { Link } from 'react-router-dom';
 import { urls } from '../../utils';
 
-class Footer extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      video: false,
-    };
-  }
-  render() {
-    // Footer Component
-    return (
-      <div className="footer-wrapper">
+const Footer = () => {
+  // Footer Component
+  return (
+    <div className="footer-wrapper">
+      <div className="footer-container">
+        <Link className="susi-logo-container" to="/">
+          <img src={susi} alt="SUSI" className="susi-logo" />
+        </Link>
         <div className="footer">
           <div className="footer-left">
-            <Link to="/">
-              <img src={susi} alt="SUSI" className="susi-logo" />
-            </Link>
             <ul>
               <li>
                 <a href={urls.CHAT_URL + '/overview'}>Overview</a>
@@ -48,8 +42,8 @@ class Footer extends Component {
           </ul>
         </div>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 export default Footer;
