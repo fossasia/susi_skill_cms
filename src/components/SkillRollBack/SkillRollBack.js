@@ -10,7 +10,7 @@ import notification from 'antd/lib/notification';
 import CircularProgress from 'material-ui/CircularProgress';
 
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
-import SkillEditor from '../SkillEditor/SkillEditor';
+import SkillCreator from '../SkillCreator/SkillCreator';
 import { urls } from '../../utils';
 
 import 'brace/mode/markdown';
@@ -380,7 +380,7 @@ class SkillRollBack extends Component {
               </h1>
             </div>
             <div style={{ marginTop: '-100px', width: '100%' }}>
-              <SkillEditor
+              <SkillCreator
                 showTopBar={false}
                 revertingCommit={this.state.revertingCommit}
                 location={{

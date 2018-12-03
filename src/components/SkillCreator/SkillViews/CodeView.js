@@ -192,10 +192,10 @@ export default class CodeView extends React.Component {
               onChange={this.onChange}
               scrollPastEnd={false}
               wrapEnabled={true}
+              readOnly={!this.props.editable}
               editorProps={{ $blockScrolling: true }}
               style={{
                 resize: 'vertical',
-                overflowY: 'scroll',
                 minHeight: '200px',
                 maxHeight: '560px',
               }}
@@ -254,6 +254,7 @@ const styles = {
   },
 };
 CodeView.propTypes = {
+  editable: PropTypes.bool,
   skillCode: PropTypes.string,
   sendInfoToProps: PropTypes.func,
 };

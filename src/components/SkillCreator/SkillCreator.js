@@ -16,7 +16,7 @@ import * as $ from 'jquery';
 import './SkillCreator.css';
 
 // Material-UI Components
-import { Paper, RaisedButton, TextField } from 'material-ui';
+import { Dialog, Paper, RaisedButton, TextField } from 'material-ui';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import IconButton from 'material-ui/IconButton';
 import MenuItem from 'material-ui/MenuItem';
@@ -33,95 +33,344 @@ import ChevronRight from 'material-ui/svg-icons/navigation/chevron-right';
 // Ant Design Components
 import notification from 'antd/lib/notification';
 import Icon from 'antd/lib/icon';
-
 const cookies = new Cookies();
-const languages = [];
-let self;
+let languages = [];
 
 export default class SkillCreator extends Component {
   constructor(props) {
     super(props);
+
     let skillBuildCode =
       '::name <Skill_name>\n::category <Category>\n::language <Language>\n::author <author_name>\n::author_url <author_url>\n::description <description> \n::dynamic_content <Yes/No>\n::developer_privacy_policy <link>\n::image <image_url>\n::terms_of_use <link>\n\n\nUser query1|query2|quer3....\n!example:<The question that should be shown in public skill displays>\n!expect:<The answer expected for the above example>\nAnswer for the user query';
     if (this.props.botBuilder) {
       skillBuildCode = this.props.botBuilder.code;
     }
-    this.state = {
-      code: skillBuildCode,
-      codeView: true,
-      conversationView: false,
-      treeView: false,
-      groupSelect: true,
-      languageSelect: true,
-      expertSelect: true,
-      showImage: false,
-      loading: false,
+
+    let commonState = {
       file: null,
-      loadViews: false,
-      imageUrl: '<image_url>',
-      commitMessage: '',
-      modelValue: null,
-      groupValue: null,
-      languageValue: null,
-      expertValue: '',
-      groups: [],
-      slideState: 1, // 1 means in middle, 2 means preview collapsed
-      colSkill: 8,
-      colPreview: 4,
-      prevButton: 0, // 0 means disappear, 1 means appear
       anchorOrigin: {
         horizontal: 'left',
         vertical: 'bottom',
       },
+      groups: [],
+      loadViews: false,
+      code: skillBuildCode,
+      editable: true,
     };
+
+    if (
+      this.props.location &&
+      this.props.location.pathname.split('/')[3] === 'edit'
+    ) {
+      let commitMessage = `Updated Skill ${
+        this.props.location.pathname.split('/')[2]
+      }`;
+      if (this.props.hasOwnProperty('revertingCommit')) {
+        commitMessage = 'Reverting to commit - ' + this.props.revertingCommit;
+      } else if (this.props.location.pathname.split('/')[5]) {
+        commitMessage =
+          'Reverting to commit - ' + this.props.location.pathname.split('/')[5];
+      }
+
+      this.state = {
+        ...commonState,
+        mode: 'edit',
+        codeView: true,
+        conversationView: false,
+        treeView: false,
+        showImage: true,
+        loading: false,
+        image: '',
+        skillUrl: null,
+        commitMessage,
+        modelValue: 'general',
+        codeChanged: false,
+        showDeleteBox: false,
+        groupValue: this.props.location.pathname.split('/')[1],
+        oldGroupValue: this.props.location.pathname.split('/')[1],
+        languageValue: this.props.location.pathname.split('/')[4],
+        oldLanguageValue: this.props.location.pathname.split('/')[4],
+        expertValue: this.props.location.pathname.split('/')[2],
+        oldExpertValue: this.props.location.pathname.split('/')[2],
+        commitId: this.props.location.pathname.split('/')[5],
+        groupSelect: false,
+        languageSelect: false,
+        expertSelect: false,
+        date: '',
+        author: '',
+        oldImageUrl: '',
+        imageUrl: '<image_url>',
+        image_name_changed: false,
+        fontSizeCode: 14,
+        editorTheme: 'github',
+        showAdmin: false,
+        deleteDisabled: true,
+        slideState: 1, // 1 means in middle, 2 means preview collapsed
+        colSkill: this.props.hasOwnProperty('revertingCommit') ? 12 : 8,
+        colPreview: this.props.hasOwnProperty('revertingCommit') ? 0 : 4,
+        prevButton: 0, // 0 means disappear, 1 means appear
+      };
+    } else {
+      this.state = {
+        ...commonState,
+        mode: 'create',
+        codeView: true,
+        conversationView: false,
+        treeView: false,
+        showImage: false,
+        loading: false,
+        imageUrl: '<image_url>',
+        commitMessage: '',
+        modelValue: null,
+        groupValue: null,
+        languageValue: null,
+        groupSelect: true,
+        languageSelect: true,
+        expertSelect: true,
+        expertValue: '',
+        slideState: 1, // 1 means in middle, 2 means preview collapsed
+        colSkill: 8,
+        colPreview: 4,
+        prevButton: 0, // 0 means disappear, 1 means appear
+      };
+    }
+  }
+
+  updateData = skillData => {
+    if (skillData.image) {
+      this.imgUrl = `${urls.API_URL}/cms/getImage.png?model=general&language=${
+        this.state.languageValue
+      }&group=${this.state.groupValue}&image=${skillData.image}`;
+    } else {
+      this.imgUrl = '/favicon-512x512.jpg';
+    }
+    this.setState({
+      image: this.imgUrl,
+    });
+  };
+
+  loadlanguages() {
+    if (languages.length === 0) {
+      $.ajax({
+        url: urls.API_URL + '/cms/getAllLanguages.json',
+        dataType: 'jsonp',
+        jsonp: 'callback',
+        crossDomain: true,
+        success: data => {
+          data = data.languagesArray;
+          this.setState({ languages: data });
+          // console.log(data);
+          languages = data.map(language => {
+            if (ISO6391.getNativeName(language)) {
+              return (
+                <MenuItem
+                  value={language}
+                  key={language}
+                  primaryText={ISO6391.getNativeName(language)}
+                />
+              );
+            }
+            return (
+              <MenuItem
+                value={language}
+                key={language}
+                primaryText={'Universal'}
+              />
+            );
+          });
+        },
+        error: function(e) {
+          console.log('Error while fetching languages', e);
+        },
+      });
+    }
   }
 
   componentDidMount = () => {
-    document.title = 'SUSI.AI - Create Skill';
-    self = this;
-    self.loadgroups();
-    // send code to CodeView in botbuilder
-    if (this.props.botBuilder) {
-      this.setState({
-        slideState: 0,
-        colSkill: 12,
-        colPreview: 0,
-        prevButton: 0,
-      });
-      if (
-        this.props.botBuilder.category &&
-        this.props.botBuilder.language &&
-        this.props.botBuilder.name
-      ) {
-        // set group, language and name while editing a saved bot
-        this.setState(
-          {
-            groupValue: this.props.botBuilder.category,
-            languageValue: this.props.botBuilder.language,
-            expertValue: this.props.botBuilder.name,
-            imageUrl: '',
-            showImage: true,
-            groupSelect: false,
-            languageSelect: false,
-            expertSelect: false,
-            loadViews: true,
-          },
-          () => this.handleGroupChange(null, 0, this.props.botBuilder.category),
-        );
-      }
-      if (this.props.botBuilder.image) {
+    if (this.state.mode === 'create') {
+      document.title = 'SUSI.AI - Create Skill';
+      this.loadgroups();
+      // send code to CodeView in botbuilder
+      if (this.props.botBuilder) {
         this.setState({
-          showImage: true,
-          image: this.props.botBuilder.image,
-          file: this.props.botBuilder.imageFile,
-          imageUrl: this.props.botBuilder.imageUrl,
-          loadViews: true,
+          slideState: 0,
+          colSkill: 12,
+          colPreview: 0,
+          prevButton: 0,
+        });
+        if (
+          this.props.botBuilder.category &&
+          this.props.botBuilder.language &&
+          this.props.botBuilder.name
+        ) {
+          // set group, language and name while editing a saved bot
+          this.setState(
+            {
+              groupValue: this.props.botBuilder.category,
+              languageValue: this.props.botBuilder.language,
+              expertValue: this.props.botBuilder.name,
+              imageUrl: '',
+              showImage: true,
+              groupSelect: false,
+              languageSelect: false,
+              expertSelect: false,
+              loadViews: true,
+            },
+            () =>
+              this.handleGroupChange(null, 0, this.props.botBuilder.category),
+          );
+        }
+        if (this.props.botBuilder.image) {
+          this.setState({
+            showImage: true,
+            image: this.props.botBuilder.image,
+            file: this.props.botBuilder.imageFile,
+            imageUrl: this.props.botBuilder.imageUrl,
+            loadViews: true,
+          });
+        }
+      } else {
+        this.setState({ loadViews: true });
+      }
+      this.prefillCode();
+    } else {
+      // Check if admin is logged in or not
+      document.title = 'SUSI.AI - Edit Skill';
+
+      if (cookies.get('showAdmin') === 'true') {
+        this.setState({
+          showAdmin: true,
         });
       }
-    } else {
-      this.setState({ loadViews: true });
+
+      this.loadgroups();
+
+      this.loadlanguages();
+      if (this.state.commitId) {
+        let baseUrl = urls.API_URL + '/cms/getFileAtCommitID.json';
+        let skillAtCommitIDUrl =
+          baseUrl +
+          '?model=' +
+          this.state.modelValue +
+          '&group=' +
+          this.state.groupValue +
+          '&language=' +
+          this.state.languageValue +
+          '&skill=' +
+          this.state.expertValue +
+          '&commitID=' +
+          this.state.commitId;
+        $.ajax({
+          url: skillAtCommitIDUrl,
+          dataType: 'jsonp',
+          jsonp: 'callback',
+          crossDomain: true,
+          success: data => {
+            this.setState({
+              code: data.file,
+              author: data.author,
+              date: data.commitDate,
+              loadViews: true,
+            });
+            this.updateCode(data.file);
+            const match = data.file.match(/^::image\s(.*)$/m);
+            if (match !== null) {
+              this.setState({
+                imageUrl: match[1],
+                codeChanged: true,
+              });
+            }
+          },
+        });
+        baseUrl = urls.API_URL + '/cms/getSkillMetadata.json';
+        let url =
+          baseUrl +
+          '?model=' +
+          this.state.modelValue +
+          '&group=' +
+          this.state.groupValue +
+          '&language=' +
+          this.state.languageValue +
+          '&skill=' +
+          this.state.expertValue;
+        this.setState({
+          skillUrl: url,
+        });
+        $.ajax({
+          url: url,
+          dataType: 'jsonp',
+          jsonp: 'callback',
+          crossDomain: true,
+          success: data => {
+            this.setState({
+              editable: data.skill_metadata.editable,
+            });
+            this.updateData(data.skill_metadata);
+          },
+          error: function(e) {
+            console.log('Error while fetching skill metadata', e);
+          },
+        });
+        return 0;
+      }
+
+      let baseUrl = urls.API_URL + '/cms/getSkillMetadata.json';
+
+      let modelValue = 'general';
+      let groupValue = this.props.location.pathname.split('/')[1];
+      let languageValue = this.props.location.pathname.split('/')[4];
+      let expertValue = this.props.location.pathname.split('/')[2];
+
+      let url =
+        baseUrl +
+        '?model=' +
+        modelValue +
+        '&group=' +
+        groupValue +
+        '&language=' +
+        languageValue +
+        '&skill=' +
+        expertValue;
+      this.setState({
+        skillUrl: url,
+      });
+      $.ajax({
+        url: url,
+        dataType: 'jsonp',
+        jsonp: 'callback',
+        crossDomain: true,
+        success: data => {
+          this.setState({
+            editable: data.skill_metadata.editable,
+          });
+          this.updateData(data.skill_metadata);
+        },
+      });
+
+      url = url.replace('getSkillMetadata', 'getSkill');
+      /*         skill_relative_path = this.props.location.pathname.split('/')[2];
+   */ $.ajax(
+        {
+          url: url,
+          dataType: 'jsonp',
+          jsonp: 'callback',
+          crossDomain: true,
+          success: data => {
+            this.updateCode(data.text);
+            const match = data.text.match(/^::image\s(.*)$/m);
+            if (match !== null) {
+              this.setState({
+                imageUrl: match[1],
+                codeChanged: true,
+              });
+            }
+          },
+          error: function(e) {
+            console.log('Error while fetching skill', e);
+          },
+        },
+      );
     }
-    this.prefillCode();
   };
 
   handlePreviewToggle = () => {
@@ -235,7 +484,7 @@ export default class SkillCreator extends Component {
         code,
         commitMessage,
       },
-      () => self.handleReload(),
+      () => this.handleReload(),
       this.sendInfoToProps(),
     );
   };
@@ -284,7 +533,7 @@ export default class SkillCreator extends Component {
             }
             if (data[i] === 'en') {
               this.handleLanguageChange(null, 0, 'en');
-              this.setState({ expertSelect: false });
+              this.setState({ languageSelect: false, expertSelect: false });
             }
           }
           languages.sort(function(a, b) {
@@ -315,20 +564,61 @@ export default class SkillCreator extends Component {
         expertSelect: false,
         code,
       },
-      () => self.handleReload(),
-      self.sendInfoToProps(),
+      () => this.handleReload(),
+      this.sendInfoToProps(),
     );
   };
 
+  handleChange(newValue) {
+    const match = newValue.match(/^::image\s(.*)$/m);
+    if (match !== null) {
+      this.setState({
+        imageUrl: match[1],
+        codeChanged: true,
+      });
+    }
+    this.updateCode(newValue);
+  }
+
+  handleDeleteText = event => {
+    const name = this.state.code.match(/^::name\s(.*)$/m);
+    // console.log(name[1])
+    if (event.target.value === name[1]) {
+      this.setState({
+        deleteDisabled: false,
+      });
+    } else {
+      this.setState({
+        deleteDisabled: true,
+      });
+    }
+  };
+
+  updateCode = newCode => {
+    this.setState({
+      code: newCode,
+      loadViews: true,
+    });
+  };
+
   saveClick = () => {
-    let groups = this.state.groups;
-    let code = this.state.code;
+    let { mode, groups, code } = this.state;
     code = '::author_email ' + cookies.get('emailId') + '\n' + code;
     if (this.props.botBuilder) {
       code = '::protected Yes\n' + code;
     } else {
       code = '::protected No\n' + code;
     }
+
+    if (this.state.commitMessage === null) {
+      notification.open({
+        message: 'Please add a commit message',
+        icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
+      });
+
+      return 0;
+    }
+
     if (!cookies.get('loggedIn')) {
       notification.open({
         message: 'Not logged In',
@@ -349,7 +639,7 @@ export default class SkillCreator extends Component {
       });
       return 0;
     }
-    if (!new RegExp(/.+\.\w+/g).test(self.state.imageUrl)) {
+    if (!new RegExp(/.+\.\w+/g).test(this.state.imageUrl)) {
       notification.open({
         message: 'Error Processing your Request',
         description: 'Image must be in format of images/imageName.jpg',
@@ -357,7 +647,7 @@ export default class SkillCreator extends Component {
       });
       return 0;
     }
-    if (this.state.file === null) {
+    if (mode === 'create' && this.state.file === null) {
       notification.open({
         message: 'Error Processing your Request',
         description: 'Image Not Given',
@@ -370,29 +660,90 @@ export default class SkillCreator extends Component {
       loading: true,
     });
 
-    let form = new FormData();
-    form.append('model', 'general');
-    form.append('group', this.state.groupValue);
-    form.append('language', this.state.languageValue);
-    form.append('skill', this.state.expertValue.trim().replace(/\s/g, '_'));
-    form.append('image', this.state.file);
-    form.append('content', code);
-    form.append('image_name', this.state.imageUrl.replace('images/', ''));
-    form.append('access_token', cookies.get('loggedIn'));
-    if (this.props.botBuilder) {
-      form.append('private', '1');
+    if (
+      mode === 'edit' &&
+      this.state.oldGroupValue === this.state.groupValue &&
+      this.state.oldExpertValue === this.state.expertValue &&
+      this.state.oldLanguageValue === this.state.languageValue &&
+      !this.state.codeChanged &&
+      !this.state.image_name_changed
+    ) {
+      notification.open({
+        message: 'Please make some changes to save the Skill',
+        icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
+      });
+      this.setState({
+        loading: false,
+      });
+      return 0;
     }
 
-    let settings = {
-      async: true,
-      crossDomain: true,
-      url: urls.API_URL + '/cms/createSkill.json',
-      method: 'POST',
-      processData: false,
-      contentType: false,
-      mimeType: 'multipart/form-data',
-      data: form,
-    };
+    let settings;
+
+    if (mode === 'create') {
+      let form = new FormData();
+      form.append('model', 'general');
+      form.append('group', this.state.groupValue);
+      form.append('language', this.state.languageValue);
+      form.append('skill', this.state.expertValue.trim().replace(/\s/g, '_'));
+      form.append('image', this.state.file);
+      form.append('content', code);
+      form.append('image_name', this.state.imageUrl.replace('images/', ''));
+      form.append('access_token', cookies.get('loggedIn'));
+      if (this.props.botBuilder) {
+        form.append('private', '1');
+      }
+
+      settings = {
+        async: true,
+        crossDomain: true,
+        url: urls.API_URL + '/cms/createSkill.json',
+        method: 'POST',
+        processData: false,
+        contentType: false,
+        mimeType: 'multipart/form-data',
+        data: form,
+      };
+    } else {
+      let file;
+
+      let form = new FormData();
+
+      form.append('OldModel', 'general');
+      form.append('OldGroup', this.state.oldGroupValue);
+      form.append('OldLanguage', this.state.oldLanguageValue);
+      form.append('OldSkill', this.state.oldExpertValue);
+      form.append('NewModel', 'general');
+      form.append('NewGroup', this.state.groupValue);
+      form.append('NewLanguage', this.state.languageValue);
+      form.append('NewSkill', this.state.expertValue);
+      form.append('changelog', this.state.commitMessage);
+      form.append('content', this.state.code);
+      form.append('imageChanged', this.state.image_name_changed);
+      form.append(
+        'old_image_name',
+        this.state.oldImageUrl.replace('images/', ''),
+      );
+      form.append('new_image_name', this.state.imageUrl.replace('images/', ''));
+      form.append('image_name_changed', this.state.image_name_changed);
+      form.append('access_token', cookies.get('loggedIn'));
+
+      if (this.state.image_name_changed) {
+        file = this.state.file; // append file to image
+        form.append('image', file);
+      }
+
+      settings = {
+        async: true,
+        crossDomain: true,
+        url: urls.API_URL + '/cms/modifySkill.json',
+        method: 'POST',
+        processData: false,
+        contentType: false,
+        mimeType: 'multipart/form-data',
+        data: form,
+      };
+    }
 
     /*
         Uncomment to check the form values
@@ -405,35 +756,44 @@ export default class SkillCreator extends Component {
         */
 
     $.ajax(settings)
-      .done(function(response) {
-        self.setState({
+      .done(response => {
+        this.setState({
           loading: false,
         });
         let data = JSON.parse(response);
         if (data.accepted === true) {
-          self.props.history.push({
-            pathname:
-              '/' +
-              self.state.groupValue +
-              '/' +
-              self.state.expertValue.trim().replace(/\s/g, '_') +
-              '/' +
-              self.state.languageValue,
-            state: {
-              from_upload: true,
-              expertValue: self.state.expertValue,
-              groupValue: self.state.groupValue,
-              languageValue: self.state.languageValue,
-            },
-          });
-
-          notification.open({
-            message: 'Accepted',
-            description: 'Your Skill has been uploaded to the server',
-            icon: <Icon type="check-circle" style={{ color: '#00C853' }} />,
-          });
+          if (mode === 'create') {
+            notification.open({
+              message: 'Accepted',
+              description: 'Your Skill has been uploaded to the server',
+              icon: <Icon type="check-circle" style={{ color: '#00C853' }} />,
+            });
+          } else {
+            notification.open({
+              message: 'Accepted',
+              description: 'Skill has been updated at the server.',
+              icon: <Icon type="check-circle" style={{ color: '#00C853' }} />,
+            });
+          }
+          if (!this.props.hasOwnProperty('revertingCommit')) {
+            this.props.history.push({
+              pathname:
+                '/' +
+                this.state.groupValue +
+                '/' +
+                this.state.expertValue.trim().replace(/\s/g, '_') +
+                '/' +
+                this.state.languageValue,
+              state: {
+                from_upload: true,
+                expertValue: this.state.expertValue,
+                groupValue: this.state.groupValue,
+                languageValue: this.state.languageValue,
+              },
+            });
+          }
         } else {
-          self.setState({
+          this.setState({
             loading: false,
           });
           notification.open({
@@ -444,7 +804,7 @@ export default class SkillCreator extends Component {
         }
       })
       .fail(function(jqXHR, textStatus) {
-        self.setState({
+        this.setState({
           loading: false,
         });
         notification.open({
@@ -467,7 +827,7 @@ export default class SkillCreator extends Component {
         this.setState({ image: e.target.result }, () => this.sendInfoToProps());
       };
       reader.readAsDataURL(event.target.files[0]);
-      self.setState({
+      this.setState({
         showImage: true,
       });
     }
@@ -495,6 +855,20 @@ export default class SkillCreator extends Component {
     );
   };
 
+  openDelete = () => {
+    this.setState({ showDeleteBox: true });
+  };
+
+  closeDelete = () => {
+    this.setState({ showDeleteBox: false });
+  };
+
+  handleCommitMessageChange = event => {
+    this.setState({
+      commitMessage: event.target.value,
+    });
+  };
+
   handleReload = () => {
     let codeState = this.state.codeView;
     if (codeState) {
@@ -505,6 +879,59 @@ export default class SkillCreator extends Component {
         () => this.setState({ codeView: codeState }, this.sendInfoToProps),
       );
     }
+  };
+
+  deleteSkill = () => {
+    this.setState({
+      deleteDisabled: true,
+    });
+    $.ajax({
+      url:
+        urls.API_URL +
+        '/cms/deleteSkill.json?skill=' +
+        this.state.oldExpertValue +
+        '&group=' +
+        this.state.oldGroupValue +
+        '&language=' +
+        this.state.oldLanguageValue,
+      dataType: 'jsonp',
+      jsonp: 'callback',
+      crossDomain: true,
+      success: function(d) {
+        if (d.accepted === true) {
+          notification.open({
+            message: 'Deleted',
+            description: 'This Skill has been deleted',
+            icon: <Icon type="check-circle" style={{ color: '#00C853' }} />,
+          });
+          this.setState({
+            loading: false,
+          });
+          this.props.history.push({
+            pathname: '/',
+            state: {},
+          });
+        } else {
+          notification.open({
+            message: 'Failed',
+            description: d.message,
+            icon: (
+              <Icon
+                type="check-circle"
+                style={{ color: colors.warningColor }}
+              />
+            ),
+          });
+          this.props.history.push({
+            pathname: '/',
+            state: {},
+          });
+        }
+      }.bind(this),
+      error: function(e) {
+        console.log('Error while deleting skill', e);
+      },
+    });
   };
 
   sendInfoToProps = value => {
@@ -520,7 +947,7 @@ export default class SkillCreator extends Component {
             : this.state.groupValue,
           languageValue: value.languageValue
             ? value.languageValue
-            : this.state.groupValue,
+            : this.state.languageValue,
           imageUrl: value.imageUrl ? value.imageUrl : this.state.imageUrl,
         },
         () => {
@@ -551,16 +978,34 @@ export default class SkillCreator extends Component {
   };
 
   render() {
-    if (!cookies.get('loggedIn')) {
-      return (
-        <div>
-          <StaticAppBar {...this.props} />
-          <div>
-            <p style={styles.loggedInError}>Please login to create a skill.</p>
-          </div>
-        </div>
-      );
+    const style = {
+      width: '100%',
+      padding: '10px',
+      margin: '30px 0 0',
+    };
+    const bold = {
+      fontSize: '14px',
+    };
+    let showTopBar = true;
+    if (this.props.hasOwnProperty('showTopBar')) {
+      showTopBar = this.props.showTopBar;
     }
+
+    if (this.state.mode === 'create' && !cookies.get('loggedIn')) {
+      if (this.state.mode === 'create') {
+        return (
+          <div>
+            <StaticAppBar {...this.props} />
+            <div>
+              <p style={styles.loggedInError}>
+                Please login to create a skill.
+              </p>
+            </div>
+          </div>
+        );
+      }
+    }
+
     return (
       <div>
         <div
@@ -578,6 +1023,66 @@ export default class SkillCreator extends Component {
                   display: this.state.colSkill === 0 ? 'none' : 'block',
                 }}
               >
+                {this.state.mode === 'edit' &&
+                  cookies.get('loggedIn') &&
+                  !this.props.revertingCommit &&
+                  this.state.commitId &&
+                  showTopBar && (
+                    <Paper style={style} zDepth={1}>
+                      <div>
+                        {
+                          'You are currently editing an older version of the Skill: '
+                        }
+                        <b style={bold}>{this.state.expertValue}</b>
+                        <br />
+                        <span>
+                          Author: <b style={bold}>{this.state.author}</b>
+                        </span>
+                        <br />
+                        <span>
+                          commitID: <b>{this.state.commitId}</b>
+                        </span>
+                        <br />
+                        <span>
+                          Revision as of <b>{this.state.date}</b>
+                        </span>
+                      </div>
+                    </Paper>
+                  )}
+                {!cookies.get('loggedIn') && (
+                  <div>
+                    <StaticAppBar {...this.props} />
+                    <div style={styles.home}>
+                      <p style={styles.titleStyle}>
+                        YOU DO NOT HAVE PERMISSION TO EDIT THIS PAGE, SINCE YOU
+                        ARE NOT LOGGED IN.
+                      </p>
+                      <p style={styles.description}>
+                        The code is shown below in a read only mode.
+                      </p>
+                    </div>
+                  </div>
+                )}
+                {cookies.get('loggedIn') &&
+                  this.state.mode === 'edit' &&
+                  !this.state.editable &&
+                  !this.state.showAdmin && (
+                    <div style={styles.home}>
+                      <p style={styles.titleStyle}>
+                        THIS SKILL IS NOT EDITABLE. IT IS CURRENTLY LOCKED BY
+                        ADMINS. YOU CAN STILL SEE THE CODE OF THE SKILL.
+                      </p>
+                      <p style={styles.subtitleStyle}>
+                        There can be various reasons for non-editable skills.{' '}
+                        <br />For example if the skill is a standard skill, if
+                        there was vandalism happening in the skill or if there
+                        is a dispute about the skill.
+                      </p>
+                      <p style={styles.description}>
+                        The code is shown below in a read only mode.
+                      </p>
+                    </div>
+                  )}
                 <div
                   style={{
                     display: 'flex',
@@ -590,7 +1095,9 @@ export default class SkillCreator extends Component {
                       1. Add a new skill to your bot
                     </h1>
                   ) : (
-                    <div style={styles.heading}>Create a SUSI Skill</div>
+                    this.state.mode === 'create' && (
+                      <div style={styles.heading}>Create a SUSI Skill</div>
+                    )
                   )}
                   <div
                     style={{
@@ -664,151 +1171,154 @@ export default class SkillCreator extends Component {
                   delayHide={500}
                   html={true}
                 />
-                <Paper style={styles.paperStyle} zDepth={1}>
-                  <Info
-                    style={styles.helpIcon}
-                    data-tip={`Learn more about <a href=${urls.CMS_GITHUB_URL +
-                      '/blob/master/docs/Skill_Tutorial.md'} rel="noopener noreferrer" target="_blank" >SUSI Skill Language</a>`}
-                  />
-                  <div style={styles.center}>
-                    <div style={styles.dropdownDiv}>
-                      <div>
-                        <span
-                          style={{
-                            fontSize: 15,
-                            paddingTop: '43px',
-                            paddingLeft: '10px',
-                          }}
-                        >
-                          Category:
-                        </span>
-                        <DropDownMenu
-                          value={this.state.groupValue}
-                          onChange={this.handleGroupChange}
-                          anchorOrigin={this.state.anchorOrigin}
-                          autoWidth={true}
-                          maxHeight={300}
-                          style={{
-                            position: 'relative',
-                            top: '15px',
-                            width: '250px',
-                          }}
-                        >
-                          {this.state.groups}
-                        </DropDownMenu>
-                      </div>
-                      <div>
-                        <span
-                          style={{
-                            fontSize: 15,
-                            paddingTop: '8px',
-                            marginLeft: '10px',
-                          }}
-                        >
-                          Language:
-                        </span>
-
-                        <DropDownMenu
-                          disabled={this.state.languageSelect}
-                          value={this.state.languageValue}
-                          anchorOrigin={this.state.anchorOrigin}
-                          onChange={this.handleLanguageChange}
-                          autoWidth={true}
-                          maxHeight={300}
-                          style={{
-                            position: 'relative',
-                            top: '15px',
-                            width: '250px',
-                          }}
-                        >
-                          {languages}
-                        </DropDownMenu>
-                      </div>
-                      <TextField
-                        disabled={this.state.expertSelect}
-                        floatingLabelText={
-                          this.props.botBuilder ? 'Bot Name' : 'Skill Name'
-                        }
-                        floatingLabelFixed={false}
-                        value={this.state.expertValue}
-                        hintText={
-                          this.props.botBuilder ? 'Bot Name' : 'Skill Name'
-                        }
-                        style={{ marginLeft: 10, marginRight: 10 }}
-                        onChange={this.handleExpertChange}
+                {cookies.get('loggedIn') &&
+                  this.state.editable && (
+                    <Paper style={styles.paperStyle} zDepth={1}>
+                      <Info
+                        style={styles.helpIcon}
+                        data-tip={`Learn more about <a href=${urls.CMS_GITHUB_URL +
+                          '/blob/master/docs/Skill_Tutorial.md'} rel="noopener noreferrer" target="_blank" >SUSI Skill Language</a>`}
                       />
-                      <div style={{ paddingTop: 20 }}>
-                        {this.state.showImage && (
-                          <img
-                            alt="preview"
-                            id="target"
-                            style={{
-                              width: 60,
-                              height: 60,
-                              borderRadius: '50%',
-                              marginRight: 20,
-                              border: 0,
-                            }}
-                            src={this.state.image}
-                          />
-                        )}
-                        {this.props.botBuilder ? (
-                          <form style={{ display: 'inline-block' }}>
-                            <label
-                              title="Upload bot image"
-                              style={styles.uploadCircularButton}
-                            >
-                              <input
-                                type="file"
-                                ref={c => {
-                                  this.file = c;
-                                }}
-                                name="user[image]"
-                                multiple="false"
-                                onChange={this._onChange}
-                              />
-                              <Add
-                                style={{
-                                  height: '30px',
-                                  marginTop: '15px',
-                                  color: 'rgb(66, 133, 245)',
-                                }}
-                              />
-                            </label>
-                          </form>
-                        ) : (
-                          <RaisedButton
-                            label="Choose an Image"
-                            labelPosition="before"
-                            backgroundColor={colors.header}
-                            containerElement="label"
-                            labelColor="#fff"
-                          >
-                            <input
-                              type="file"
+                      <div style={styles.center}>
+                        <div style={styles.dropdownDiv}>
+                          <div>
+                            <span
                               style={{
-                                cursor: 'pointer',
-                                position: 'absolute',
-                                top: 0,
-                                bottom: 0,
-                                right: 0,
-                                left: 0,
-                                width: '100%',
-                                opacity: 0,
+                                fontSize: 15,
+                                paddingTop: '43px',
+                                paddingLeft: '10px',
                               }}
-                              ref={c => {
-                                this.file = c;
+                            >
+                              Category:
+                            </span>
+                            <DropDownMenu
+                              value={this.state.groupValue}
+                              onChange={this.handleGroupChange}
+                              anchorOrigin={this.state.anchorOrigin}
+                              autoWidth={true}
+                              maxHeight={300}
+                              style={{
+                                position: 'relative',
+                                top: '15px',
+                                width: '250px',
                               }}
-                              name="user[image]"
-                              multiple="false"
-                              onChange={this._onChange}
-                            />
-                          </RaisedButton>
-                        )}
+                            >
+                              {this.state.groups}
+                            </DropDownMenu>
+                          </div>
+                          <div>
+                            <span
+                              style={{
+                                fontSize: 15,
+                                paddingTop: '8px',
+                                marginLeft: '10px',
+                              }}
+                            >
+                              Language:
+                            </span>
+
+                            <DropDownMenu
+                              disabled={this.state.languageSelect}
+                              value={this.state.languageValue}
+                              anchorOrigin={this.state.anchorOrigin}
+                              onChange={this.handleLanguageChange}
+                              autoWidth={true}
+                              maxHeight={300}
+                              style={{
+                                position: 'relative',
+                                top: '15px',
+                                width: '250px',
+                              }}
+                            >
+                              {languages}
+                            </DropDownMenu>
+                          </div>
+                          <TextField
+                            disabled={this.state.expertSelect}
+                            floatingLabelText={
+                              this.props.botBuilder ? 'Bot Name' : 'Skill Name'
+                            }
+                            floatingLabelFixed={false}
+                            value={this.state.expertValue}
+                            hintText={
+                              this.props.botBuilder ? 'Bot Name' : 'Skill Name'
+                            }
+                            style={{ marginLeft: 10, marginRight: 10 }}
+                            onChange={this.handleExpertChange}
+                          />
+                          <div style={{ paddingTop: 20 }}>
+                            {this.state.showImage && (
+                              <img
+                                alt="preview"
+                                id="target"
+                                style={{
+                                  width: 60,
+                                  height: 60,
+                                  borderRadius: '50%',
+                                  marginRight: 20,
+                                  border: 0,
+                                }}
+                                src={this.state.image}
+                              />
+                            )}
+                            {this.props.botBuilder ? (
+                              <form style={{ display: 'inline-block' }}>
+                                <label
+                                  title="Upload bot image"
+                                  style={styles.uploadCircularButton}
+                                >
+                                  <input
+                                    type="file"
+                                    ref={c => {
+                                      this.file = c;
+                                    }}
+                                    name="user[image]"
+                                    multiple="false"
+                                    onChange={this._onChange}
+                                  />
+                                  <Add
+                                    style={{
+                                      height: '30px',
+                                      marginTop: '15px',
+                                      color: 'rgb(66, 133, 245)',
+                                    }}
+                                  />
+                                </label>
+                              </form>
+                            ) : (
+                              <RaisedButton
+                                label="Choose an Image"
+                                labelPosition="before"
+                                backgroundColor={colors.header}
+                                containerElement="label"
+                                labelColor="#fff"
+                              >
+                                <input
+                                  type="file"
+                                  style={{
+                                    cursor: 'pointer',
+                                    position: 'absolute',
+                                    top: 0,
+                                    bottom: 0,
+                                    right: 0,
+                                    left: 0,
+                                    width: '100%',
+                                    opacity: 0,
+                                  }}
+                                  ref={c => {
+                                    this.file = c;
+                                  }}
+                                  name="user[image]"
+                                  multiple="false"
+                                  onChange={this._onChange}
+                                />
+                              </RaisedButton>
+                            )}
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                </Paper>
+                    </Paper>
+                  )}
                 {!this.state.loadViews ? (
                   <div className="center" style={{ padding: 10 }}>
                     <CircularProgress size={62} color="#4285f5" />
@@ -819,6 +1329,7 @@ export default class SkillCreator extends Component {
                   <CodeView
                     skillCode={this.state.code}
                     sendInfoToProps={this.sendInfoToProps}
+                    editable={this.state.editable && !!cookies.get('loggedIn')}
                   />
                 ) : null}
                 {this.state.conversationView && this.state.loadViews ? (
@@ -827,68 +1338,113 @@ export default class SkillCreator extends Component {
                 {this.state.treeView && this.state.loadViews ? (
                   <TreeView skillCode={this.state.code} botbuilder={false} />
                 ) : null}
-                {this.props.botBuilder ? null : (
-                  <div
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      marginTop: 10,
-                    }}
-                  >
-                    <Paper
+                {!this.props.botBuilder &&
+                  cookies.get('loggedIn') &&
+                  this.state.editable && (
+                    <div
                       style={{
-                        width: '100%',
-                        padding: 10,
                         display: 'flex',
-                        alignItems: 'center',
-                        textAlign: 'center',
-                        justifyContent: 'center',
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        marginTop: 10,
                       }}
-                      zDepth={1}
                     >
-                      <TextField
-                        floatingLabelText="Commit message"
-                        floatingLabelFixed={true}
-                        hintText="Enter Commit Message"
-                        style={{ width: '80%' }}
-                        value={this.state.commitMessage}
-                        onChange={this.handleCommitMessageChange}
-                      />
-                      <RaisedButton
-                        label={
-                          this.state.loading ? (
-                            <CircularProgress color="#ffffff" size={32} />
-                          ) : (
-                            'Save'
-                          )
-                        }
-                        backgroundColor={colors.header}
-                        labelColor="#fff"
-                        style={{ marginLeft: 10 }}
-                        onTouchTap={this.saveClick}
-                      />
-                      <Link to="/">
+                      <Paper
+                        style={{
+                          width: '100%',
+                          padding: 10,
+                          display: 'flex',
+                          alignItems: 'center',
+                          textAlign: 'center',
+                          justifyContent: 'center',
+                        }}
+                        zDepth={1}
+                      >
+                        <TextField
+                          floatingLabelText="Commit message"
+                          floatingLabelFixed={true}
+                          hintText="Enter Commit Message"
+                          style={{ width: '80%' }}
+                          value={this.state.commitMessage}
+                          onChange={this.handleCommitMessageChange}
+                        />
                         <RaisedButton
-                          label="Cancel"
+                          label={
+                            this.state.loading ? (
+                              <CircularProgress color="#ffffff" size={32} />
+                            ) : (
+                              'Save'
+                            )
+                          }
                           backgroundColor={colors.header}
                           labelColor="#fff"
                           style={{ marginLeft: 10 }}
+                          onTouchTap={this.saveClick}
                         />
-                      </Link>
-                    </Paper>
-                    {this.state.prevButton === 1 ? (
-                      <div className="preview-button" style={{ top: '68px' }}>
-                        <span title="See Preview">
-                          <ChevronLeft
-                            onClick={this.handlePreviewToggle}
-                            style={styles.chevronButton}
+                        <Link
+                          to={
+                            this.state.mode === 'create'
+                              ? '/'
+                              : {
+                                  pathname:
+                                    '/' +
+                                    this.state.groupValue +
+                                    '/' +
+                                    this.state.expertValue +
+                                    '/' +
+                                    this.state.languageValue,
+                                }
+                          }
+                        >
+                          <RaisedButton
+                            label="Cancel"
+                            backgroundColor={colors.header}
+                            labelColor="#fff"
+                            style={{ marginLeft: 10 }}
                           />
-                        </span>
+                        </Link>
+                      </Paper>
+                      {this.state.prevButton === 1 ? (
+                        <div className="preview-button" style={{ top: '68px' }}>
+                          <span title="See Preview">
+                            <ChevronLeft
+                              onClick={this.handlePreviewToggle}
+                              style={styles.chevronButton}
+                            />
+                          </span>
+                        </div>
+                      ) : null}
+                    </div>
+                  )}
+                {this.state.mode === 'edit' &&
+                  this.state.showAdmin && (
+                    <Paper
+                      style={{
+                        width: '100%',
+                        border: '1px solid red',
+                        marginTop: 20,
+                        padding: '20px',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                      }}
+                      zDepth={1}
+                    >
+                      <div style={{ margineft: '0px' }}>
+                        <strong>
+                          <p>Delete this Skill</p>
+                        </strong>
+                        {'Once you delete a skill, only admins can' +
+                          'undo this action before 30 days of deletion. Please be certain.'}
                       </div>
-                    ) : null}
-                  </div>
-                )}
+                      <RaisedButton
+                        label="Delete"
+                        backgroundColor={colors.warningColor}
+                        labelColor="#fff"
+                        style={{ marginLeft: 10 }}
+                        onTouchTap={this.openDelete}
+                      />
+                    </Paper>
+                  )}
               </Col>
               {this.props.botBuilder ? null : (
                 <Col
@@ -934,6 +1490,33 @@ export default class SkillCreator extends Component {
               )}
             </Row>
           </Grid>
+          <div>
+            <Dialog
+              modal={false}
+              open={this.state.showDeleteBox}
+              autoScrollBodyContent={true}
+              contentStyle={{ width: '50%', minWidth: '300px' }}
+              onRequestClose={this.closeDelete}
+            >
+              <div>
+                <TextField
+                  floatingLabelText="Enter Skill Name"
+                  floatingLabelFixed={true}
+                  hintText="Skill Name"
+                  style={{ width: '80%' }}
+                  onChange={this.handleDeleteText}
+                />
+                <RaisedButton
+                  label="Delete"
+                  disabled={this.state.deleteDisabled}
+                  backgroundColor={colors.warningColor}
+                  labelColor="#fff"
+                  style={{ marginLeft: 10 }}
+                  onTouchTap={this.deleteSkill}
+                />
+              </div>
+            </Dialog>
+          </div>
         </div>
       </div>
     );
@@ -1008,8 +1591,78 @@ const styles = {
     cursor: 'pointer',
     display: window.innerWidth < 769 ? 'none' : 'inherit',
   },
+  home: {
+    width: '100%',
+    padding: '40px 10px 0',
+  },
+  titleStyle: {
+    textAlign: 'center',
+    fontWeight: 'bold',
+    marginBottom: '20px',
+    fontSize: '20px',
+    marginTop: '15px',
+  },
+  subtitleStyle: {
+    textAlign: 'center',
+    fontWeight: 'bold',
+    marginBottom: '20px',
+    fontSize: '16px',
+    marginTop: '15px',
+  },
+  description: {
+    textAlign: 'center',
+    fontSize: '15px',
+    marginTop: '20px',
+  },
+  codeEditor: {
+    width: '100%',
+    marginTop: '50px',
+  },
+  image: {
+    width: 60,
+    height: 60,
+    borderRadius: '50%',
+    marginRight: 20,
+    border: 0,
+  },
+  toolbar: {
+    width: '100%',
+    height: '50px',
+    background: '#fff',
+    borderBottom: '2px solid #eee',
+    display: 'none',
+    alignItems: 'stretch',
+    padding: '0 25px',
+    fontSize: '14px',
+  },
+  button: {
+    display: 'flex',
+    marginRight: '30px',
+    alignItems: 'center',
+    cursor: 'pointer',
+  },
+  icon: {
+    marginRight: '5px',
+  },
+  customWidth: {
+    width: 50,
+  },
+  exampleImageInput: {
+    cursor: 'pointer',
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    right: 0,
+    left: 0,
+    width: '100%',
+    opacity: 0,
+  },
 };
 
 SkillCreator.propTypes = {
+  location: PropTypes.object,
+  history: PropTypes.object,
+  showTopBar: PropTypes.bool,
+  revertingCommit: PropTypes.string,
   botBuilder: PropTypes.object,
 };
