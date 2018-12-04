@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import Switch from 'react-router-dom/es/Switch';
 import injectTapEventPlugin from 'react-tap-event-plugin';
-
+import { Provider } from 'react-redux';
 // DO not register a SW for now
 // import registerServiceWorker from './registerServiceWorker';
 
@@ -31,6 +31,7 @@ import setDefaults from './DefaultSettings';
 import BrowseSkillByCategory from './components/BrowseSkill/BrowseSkillByCategory';
 import BrowseSkillByLanguage from './components/BrowseSkill/BrowseSkillByLanguage';
 import { colors } from './utils';
+import store from './store';
 
 setDefaults();
 
@@ -132,4 +133,9 @@ class App extends React.Component {
   }
 }
 
-ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.render(
+  <Provider store={store} key="provider">
+    <App />
+  </Provider>,
+  document.getElementById('root'),
+);

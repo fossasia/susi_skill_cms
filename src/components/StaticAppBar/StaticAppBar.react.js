@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import Cookies from 'universal-cookie';
 import $ from 'jquery';
+import { connect } from 'react-redux';
 import List from 'material-ui/svg-icons/action/list';
 import AppBar from 'material-ui/AppBar';
 import IconButton from 'material-ui/IconButton';
@@ -367,4 +368,13 @@ class StaticAppBar extends Component {
   }
 }
 
-export default StaticAppBar;
+const mapStateToProps = ({ app }) => {
+  return {
+    app,
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  null,
+)(StaticAppBar);
