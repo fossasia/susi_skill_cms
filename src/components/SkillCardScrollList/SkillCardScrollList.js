@@ -266,6 +266,9 @@ class SkillCardScrollList extends Component {
         </Card>,
       );
     });
+    if (cards.length <= this.state.scrollCards) {
+      this.setState({ rightBtnDisplay: 'none' });
+    }
     this.setState({
       cards,
     });
