@@ -623,7 +623,7 @@ class UIView extends Component {
                           disabled={this.state.uploadingBodyBackgroundImg}
                           type="file"
                           onChange={this.handleChangeBodyBackgroundImage}
-                          accept="image/x-png,image/gif,image/jpeg"
+                          accept="image/*"
                         />
                         {this.state.uploadingBodyBackgroundImg ? (
                           <CircularProgress color="#ffffff" size={32} />

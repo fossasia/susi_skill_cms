@@ -1268,6 +1268,7 @@ export default class SkillCreator extends Component {
                                   style={styles.uploadCircularButton}
                                 >
                                   <input
+                                    accept="image/*"
                                     type="file"
                                     ref={c => {
                                       this.file = c;
@@ -1295,6 +1296,7 @@ export default class SkillCreator extends Component {
                               >
                                 <input
                                   type="file"
+                                  accept="image/*"
                                   style={{
                                     cursor: 'pointer',
                                     position: 'absolute',
