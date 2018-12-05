@@ -103,7 +103,7 @@ export default class SignUp extends Component {
       emailError = !(email && isEmail);
     } else if (event.target.name === 'password') {
       passwordValue = event.target.value;
-      validPassword = passwordValue.length >= 6;
+      validPassword = passwordValue.length >= 6 && passwordValue.length <= 64;
       passwordError = !(passwordValue && validPassword);
       passwordConfirmError = !(
         passwordValue === this.state.confirmPasswordValue
@@ -127,7 +127,7 @@ export default class SignUp extends Component {
       emailErrorMessage = 'Enter a valid Email Address';
     } else if (passwordError) {
       emailErrorMessage = '';
-      passwordErrorMessage = 'Minimum 6 characters required';
+      passwordErrorMessage = 'Allowed password length is 6 to 64 characters';
       passwordConfirmErrorMessage = '';
       captchaVerifyErrorMessage = '';
     } else if (passwordConfirmError) {
