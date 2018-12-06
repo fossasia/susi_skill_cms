@@ -1,3 +1,4 @@
+// Packages
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
@@ -11,8 +12,6 @@ import { Provider } from 'react-redux';
 import SkillRollBack from './components/SkillRollBack/SkillRollBack';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import Snackbar from 'material-ui/Snackbar';
-import SkillEditor from './components/SkillEditor/SkillEditor';
 import NotFound from './components/NotFound/NotFound.react';
 import Admin from './components/Admin/Admin';
 import Users from './components/Admin/ListUser/ListUser.js';
@@ -65,111 +64,69 @@ const muiTheme = getMuiTheme({
   },
 });
 
-const styles = {
-  app: {
-    width: '100%',
-    height: '100%',
-  },
-};
-
 class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      snackbarOpen: false,
-      SnackbarMessage: '',
-      snackbarDuration: 3000,
-    };
-  }
-
-  openSnackbar = (message = '', duration = 3000) => {
-    this.setState({
-      snackbarOpen: true,
-      snackbarMessage: message,
-      snackbarDuration: duration,
-    });
-  };
-
   render() {
-    const { snackbarOpen, snackbarMessage, snackbarDuration } = this.state;
-
     return (
       <Router>
         <MuiThemeProvider muiTheme={muiTheme}>
-          <div style={styles.app}>
-            <Snackbar
-              open={snackbarOpen}
-              message={<span>{snackbarMessage}</span>}
-              autoHideDuration={snackbarDuration}
+          <Switch>
+            <Route
+              exact
+              path="/:category/:skill/edit/:lang"
+              component={SkillCreator}
             />
-            <Switch>
-              <Route
-                exact
-                path="/:category/:skill/edit/:lang"
-                component={SkillEditor}
-              />
-              <Route
-                exact
-                path="/:category/:skill/edit/:lang/:commit"
-                component={SkillEditor}
-              />
-              <Route exact path="/admin" component={Admin} />
-              <Route exact path="/admin/users" component={Users} />
-              <Route exact path="/admin/skills" component={Skills} />
-              <Route exact path="/admin/settings" component={SystemSettings} />
-              <Route exact path="/admin/logs" component={SystemLogs} />
-              <Route
-                exact
-                path="/:category/:skill/:lang"
-                component={SkillListing}
-              />
-              <Route
-                exact
-                path="/:category/:skill/:lang/feedbacks"
-                component={SkillFeedbackPage}
-              />
-              <Route path="/botbuilder" component={BotBuilderWrap} />
-              <Route exact path="/dashboard" component={Dashboard} />
-              <Route exact path="/logout" component={Logout} />
-              <Route exact path="/skillCreator" component={SkillCreator} />
-              <Route
-                exact
-                path="/:category/:skill/versions/:lang"
-                component={SkillVersion}
-              />
-              <Route
-                exact
-                path="/:category/:skill/compare/:lang/:oldid/:recentid"
-                component={SkillHistory}
-              />
-              <Route
-                exact
-                path="/:category/:skill/edit/:lang/:latestid/:revertid"
-                component={SkillRollBack}
-              />
-              <Route
-                exact
-                path="/category/:category"
-                component={BrowseSkillByCategory}
-              />
-              <Route
-                exact
-                path="/language/:language"
-                component={BrowseSkillByLanguage}
-              />
-              <Route
-                exact
-                path="/"
-                render={routeProps => (
-                  <BrowseSkill
-                    {...routeProps}
-                    openSnackbar={this.openSnackbar}
-                  />
-                )}
-              />
-              <Route exact path="*" component={NotFound} />
-            </Switch>
-          </div>
+            <Route
+              exact
+              path="/:category/:skill/edit/:lang/:commit"
+              component={SkillCreator}
+            />
+            <Route exact path="/admin" component={Admin} />
+            <Route exact path="/admin/users" component={Users} />
+            <Route exact path="/admin/skills" component={Skills} />
+            <Route exact path="/admin/settings" component={SystemSettings} />
+            <Route exact path="/admin/logs" component={SystemLogs} />
+            <Route
+              exact
+              path="/:category/:skill/:lang"
+              component={SkillListing}
+            />
+            <Route
+              exact
+              path="/:category/:skill/:lang/feedbacks"
+              component={SkillFeedbackPage}
+            />
+            <Route path="/botbuilder" component={BotBuilderWrap} />
+            <Route exact path="/dashboard" component={Dashboard} />
+            <Route exact path="/logout" component={Logout} />
+            <Route exact path="/skillCreator" component={SkillCreator} />
+            <Route
+              exact
+              path="/:category/:skill/versions/:lang"
+              component={SkillVersion}
+            />
+            <Route
+              exact
+              path="/:category/:skill/compare/:lang/:oldid/:recentid"
+              component={SkillHistory}
+            />
+            <Route
+              exact
+              path="/:category/:skill/edit/:lang/:latestid/:revertid"
+              component={SkillRollBack}
+            />
+            <Route
+              exact
+              path="/category/:category"
+              component={BrowseSkillByCategory}
+            />
+            <Route
+              exact
+              path="/language/:language"
+              component={BrowseSkillByLanguage}
+            />
+            <Route exact path="/" component={BrowseSkill} />
+            <Route exact path="*" component={NotFound} />
+          </Switch>
         </MuiThemeProvider>
       </Router>
     );
