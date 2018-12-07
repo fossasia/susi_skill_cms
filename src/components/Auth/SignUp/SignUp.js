@@ -86,6 +86,8 @@ export default class SignUp extends Component {
       validPassword,
       passwordError,
       passwordConfirmError,
+      passwordStrength,
+      passwordScore,
       emailErrorMessage,
       passwordErrorMessage,
       passwordConfirmErrorMessage,
