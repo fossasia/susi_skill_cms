@@ -11,6 +11,7 @@ import TextField from 'material-ui/TextField';
 import $ from 'jquery';
 import Cookies from 'universal-cookie';
 import { colors, urls } from '../../../utils';
+import { isEmail } from '../../../utils';
 import Recaptcha from 'react-recaptcha';
 import KEY from '../../../utils/config';
 
@@ -98,8 +99,8 @@ export default class SignUp extends Component {
     switch (event.target.name) {
       case 'email':
         email = event.target.value.trim();
-        isEmail = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
-        emailError = !(email && isEmail);
+//         isEmail = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
+        emailError = !isEmail(email);
         if (emailError) {
           emailErrorMessage = 'Enter a valid Email Address';
         } else {
