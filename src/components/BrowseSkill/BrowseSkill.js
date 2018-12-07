@@ -183,13 +183,13 @@ export default class BrowseSkill extends React.Component {
 
   handleNavigationBackward = () => {
     $('html, body').animate({ scrollTop: 0 }, 'fast');
-    let listPage = this.state.listPage - 1;
-    let listOffset = this.state.listOffset - this.state.entriesPerPage;
-    this.setState({
-      listPage,
-      listOffset,
-      listSkills: this.state.skills.slice(listOffset, this.state.listOffset),
-    });
+    const { listOffset, entriesPerPage, skills } = this.state;
+    let newlistOffset = listOffset - entriesPerPage;
+    this.setState(prevState => ({
+      listPage: prevState.listPage - 1,
+      listOffset: prevState.listOffset - prevState.entriesPerPage,
+      listSkills: skills.slice(newlistOffset, prevState.listOffset),
+    }));
   };
 
   handleShowSkills = ({ reviewed, staffPicks }) => {
