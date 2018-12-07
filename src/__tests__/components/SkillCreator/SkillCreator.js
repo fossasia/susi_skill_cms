@@ -5,5 +5,8 @@ import { shallow } from 'enzyme';
 describe('<SkillCreator />', () => {
   it('render SkillCreator without crashing', () => {
     shallow(<SkillCreator />);
+    shallow(
+      <SkillCreator location={{ pathname: '/:category/:skill/edit/:lang' }} />,
+    );
   });
 });

@@ -35,39 +35,34 @@ const templates = [
   },
 ];
 
-class BotBuilderWrap extends React.Component {
-  componentDidMount() {
-    document.title = 'SUSI.AI - Botbuilder';
-  }
-  render() {
-    if (!cookies.get('loggedIn')) {
-      return (
-        <div>
-          <StaticAppBar {...this.props} />
-          <div>
-            <p style={styles.loggedInError}>
-              Please login to create a chatbot.
-            </p>
-          </div>
-        </div>
-      );
-    }
+const BotBuilderWrap = props => {
+  document.title = 'SUSI.AI - Botbuilder';
+  if (!cookies.get('loggedIn')) {
     return (
       <div>
-        <Route
-          exact
-          path="/botbuilder/botwizard"
-          render={() => <BotWizard templates={templates} />}
-        />
-        <Route
-          exact
-          path="/botbuilder"
-          render={() => <BotBuilder templates={templates} />}
-        />
+        <StaticAppBar {...props} />
+        <div>
+          <p style={styles.loggedInError}>Please login to create a chatbot.</p>
+        </div>
       </div>
     );
   }
-}
+  return (
+    <div>
+      <Route
+        exact
+        path="/botbuilder/botwizard"
+        render={() => <BotWizard templates={templates} />}
+      />
+      <Route
+        exact
+        path="/botbuilder"
+        render={() => <BotBuilder templates={templates} />}
+      />
+    </div>
+  );
+};
+
 const styles = {
   loggedInError: {
     textAlign: 'center',

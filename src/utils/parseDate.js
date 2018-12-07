@@ -5,7 +5,7 @@ let parseDate = dtstr => {
     // trim any hanging white space
     dtstr = dtstr.replace(/\s+$/, '');
     // split on space
-    var dtcomps = dtstr.split(' ');
+    let dtcomps = dtstr.split(' ');
     // not all ISO 8601 dates can convert, as is
     // unless month and date specified, invalid
     if (dtcomps.length < 3) {

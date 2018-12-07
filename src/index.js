@@ -4,12 +4,12 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import Switch from 'react-router-dom/es/Switch';
 import injectTapEventPlugin from 'react-tap-event-plugin';
-
+import { Provider } from 'react-redux';
 // DO not register a SW for now
 // import registerServiceWorker from './registerServiceWorker';
 
 // Components
-import SkillEditor from './components/SkillEditor/SkillEditor';
+import SkillRollBack from './components/SkillRollBack/SkillRollBack';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import NotFound from './components/NotFound/NotFound.react';
@@ -25,13 +25,13 @@ import Logout from './components/Auth/Logout.react';
 import SkillCreator from './components/SkillCreator/SkillCreator';
 import SkillVersion from './components/SkillVersion/SkillVersion';
 import SkillHistory from './components/SkillHistory/SkillHistory';
-import SkillRollBack from './components/SkillRollBack/SkillRollBack';
 import SkillFeedbackPage from './components/SkillFeedbackPage/SkillFeedbackPage';
 import BotBuilderWrap from './components/BotBuilder/BotBuilderWrap';
 import setDefaults from './DefaultSettings';
 import BrowseSkillByCategory from './components/BrowseSkill/BrowseSkillByCategory';
 import BrowseSkillByLanguage from './components/BrowseSkill/BrowseSkillByLanguage';
 import { colors } from './utils';
+import store from './store';
 
 setDefaults();
 
@@ -73,12 +73,12 @@ class App extends React.Component {
             <Route
               exact
               path="/:category/:skill/edit/:lang"
-              component={SkillEditor}
+              component={SkillCreator}
             />
             <Route
               exact
               path="/:category/:skill/edit/:lang/:commit"
-              component={SkillEditor}
+              component={SkillCreator}
             />
             <Route exact path="/admin" component={Admin} />
             <Route exact path="/admin/users" component={Users} />
@@ -133,4 +133,9 @@ class App extends React.Component {
   }
 }
 
-ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.render(
+  <Provider store={store} key="provider">
+    <App />
+  </Provider>,
+  document.getElementById('root'),
+);
