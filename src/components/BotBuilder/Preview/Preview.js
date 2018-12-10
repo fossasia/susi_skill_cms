@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import $ from 'jquery';
 import urls from '../../../utils/urls';
-import PropTypes from 'prop-types';
+import Send from 'material-ui/svg-icons/content/send';
 import './Chatbot.css';
 import './Preview.css';
 
@@ -9,8 +10,11 @@ const host = window.location.protocol + '//' + window.location.host;
 class Preview extends Component {
   constructor() {
     super();
-    this.msgNumber = 0;
+    this.msgNumber = 1;
     this.state = {
+      messages: [{ message: 'Hi, I am SUSI', author: 'SUSI' }],
+      message: '',
+      previewChat: 'true',
       botbuilderBackgroundBody: '#ffffff',
       botbuilderBodyBackgroundImg: '',
       botbuilderUserMessageBackground: '#0077e5',
@@ -24,147 +28,61 @@ class Preview extends Component {
 
   componentDidUpdate(prevProps) {
     if (this.props.designData !== prevProps.designData) {
-      this.setState(
-        {
-          botbuilderBackgroundBody: this.props.designData
-            .botbuilderBackgroundBody
-            ? this.props.designData.botbuilderBackgroundBody
-            : '#ffffff',
-          botbuilderBodyBackgroundImg: this.props.designData
-            .botbuilderBodyBackgroundImg
+      this.setState({
+        botbuilderBackgroundBody: this.props.designData.botbuilderBackgroundBody
+          ? this.props.designData.botbuilderBackgroundBody
+          : '#ffffff',
+        botbuilderBodyBackgroundImg: this.props.designData
+          .botbuilderBodyBackgroundImg
+          ? this.replaceAll(
+              this.props.designData.botbuilderBodyBackgroundImg,
+              ' ',
+              '%20',
+            )
+          : '',
+        botbuilderUserMessageBackground: this.props.designData
+          .botbuilderUserMessageBackground
+          ? this.props.designData.botbuilderUserMessageBackground
+          : '#0077e5',
+        botbuilderUserMessageTextColor: this.props.designData
+          .botbuilderUserMessageTextColor
+          ? this.props.designData.botbuilderUserMessageTextColor
+          : '#ffffff',
+        botbuilderBotMessageBackground: this.props.designData
+          .botbuilderBotMessageBackground
+          ? this.props.designData.botbuilderBotMessageBackground
+          : '#f8f8f8',
+        botbuilderBotMessageTextColor: this.props.designData
+          .botbuilderBotMessageTextColor
+          ? this.props.designData.botbuilderBotMessageTextColor
+          : '#455a64',
+        botbuilderIconColor: this.props.designData.botbuilderIconColor
+          ? this.props.designData.botbuilderIconColor
+          : '#000000',
+        botbuilderIconImg:
+          this.props.designData.botbuilderIconImg.length > 0
             ? this.replaceAll(
-                this.props.designData.botbuilderBodyBackgroundImg,
+                this.props.designData.botbuilderIconImg,
                 ' ',
                 '%20',
               )
-            : '',
-          botbuilderUserMessageBackground: this.props.designData
-            .botbuilderUserMessageBackground
-            ? this.props.designData.botbuilderUserMessageBackground
-            : '#0077e5',
-          botbuilderUserMessageTextColor: this.props.designData
-            .botbuilderUserMessageTextColor
-            ? this.props.designData.botbuilderUserMessageTextColor
-            : '#ffffff',
-          botbuilderBotMessageBackground: this.props.designData
-            .botbuilderBotMessageBackground
-            ? this.props.designData.botbuilderBotMessageBackground
-            : '#f8f8f8',
-          botbuilderBotMessageTextColor: this.props.designData
-            .botbuilderBotMessageTextColor
-            ? this.props.designData.botbuilderBotMessageTextColor
-            : '#455a64',
-          botbuilderIconColor: this.props.designData.botbuilderIconColor
-            ? this.props.designData.botbuilderIconColor
-            : '#000000',
-          botbuilderIconImg:
-            this.props.designData.botbuilderIconImg.length > 0
-              ? this.replaceAll(
-                  this.props.designData.botbuilderIconImg,
-                  ' ',
-                  '%20',
-                )
-              : host + '/customAvatars/0.png',
-        },
-        () => this.applyTheme(),
-      );
+            : host + '/customAvatars/0.png',
+      });
     }
   }
-  componentDidMount() {
-    $('#susi-launcher').click(function() {
-      let $el = $('.susi-frame-container-active');
-      if ($el.css('display') === 'none') {
-        $el.toggle();
-        $('#susi-avatar-text').toggle();
-        $('#susi-launcher-close').toggle();
-      } else {
-        $el.fadeToggle();
-        $('#susi-avatar-text').fadeToggle();
-        $('#susi-launcher-close').fadeToggle();
-      }
 
-      document.getElementById('susiTextMessage').focus();
-    });
-
-    $('#susi-launcher-close').click(function() {
-      $('.susi-frame-container-active').fadeToggle();
-      $('#susi-avatar-text').fadeToggle();
-      $('#susi-launcher-close').fadeToggle();
-    });
-    // on input/text enter
-    $('#susiTextMessage').on(
-      'keyup keypress',
-      function(e) {
-        const keyCode = e.keyCode || e.which;
-        const text = $('#susiTextMessage').val();
-        if (keyCode === 13) {
-          if (text === '' || $.trim(text) === '') {
-            e.preventDefault();
-            return false;
-          }
-          this.setUserResponse(text);
-          this.send(text);
-          e.preventDefault();
-          return false;
-        }
-      }.bind(this),
-    );
-    $('.susi-send-button').click(
-      function() {
-        const text = $('#susiTextMessage').val();
-        if (text !== '') {
-          $('#chat-input').blur();
-          this.setUserResponse(text);
-          this.send(text);
-        }
-      }.bind(this),
-    );
-  }
-  escapeRegExp = str => {
-    return str.replace(/([.*+?^=!:${}()|[\]/\\])/g, '\\$1');
-  };
-
-  replaceAll = (str, find, replace) => {
-    return str.replace(new RegExp(this.escapeRegExp(find), 'g'), replace);
-  };
-
-  // to apply custom theme
-  applyTheme = () => {
-    // user message container
-    $('.susi-comment-by-user .susi-comment-body-container').css(
-      'background-color',
-      this.state.botbuilderUserMessageBackground,
-    );
-    $('head').append(
-      $(
-        `<style>.susi-comment-body-container-user:after {
-          border-color: transparent transparent ${
-            this.state.botbuilderUserMessageBackground
-          } ${this.state.botbuilderUserMessageBackground} !important}</style>`,
-      ),
-    );
-    $('.susi-comment-by-user .susi-comment-body-container').css(
-      'color',
-      this.state.botbuilderUserMessageTextColor,
-    );
-    // bot message container
-    $('.susi-comment-by-susi .susi-comment-body-container').css(
-      'background-color',
-      this.state.botbuilderBotMessageBackground,
-    );
-    $('.susi-comment-by-susi .susi-comment-body-container').css(
-      'color',
-      this.state.botbuilderBotMessageTextColor,
-    );
-    $('.susi-comment-avatar').css(
-      'background-image',
-      "url('" + this.state.botbuilderIconImg + "')",
-    );
+  togglePreview = () => {
+    this.setState(prevState => ({
+      previewChat: !prevState.previewChat,
+    }));
   };
 
   // Send request to SUSI API
-  send = text => {
-    let url = urls.API_URL + '/susi/chat.json?q=' + encodeURIComponent(text);
+  sendMessage = event => {
+    let url =
+      urls.API_URL +
+      '/susi/chat.json?q=' +
+      encodeURIComponent(this.state.message);
     url += '&instant=' + encodeURIComponent(this.props.skill);
     const enableDefaultSkillsMatch = this.props.configCode.match(
       /^::enable_default_skills\s(.*)$/m,
@@ -172,96 +90,43 @@ class Preview extends Component {
     if (enableDefaultSkillsMatch && enableDefaultSkillsMatch[1] === 'no') {
       url += '&excludeDefaultSkills=true';
     }
-    const thisMsgNumber = this.msgNumber;
     this.msgNumber++;
-    this.setLoadingMessage(thisMsgNumber);
+    event.preventDefault();
+    this.addMessage(this.state.message, 'You');
+    let self = this;
     $.ajax({
       type: 'GET',
       url: url,
       contentType: 'application/json',
       dataType: 'json',
       success: function(data) {
-        this.main(data, thisMsgNumber);
-      }.bind(this),
+        if (data.answers[0]) {
+          self.addMessage(data.answers[0].actions[0].expression, 'SUSI');
+        } else {
+          self.addMessage(
+            'Sorry, I could not understand what you just said.',
+            'SUSI',
+          );
+        }
+      },
       error: function(e) {
         console.log(e);
-        this.main(null, thisMsgNumber);
-      }.bind(this),
+      },
     });
+    this.setState({ message: '' });
   };
 
-  // Main function
-  main = (data, msgNumber) => {
-    let ans;
-    if (data && data.answers[0]) {
-      ans = data.answers[0].actions[0].expression;
-    } else {
-      ans = 'Sorry, I could not understand what you just said.';
-    }
-
-    this.setBotResponse(ans, msgNumber);
+  addMessage = (message, author) => {
+    const messageObj = { message, author };
+    this.setState({ messages: [...this.state.messages, messageObj] });
   };
 
-  setLoadingMessage = msgNumber => {
-    const BotResponse =
-      '<div id="susiMsg-' +
-      msgNumber +
-      '" class="susi-conversation-part susi-conversation-part-grouped-first">' +
-      '<div style="background-image: url(' +
-      this.state.botbuilderIconImg +
-      ')" class="susi-comment-avatar susi-theme-bg">' +
-      '</div>' +
-      '<div class="susi-comment susi-comment-by-susi">' +
-      '<div class="susi-comment-body-container susi-comment-body-container-susi" style="background-color:' +
-      this.state.botbuilderBotMessageBackground +
-      ';color:' +
-      this.state.botbuilderBotMessageTextColor +
-      '">' +
-      '<div class="susi-comment-body ">' +
-      '<div class="susi-comment-content">' +
-      '<div class="susi-question-label">' +
-      '<div class="susi-msg-content-div"> <img src="' +
-      host +
-      '/loading.gif" style="height:13px;" /></div>' +
-      '</div>' +
-      '</div>' +
-      '</div>' +
-      '</div>' +
-      '</div>' +
-      '</div>' +
-      '</div>' +
-      '</div>';
-    $(BotResponse).appendTo('.susi-conversation-parts');
-    this.scrollToBottomOfResults();
+  escapeRegExp = str => {
+    return str.replace(/([.*+?^=!:${}()|[\]/\\])/g, '\\$1');
   };
 
-  // Set bot response
-  setBotResponse = (val, msgNumber) => {
-    $('#susiMsg-' + msgNumber + ' .susi-msg-content-div').text(val);
-    this.scrollToBottomOfResults();
-  };
-
-  // Set user response
-  setUserResponse = val => {
-    const UserResponse =
-      '<div class="susi-conversation-part susi-conversation-part-grouped-first">' +
-      '<div class=" susi-comment susi-comment-by-user ">' +
-      '<div class="susi-comment-body-container susi-comment-body-container-user" style="background-color:' +
-      this.state.botbuilderUserMessageBackground +
-      ';color:' +
-      this.state.botbuilderUserMessageTextColor +
-      '">' +
-      '<div class="susi-comment-body ">' +
-      '<div class="susi-comment-content">' +
-      val +
-      '</div>' +
-      '</div>' +
-      '</div>' +
-      '</div>' +
-      '</div>';
-    $(UserResponse).appendTo('.susi-conversation-parts');
-    this.scrollToBottomOfResults();
-    $('#susiTextMessage').val('');
+  replaceAll = (str, find, replace) => {
+    return str.replace(new RegExp(this.escapeRegExp(find), 'g'), replace);
   };
 
   // Scroll to the bottom
@@ -276,55 +141,126 @@ class Preview extends Component {
         backgroundColor: this.state.botbuilderBackgroundBody,
         backgroundImage: `url(${this.state.botbuilderBodyBackgroundImg})`,
       },
-      launcher: {},
       botIcon: {
         backgroundColor: this.state.botbuilderIconColor,
         backgroundImage: `url(${this.state.botbuilderIconImg})`,
       },
     };
+    let messages = null;
+    if (this.state.messages.length) {
+      messages = this.state.messages.map((message, index) => {
+        if (message.author === 'You') {
+          return (
+            <div
+              key={index}
+              className="susi-conversation-part susi-conversation-part-grouped-first"
+            >
+              <div className="susi-comment susi-comment-by-user">
+                <div
+                  className="susi-comment-body-container susi-comment-body-container-user"
+                  style={{
+                    backgroundColor: this.state.botbuilderUserMessageBackground,
+                    color: this.state.botbuilderUserMessageTextColor,
+                  }}
+                >
+                  <div className="susi-comment-body ">
+                    <div className="susi-comment-content">
+                      {message.message}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        }
+        return (
+          <div
+            key={index}
+            id="susiMsg"
+            className="susi-conversation-part susi-conversation-part-grouped-first"
+          >
+            <div
+              className="susi-comment-avatar susi-theme-bg"
+              style={{
+                backgroundImage: `url(${this.state.botbuilderIconImg})`,
+              }}
+            />
+            <div className="susi-comment susi-comment-by-susi">
+              <div
+                className="susi-comment-body-container susi-comment-body-container-susi"
+                style={{
+                  backgroundColor: this.state.botbuilderBotMessageBackground,
+                  color: this.state.botbuilderBotMessageTextColor,
+                }}
+              >
+                <div className="susi-comment-body ">
+                  <div className="susi-comment-content">{message.message}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      });
+    } else {
+      return null;
+    }
     return (
       <div className="preview-component" style={{ marginTop: '20px' }}>
         <div style={{ minHeight: '460px' }}>
-          <div
-            id="susi-frame-container"
-            className="susi-frame-container-active"
-          >
-            <div id="susi-frame-wrap">
-              <div id="susi">
-                <div id="susi-container" className="susi-container susi-reset">
-                  <div id="susi-chatbox" className="susi-chatbox">
-                    <div
-                      id="susi-conversation"
-                      className="susi-conversation susi-sheet susi-sheet-active susi-active"
-                    >
-                      <div className="susi-sheet-content">
-                        <div
-                          className="susi-sheet-content-container"
-                          style={styles.body}
-                        >
-                          <div className="susi-conversation-parts-container">
-                            <div
-                              id="susi-message"
-                              className="susi-conversation-parts"
-                            />
+          {this.state.previewChat && (
+            <div
+              id="susi-frame-container"
+              className="susi-frame-container-active"
+            >
+              <div id="susi-frame-wrap">
+                <div id="susi">
+                  <div
+                    id="susi-container"
+                    className="susi-container susi-reset"
+                  >
+                    <div id="susi-chatbox" className="susi-chatbox">
+                      <div
+                        id="susi-conversation"
+                        className="susi-conversation susi-sheet susi-sheet-active susi-active"
+                      >
+                        <div className="susi-sheet-content">
+                          <div
+                            className="susi-sheet-content-container"
+                            style={styles.body}
+                          >
+                            <div className="susi-conversation-parts-container">
+                              <div
+                                id="susi-message"
+                                className="susi-conversation-parts"
+                              >
+                                {messages}
+                              </div>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                      <div className="susi-composer-container">
-                        <div id="susi-composer" className="susi-composer ">
-                          <div className="susi-composer-textarea-container">
-                            <div
-                              className="susi-composer-textarea"
-                              id="chat-input"
-                            >
-                              <pre className="susi-send-button">
-                                <img src={host + '/send.png'} alt="send" />
-                              </pre>
-                              <textarea
-                                id="susiTextMessage"
-                                placeholder="Enter your response"
-                                rows="1"
-                              />
+                        <div className="susi-composer-container">
+                          <div id="susi-composer" className="susi-composer ">
+                            <div className="susi-composer-textarea-container">
+                              <div
+                                className="susi-composer-textarea"
+                                id="chat-input"
+                              >
+                                <pre className="susi-send-button">
+                                  <Send
+                                    onClick={this.sendMessage}
+                                    className="chat-input-send"
+                                  />
+                                </pre>
+                                <textarea
+                                  id="susiTextMessage"
+                                  placeholder="Enter your response"
+                                  rows="1"
+                                  value={this.state.message}
+                                  onChange={ev =>
+                                    this.setState({ message: ev.target.value })
+                                  }
+                                />
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -333,11 +269,15 @@ class Preview extends Component {
                   </div>
                 </div>
               </div>
+              {this.props.botBuilder ? (
+                <div
+                  id="susi-launcher-close"
+                  title="Close"
+                  onClick={this.togglePreview}
+                />
+              ) : null}
             </div>
-            {this.props.botBuilder ? (
-              <div id="susi-launcher-close" title="Close" />
-            ) : null}
-          </div>
+          )}
         </div>
         {this.props.botBuilder ? (
           <div style={{ textAlign: 'right' }}>
@@ -348,6 +288,7 @@ class Preview extends Component {
               <div
                 id="susi-launcher"
                 className="susi-launcher susi-launcher-active"
+                onClick={this.togglePreview}
                 style={styles.launcher}
               >
                 <div
