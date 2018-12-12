@@ -12,6 +12,7 @@ import { Provider } from 'react-redux';
 import SkillRollBack from './components/SkillRollBack/SkillRollBack';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import Snackbar from 'material-ui/Snackbar';
 import NotFound from './components/NotFound/NotFound.react';
 import Admin from './components/Admin/Admin';
 import Users from './components/Admin/ListUser/ListUser.js';
@@ -65,68 +66,159 @@ const muiTheme = getMuiTheme({
 });
 
 class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isUserOnline: navigator.onLine,
+      snackBarOpen: false,
+      snackBarMessage: '',
+      snackBarDuration: 4000,
+      snackBarAction: null,
+      snackBarActionHandler: null,
+    };
+  }
+
+  componentDidMount = () => {
+    window.addEventListener('offline', this.onUserOffline);
+    window.addEventListener('online', this.onUserOnline);
+  };
+
+  componentWillUnmount = () => {
+    window.addEventListener('offline', this.onUserOffline);
+    window.addEventListener('online', this.onUserOnline);
+  };
+
+  onUserOffline = () => {
+    this.setState({
+      isUserOnline: false,
+    });
+    this.openSnackBar({
+      snackBarMessage: 'It seems you are offline!',
+    });
+  };
+
+  onUserOnline = () => {
+    this.setState({
+      isUserOnline: true,
+    });
+    this.openSnackBar({
+      snackBarMessage: 'Welcome back!',
+    });
+  };
+
+  openSnackBar = ({
+    snackBarMessage,
+    snackBarDuration = 4000,
+    snackBarActionHandler,
+    snackBarAction,
+  }) => {
+    this.setState({
+      snackBarOpen: true,
+      snackBarMessage,
+      snackBarDuration,
+      snackBarActionHandler,
+      snackBarAction,
+    });
+  };
+
+  closeSnackBar = () => {
+    this.setState({
+      snackBarOpen: false,
+      message: '',
+    });
+  };
+
   render() {
+    const {
+      isUserOnline,
+      snackBarOpen,
+      snackBarMessage,
+      snackBarDuration,
+      snackBarAction,
+      snackBarActionHandler,
+    } = this.state;
+
     return (
       <Router>
         <MuiThemeProvider muiTheme={muiTheme}>
-          <Switch>
-            <Route
-              exact
-              path="/:category/:skill/edit/:lang"
-              component={SkillCreator}
+          <div>
+            <Snackbar
+              autoHideDuration={snackBarDuration}
+              action={snackBarAction}
+              onActionTouchTap={snackBarActionHandler}
+              open={snackBarOpen}
+              message={snackBarMessage}
+              onRequestClose={this.closeSnackBar}
             />
-            <Route
-              exact
-              path="/:category/:skill/edit/:lang/:commit"
-              component={SkillCreator}
-            />
-            <Route exact path="/admin" component={Admin} />
-            <Route exact path="/admin/users" component={Users} />
-            <Route exact path="/admin/skills" component={Skills} />
-            <Route exact path="/admin/settings" component={SystemSettings} />
-            <Route exact path="/admin/logs" component={SystemLogs} />
-            <Route
-              exact
-              path="/:category/:skill/:lang"
-              component={SkillListing}
-            />
-            <Route
-              exact
-              path="/:category/:skill/:lang/feedbacks"
-              component={SkillFeedbackPage}
-            />
-            <Route path="/botbuilder" component={BotBuilderWrap} />
-            <Route exact path="/dashboard" component={Dashboard} />
-            <Route exact path="/logout" component={Logout} />
-            <Route exact path="/skillCreator" component={SkillCreator} />
-            <Route
-              exact
-              path="/:category/:skill/versions/:lang"
-              component={SkillVersion}
-            />
-            <Route
-              exact
-              path="/:category/:skill/compare/:lang/:oldid/:recentid"
-              component={SkillHistory}
-            />
-            <Route
-              exact
-              path="/:category/:skill/edit/:lang/:latestid/:revertid"
-              component={SkillRollBack}
-            />
-            <Route
-              exact
-              path="/category/:category"
-              component={BrowseSkillByCategory}
-            />
-            <Route
-              exact
-              path="/language/:language"
-              component={BrowseSkillByLanguage}
-            />
-            <Route exact path="/" component={BrowseSkill} />
-            <Route exact path="*" component={NotFound} />
-          </Switch>
+            <Switch>
+              <Route
+                exact
+                path="/:category/:skill/edit/:lang"
+                component={SkillCreator}
+              />
+              <Route
+                exact
+                path="/:category/:skill/edit/:lang/:commit"
+                component={SkillCreator}
+              />
+              <Route exact path="/admin" component={Admin} />
+              <Route exact path="/admin/users" component={Users} />
+              <Route exact path="/admin/skills" component={Skills} />
+              <Route exact path="/admin/settings" component={SystemSettings} />
+              <Route exact path="/admin/logs" component={SystemLogs} />
+              <Route
+                exact
+                path="/:category/:skill/:lang"
+                component={SkillListing}
+              />
+              <Route
+                exact
+                path="/:category/:skill/:lang/feedbacks"
+                component={SkillFeedbackPage}
+              />
+              <Route path="/botbuilder" component={BotBuilderWrap} />
+              <Route exact path="/dashboard" component={Dashboard} />
+              <Route exact path="/logout" component={Logout} />
+              <Route exact path="/skillCreator" component={SkillCreator} />
+              <Route
+                exact
+                path="/:category/:skill/versions/:lang"
+                component={SkillVersion}
+              />
+              <Route
+                exact
+                path="/:category/:skill/compare/:lang/:oldid/:recentid"
+                component={SkillHistory}
+              />
+              <Route
+                exact
+                path="/:category/:skill/edit/:lang/:latestid/:revertid"
+                component={SkillRollBack}
+              />
+              <Route
+                exact
+                path="/category/:category"
+                component={BrowseSkillByCategory}
+              />
+              <Route
+                exact
+                path="/language/:language"
+                component={BrowseSkillByLanguage}
+              />
+              <Route
+                exact
+                path="/"
+                render={routeProps => (
+                  <BrowseSkill
+                    {...routeProps}
+                    isUserOnline={isUserOnline}
+                    openSnackBar={this.openSnackBar}
+                  />
+                )}
+              />
+              <Route exact path="*" component={NotFound} />
+            </Switch>
+          </div>
         </MuiThemeProvider>
       </Router>
     );

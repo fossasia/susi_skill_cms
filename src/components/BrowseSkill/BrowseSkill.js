@@ -37,6 +37,14 @@ import './custom.css';
 const cookies = new Cookies();
 
 export default class BrowseSkill extends React.Component {
+  static propTypes = {
+    routeType: PropTypes.string,
+    routeValue: PropTypes.string,
+    routeTitle: PropTypes.string,
+    isUserOnline: PropTypes.bool,
+    openSnackBar: PropTypes.func,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -339,7 +347,13 @@ export default class BrowseSkill extends React.Component {
   };
 
   loadCards = () => {
-    const { routeType, routeValue, routeTitle, openSnackbar } = this.props;
+    const {
+      routeType,
+      routeValue,
+      routeTitle,
+      isUserOnline,
+      openSnackBar,
+    } = this.props;
     const {
       languageValue,
       filter,
@@ -431,13 +445,13 @@ export default class BrowseSkill extends React.Component {
       },
       error: e => {
         console.log('Error while fetching skills', e);
-        if (!navigator.onLine) {
-          openSnackbar('You are offline!', 5000);
+        if (isUserOnline) {
+          this.loadCards();
+        } else {
+          openSnackBar({ snackBarMessage: 'Sorry! You are offline.' });
           this.setState({
             skillsLoaded: true,
           });
-        } else {
-          return this.loadCards();
         }
       },
     });
@@ -445,7 +459,7 @@ export default class BrowseSkill extends React.Component {
 
   loadMetricsSkills = () => {
     const { languageValue } = this.state;
-    const { openSnackbar } = this.props;
+    const { isUserOnline, openSnackBar } = this.props;
     let url;
     url =
       urls.API_URL + '/cms/getSkillMetricsData.json?language=' + languageValue;
@@ -468,13 +482,13 @@ export default class BrowseSkill extends React.Component {
       },
       error: e => {
         console.log('Error while fetching skills based on top metrics', e);
-        if (!navigator.onLine) {
-          openSnackbar('You are offline!', 5000);
+        if (isUserOnline) {
+          this.loadMetricsSkills();
+        } else {
+          openSnackBar({ snackBarMessage: 'Sorry! You are offline.' });
           this.setState({
             skillsLoaded: true,
           });
-        } else {
-          return this.loadMetricsSkills();
         }
       },
     });
@@ -1413,10 +1427,3 @@ export default class BrowseSkill extends React.Component {
     );
   }
 }
-
-BrowseSkill.propTypes = {
-  routeType: PropTypes.string,
-  routeValue: PropTypes.string,
-  routeTitle: PropTypes.string,
-  openSnackbar: PropTypes.func,
-};
