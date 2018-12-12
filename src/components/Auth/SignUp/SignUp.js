@@ -11,7 +11,7 @@ import TextField from 'material-ui/TextField';
 import $ from 'jquery';
 import Cookies from 'universal-cookie';
 import { colors, urls } from '../../../utils';
-import { isEmail } from '../../../utils';
+import isEmail from '../../../utils/isEmail';
 import Recaptcha from 'react-recaptcha';
 import KEY from '../../../utils/config';
 
