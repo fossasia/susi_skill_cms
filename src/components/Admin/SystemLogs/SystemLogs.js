@@ -4,23 +4,33 @@ import MenuItem from 'material-ui/MenuItem';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import Paper from 'material-ui/Paper';
 import Tabs from 'antd/lib/tabs';
+import { Spin, Alert } from 'antd';
+import Cookies from 'universal-cookie';
+import * as $ from 'jquery';
 import StaticAppBar from '../../StaticAppBar/StaticAppBar.react';
 import NotFound from '../../NotFound/NotFound.react';
-import Cookies from 'universal-cookie';
 import { urls } from '../../../utils';
-import * as $ from 'jquery';
-import { Spin, Alert } from 'antd';
 
 const cookies = new Cookies();
 
 const TabPane = Tabs.TabPane;
 
+const styles = {
+  tabStyle: {
+    width: '100%',
+    animated: false,
+    textAlign: 'left',
+    display: 'inline-block',
+  },
+  blueThemeColor: { color: 'rgb(66, 133, 244)' },
+  themeForegroundColor: '#272727',
+  themeBackgroundColor: '#fff',
+};
+
 class SystemLogs extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
-      tabPosition: 'top',
       logs: '',
       error: false,
       loading: true,
@@ -33,8 +43,7 @@ class SystemLogs extends React.Component {
   }
 
   loadSystemLogs = count => {
-    let url;
-    url = `${urls.API_URL}/log.txt?count=${count}`;
+    const url = `${urls.API_URL}/log.txt?count=${count}`;
     $.ajax({
       url: url,
       dataType: 'text',
@@ -80,17 +89,12 @@ class SystemLogs extends React.Component {
   };
 
   render() {
-    const tabStyle = {
-      width: '100%',
-      animated: false,
-      textAlign: 'left',
-      display: 'inline-block',
-    };
-
-    const blueThemeColor = { color: 'rgb(66, 133, 244)' };
-    const themeForegroundColor = '#272727';
-    const themeBackgroundColor = '#fff';
-
+    const {
+      tabStyle,
+      blueThemeColor,
+      themeForegroundColor,
+      themeBackgroundColor,
+    } = styles;
     return (
       <div>
         {cookies.get('showAdmin') === 'true' ? (
@@ -104,7 +108,7 @@ class SystemLogs extends React.Component {
                 <Tabs
                   defaultActiveKey="5"
                   onTabClick={this.handleTabChange}
-                  tabPosition={this.state.tabPosition}
+                  tabPosition="top"
                   animated={false}
                   type="card"
                   style={{ minHeight: '500px' }}
@@ -211,4 +215,5 @@ class SystemLogs extends React.Component {
 SystemLogs.propTypes = {
   history: PropTypes.object,
 };
+
 export default SystemLogs;
