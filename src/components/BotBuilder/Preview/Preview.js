@@ -166,11 +166,13 @@ class Preview extends Component {
   send = text => {
     let url = urls.API_URL + '/susi/chat.json?q=' + encodeURIComponent(text);
     url += '&instant=' + encodeURIComponent(this.props.skill);
-    const enableDefaultSkillsMatch = this.props.configCode.match(
-      /^::enable_default_skills\s(.*)$/m,
-    );
-    if (enableDefaultSkillsMatch && enableDefaultSkillsMatch[1] === 'no') {
-      url += '&excludeDefaultSkills=true';
+    if (this.props.botBuilder) {
+      const enableDefaultSkillsMatch = this.props.configCode.match(
+        /^::enable_default_skills\s(.*)$/m,
+      );
+      if (enableDefaultSkillsMatch && enableDefaultSkillsMatch[1] === 'no') {
+        url += '&excludeDefaultSkills=true';
+      }
     }
     const thisMsgNumber = this.msgNumber;
     this.msgNumber++;
