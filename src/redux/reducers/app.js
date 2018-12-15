@@ -2,9 +2,10 @@ import { handleActions } from 'redux-actions';
 import actionTypes from '../actionTypes';
 
 const defaultState = {
-  name: '',
+  userName: '',
   email: '',
-  id: '',
+  uuid: '',
+  accessToken: '',
   isAdmin: false,
   apiKeys: {},
 };
@@ -15,6 +16,16 @@ export default handleActions(
       return {
         ...state,
         apiKeys: payload,
+      };
+    },
+    [actionTypes.APP_GET_LOGIN](state, { payload }) {
+      const email = payload.requestPayload.login;
+      const { uuid, accessToken } = payload;
+      return {
+        ...state,
+        uuid,
+        accessToken,
+        email: uuid ? email : '',
       };
     },
   },
