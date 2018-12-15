@@ -1,17 +1,19 @@
 // Packages
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 
 // Components
 import CircularProgress from 'material-ui/CircularProgress';
 import PasswordField from 'material-ui-password-field';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
-import $ from 'jquery';
 import Cookies from 'universal-cookie';
-import { urls, isProduction } from '../../../utils';
+import { isProduction } from '../../../utils';
 import { addUrlProps, UrlQueryParamTypes } from 'react-url-query';
 import isEmail from '../../../utils/isEmail';
+import actions from '../../../redux/actions/app';
 
 // Static assets
 import './Login.css';
@@ -64,6 +66,7 @@ class Login extends Component {
     updateAuthDialog: PropTypes.func,
     updateSnackbar: PropTypes.func,
     closeDialog: PropTypes.func,
+    actions: PropTypes.func,
   };
 
   static defaultProps = {
@@ -79,7 +82,6 @@ class Login extends Component {
       passwordErrorMessage: '',
       success: false,
       loading: false,
-      showDialog: false,
     };
   }
 
@@ -91,60 +93,65 @@ class Login extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
-
     let { email, password } = this.state;
     const { updateSnackbar, closeDialog } = this.props;
-    let BASE_URL = urls.API_URL;
+    const { getLogin } = this.props.actions;
 
     if (!email || !password) {
       return;
     }
-
-    //eslint-disable-next-line
-    const loginEndPoint = `${BASE_URL}/aaa/login.json?type=access-token&login=${email}&password=${encodeURIComponent(
-      password,
-    )}`;
-
     if (isEmail(email)) {
       this.setState({ loading: true });
-      $.ajax({
-        url: loginEndPoint,
-        dataType: 'jsonp',
-        jsonp: 'callback',
-        crossDomain: true,
-        success: response => {
-          if (response.accepted) {
-            cookies.set('serverUrl', BASE_URL, {
-              path: '/',
-              domain: cookieDomain,
+      getLogin({ email, password: encodeURIComponent(password) })
+        .then(({ payload }) => {
+          if (payload.accepted) {
+            this.setCookies({ ...payload, email });
+            this.setState({
+              success: true,
+              loading: false,
             });
-            const accessToken = response.access_token;
-            const uuid = response.uuid;
-            const time = response.valid_seconds;
-            const success = true;
-            this.setState({ accessToken, time, success });
-            this.setCookies(email, accessToken, uuid, time);
-            const message = 'You are logged in';
+            const { message } = payload;
             updateSnackbar && updateSnackbar(message);
             closeDialog && closeDialog();
           } else {
-            password = '';
             const message = 'Login Failed. Try Again';
-            this.setState({ password });
             updateSnackbar && updateSnackbar(message);
+            this.setState({
+              password: '',
+              loading: false,
+            });
           }
-        },
-        error: errorThrown => {
-          password = '';
+        })
+        .catch(error => {
+          console.log(error);
           const message = 'Login Failed. Try Again';
-          this.setState({ password });
           updateSnackbar && updateSnackbar(message);
-        },
-        complete: (jqXHR, textStatus) => {
-          this.setState({ loading: false });
-        },
-      });
+          this.setState({
+            password: '',
+            loading: false,
+          });
+        });
     }
+  };
+
+  setCookies = ({ email, accessToken, uuid, time }) => {
+    cookies.set('loggedIn', accessToken, {
+      path: '/',
+      maxAge: time,
+      domain: cookieDomain,
+    });
+    cookies.set('uuid', uuid, {
+      path: '/',
+      maxAge: time,
+      domain: cookieDomain,
+    });
+    cookies.set('emailId', email, {
+      path: '/',
+      maxAge: time,
+      domain: cookieDomain,
+    });
+    this.props.history.push('/');
+    window.location.reload();
   };
 
   handleChange = event => {
@@ -172,35 +179,6 @@ class Login extends Component {
       }
       default:
         break;
-    }
-  };
-
-  setCookies = (email, loggedIn, uuid, time) => {
-    let { success } = this.state;
-    if (success) {
-      cookies.set('loggedIn', loggedIn, {
-        path: '/',
-        maxAge: time,
-        domain: cookieDomain,
-      });
-      cookies.set('uuid', uuid, {
-        path: '/',
-        maxAge: time,
-        domain: cookieDomain,
-      });
-      cookies.set('emailId', this.state.email, {
-        path: '/',
-        maxAge: time,
-        domain: cookieDomain,
-      });
-      this.props.history.push('/');
-      window.location.reload();
-    } else {
-      this.setState({
-        error: true,
-        accessToken: '',
-        success: false,
-      });
     }
   };
 
@@ -291,4 +269,13 @@ class Login extends Component {
   }
 }
 
-export default addUrlProps({ urlPropsQueryConfig })(Login);
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(actions, dispatch),
+  };
+}
+
+export default connect(
+  null,
+  mapDispatchToProps,
+)(addUrlProps({ urlPropsQueryConfig })(Login));
