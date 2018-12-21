@@ -296,7 +296,7 @@ export default class BrowseSkill extends React.Component {
           data = data.groups;
           data.sort();
           this.groups.push(this.createCategoryMenuItem('All'));
-          data.map(item => {
+          data.forEach(item => {
             this.groups.push(this.createCategoryMenuItem(item));
           });
           this.setState({ groups: this.groups });
@@ -324,7 +324,7 @@ export default class BrowseSkill extends React.Component {
         if (data) {
           data.sort();
           this.languages = [];
-          data.map(item => {
+          data.forEach(item => {
             if (item.length === 2 && item !== 'xx') {
               this.languages.push(item);
             }
