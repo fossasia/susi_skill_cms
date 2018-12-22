@@ -21,7 +21,7 @@ import Chat from 'material-ui/svg-icons/communication/chat';
 import SkillIcon from 'material-ui/svg-icons/action/dashboard';
 import CircleImage from '../CircleImage/CircleImage';
 import susiWhite from '../../images/SUSIAI-white.png';
-import Auth from '../Auth/';
+// import Auth from '../Auth/';
 import { urls, colors, isProduction } from '../../utils';
 import './StaticAppBar.css';
 
@@ -53,12 +53,12 @@ class StaticAppBar extends Component {
   static propTypes = {
     location: PropTypes.object,
     history: PropTypes.object,
+    onRequestOpenLogin: PropTypes.func,
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      showAuth: false,
       showOptions: false,
       showAdmin: false,
       anchorEl: null,
@@ -193,23 +193,10 @@ class StaticAppBar extends Component {
     }
   };
 
-  handleLogin = () => {
-    this.setState({
-      showAuth: true,
-      showOptions: false,
-    });
-  };
-
-  closeAuthDialog = () => this.setState({ showAuth: false });
-
   render() {
-    const {
-      timestamp,
-      showOptions,
-      anchorEl,
-      showAdmin,
-      showAuth,
-    } = this.state;
+    const { timestamp, showOptions, anchorEl, showAdmin } = this.state;
+
+    const { onRequestOpenLogin } = this.props;
 
     const isLoggedIn = !!cookies.get('loggedIn');
     let avatarProps = null;
@@ -318,7 +305,7 @@ class StaticAppBar extends Component {
           ) : (
             <MenuItem
               primaryText="Login"
-              onClick={this.handleLogin}
+              onClick={onRequestOpenLogin}
               rightIcon={<LoginIcon />}
             />
           )}
@@ -361,14 +348,6 @@ class StaticAppBar extends Component {
             iconElementRight={<TopRightMenu />}
           />
         </header>
-        {/* Auth */}
-        {showAuth ? (
-          <Auth
-            history={this.props.history}
-            defaultAuthSection="login"
-            updateParentOpenState={this.closeAuthDialog}
-          />
-        ) : null}
       </div>
     );
   }

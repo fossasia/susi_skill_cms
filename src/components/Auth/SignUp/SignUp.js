@@ -6,20 +6,19 @@ import { bindActionCreators } from 'redux';
 
 /* Material-UI */
 import PasswordField from 'material-ui-password-field';
+import Dialog from 'material-ui/Dialog';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import CircularProgress from 'material-ui/CircularProgress';
+import Close from 'material-ui/svg-icons/navigation/close';
 
 /* Utils */
-import Cookies from 'universal-cookie';
 import { colors, isEmail } from '../../../utils';
 import Recaptcha from 'react-recaptcha';
 import actions from '../../../redux/actions/app';
 
 /* CSS */
 import './SignUp.css';
-
-const cookies = new Cookies();
 
 const styles = {
   emailStyle: {
@@ -52,16 +51,31 @@ const styles = {
     width: '90%',
     webkitTextFillColor: 'unset',
   },
+  bodyStyle: {
+    padding: 0,
+    textAlign: 'center',
+  },
+  closingStyle: {
+    position: 'absolute',
+    zIndex: 1200,
+    fill: '#444',
+    width: '26px',
+    height: '26px',
+    right: '10px',
+    top: '10px',
+    cursor: 'pointer',
+  },
 };
 
 class SignUp extends Component {
   static propTypes = {
     history: PropTypes.object,
-    updateAuthDialog: PropTypes.func,
-    updateSnackbar: PropTypes.func,
-    closeDialog: PropTypes.func,
+    openSnackBar: PropTypes.func,
     captchaKey: PropTypes.string,
     actions: PropTypes.object,
+    onRequestCloseDialog: PropTypes.func,
+    onRequestOpenLogin: PropTypes.func,
+    isSignUpOpen: PropTypes.bool,
   };
 
   constructor(props) {
@@ -81,11 +95,30 @@ class SignUp extends Component {
       captchaVerifyErrorMessage: '',
       loading: false,
     };
-
-    if (cookies.get('loggedIn')) {
-      window.location.reload();
-    }
   }
+
+  closeDialog = () => {
+    const { onRequestCloseDialog } = this.props;
+    this.setState(
+      {
+        email: '',
+        emailErrorMessage: '',
+        password: '',
+        passwordErrorMessage: '',
+        confirmPassword: '',
+        passwordConfirmErrorMessage: '',
+        passwordStrength: '',
+        passwordScore: -1,
+        success: false,
+        isCaptchaVerified: false,
+        captchaVerifyErrorMessage: '',
+        loading: false,
+      },
+      () => {
+        onRequestCloseDialog();
+      },
+    );
+  };
 
   onCaptchaLoad = () => {
     this.setState({
@@ -112,7 +145,6 @@ class SignUp extends Component {
           emailErrorMessage: !isEmail(email)
             ? 'Enter a valid Email Address'
             : '',
-          signupErrorMessage: '',
         });
         break;
       }
@@ -128,7 +160,6 @@ class SignUp extends Component {
             : '',
           passwordScore: passwordError ? -1 : passwordScore,
           passwordStrength: passwordError ? '' : strength[passwordScore],
-          signupErrorMessage: '',
         });
         break;
       }
@@ -143,7 +174,6 @@ class SignUp extends Component {
           passwordConfirmErrorMessage: passwordConfirmError
             ? 'Password does not match'
             : '',
-          signupErrorMessage: '',
         });
         break;
       }
@@ -161,7 +191,7 @@ class SignUp extends Component {
       passwordConfirmError,
       isCaptchaVerified,
     } = this.state;
-    const { updateSnackbar, closeDialog } = this.props;
+    const { openSnackBar } = this.props;
     const { getSignup } = this.props.actions;
 
     if (!isCaptchaVerified) {
@@ -180,19 +210,17 @@ class SignUp extends Component {
           if (payload.accepted) {
             this.setState(
               {
-                signupErrorMessage: payload.message,
                 success: true,
                 loading: false,
               },
               () => {
-                updateSnackbar && updateSnackbar(payload.message);
-                closeDialog && closeDialog();
+                openSnackBar({ snackBarMessage: payload.message });
+                this.closeDialog();
               },
             );
           } else {
             this.setState(
               {
-                signupErrorMessage: 'Failed. Try Again',
                 password: '',
                 confirmPassword: '',
                 passwordScore: -1,
@@ -201,8 +229,7 @@ class SignUp extends Component {
                 loading: false,
               },
               () => {
-                updateSnackbar && updateSnackbar('Failed. Try Again');
-                closeDialog && closeDialog();
+                openSnackBar({ snackBarMessage: 'Failed. Try Again' });
               },
             );
           }
@@ -211,7 +238,6 @@ class SignUp extends Component {
           console.log(error);
           this.setState(
             {
-              signupErrorMessage: 'Signup Failed. Try Again',
               success: false,
               password: '',
               confirmPassword: '',
@@ -220,15 +246,12 @@ class SignUp extends Component {
               loading: false,
             },
             () => {
-              updateSnackbar && updateSnackbar('Signup Failed. Try Again');
+              openSnackBar({ snackBarMessage: 'Signup Failed. Try Again' });
             },
           );
         });
     }
   };
-
-  // Open Login Dialog
-  handleLogin = () => this.props.updateAuthDialog('login');
 
   render() {
     const {
@@ -243,7 +266,15 @@ class SignUp extends Component {
       loading,
       passwordScore,
     } = this.state;
-    const { captchaKey } = this.props;
+    const { captchaKey, onRequestOpenLogin, isSignUpOpen } = this.props;
+    const {
+      bodyStyle,
+      emailStyle,
+      inputStyle,
+      fieldStyle,
+      inputpassStyle,
+      closingStyle,
+    } = styles;
 
     const isValid =
       email &&
@@ -254,108 +285,116 @@ class SignUp extends Component {
       !passwordConfirmErrorMessage &&
       isCaptchaVerified;
 
-    const PasswordClass = [`is-strength-${passwordScore}`];
-
     return (
-      <div className="signupForm">
-        <div>Sign Up with SUSI</div>
-        <form onSubmit={this.handleSubmit}>
-          <div>
-            <TextField
-              name="email"
-              type="email"
-              value={email}
-              onChange={this.handleTextFieldChange}
-              style={styles.emailStyle}
-              inputStyle={styles.inputStyle}
-              underlineStyle={{ display: 'none' }}
-              placeholder="Email"
-              errorText={emailErrorMessage}
-            />
-          </div>
-          <div className={PasswordClass.join(' ')}>
-            <PasswordField
-              name="password"
-              style={styles.fieldStyle}
-              inputStyle={styles.inputpassStyle}
-              value={password}
-              placeholder="Password"
-              underlineStyle={{ display: 'none' }}
-              onChange={this.handleTextFieldChange}
-              errorText={passwordErrorMessage}
-              visibilityButtonStyle={{
-                marginTop: '-3px',
-              }}
-              visibilityIconStyle={{
-                marginTop: '-3px',
-              }}
-              textFieldStyle={{ padding: '0px' }}
-            />
-            <div className="ReactPasswordStrength-strength-bar" />
+      <Dialog
+        modal={false}
+        open={isSignUpOpen}
+        onRequestClose={this.closeDialog}
+        autoScrollBodyContent={true}
+        bodyStyle={bodyStyle}
+        contentStyle={{ width: '35%', minWidth: '300px' }}
+      >
+        <div className="signupForm">
+          <div>Sign Up with SUSI</div>
+          <form onSubmit={this.handleSubmit}>
             <div>
-              <p>{this.state.passwordStrength}</p>
-            </div>
-          </div>
-          <div>
-            <PasswordField
-              name="confirmPassword"
-              style={styles.fieldStyle}
-              inputStyle={styles.inputpassStyle}
-              value={confirmPassword}
-              placeholder="Confirm Password"
-              underlineStyle={{ display: 'none' }}
-              onChange={this.handleTextFieldChange}
-              errorText={passwordConfirmErrorMessage}
-              visibilityButtonStyle={{
-                marginTop: '-3px',
-              }}
-              visibilityIconStyle={{
-                marginTop: '-3px',
-              }}
-              textFieldStyle={{ padding: '0px' }}
-            />
-          </div>
-          <div style={{ width: '304px', margin: '10px auto 0' }}>
-            {captchaKey && (
-              <Recaptcha
-                sitekey={captchaKey}
-                render="explicit"
-                onloadCallback={this.onCaptchaLoad}
-                verifyCallback={this.verifyCaptchaCallback}
-                badge="inline"
-                type="audio"
-                size="normal"
+              <TextField
+                name="email"
+                type="email"
+                value={email}
+                onChange={this.handleTextFieldChange}
+                style={emailStyle}
+                inputStyle={inputStyle}
+                underlineStyle={{ display: 'none' }}
+                placeholder="Email"
+                errorText={emailErrorMessage}
               />
-            )}
-            {!isCaptchaVerified &&
-              captchaVerifyErrorMessage && (
-                <p className="error-message">{captchaVerifyErrorMessage}</p>
+            </div>
+            <div className={`is-strength-${passwordScore}`}>
+              <PasswordField
+                name="password"
+                style={fieldStyle}
+                inputStyle={inputpassStyle}
+                value={password}
+                placeholder="Password"
+                underlineStyle={{ display: 'none' }}
+                onChange={this.handleTextFieldChange}
+                errorText={passwordErrorMessage}
+                visibilityButtonStyle={{
+                  marginTop: '-3px',
+                }}
+                visibilityIconStyle={{
+                  marginTop: '-3px',
+                }}
+                textFieldStyle={{ padding: '0px' }}
+              />
+              <div className="ReactPasswordStrength-strength-bar" />
+              <div>
+                <p>{this.state.passwordStrength}</p>
+              </div>
+            </div>
+            <div>
+              <PasswordField
+                name="confirmPassword"
+                style={fieldStyle}
+                inputStyle={inputpassStyle}
+                value={confirmPassword}
+                placeholder="Confirm Password"
+                underlineStyle={{ display: 'none' }}
+                onChange={this.handleTextFieldChange}
+                errorText={passwordConfirmErrorMessage}
+                visibilityButtonStyle={{
+                  marginTop: '-3px',
+                }}
+                visibilityIconStyle={{
+                  marginTop: '-3px',
+                }}
+                textFieldStyle={{ padding: '0px' }}
+              />
+            </div>
+            <div style={{ width: '304px', margin: '10px auto 0' }}>
+              {captchaKey && (
+                <Recaptcha
+                  sitekey={captchaKey}
+                  render="explicit"
+                  onloadCallback={this.onCaptchaLoad}
+                  verifyCallback={this.verifyCaptchaCallback}
+                  badge="inline"
+                  type="audio"
+                  size="normal"
+                />
               )}
-          </div>
-          <div>
-            <RaisedButton
-              label={!loading && 'Sign Up'}
-              type="submit"
-              disabled={!isValid || loading}
-              backgroundColor={colors.header}
-              labelColor="#fff"
-              style={{ width: '275px', margin: '10px 0px' }}
-              icon={loading && <CircularProgress size={24} />}
-            />
-          </div>
+              {!isCaptchaVerified &&
+                captchaVerifyErrorMessage && (
+                  <p className="error-message">{captchaVerifyErrorMessage}</p>
+                )}
+            </div>
+            <div>
+              <RaisedButton
+                label={!loading && 'Sign Up'}
+                type="submit"
+                disabled={!isValid || loading}
+                backgroundColor={colors.header}
+                labelColor="#fff"
+                style={{ width: '275px', margin: '10px 0px' }}
+                icon={loading && <CircularProgress size={24} />}
+              />
+            </div>
 
-          <span
-            style={{
-              display: 'inline-block',
-              marginTop: '10px',
-            }}
-            className="loginLinks"
-            onClick={this.handleLogin}
-          >
-            Already have an account? Login here
-          </span>
-        </form>
-      </div>
+            <span
+              style={{
+                display: 'inline-block',
+                marginTop: '10px',
+              }}
+              className="loginLinks"
+              onClick={onRequestOpenLogin}
+            >
+              Already have an account? Login here
+            </span>
+          </form>
+        </div>
+        <Close style={closingStyle} onClick={this.closeDialog} />
+      </Dialog>
     );
   }
 }
