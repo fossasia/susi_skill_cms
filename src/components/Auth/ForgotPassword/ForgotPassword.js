@@ -35,14 +35,18 @@ const styles = {
     top: '10px',
     cursor: 'pointer',
   },
+  bodyStyle: {
+    padding: 0,
+    textAlign: 'center',
+  },
 };
 
 export default class ForgotPassword extends Component {
   static propTypes = {
     history: PropTypes.object,
-    updateAuthDialog: PropTypes.func,
-    updateSnackbar: PropTypes.func,
-    closeDialog: PropTypes.func,
+    openSnackBar: PropTypes.func,
+    onRequestCloseDialog: PropTypes.func,
+    isForgotPasswordOpen: PropTypes.bool,
   };
 
   constructor(props) {
@@ -60,7 +64,26 @@ export default class ForgotPassword extends Component {
     };
   }
 
-  handleChange = event => {
+  closeDialog = () => {
+    const { onRequestCloseDialog } = this.props;
+    this.setState(
+      {
+        email: '',
+        success: false,
+        checked: false,
+        emailError: true,
+        validEmail: true,
+        validForm: false,
+        loading: false,
+        emailErrorMessage: '',
+      },
+      () => {
+        onRequestCloseDialog();
+      },
+    );
+  };
+
+  handleTextFieldChange = event => {
     let {
       email,
       validEmail,
@@ -99,7 +122,7 @@ export default class ForgotPassword extends Component {
   handleSubmit = event => {
     event.preventDefault();
 
-    const { updateSnackbar, closeDialog } = this.props;
+    const { openSnackBar } = this.props;
     let { email, success } = this.state;
     email = email.trim();
     let validEmail = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
@@ -115,14 +138,14 @@ export default class ForgotPassword extends Component {
         crossDomain: true,
         timeout: 3000,
         statusCode: {
-          422: function() {
+          422: () => {
             message = 'Email does not exist';
             this.setState({ loading: false }, () => {
-              updateSnackbar && updateSnackbar(message);
+              openSnackBar({ snackBarMessage: message });
             });
-          }.bind(this),
+          },
         },
-        success: function(response) {
+        success: response => {
           message = `${response.message}.`;
           if (response.accepted) {
             success = true;
@@ -131,16 +154,16 @@ export default class ForgotPassword extends Component {
             message += ' Please Try Again.';
           }
           this.setState({ success, loading: false }, () => {
-            updateSnackbar && updateSnackbar(message);
+            openSnackBar({ snackBarMessage: message });
 
             if (success) {
               setTimeout(() => {
-                closeDialog && closeDialog();
+                this.closeDialog();
               }, 2000);
             }
           });
-        }.bind(this),
-        error: function(jqXHR, textStatus, errorThrown) {
+        },
+        error: jqXHR => {
           let jsonValue = jqXHR.status;
           message = '';
           if (jsonValue === 404) {
@@ -149,55 +172,63 @@ export default class ForgotPassword extends Component {
             message = 'Failed. Try Again.';
           }
           this.setState({ loading: false }, () => {
-            updateSnackbar && updateSnackbar(message);
+            openSnackBar({ snackBarMessage: message });
           });
-        }.bind(this),
+        },
       });
     }
   };
 
   render() {
-    let { email, message, emailErrorMessage, validForm, loading } = this.state;
-    const { containerStyle, underlineFocusStyle, closingStyle } = styles;
+    const { email, emailErrorMessage, validForm, loading } = this.state;
+    const { isForgotPasswordOpen } = this.props;
+    const {
+      containerStyle,
+      underlineFocusStyle,
+      closingStyle,
+      bodyStyle,
+    } = styles;
 
     return (
-      <div className="forgotPasswordForm">
-        <Paper zDepth={0} style={containerStyle}>
-          <h3>Forgot Password?</h3>
-          <form onSubmit={this.handleSubmit}>
-            <div>
-              <TextField
-                name="email"
-                floatingLabelText="Email"
-                errorText={emailErrorMessage}
-                value={email}
-                underlineFocusStyle={underlineFocusStyle}
-                floatingLabelFocusStyle={underlineFocusStyle}
-                onChange={this.handleChange}
-              />
-            </div>
-            <div>
-              <RaisedButton
-                type="submit"
-                label={!loading ? 'Reset' : ''}
-                backgroundColor={colors.header}
-                labelColor="#fff"
-                style={{ margin: '25px 0 0 0 ' }}
-                disabled={!validForm}
-                icon={loading ? <CircularProgress size={24} /> : undefined}
-              />
-            </div>
-          </form>
-        </Paper>
-        {message && (
-          <div>
-            <Dialog modal={false} open={true} onRequestClose={this.handleClose}>
-              {message}
-              <Close style={closingStyle} onClick={this.handleClose} />
-            </Dialog>
-          </div>
-        )}
-      </div>
+      <Dialog
+        modal={false}
+        open={isForgotPasswordOpen}
+        onRequestClose={this.closeDialog}
+        autoScrollBodyContent={true}
+        bodyStyle={bodyStyle}
+        contentStyle={{ width: '35%', minWidth: '300px' }}
+      >
+        <div className="forgotPasswordForm">
+          <Paper zDepth={0} style={containerStyle}>
+            <h3>Forgot Password?</h3>
+            <form onSubmit={this.handleSubmit}>
+              <div>
+                <TextField
+                  name="email"
+                  floatingLabelText="Email"
+                  errorText={emailErrorMessage}
+                  value={email}
+                  underlineFocusStyle={underlineFocusStyle}
+                  floatingLabelFocusStyle={underlineFocusStyle}
+                  onChange={this.handleTextFieldChange}
+                />
+              </div>
+              <div>
+                <RaisedButton
+                  type="submit"
+                  label={!loading ? 'Reset' : ''}
+                  backgroundColor={colors.header}
+                  labelColor="#fff"
+                  style={{ margin: '25px 0 0 0 ' }}
+                  disabled={!validForm}
+                  icon={loading ? <CircularProgress size={24} /> : undefined}
+                />
+              </div>
+            </form>
+          </Paper>
+        </div>
+        <Close style={closingStyle} onClick={this.closeDialog} />
+      </Dialog>
     );
   }
 }

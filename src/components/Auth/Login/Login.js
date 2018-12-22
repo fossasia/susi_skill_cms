@@ -3,17 +3,21 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 
 // Components
 import CircularProgress from 'material-ui/CircularProgress';
 import PasswordField from 'material-ui-password-field';
+import Dialog from 'material-ui/Dialog';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import Cookies from 'universal-cookie';
+import Close from 'material-ui/svg-icons/navigation/close';
 import { isProduction } from '../../../utils';
 import { addUrlProps, UrlQueryParamTypes } from 'react-url-query';
 import isEmail from '../../../utils/isEmail';
-import actions from '../../../redux/actions/app';
+import appActions from '../../../redux/actions/app';
+import skillActions from '../../../redux/actions/skills';
 
 // Static assets
 import './Login.css';
@@ -56,21 +60,33 @@ const styles = {
     width: '90%',
     webkitTextFillColor: 'unset',
   },
+  bodyStyle: {
+    padding: 0,
+    textAlign: 'center',
+  },
+  closingStyle: {
+    position: 'absolute',
+    zIndex: 1200,
+    fill: '#444',
+    width: '26px',
+    height: '26px',
+    right: '10px',
+    top: '10px',
+    cursor: 'pointer',
+  },
 };
 
 class Login extends Component {
   static propTypes = {
-    token: PropTypes.string,
-    onChangeToken: PropTypes.func,
     history: PropTypes.object,
-    updateAuthDialog: PropTypes.func,
-    updateSnackbar: PropTypes.func,
-    closeDialog: PropTypes.func,
-    actions: PropTypes.object,
-  };
-
-  static defaultProps = {
-    token: 'null',
+    actions: PropTypes.func,
+    isLoginOpen: PropTypes.bool,
+    onRequestCloseDialog: PropTypes.func,
+    onRequestOpenSignUp: PropTypes.func,
+    onRequestOpenForgotPassword: PropTypes.func,
+    openSnackBar: PropTypes.func,
+    location: PropTypes.object,
+    languageValue: PropTypes.string,
   };
 
   constructor(props) {
@@ -85,24 +101,41 @@ class Login extends Component {
     };
   }
 
-  componentDidMount() {
-    if (cookies.get('loggedIn')) {
-      this.props.history.push('/home', { open: false });
-    }
-  }
+  closeDialog = () => {
+    const { onRequestCloseDialog } = this.props;
+    this.setState(
+      {
+        email: '',
+        emailErrorMessage: '',
+        password: '',
+        passwordErrorMessage: '',
+        success: false,
+        loading: false,
+      },
+      () => {
+        onRequestCloseDialog();
+      },
+    );
+  };
 
   handleSubmit = e => {
     e.preventDefault();
     let { email, password } = this.state;
-    const { updateSnackbar, closeDialog } = this.props;
-    const { getLogin } = this.props.actions;
+    const {
+      openSnackBar,
+      location,
+      history,
+      actions,
+      languageValue,
+    } = this.props;
 
     if (!email || !password) {
       return;
     }
     if (isEmail(email)) {
       this.setState({ loading: true });
-      getLogin({ email, password: encodeURIComponent(password) })
+      actions
+        .getLogin({ email, password: encodeURIComponent(password) })
         .then(({ payload }) => {
           if (payload.accepted) {
             this.setCookies({ ...payload, email });
@@ -111,11 +144,22 @@ class Login extends Component {
               loading: false,
             });
             const { message } = payload;
-            updateSnackbar && updateSnackbar(message);
-            closeDialog && closeDialog();
+            openSnackBar({ snackBarMessage: message });
+            this.closeDialog();
+            if (location.pathname !== '/') {
+              history.push('/');
+            } else {
+              actions.initializeSkillData().then(() => {
+                actions.getLanguageOptions({ groupValue: 'All' });
+                actions.getGroupOptions();
+                actions.getMetricsSkills({
+                  languageValue: languageValue,
+                });
+              });
+            }
           } else {
             const message = 'Login Failed. Try Again';
-            updateSnackbar && updateSnackbar(message);
+            openSnackBar({ snackBarMessage: message });
             this.setState({
               password: '',
               loading: false,
@@ -125,7 +169,7 @@ class Login extends Component {
         .catch(error => {
           console.log(error);
           const message = 'Login Failed. Try Again';
-          updateSnackbar && updateSnackbar(message);
+          openSnackBar({ snackBarMessage: message });
           this.setState({
             password: '',
             loading: false,
@@ -134,27 +178,7 @@ class Login extends Component {
     }
   };
 
-  setCookies = ({ email, accessToken, uuid, time }) => {
-    cookies.set('loggedIn', accessToken, {
-      path: '/',
-      maxAge: time,
-      domain: cookieDomain,
-    });
-    cookies.set('uuid', uuid, {
-      path: '/',
-      maxAge: time,
-      domain: cookieDomain,
-    });
-    cookies.set('emailId', email, {
-      path: '/',
-      maxAge: time,
-      domain: cookieDomain,
-    });
-    this.props.history.push('/');
-    window.location.reload();
-  };
-
-  handleChange = event => {
+  handleTextFieldChange = event => {
     switch (event.target.name) {
       case 'email': {
         const email = event.target.value.trim();
@@ -182,16 +206,44 @@ class Login extends Component {
     }
   };
 
-  handleSignUp = () => this.props.updateAuthDialog('signup');
-
-  handleForgotPassword = () => this.props.updateAuthDialog('forgotPassword');
+  setCookies = ({ email, loggedIn, uuid, time }) => {
+    let { success } = this.state;
+    if (success) {
+      cookies.set('loggedIn', loggedIn, {
+        path: '/',
+        maxAge: time,
+        domain: cookieDomain,
+      });
+      cookies.set('uuid', uuid, {
+        path: '/',
+        maxAge: time,
+        domain: cookieDomain,
+      });
+      cookies.set('emailId', this.state.email, {
+        path: '/',
+        maxAge: time,
+        domain: cookieDomain,
+      });
+      this.props.history.push('/');
+      window.location.reload();
+    } else {
+      this.setState({
+        error: true,
+        success: false,
+      });
+    }
+  };
 
   render() {
+    console.log(this.props);
+
     const {
       fieldStyle,
       passwordFieldStyle,
       inputStyle,
       inputPasswordStyle,
+      bodyStyle,
+      closingStyle,
     } = styles;
     const {
       email,
@@ -200,82 +252,105 @@ class Login extends Component {
       passwordErrorMessage,
       loading,
     } = this.state;
+    const {
+      isLoginOpen,
+      onRequestOpenForgotPassword,
+      onRequestOpenSignUp,
+    } = this.props;
 
     const isValid =
       email && !emailErrorMessage && password && !passwordErrorMessage;
 
     return (
-      <div className="loginForm">
-        <div id="loginHeading">Log into SUSI</div>
-        <form onSubmit={this.handleSubmit}>
-          <div style={{ maxHeight: '70px' }}>
-            <TextField
-              name="email"
-              type="email"
-              value={email}
-              onChange={this.handleChange}
-              style={fieldStyle}
-              inputStyle={inputStyle}
-              placeholder="Email"
-              underlineStyle={{ display: 'none' }}
-              errorText={emailErrorMessage}
+      <Dialog
+        modal={false}
+        open={isLoginOpen}
+        onRequestClose={this.closeDialog}
+        autoScrollBodyContent={true}
+        bodyStyle={bodyStyle}
+        contentStyle={{ width: '35%', minWidth: '300px' }}
+      >
+        <div className="loginForm">
+          <div id="loginHeading">Log into SUSI</div>
+          <form onSubmit={this.handleSubmit}>
+            <div style={{ maxHeight: '70px' }}>
+              <TextField
+                name="email"
+                type="email"
+                value={email}
+                onChange={this.handleTextFieldChange}
+                style={fieldStyle}
+                inputStyle={inputStyle}
+                placeholder="Email"
+                underlineStyle={{ display: 'none' }}
+                errorText={emailErrorMessage}
+              />
+            </div>
+
+            <div style={{ maxHeight: '70px' }}>
+              <PasswordField
+                name="password"
+                style={passwordFieldStyle}
+                inputStyle={inputPasswordStyle}
+                value={password}
+                placeholder="Password"
+                errorText={passwordErrorMessage}
+                underlineStyle={{ display: 'none' }}
+                onChange={this.handleTextFieldChange}
+                visibilityButtonStyle={{
+                  marginTop: '-3px',
+                }}
+                visibilityIconStyle={{
+                  marginTop: '-3px',
+                }}
+                textFieldStyle={{ padding: '0px' }}
+              />
+            </div>
+
+            <RaisedButton
+              label={!loading ? 'Log In' : undefined}
+              type="submit"
+              backgroundColor="#4285f4"
+              labelColor="#fff"
+              disabled={!isValid}
+              style={{ width: '275px', margin: '10px 0px' }}
+              icon={loading ? <CircularProgress size={24} /> : undefined}
             />
-          </div>
 
-          <div style={{ maxHeight: '70px' }}>
-            <PasswordField
-              name="password"
-              style={passwordFieldStyle}
-              inputStyle={inputPasswordStyle}
-              value={password}
-              placeholder="Password"
-              errorText={passwordErrorMessage}
-              underlineStyle={{ display: 'none' }}
-              onChange={this.handleChange}
-              visibilityButtonStyle={{
-                marginTop: '-3px',
-              }}
-              visibilityIconStyle={{
-                marginTop: '-3px',
-              }}
-              textFieldStyle={{ padding: '0px' }}
-            />
-          </div>
-
-          <RaisedButton
-            label={!loading ? 'Log In' : undefined}
-            type="submit"
-            backgroundColor="#4285f4"
-            labelColor="#fff"
-            disabled={!isValid}
-            style={{ width: '275px', margin: '10px 0px' }}
-            icon={loading ? <CircularProgress size={24} /> : undefined}
-          />
-
-          <div className="loginLinksSection" id="loginLinks">
-            <span
-              className="forgotPassword"
-              onClick={this.handleForgotPassword}
-            >
-              Forgot Password?
-            </span>
-            <span className="signup" onClick={this.handleSignUp}>
-              Sign up for SUSI
-            </span>
-          </div>
-        </form>
-      </div>
+            <div className="loginLinksSection" id="loginLinks">
+              <span
+                className="forgotPassword"
+                onClick={onRequestOpenForgotPassword}
+              >
+                Forgot Password?
+              </span>
+              <span className="signup" onClick={onRequestOpenSignUp}>
+                Sign up for SUSI
+              </span>
+            </div>
+          </form>
+        </div>
+        <Close style={closingStyle} onClick={this.closeDialog} />
+      </Dialog>
     );
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(actions, dispatch),
+    actions: bindActionCreators({ ...appActions, ...skillActions }, dispatch),
   };
 }
 
-export default connect(
-  null,
-  mapDispatchToProps,
-)(addUrlProps({ urlPropsQueryConfig })(Login));
+function mapStateToProps(store) {
+  return {
+    ...store.skills,
+  };
+}
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps,
+  )(addUrlProps({ urlPropsQueryConfig })(Login)),
+);
