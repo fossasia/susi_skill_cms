@@ -72,10 +72,10 @@ div.scrolling-wrapper::-webkit-scrollbar {
     height: 35px;
 }
 
-#pageNavigation {
-    display: flex;
-    justify-content: center;
+.pageNavigation {
+    text-align: center;
     margin: 15px 0;
+    margin-bottom: 5px;
 }
 
 #pagination > div {
