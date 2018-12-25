@@ -10,7 +10,7 @@ import ISO6391 from 'iso-639-1';
 import AuthorSkills from '../AuthorSkills/AuthorSkills';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import SkillUsageCard from '../SkillUsageCard/SkillUsageCard';
-import SkillRatingCard from '../SkillRatingCard/SkillRatingCard';
+import SkillRatingCard from '../SkillRating/SkillRatingCard';
 import SkillFeedbackCard from '../SkillFeedbackCard/SkillFeedbackCard';
 import Footer from '../Footer/Footer.react';
 import { FloatingActionButton, Paper } from 'material-ui';
