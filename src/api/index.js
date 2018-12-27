@@ -13,3 +13,9 @@ export function getLogin(payload) {
   const url = `${API_URL}/${AUTH_API_PREFIX}/login.json`;
   return ajax.get(url, { login: email, password, type: 'access-token' });
 }
+
+export function getSignup(payload) {
+  const { email, password } = payload;
+  const url = `${API_URL}/${AUTH_API_PREFIX}/signup.json`;
+  return ajax.get(url, { signup: email, password });
+}

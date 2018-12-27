@@ -1,6 +1,6 @@
 import { createAction } from 'redux-actions';
 import actionTypes from '../actionTypes';
-import { getLogin, fetchApiKeys } from '../../api';
+import { getLogin, getSignup, fetchApiKeys } from '../../api';
 
 // const returnArgumentsFn = function(payload) {
 //   return Promise.resolve(payload);
@@ -9,4 +9,5 @@ import { getLogin, fetchApiKeys } from '../../api';
 export default {
   getApiKeys: createAction(actionTypes.APP_GET_API_KEYS, fetchApiKeys),
   getLogin: createAction(actionTypes.APP_GET_LOGIN, getLogin),
+  getSignup: createAction(actionTypes.APP_GET_SIGNUP, getSignup),
 };

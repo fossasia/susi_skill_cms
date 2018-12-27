@@ -2,22 +2,57 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import zxcvbn from 'zxcvbn';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 /* Material-UI */
 import PasswordField from 'material-ui-password-field';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
+import CircularProgress from 'material-ui/CircularProgress';
 
 /* Utils */
-import $ from 'jquery';
 import Cookies from 'universal-cookie';
-import { colors, urls } from '../../../utils';
+import { colors, isEmail } from '../../../utils';
 import Recaptcha from 'react-recaptcha';
+import actions from '../../../redux/actions/app';
 
 /* CSS */
 import './SignUp.css';
 
 const cookies = new Cookies();
+
+const styles = {
+  emailStyle: {
+    height: '35px',
+    borderRadius: 4,
+    border: '1px solid #ced4da',
+    fontSize: 16,
+    padding: '0px 10px',
+    width: '272px',
+    marginTop: '10px',
+  },
+  fieldStyle: {
+    height: '35px',
+    borderRadius: 4,
+    border: '1px solid #ced4da',
+    fontSize: 16,
+    padding: '0px 10px',
+    width: '250px',
+    marginTop: '10px',
+  },
+  inputStyle: {
+    height: '35px',
+    marginBottom: '10px',
+    webkitTextFillColor: 'unset',
+  },
+  inputpassStyle: {
+    height: '35px',
+    marginBottom: '10px',
+    marginRight: '50px',
+    width: '90%',
+    webkitTextFillColor: 'unset',
+  },
+};
 
 class SignUp extends Component {
   static propTypes = {
@@ -26,6 +61,7 @@ class SignUp extends Component {
     updateSnackbar: PropTypes.func,
     closeDialog: PropTypes.func,
     captchaKey: PropTypes.string,
+    actions: PropTypes.object,
   };
 
   constructor(props) {
@@ -33,27 +69,17 @@ class SignUp extends Component {
 
     this.state = {
       email: '',
-      isEmail: false,
-      emailError: true,
       emailErrorMessage: '',
-      passwordValue: '',
-      passwordError: true,
+      password: '',
       passwordErrorMessage: '',
-      passwordConfirmError: true,
-      confirmPasswordValue: '',
+      confirmPassword: '',
       passwordConfirmErrorMessage: '',
       passwordStrength: '',
       passwordScore: -1,
       success: false,
-      open: false,
-      openLogin: false,
-      openForgotPassword: false,
       isCaptchaVerified: false,
       captchaVerifyErrorMessage: '',
-      validForm: false,
-      serverUrl: '',
-      msgOpen: false,
-      serverFieldError: false,
+      loading: false,
     };
 
     if (cookies.get('loggedIn')) {
@@ -77,120 +103,66 @@ class SignUp extends Component {
     }
   };
 
-  handleChange = event => {
-    let {
-      email,
-      passwordValue,
-      confirmPasswordValue,
-      isEmail,
-      emailError,
-      validPassword,
-      passwordError,
-      passwordConfirmError,
-      emailErrorMessage,
-      passwordErrorMessage,
-      passwordConfirmErrorMessage,
-      validForm,
-      passwordStrength,
-      passwordScore,
-      isCaptchaVerified,
-      // eslint-disable-next-line
-      captchaVerifyErrorMessage,
-    } = this.state;
-
-    if (event.target.name === 'email') {
-      email = event.target.value.trim();
-      isEmail = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
-      emailError = !(email && isEmail);
-    } else if (event.target.name === 'password') {
-      passwordValue = event.target.value;
-      validPassword = passwordValue.length >= 6 && passwordValue.length <= 64;
-      passwordError = !(passwordValue && validPassword);
-      passwordConfirmError = !(
-        passwordValue === this.state.confirmPasswordValue
-      );
-      if (validPassword) {
-        let result = zxcvbn(passwordValue);
-        passwordScore = result.score;
-        let strength = ['Worst', 'Bad', 'Weak', 'Good', 'Strong'];
-        passwordStrength = strength[result.score];
-      } else {
-        passwordStrength = '';
-        passwordScore = -1;
+  handleTextFieldChange = event => {
+    switch (event.target.name) {
+      case 'email': {
+        const email = event.target.value.trim();
+        this.setState({
+          email,
+          emailErrorMessage: !isEmail(email)
+            ? 'Enter a valid Email Address'
+            : '',
+          signupErrorMessage: '',
+        });
+        break;
       }
-    } else if (event.target.name === 'confirmPassword') {
-      confirmPasswordValue = event.target.value;
-      validPassword = confirmPasswordValue === passwordValue;
-      passwordConfirmError = !(validPassword && confirmPasswordValue);
+      case 'password': {
+        const password = event.target.value.trim();
+        const passwordScore = zxcvbn(password).score;
+        const strength = ['Worst', 'Bad', 'Weak', 'Good', 'Strong'];
+        const passwordError = !(password.length >= 6 && password);
+        this.setState({
+          password,
+          passwordErrorMessage: passwordError
+            ? 'Minimum 6 characters required'
+            : '',
+          passwordScore: passwordError ? -1 : passwordScore,
+          passwordStrength: passwordError ? '' : strength[passwordScore],
+          signupErrorMessage: '',
+        });
+        break;
+      }
+      case 'confirmPassword': {
+        const { password } = this.state;
+        const confirmPassword = event.target.value;
+        const passwordConfirmError = !(
+          confirmPassword === password && confirmPassword
+        );
+        this.setState({
+          confirmPassword,
+          passwordConfirmErrorMessage: passwordConfirmError
+            ? 'Password does not match'
+            : '',
+          signupErrorMessage: '',
+        });
+        break;
+      }
+      default:
+        break;
     }
-
-    if (emailError) {
-      emailErrorMessage = 'Enter a valid Email Address';
-    } else if (passwordError) {
-      emailErrorMessage = '';
-      passwordErrorMessage = 'Allowed password length is 6 to 64 characters';
-      passwordConfirmErrorMessage = '';
-      captchaVerifyErrorMessage = '';
-    } else if (passwordConfirmError) {
-      emailErrorMessage = '';
-      passwordErrorMessage = '';
-      passwordConfirmErrorMessage = 'Check your password again';
-      captchaVerifyErrorMessage = '';
-    } else if (!isCaptchaVerified) {
-      emailErrorMessage = '';
-      passwordErrorMessage = '';
-      passwordConfirmErrorMessage = '';
-      captchaVerifyErrorMessage = 'Please confirm you are a human';
-    } else {
-      emailErrorMessage = '';
-      passwordErrorMessage = '';
-      passwordConfirmErrorMessage = '';
-      captchaVerifyErrorMessage = '';
-    }
-
-    if (!emailError && !passwordError && !passwordConfirmError) {
-      validForm = true;
-    } else {
-      validForm = false;
-    }
-
-    this.setState({
-      email,
-      passwordValue,
-      confirmPasswordValue,
-      isEmail,
-      emailError,
-      validPassword,
-      passwordError,
-      passwordConfirmError,
-      emailErrorMessage,
-      passwordErrorMessage,
-      passwordConfirmErrorMessage,
-      validForm,
-      passwordStrength,
-      passwordScore,
-    });
   };
 
   handleSubmit = event => {
     event.preventDefault();
-
     const {
       email,
-      passwordValue,
+      password,
       emailError,
       passwordConfirmError,
       isCaptchaVerified,
     } = this.state;
     const { updateSnackbar, closeDialog } = this.props;
-
-    let API_ENDPOINT = `${
-      urls.API_URL
-    }/aaa/signup.json?signup=${email}&password=${encodeURIComponent(
-      passwordValue,
-    )}`;
-    let message = '';
-    let success = false;
+    const { getSignup } = this.props.actions;
 
     if (!isCaptchaVerified) {
       this.setState({
@@ -199,45 +171,59 @@ class SignUp extends Component {
     }
 
     if (!emailError && !passwordConfirmError && isCaptchaVerified) {
-      $.ajax({
-        url: API_ENDPOINT,
-        dataType: 'jsonp',
-        crossDomain: true,
-        timeout: 3000,
-        async: false,
-        statusCode: {
-          422: function() {
-            message = 'Email already taken. Please try with another email.';
-            updateSnackbar && updateSnackbar(message);
-          },
-        },
-        success: function(response) {
-          message = response.message;
-          success = true;
+      this.setState({ loading: true });
+      getSignup({
+        email,
+        password: encodeURIComponent(password),
+      })
+        .then(({ payload }) => {
+          if (payload.accepted) {
+            this.setState(
+              {
+                signupErrorMessage: payload.message,
+                success: true,
+                loading: false,
+              },
+              () => {
+                updateSnackbar && updateSnackbar(payload.message);
+                closeDialog && closeDialog();
+              },
+            );
+          } else {
+            this.setState(
+              {
+                signupErrorMessage: 'Failed. Try Again',
+                password: '',
+                confirmPassword: '',
+                passwordScore: -1,
+                passwordStrength: '',
+                success: false,
+                loading: false,
+              },
+              () => {
+                updateSnackbar && updateSnackbar('Failed. Try Again');
+                closeDialog && closeDialog();
+              },
+            );
+          }
+        })
+        .catch(error => {
+          console.log(error);
           this.setState(
             {
-              message,
-              success,
+              signupErrorMessage: 'Signup Failed. Try Again',
+              success: false,
+              password: '',
+              confirmPassword: '',
+              passwordScore: -1,
+              passwordStrength: '',
+              loading: false,
             },
             () => {
-              updateSnackbar && updateSnackbar(message);
-              closeDialog && closeDialog();
+              updateSnackbar && updateSnackbar('Signup Failed. Try Again');
             },
           );
-        }.bind(this),
-        error: function(jqXHR, textStatus, errorThrown) {
-          const jsonValue = jqXHR.status;
-          if (jsonValue === 404) {
-            message = 'Email already taken. Please try with another email.';
-          } else {
-            message = 'Failed. Try Again';
-          }
-          success = false;
-          this.setState({ message, success }, () => {
-            updateSnackbar && updateSnackbar(message);
-          });
-        }.bind(this),
-      });
+        });
     }
   };
 
@@ -245,53 +231,30 @@ class SignUp extends Component {
   handleLogin = () => this.props.updateAuthDialog('login');
 
   render() {
-    const styles = {
-      emailStyle: {
-        height: '35px',
-        borderRadius: 4,
-        border: '1px solid #ced4da',
-        fontSize: 16,
-        padding: '0px 10px',
-        width: '272px',
-        marginTop: '10px',
-      },
-      fieldStyle: {
-        height: '35px',
-        borderRadius: 4,
-        border: '1px solid #ced4da',
-        fontSize: 16,
-        padding: '0px 10px',
-        width: '250px',
-        marginTop: '10px',
-      },
-      inputStyle: {
-        height: '35px',
-        marginBottom: '10px',
-        webkitTextFillColor: 'unset',
-      },
-      inputpassStyle: {
-        height: '35px',
-        marginBottom: '10px',
-        marginRight: '50px',
-        width: '90%',
-        webkitTextFillColor: 'unset',
-      },
-    };
-
-    const PasswordClass = [`is-strength-${this.state.passwordScore}`];
-
     const {
       email,
-      passwordValue,
+      password,
       passwordErrorMessage,
       emailErrorMessage,
-      validForm,
       isCaptchaVerified,
       captchaVerifyErrorMessage,
-      confirmPasswordValue,
+      confirmPassword,
       passwordConfirmErrorMessage,
+      loading,
+      passwordScore,
     } = this.state;
     const { captchaKey } = this.props;
+
+    const isValid =
+      email &&
+      !emailErrorMessage &&
+      password &&
+      !passwordErrorMessage &&
+      confirmPassword &&
+      !passwordConfirmErrorMessage &&
+      isCaptchaVerified;
+
+    const PasswordClass = [`is-strength-${passwordScore}`];
 
     return (
       <div className="signupForm">
@@ -302,10 +265,9 @@ class SignUp extends Component {
               name="email"
               type="email"
               value={email}
-              onChange={this.handleChange}
+              onChange={this.handleTextFieldChange}
               style={styles.emailStyle}
               inputStyle={styles.inputStyle}
-              labelText={{ color: '#878faf' }}
               underlineStyle={{ display: 'none' }}
               placeholder="Email"
               errorText={emailErrorMessage}
@@ -316,10 +278,10 @@ class SignUp extends Component {
               name="password"
               style={styles.fieldStyle}
               inputStyle={styles.inputpassStyle}
-              value={passwordValue}
+              value={password}
               placeholder="Password"
               underlineStyle={{ display: 'none' }}
-              onChange={this.handleChange}
+              onChange={this.handleTextFieldChange}
               errorText={passwordErrorMessage}
               visibilityButtonStyle={{
                 marginTop: '-3px',
@@ -339,10 +301,10 @@ class SignUp extends Component {
               name="confirmPassword"
               style={styles.fieldStyle}
               inputStyle={styles.inputpassStyle}
-              value={confirmPasswordValue}
+              value={confirmPassword}
               placeholder="Confirm Password"
               underlineStyle={{ display: 'none' }}
-              onChange={this.handleChange}
+              onChange={this.handleTextFieldChange}
               errorText={passwordConfirmErrorMessage}
               visibilityButtonStyle={{
                 marginTop: '-3px',
@@ -372,12 +334,13 @@ class SignUp extends Component {
           </div>
           <div>
             <RaisedButton
-              label="Sign Up"
+              label={!loading && 'Sign Up'}
               type="submit"
-              disabled={!validForm || !isCaptchaVerified}
+              disabled={!isValid || loading}
               backgroundColor={colors.header}
               labelColor="#fff"
               style={{ width: '275px', margin: '10px 0px' }}
+              icon={loading && <CircularProgress size={24} />}
             />
           </div>
 
@@ -404,7 +367,13 @@ function mapStateToProps(store) {
   };
 }
 
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(actions, dispatch),
+  };
+}
+
 export default connect(
   mapStateToProps,
-  null,
+  mapDispatchToProps,
 )(SignUp);
