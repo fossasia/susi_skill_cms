@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import zxcvbn from 'zxcvbn';
+import { connect } from 'react-redux';
 
 /* Material-UI */
 import PasswordField from 'material-ui-password-field';
@@ -12,19 +13,19 @@ import $ from 'jquery';
 import Cookies from 'universal-cookie';
 import { colors, urls } from '../../../utils';
 import Recaptcha from 'react-recaptcha';
-import KEY from '../../../utils/config';
 
 /* CSS */
 import './SignUp.css';
 
 const cookies = new Cookies();
 
-export default class SignUp extends Component {
+class SignUp extends Component {
   static propTypes = {
     history: PropTypes.object,
     updateAuthDialog: PropTypes.func,
     updateSnackbar: PropTypes.func,
     closeDialog: PropTypes.func,
+    captchaKey: PropTypes.string,
   };
 
   constructor(props) {
@@ -290,6 +291,7 @@ export default class SignUp extends Component {
       confirmPasswordValue,
       passwordConfirmErrorMessage,
     } = this.state;
+    const { captchaKey } = this.props;
 
     return (
       <div className="signupForm">
@@ -352,15 +354,17 @@ export default class SignUp extends Component {
             />
           </div>
           <div style={{ width: '304px', margin: '10px auto 0' }}>
-            <Recaptcha
-              sitekey={KEY.CAPTCHA_KEY}
-              render="explicit"
-              onloadCallback={this.onCaptchaLoad}
-              verifyCallback={this.verifyCaptchaCallback}
-              badge="inline"
-              type="audio"
-              size="normal"
-            />
+            {captchaKey && (
+              <Recaptcha
+                sitekey={captchaKey}
+                render="explicit"
+                onloadCallback={this.onCaptchaLoad}
+                verifyCallback={this.verifyCaptchaCallback}
+                badge="inline"
+                type="audio"
+                size="normal"
+              />
+            )}
             {!isCaptchaVerified &&
               captchaVerifyErrorMessage && (
                 <p className="error-message">{captchaVerifyErrorMessage}</p>
@@ -392,3 +396,15 @@ export default class SignUp extends Component {
     );
   }
 }
+
+function mapStateToProps(store) {
+  const { captchaKey } = store.app.apiKeys;
+  return {
+    captchaKey,
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  null,
+)(SignUp);
