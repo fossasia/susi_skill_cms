@@ -1,10 +1,13 @@
 // Packages
 import React from 'react';
+import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import Switch from 'react-router-dom/es/Switch';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import { Provider } from 'react-redux';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 // DO not register a SW for now
 // import registerServiceWorker from './registerServiceWorker';
 
@@ -33,6 +36,7 @@ import BrowseSkillByCategory from './components/BrowseSkill/BrowseSkillByCategor
 import BrowseSkillByLanguage from './components/BrowseSkill/BrowseSkillByLanguage';
 import { colors } from './utils';
 import store from './store';
+import actions from './redux/actions/app';
 
 setDefaults();
 
@@ -66,6 +70,11 @@ const muiTheme = getMuiTheme({
 });
 
 class App extends React.Component {
+  static propTypes = {
+    getApiKeys: PropTypes.func,
+    actions: PropTypes.object,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -79,6 +88,8 @@ class App extends React.Component {
   }
 
   componentDidMount = () => {
+    const { getApiKeys } = this.props.actions;
+    getApiKeys();
     window.addEventListener('offline', this.onUserOffline);
     window.addEventListener('online', this.onUserOnline);
   };
@@ -225,9 +236,20 @@ class App extends React.Component {
   }
 }
 
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(actions, dispatch),
+  };
+}
+
+const ConnectedApp = connect(
+  null,
+  mapDispatchToProps,
+)(App);
+
 ReactDOM.render(
   <Provider store={store} key="provider">
-    <App />
+    <ConnectedApp />
   </Provider>,
   document.getElementById('root'),
 );
