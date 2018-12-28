@@ -57,7 +57,6 @@ export default class BrowseSkill extends React.Component {
       skillURL: null,
       groupValue: 'All',
       languageValue: cookies.get('languages') || ['en'],
-      showSkills: '',
       showReviewedSkills: false,
       showStaffPicks: false,
       expertValue: null,
@@ -207,32 +206,12 @@ export default class BrowseSkill extends React.Component {
     }));
   };
 
-  handleShowSkills = ({ reviewed, staffPicks }) => {
-    const { showReviewedSkills, showStaffPicks } = this.state;
-    let showSkills;
-    if (reviewed !== undefined) {
-      showSkills = `&reviewed=${reviewed}`;
-      this.setState({ showReviewedSkills: reviewed });
-    } else {
-      showSkills = `&reviewed=${showReviewedSkills}`;
-    }
-
-    if (staffPicks !== undefined) {
-      showSkills += `&staff_picks=${staffPicks}`;
-      this.setState({ showStaffPicks: staffPicks });
-    } else {
-      showSkills += `&staff_picks=${showStaffPicks}`;
-    }
-
-    this.setState(
-      {
-        showSkills,
-        skillsLoaded: false,
-      },
-      () => {
-        this.loadCards();
-      },
-    );
+  handleShowSkills = event => {
+    const { checked } = event.target;
+    const { name } = event.target;
+    this.setState({ [name]: checked, skillsLoaded: false }, () => {
+      this.loadCards();
+    });
   };
 
   handleViewChange = (event, value) => {
@@ -363,7 +342,8 @@ export default class BrowseSkill extends React.Component {
     const {
       languageValue,
       filter,
-      showSkills,
+      showReviewedSkills,
+      showStaffPicks,
       groupValue,
       modelValue,
       searchQuery,
@@ -390,7 +370,10 @@ export default class BrowseSkill extends React.Component {
         orderBy +
         '&filter_type=' +
         filter +
-        showSkills;
+        '&reviewed=' +
+        showReviewedSkills +
+        '&staff_picks=' +
+        showStaffPicks;
     } else if (routeType === 'language') {
       this.setState({
         languageValue: routeValue,
@@ -406,7 +389,10 @@ export default class BrowseSkill extends React.Component {
         orderBy +
         '&filter_type=' +
         filter +
-        showSkills;
+        '&reviewed=' +
+        showReviewedSkills +
+        '&staff_picks=' +
+        showStaffPicks;
     } else if (languages.length > 0 && groups.length > 0) {
       // idhar hora h
       url =
@@ -421,7 +407,10 @@ export default class BrowseSkill extends React.Component {
         orderBy +
         '&filter_type=' +
         filter +
-        showSkills;
+        '&reviewed=' +
+        showReviewedSkills +
+        '&staff_picks=' +
+        showStaffPicks;
     } else {
       url =
         urls.API_URL +
@@ -606,12 +595,12 @@ export default class BrowseSkill extends React.Component {
       listSkills,
       staffPicksSkills,
     } = this.state;
+
     const { routeType, routeValue } = this.props;
     let sidebarStyle = styles.sidebar;
     let topBarStyle = styles.topBar;
     let groupsMobile = null;
     let backToHome = null;
-
     let metricsContainerStyle = {
       width: '100%',
       margin: innerWidth >= 430 ? '10px' : '10px 0px 10px 0px',
@@ -916,8 +905,9 @@ export default class BrowseSkill extends React.Component {
                     labelStyle={{ fontSize: '14px' }}
                     iconStyle={{ left: '4px' }}
                     style={styles.checkboxStyle}
-                    onCheck={(event, isInputChecked) => {
-                      this.handleShowSkills({ staffPicks: isInputChecked });
+                    name="showStaffPicks"
+                    onCheck={event => {
+                      this.handleShowSkills(event);
                     }}
                   />
                   <Checkbox
@@ -928,8 +918,9 @@ export default class BrowseSkill extends React.Component {
                     labelStyle={{ fontSize: '14px' }}
                     iconStyle={{ left: '4px' }}
                     style={styles.checkboxStyle}
-                    onCheck={(event, isInputChecked) => {
-                      this.handleShowSkills({ reviewed: isInputChecked });
+                    name="showReviewedSkills"
+                    onCheck={event => {
+                      this.handleShowSkills(event);
                     }}
                   />
                 </div>
