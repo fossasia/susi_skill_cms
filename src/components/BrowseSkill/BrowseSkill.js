@@ -27,6 +27,7 @@ import NavigationArrowUpward from 'material-ui/svg-icons/navigation/arrow-upward
 import NavigationArrowDownward from 'material-ui/svg-icons/navigation/arrow-downward';
 import IconButton from 'material-ui/IconButton';
 import SearchBar from 'material-ui-search-bar';
+import { scrollAnimation } from '../../utils';
 import CircularProgress from 'material-ui/CircularProgress';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import SkillCardList from '../SkillCardList/SkillCardList';
@@ -184,7 +185,7 @@ export default class BrowseSkill extends React.Component {
   };
 
   handleNavigationForward = () => {
-    $('html, body').animate({ scrollTop: 0 }, 'fast');
+    scrollAnimation(document.documentElement, 0, 200, 'vertical');
     const { skills, listPage, listOffset, entriesPerPage } = this.state;
     const newListPage = listPage + 1;
     const newListOffset = listOffset + entriesPerPage;
@@ -196,7 +197,7 @@ export default class BrowseSkill extends React.Component {
   };
 
   handleNavigationBackward = () => {
-    $('html, body').animate({ scrollTop: 0 }, 'fast');
+    scrollAnimation(document.documentElement, 0, 200, 'vertical');
     const { listOffset, entriesPerPage, skills } = this.state;
     let newlistOffset = listOffset - entriesPerPage;
     this.setState(prevState => ({

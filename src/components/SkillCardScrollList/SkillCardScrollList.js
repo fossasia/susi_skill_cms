@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Card } from 'material-ui/Card';
 import PropTypes from 'prop-types';
 import CircleImage from '../CircleImage/CircleImage';
+import { scrollAnimation } from '../../utils';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import NavigationChevronLeft from 'material-ui/svg-icons/navigation/chevron-left';
 import NavigationChevronRight from 'material-ui/svg-icons/navigation/chevron-right';
@@ -11,8 +12,6 @@ import StaffPick from '../../images/staff_pick.png';
 import { urls } from '../../utils';
 
 import styles from './ScrollStyle';
-
-import $ from 'jquery';
 
 class SkillCardScrollList extends Component {
   constructor(props) {
@@ -33,13 +32,13 @@ class SkillCardScrollList extends Component {
 
     let width = window.innerWidth - 317;
 
+    let element = document.getElementsByClassName('scrolling-wrapper')[0];
+
     if (window.innerWidth >= 430) {
-      $('.scrolling-wrapper').css({ width: width });
+      element.style = { width };
     } else {
-      $('.scrolling-wrapper').css({
-        width: window.innerWidth,
-        margin: '10px 0px 10px 0px',
-      });
+      element.style.width = window.innerWidth;
+      element.style.margin = '10px 0px 10px 0px';
     }
   };
 
@@ -67,13 +66,13 @@ class SkillCardScrollList extends Component {
       scrollCards: scrollCards,
     });
 
+    let element = document.getElementsByClassName('scrolling-wrapper')[0];
+
     if (window.innerWidth >= 430) {
-      $('.scrolling-wrapper').css({ width: width });
+      element.style = { width };
     } else {
-      $('.scrolling-wrapper').css({
-        width: window.innerWidth,
-        margin: '10px 0px 10px 0px',
-      });
+      element.style.width = window.innerWidth;
+      element.style.margin = '10px 0px 10px 0px';
     }
   };
 
@@ -98,24 +97,19 @@ class SkillCardScrollList extends Component {
   };
 
   scrollLeft = () => {
+    debugger;
     let parentEle = document.getElementById(this.props.scrollId);
-    let maxScrollValue =
-      $(parentEle).get(0).scrollWidth - $(parentEle).get(0).clientWidth;
-    let scrollValue = $(parentEle).scrollLeft() - 280 * this.state.scrollCards;
-    $(parentEle)
-      .stop()
-      .animate({ scrollLeft: scrollValue }, 100);
+    let maxScrollValue = parentEle.scrollWidth - parentEle.clientWidth;
+    let scrollValue = parentEle.scrollLeft - 280 * this.state.scrollCards;
+    scrollAnimation(parentEle, scrollValue, 100, 'horizontal');
     this.changeBtnDisplay(scrollValue, maxScrollValue);
   };
 
   scrollRight = () => {
     let parentEle = document.getElementById(this.props.scrollId);
-    let scrollValue = $(parentEle).scrollLeft() + 280 * this.state.scrollCards;
-    let maxScrollValue =
-      $(parentEle).get(0).scrollWidth - $(parentEle).get(0).clientWidth;
-    $(parentEle)
-      .stop()
-      .animate({ scrollLeft: scrollValue }, 100);
+    let scrollValue = parentEle.scrollLeft + 280 * this.state.scrollCards;
+    let maxScrollValue = parentEle.scrollWidth - parentEle.clientWidth;
+    scrollAnimation(parentEle, scrollValue, 100, 'horizontal');
     this.changeBtnDisplay(scrollValue, maxScrollValue);
   };
 

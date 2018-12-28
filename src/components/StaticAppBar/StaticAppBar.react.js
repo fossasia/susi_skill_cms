@@ -134,17 +134,23 @@ class StaticAppBar extends Component {
     let didScroll;
     let lastScrollTop = 0;
     let delta = 5;
+    let windowHeight =
+      window.innerHeight ||
+      document.documentElement.clientHeight ||
+      document.body.clientHeight;
+    let headerElement = document.getElementsByTagName('header')[0];
     this.setState({
       showAdmin: cookies.get('showAdmin'),
     });
-    const navbarHeight = $('header').outerHeight();
-    $(window).scroll(event => {
+    const navbarHeight = headerElement.offsetHeight;
+
+    window.addEventListener('scroll', () => {
       didScroll = true;
       this.setState({ showOptions: false });
     });
 
     const hasScrolled = () => {
-      let st = $(window).scrollTop();
+      let st = document.scrollingElement.scrollTop;
       // Make sure they scroll more than delta
       if (Math.abs(lastScrollTop - st) <= delta) {
         return;
@@ -153,14 +159,10 @@ class StaticAppBar extends Component {
       // If they scrolled down and are past the navbar, add class .nav-up.
       // This is necessary so you never see what is 'behind' the navbar.
       if (st > lastScrollTop && st > navbarHeight + 400) {
+        this.setState({ scroll: 'nav-up' });
+      } else if (st + windowHeight < document.body.scrollHeight) {
         // Scroll Down
-        $('header')
-          .removeClass('nav-down')
-          .addClass('nav-up');
-      } else if (st + $(window).height() < $(document).height()) {
-        $('header')
-          .removeClass('nav-up')
-          .addClass('nav-down');
+        this.setState({ scroll: 'nav-down' });
       }
 
       lastScrollTop = st;
@@ -326,7 +328,11 @@ class StaticAppBar extends Component {
 
     return (
       <div>
-        <header className="nav-down" style={headerStyle} id="headerSection">
+        <header
+          className={this.state.scroll}
+          style={headerStyle}
+          id="headerSection"
+        >
           <AppBar
             className="topAppBar"
             id="appBar"
