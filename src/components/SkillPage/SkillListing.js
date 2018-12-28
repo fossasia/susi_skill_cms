@@ -40,7 +40,7 @@ import DeleteBtn from 'material-ui/svg-icons/action/delete';
 import NavigateDown from 'material-ui/svg-icons/navigation/expand-more';
 import NavigateUp from 'material-ui/svg-icons/navigation/expand-less';
 import ReactTooltip from 'react-tooltip';
-import { urls, colors, parseDate } from '../../utils';
+import { urls, colors, parseDate, testExample } from '../../utils';
 
 import './SkillListing.css';
 
@@ -652,11 +652,6 @@ class SkillListing extends Component {
     });
   };
 
-  testExample = (e, exampleText) => {
-    const link = `${urls.CHAT_URL}/?testExample=${exampleText}`;
-    window.open(link, '_blank');
-  };
-
   render() {
     const showAdmin = cookies.get('showAdmin');
     const {
@@ -882,7 +877,7 @@ class SkillListing extends Component {
                             <div
                               key={index}
                               className="example-comment"
-                              onClick={event => this.testExample(event, data)}
+                              onClick={event => testExample(event, data)}
                             >
                               <q>{data}</q>
                             </div>

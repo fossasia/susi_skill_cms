@@ -460,7 +460,7 @@ class UIView extends Component {
   };
 
   handleClickColorBox = id => {
-    $('#colorPicker' + id).click();
+    document.getElementById(`colorPicker${id}`).click();
   };
 
   handleShowBackgroundImageChangeToggle = () => {

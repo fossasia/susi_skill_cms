@@ -8,3 +8,5 @@ export { default as urls } from './urls';
 export { default as getAvatarProps } from './getAvatarProps';
 export { default as camelizeKeys } from './camelizeKeys';
 export { default as toFormData } from './toFormData';
+export { default as scrollAnimation } from './scrollAnimation.js';
+export { default as testExample } from './testExample';
