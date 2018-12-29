@@ -228,12 +228,24 @@ class BotWizard extends React.Component {
             .split('::bodyBackground')[0];
         const imageNameMatch = buildCode.match(/^::image\s(.*)$/m);
         let imagePreviewUrl;
-        if (imageNameMatch[1] !== 'images/<image_name>') {
+        let localImages = [
+          'images/<image_name>',
+          'images/<image_name_event>',
+          'images/<image_name_job>',
+          'images/<image_name_contact>',
+        ];
+        if (!localImages.includes(imageNameMatch[1])) {
           imagePreviewUrl = `${
             urls.API_URL
           }/cms/getImage.png?access_token=${cookies.get(
             'loggedIn',
           )}&language=${language}&group=${group}&image=${imageNameMatch[1]}`;
+        } else if (imageNameMatch[1] === 'images/<image_name_event>') {
+          imagePreviewUrl = '/botTemplates/event-registration.jpg';
+        } else if (imageNameMatch[1] === 'images/<image_name_job>') {
+          imagePreviewUrl = '/botTemplates/job-application.jpg';
+        } else if (imageNameMatch[1] === 'images/<image_name_contact>') {
+          imagePreviewUrl = '/botTemplates/contact-us.png';
         } else {
           imagePreviewUrl = this.state.image;
         }
@@ -470,10 +482,13 @@ class BotWizard extends React.Component {
       });
       return 0;
     }
+    let imageUrl = this.state.imageUrl;
     if (
-      !new RegExp(/.+\.\w+/g).test(self.state.imageUrl) &&
-      self.state.imageUrl !== '<image_name>' &&
-      self.state.imageUrl !== 'images/<image_name>'
+      !new RegExp(/.+\.\w+/g).test(imageUrl) &&
+      imageUrl !== 'images/<image_name>' &&
+      imageUrl !== 'images/<image_name_event>' &&
+      imageUrl !== 'images/<image_name_job>' &&
+      imageUrl !== 'images/<image_name_contact>'
     ) {
       notification.open({
         message: 'Error Processing your Request',
