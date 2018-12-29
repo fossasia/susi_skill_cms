@@ -31,7 +31,7 @@ class SkillCardScrollList extends Component {
     this.updateWindowDimensions();
     window.addEventListener('resize', this.updateWindowDimensions);
 
-    let width = window.innerWidth - 304;
+    let width = window.innerWidth - 317;
 
     if (window.innerWidth >= 430) {
       $('.scrolling-wrapper').css({ width: width });
@@ -62,7 +62,7 @@ class SkillCardScrollList extends Component {
       default:
         scrollCards = 1;
     }
-    let width = window.innerWidth - 304;
+    let width = window.innerWidth - 317;
     this.setState({
       scrollCards: scrollCards,
     });
