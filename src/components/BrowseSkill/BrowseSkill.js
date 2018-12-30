@@ -5,7 +5,6 @@ import ISO6391 from 'iso-639-1';
 import Cookies from 'universal-cookie';
 import * as $ from 'jquery';
 import _ from 'lodash';
-import Ratings from 'react-ratings-declarative';
 import { Link } from 'react-router-dom';
 import SelectField from 'material-ui/SelectField';
 import Checkbox from 'material-ui/Checkbox';
@@ -24,12 +23,16 @@ import ChevronRight from 'material-ui/svg-icons/navigation/chevron-right';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import NavigationArrowBack from 'material-ui/svg-icons/navigation/arrow-back';
 import NavigationArrowForward from 'material-ui/svg-icons/navigation/arrow-forward';
+import NavigationArrowUpward from 'material-ui/svg-icons/navigation/arrow-upward';
+import NavigationArrowDownward from 'material-ui/svg-icons/navigation/arrow-downward';
+import IconButton from 'material-ui/IconButton';
 import SearchBar from 'material-ui-search-bar';
 import CircularProgress from 'material-ui/CircularProgress';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import SkillCardList from '../SkillCardList/SkillCardList';
 import SkillCardGrid from '../SkillCardGrid/SkillCardGrid';
 import SkillCardScrollList from '../SkillCardScrollList/SkillCardScrollList';
+import SkillRating from '../SkillRating/SkillRating.js';
 import { urls, colors } from '../../utils';
 import Footer from '../Footer/Footer.react';
 import './custom.css';
@@ -64,7 +67,8 @@ export default class BrowseSkill extends React.Component {
       groupSelect: false,
       languageSelect: false,
       skillsLoaded: false,
-      filter: '&applyFilter=true&filter_name=descending&filter_type=rating',
+      filter: '',
+      orderBy: 'ascending',
       searchQuery: '',
       staffPicksSkills: [],
       topRatedSkills: [],
@@ -114,6 +118,8 @@ export default class BrowseSkill extends React.Component {
       innerWidth: window.innerWidth,
     });
   };
+
+  // FilterChange
 
   handleFilterChange = (event, index, value) => {
     this.setState({ filter: value, skillsLoaded: false }, () => {
@@ -236,8 +242,7 @@ export default class BrowseSkill extends React.Component {
     if (value) {
       this.setState(
         {
-          filter: `&applyFilter=true&filter_name=descending
-            &filter_type=creation_date&duration=${value}`,
+          filter: `creation_date&duration=${value}`,
           timeFilter: value,
           skillsLoaded: false,
         },
@@ -248,7 +253,7 @@ export default class BrowseSkill extends React.Component {
     } else {
       this.setState(
         {
-          filter: '&applyFilter=true&filter_name=descending&filter_type=rating',
+          filter: 'rating',
           timeFilter: null,
           skillsLoaded: false,
         },
@@ -365,6 +370,7 @@ export default class BrowseSkill extends React.Component {
       entriesPerPage,
       languages,
       groups,
+      orderBy,
     } = this.state;
     let url;
 
@@ -379,6 +385,9 @@ export default class BrowseSkill extends React.Component {
         routeValue +
         '&language=' +
         languageValue +
+        '&applyFilter=true&filter_name=' +
+        orderBy +
+        '&filter_type=' +
         filter +
         showSkills;
     } else if (routeType === 'language') {
@@ -392,9 +401,13 @@ export default class BrowseSkill extends React.Component {
         groupValue +
         '&applyFilter=true&language=' +
         routeValue +
+        '&filter_name=' +
+        orderBy +
+        '&filter_type=' +
         filter +
         showSkills;
     } else if (languages.length > 0 && groups.length > 0) {
+      // idhar hora h
       url =
         urls.API_URL +
         '/cms/getSkillList.json?model=' +
@@ -403,6 +416,9 @@ export default class BrowseSkill extends React.Component {
         groupValue +
         '&language=' +
         languageValue +
+        '&applyFilter=true&filter_name=' +
+        orderBy +
+        '&filter_type=' +
         filter +
         showSkills;
     } else {
@@ -414,7 +430,6 @@ export default class BrowseSkill extends React.Component {
     if (searchQuery.length > 0) {
       url = url + '&q=' + searchQuery;
     }
-
     $.ajax({
       url: url,
       dataType: 'jsonp',
@@ -551,6 +566,18 @@ export default class BrowseSkill extends React.Component {
     ));
   };
 
+  handleOrderByChange = () => {
+    this.setState(
+      prevState => ({
+        orderBy: prevState.orderBy === 'ascending' ? 'descending' : 'ascending',
+        skillsLoaded: false,
+      }),
+      () => {
+        this.loadCards();
+      },
+    );
+  };
+
   render() {
     const {
       languageValue,
@@ -648,6 +675,13 @@ export default class BrowseSkill extends React.Component {
               </div>
             </div>
           )}
+          {timeFilter > 0 && (
+            <div style={{ display: 'flex' }}>
+              :&nbsp;<div style={{ fontWeight: 'bold' }}>
+                Last {timeFilter} days
+              </div>
+            </div>
+          )}
         </div>
       );
     } else if (searchQuery.length > 0) {
@@ -681,6 +715,75 @@ export default class BrowseSkill extends React.Component {
         </div>
       );
     }
+
+    const skillCardListData = [
+      {
+        scrollId: 'staffPicks',
+        skills: staffPicksSkills,
+        heading: 'Staff Picks',
+      },
+      {
+        scrollId: 'topRated',
+        skills: topRatedSkills,
+        heading: '"SUSI, what are your highest rated skills?"',
+      },
+      {
+        scrollId: 'topUsed',
+        skills: topUsedSkills,
+        heading: '"SUSI, what are your most used skills?"',
+      },
+      {
+        scrollId: 'newestSkills',
+        skills: newestSkills,
+        heading: '"SUSI, what are the newest skills?"',
+      },
+      {
+        scrollId: 'latestUpdatedSkills',
+        skills: latestUpdatedSkills,
+        heading: '"SUSI, what are the recently updated skills?"',
+      },
+      {
+        scrollId: 'topFeedback',
+        skills: topFeedbackSkills,
+        heading: '"SUSI, what are the skills with most feedback?"',
+      },
+      {
+        scrollId: 'topGames',
+        skills: topGames,
+        heading: '"SUSI, what are your top games?"',
+      },
+    ];
+
+    let renderCardScrollList = '';
+
+    renderCardScrollList = skillCardListData.map(data => {
+      return data.skills.length && !metricsHidden ? (
+        <div style={metricsContainerStyle}>
+          <div style={styles.metricsHeader} className="metrics-header">
+            <h4>{data.heading}</h4>
+          </div>
+          {/* Scroll Id must be unique for all instances of SkillCardList*/}
+          {!routeType && (
+            <SkillCardScrollList
+              scrollId={data.scrollId} // different
+              skills={data.skills} // different
+              modelValue={modelValue}
+              languageValue={languageValue}
+              skillUrl={skillUrl}
+            />
+          )}
+        </div>
+      ) : null;
+    });
+
+    let renderOrderBy = '';
+
+    renderOrderBy =
+      this.state.orderBy === 'ascending' ? (
+        <NavigationArrowUpward />
+      ) : (
+        <NavigationArrowDownward />
+      );
 
     return (
       <div style={styles.browseSkillRoot}>
@@ -736,13 +839,7 @@ export default class BrowseSkill extends React.Component {
                   >
                     {'< Any release'}
                   </div>
-                  <div
-                    style={{
-                      marginLeft: '10px',
-                      fontWeight: 'bold',
-                      fontSize: '14px',
-                    }}
-                  >
+                  <div style={styles.selectedFilterStyle}>
                     {`Last ${timeFilter} Days`}
                   </div>
                 </div>
@@ -753,7 +850,7 @@ export default class BrowseSkill extends React.Component {
               )}
               {!timeFilter && (
                 <MenuItem
-                  value="&applyFilter=true&filter_name=descending&filter_type=creation_date&duration=7"
+                  value="creation_date&duration=7"
                   key="Last 7 Days"
                   primaryText="Last 7 Days"
                   onClick={() => this.handleArrivalTimeChange(7)}
@@ -762,7 +859,7 @@ export default class BrowseSkill extends React.Component {
               )}
               {!timeFilter && (
                 <MenuItem
-                  value="&applyFilter=true&filter_name=descending&filter_type=creation_date&duration=30"
+                  value="creation_date&duration=30"
                   key="Last 30 Days"
                   primaryText="Last 30 Days"
                   onClick={() => this.handleArrivalTimeChange(30)}
@@ -771,7 +868,7 @@ export default class BrowseSkill extends React.Component {
               )}
               {!timeFilter && (
                 <MenuItem
-                  value="&applyFilter=true&filter_name=descending&filter_type=creation_date&duration=90"
+                  value="creation_date&duration=90"
                   key="Last 90 Days"
                   primaryText="Last 90 Days"
                   onClick={() => this.handleArrivalTimeChange(90)}
@@ -785,15 +882,7 @@ export default class BrowseSkill extends React.Component {
                   <Link to="/">
                     <div className="index-link-sidebar">{'< SUSI Skills'}</div>
                   </Link>
-                  <div
-                    style={{
-                      marginLeft: '10px',
-                      fontWeight: 'bold',
-                      fontSize: '14px',
-                    }}
-                  >
-                    {routeValue}
-                  </div>
+                  <div style={styles.selectedFilterStyle}>{routeValue}</div>
                 </div>
               ) : (
                 <div>
@@ -825,11 +914,7 @@ export default class BrowseSkill extends React.Component {
                     checked={showStaffPicks}
                     labelStyle={{ fontSize: '14px' }}
                     iconStyle={{ left: '4px' }}
-                    style={{
-                      width: '256px',
-                      paddingLeft: '8px',
-                      top: '3px',
-                    }}
+                    style={styles.checkboxStyle}
                     onCheck={(event, isInputChecked) => {
                       this.handleShowSkills({ staffPicks: isInputChecked });
                     }}
@@ -841,11 +926,7 @@ export default class BrowseSkill extends React.Component {
                     checked={showReviewedSkills}
                     labelStyle={{ fontSize: '14px' }}
                     iconStyle={{ left: '4px' }}
-                    style={{
-                      width: '256px',
-                      paddingLeft: '8px',
-                      top: '3px',
-                    }}
+                    style={styles.checkboxStyle}
                     onCheck={(event, isInputChecked) => {
                       this.handleShowSkills({ reviewed: isInputChecked });
                     }}
@@ -874,98 +955,26 @@ export default class BrowseSkill extends React.Component {
                 ''
               )}
               <div style={styles.starRefine}>
-                <div
-                  style={styles.singleRating}
-                  onClick={() => this.handleRatingRefine(4)}
-                >
-                  <Ratings
-                    rating={4}
-                    widgetRatedColors="#ffbb28"
-                    widgetDimensions="20px"
-                    widgetSpacings="0px"
-                  >
-                    <Ratings.Widget />
-                    <Ratings.Widget />
-                    <Ratings.Widget />
-                    <Ratings.Widget />
-                    <Ratings.Widget />
-                  </Ratings>
-                  <div
-                    style={styles.ratingLabel}
-                    className={ratingRefine === 4 ? 'bold' : ''}
-                  >
-                    & Up
-                  </div>
-                </div>
-                <div
-                  style={styles.singleRating}
-                  onClick={() => this.handleRatingRefine(3)}
-                >
-                  <Ratings
-                    rating={3}
-                    widgetRatedColors="#ffbb28"
-                    widgetDimensions="20px"
-                    widgetSpacings="0px"
-                  >
-                    <Ratings.Widget />
-                    <Ratings.Widget />
-                    <Ratings.Widget />
-                    <Ratings.Widget />
-                    <Ratings.Widget />
-                  </Ratings>
-                  <div
-                    style={styles.ratingLabel}
-                    className={ratingRefine === 3 ? 'bold' : ''}
-                  >
-                    & Up
-                  </div>
-                </div>
-                <div
-                  style={styles.singleRating}
-                  onClick={() => this.handleRatingRefine(2)}
-                >
-                  <Ratings
-                    rating={2}
-                    widgetRatedColors="#ffbb28"
-                    widgetDimensions="20px"
-                    widgetSpacings="0px"
-                  >
-                    <Ratings.Widget />
-                    <Ratings.Widget />
-                    <Ratings.Widget />
-                    <Ratings.Widget />
-                    <Ratings.Widget />
-                  </Ratings>
-                  <div
-                    style={styles.ratingLabel}
-                    className={ratingRefine === 2 ? 'bold' : ''}
-                  >
-                    & Up
-                  </div>
-                </div>
-                <div
-                  style={styles.singleRating}
-                  onClick={() => this.handleRatingRefine(1)}
-                >
-                  <Ratings
-                    rating={1}
-                    widgetRatedColors="#ffbb28"
-                    widgetDimensions="20px"
-                    widgetSpacings="0px"
-                  >
-                    <Ratings.Widget />
-                    <Ratings.Widget />
-                    <Ratings.Widget />
-                    <Ratings.Widget />
-                    <Ratings.Widget />
-                  </Ratings>
-                  <div
-                    style={styles.ratingLabel}
-                    className={ratingRefine === 1 ? 'bold' : ''}
-                  >
-                    & Up
-                  </div>
-                </div>
+                <SkillRating
+                  handleRatingRefine={this.handleRatingRefine}
+                  rating={4}
+                  ratingRefine={ratingRefine}
+                />
+                <SkillRating
+                  handleRatingRefine={this.handleRatingRefine}
+                  rating={3}
+                  ratingRefine={ratingRefine}
+                />
+                <SkillRating
+                  handleRatingRefine={this.handleRatingRefine}
+                  rating={2}
+                  ratingRefine={ratingRefine}
+                />
+                <SkillRating
+                  handleRatingRefine={this.handleRatingRefine}
+                  rating={1}
+                  ratingRefine={ratingRefine}
+                />
               </div>
             </Menu>
           </div>
@@ -982,105 +991,77 @@ export default class BrowseSkill extends React.Component {
                 />
               </div>
               {metricsHidden && (
-                <SelectField
-                  floatingLabelText="Sort by"
-                  value={filter}
-                  floatingLabelFixed={false}
-                  onChange={this.handleFilterChange}
-                  style={styles.selection}
-                  className="select"
-                  autoWidth
-                  listStyle={{
-                    top: '100px',
-                  }}
-                  selectedMenuItemStyle={{
-                    color: colors.header,
-                  }}
-                  underlineFocusStyle={{
-                    color: colors.header,
-                  }}
-                >
-                  <MenuItem
-                    value={
-                      '&applyFilter=true&filter_name=ascending&filter_type=lexicographical'
-                    }
-                    key={
-                      '&applyFilter=true&filter_name=ascending&filter_type=lexicographical'
-                    }
-                    primaryText={'A-Z'}
-                    label={'Name (A-Z)'}
-                  />
-                  <MenuItem
-                    value={
-                      '&applyFilter=true&filter_name=descending&filter_type=lexicographical'
-                    }
-                    key={
-                      '&applyFilter=true&filter_name=descending&filter_type=lexicographical'
-                    }
-                    primaryText={'Z-A'}
-                    label={'Name (Z-A)'}
-                  />
-                  <MenuItem
-                    value={
-                      '&applyFilter=true&filter_name=descending&filter_type=rating'
-                    }
-                    key={
-                      '&applyFilter=true&filter_name=descending&filter_type=rating'
-                    }
-                    primaryText={'Top Rated'}
-                    label={'Top Rated'}
-                  />
-                  <MenuItem
-                    value={
-                      '&applyFilter=true&filter_name=descending&filter_type=creation_date'
-                    }
-                    key={
-                      '&applyFilter=true&filter_name=descending&filter_type=creation_date'
-                    }
-                    primaryText={'Newly created'}
-                    label={'Newly Created'}
-                  />
-                  <MenuItem
-                    value={
-                      '&applyFilter=true&filter_name=descending&filter_type=modified_date'
-                    }
-                    key={
-                      '&applyFilter=true&filter_name=descending&filter_type=modified_date'
-                    }
-                    primaryText={'Recently updated'}
-                    label={'Recently updated'}
-                  />
-                  <MenuItem
-                    value={
-                      '&applyFilter=true&filter_name=descending&filter_type=feedback'
-                    }
-                    key={
-                      '&applyFilter=true&filter_name=descending&filter_type=feedback'
-                    }
-                    primaryText={'Feedback Count'}
-                    label={'Feedback Count'}
-                  />
-                  <MenuItem
-                    value={
-                      '&applyFilter=true&filter_name=descending&filter_type=usage&duration=7'
-                    }
-                    key={
-                      '&applyFilter=true&filter_name=descending&filter_type=usage&duration=7'
-                    }
-                    primaryText={'This Week Usage'}
-                    label={'This Week Usage'}
-                  />
-                  <MenuItem
-                    value={
-                      '&applyFilter=true&filter_name=descending&filter_type=usage&duration=30'
-                    }
-                    key={
-                      '&applyFilter=true&filter_name=descending&filter_type=usage&duration=30'
-                    }
-                    primaryText={'This Month Usage'}
-                    label={'This Month Usage'}
-                  />
-                </SelectField>
+                <div style={styles.sortBy}>
+                  {this.state.filter !== '' && (
+                    <IconButton
+                      iconStyle={{ fill: '#4285F4' }}
+                      onClick={this.handleOrderByChange}
+                    >
+                      {renderOrderBy}
+                    </IconButton>
+                  )}
+                  <SelectField
+                    floatingLabelText="Sort by"
+                    value={filter}
+                    floatingLabelFixed={false}
+                    onChange={this.handleFilterChange}
+                    style={styles.selection}
+                    className="select"
+                    // autoWidth
+                    listStyle={{
+                      top: '100px',
+                    }}
+                    selectedMenuItemStyle={{
+                      color: colors.header,
+                    }}
+                    underlineFocusStyle={{
+                      color: colors.header,
+                    }}
+                  >
+                    <MenuItem
+                      value={'lexicographical'}
+                      key={'lexicographical'}
+                      primaryText={'A-Z'}
+                      label={'Name (A-Z)'}
+                    />
+                    <MenuItem
+                      value={'rating'}
+                      key={'rating'}
+                      primaryText={'Top Rated'}
+                      label={'Top Rated'}
+                    />
+                    <MenuItem
+                      value={'creation_date'}
+                      key={'creation_date'}
+                      primaryText={'Newly created'}
+                      label={'Newly Created'}
+                    />
+                    <MenuItem
+                      value={'modified_date'}
+                      key={'modified_date'}
+                      primaryText={'Recently updated'}
+                      label={'Recently updated'}
+                    />
+                    <MenuItem
+                      value={'feedback'}
+                      key={'feedback'}
+                      primaryText={'Feedback Count'}
+                      label={'Feedback Count'}
+                    />
+                    <MenuItem
+                      value={'usage&duration=7'}
+                      key={'usage&duration=7'}
+                      primaryText={'This Week Usage'}
+                      label={'This Week Usage'}
+                    />
+                    <MenuItem
+                      value={'usage&duration=30'}
+                      key={'usage&duration=30'}
+                      primaryText={'This Month Usage'}
+                      label={'This Month Usage'}
+                    />
+                  </SelectField>
+                </div>
               )}
               <SelectField
                 autoWidth
@@ -1128,7 +1109,9 @@ export default class BrowseSkill extends React.Component {
                     checkedIcon={
                       <ActionViewStream style={{ fill: '#4285f4' }} />
                     }
-                    uncheckedIcon={<ActionViewStream />}
+                    uncheckedIcon={
+                      <ActionViewStream style={{ fill: '#e0e0e0' }} />
+                    }
                   />
                   <RadioButton
                     value="grid"
@@ -1138,7 +1121,9 @@ export default class BrowseSkill extends React.Component {
                     checkedIcon={
                       <ActionViewModule style={{ fill: '#4285f4' }} />
                     }
-                    uncheckedIcon={<ActionViewModule />}
+                    uncheckedIcon={
+                      <ActionViewModule style={{ fill: '#e0e0e0' }} />
+                    }
                   />
                 </RadioButtonGroup>
               )}
@@ -1156,211 +1141,59 @@ export default class BrowseSkill extends React.Component {
 
             {skillsLoaded ? (
               <div style={styles.container}>
-                {staffPicksSkills.length && !metricsHidden ? (
-                  <div style={metricsContainerStyle}>
-                    <div
-                      style={styles.metricsHeader}
-                      className="metrics-header"
-                    >
-                      <h4>{'Staff Picks'}</h4>
-                    </div>
-                    {/* Scroll Id must be unique for all instances of SkillCardList*/}
-                    {!routeType && (
-                      <SkillCardScrollList
-                        scrollId="staffPicks"
-                        skills={staffPicksSkills}
-                        modelValue={modelValue}
-                        languageValue={languageValue}
-                        skillUrl={skillUrl}
-                      />
-                    )}
-                  </div>
-                ) : null}
-
-                {topRatedSkills.length && !metricsHidden ? (
-                  <div style={metricsContainerStyle}>
-                    <div
-                      style={styles.metricsHeader}
-                      className="metrics-header"
-                    >
-                      <h4>{'"SUSI, what are your highest rated skills?"'}</h4>
-                    </div>
-                    {/* Scroll Id must be unique for all instances of SkillCardList*/}
-                    {!routeType && (
-                      <SkillCardScrollList
-                        scrollId="topRated"
-                        skills={topRatedSkills}
-                        modelValue={modelValue}
-                        languageValue={languageValue}
-                        skillUrl={skillUrl}
-                      />
-                    )}
-                  </div>
-                ) : null}
-
-                {topUsedSkills.length && !metricsHidden ? (
-                  <div style={metricsContainerStyle}>
-                    <div
-                      style={styles.metricsHeader}
-                      className="metrics-header"
-                    >
-                      <h4>{'"SUSI, what are your most used skills?"'}</h4>
-                    </div>
-                    {/* Scroll Id must be unique for all instances of SkillCardList*/}
-                    {!routeType && (
-                      <SkillCardScrollList
-                        scrollId="topUsed"
-                        skills={topUsedSkills}
-                        modelValue={modelValue}
-                        languageValue={languageValue}
-                        skillUrl={skillUrl}
-                      />
-                    )}
-                  </div>
-                ) : null}
-
-                {newestSkills.length && !metricsHidden ? (
-                  <div style={metricsContainerStyle}>
-                    <div
-                      style={styles.metricsHeader}
-                      className="metrics-header"
-                    >
-                      <h4>{'"SUSI, what are the newest skills?"'}</h4>
-                    </div>
-                    {/* Scroll Id must be unique for all instances of SkillCardList*/}
-                    {!routeType && (
-                      <SkillCardScrollList
-                        scrollId="newestSkills"
-                        skills={newestSkills}
-                        modelValue={modelValue}
-                        languageValue={languageValue}
-                        skillUrl={skillUrl}
-                      />
-                    )}
-                  </div>
-                ) : null}
-
-                {latestUpdatedSkills.length && !metricsHidden ? (
-                  <div style={metricsContainerStyle}>
-                    <div
-                      style={styles.metricsHeader}
-                      className="metrics-header"
-                    >
-                      <h4>{'"SUSI, what are the recently updated skills?"'}</h4>
-                    </div>
-                    {/* Scroll Id must be unique for all instances of SkillCardList*/}
-                    {!routeType && (
-                      <SkillCardScrollList
-                        scrollId="latestUpdatedSkills"
-                        skills={latestUpdatedSkills}
-                        modelValue={modelValue}
-                        languageValue={languageValue}
-                        skillUrl={skillUrl}
-                      />
-                    )}
-                  </div>
-                ) : null}
-
-                {topFeedbackSkills.length && !metricsHidden ? (
-                  <div style={metricsContainerStyle}>
-                    <div
-                      style={styles.metricsHeader}
-                      className="metrics-header"
-                    >
-                      <h4>
-                        {'"SUSI, what are the skills with most feedback?"'}
-                      </h4>
-                    </div>
-                    {/* Scroll Id must be unique for all instances of SkillCardList*/}
-                    {!routeType && (
-                      <SkillCardScrollList
-                        scrollId="topFeedback"
-                        skills={topFeedbackSkills}
-                        modelValue={modelValue}
-                        languageValue={languageValue}
-                        skillUrl={skillUrl}
-                      />
-                    )}
-                  </div>
-                ) : null}
-
-                {topGames.length && !metricsHidden ? (
-                  <div style={metricsContainerStyle}>
-                    <div
-                      style={styles.metricsHeader}
-                      className="metrics-header"
-                    >
-                      <h4>{'"SUSI, what are your top games?"'}</h4>
-                    </div>
-                    {/* Scroll Id must be unique for all instances of SkillCardList*/}
-                    {!routeType && (
-                      <SkillCardScrollList
-                        scrollId="topGames"
-                        skills={topGames}
-                        modelValue={modelValue}
-                        languageValue={languageValue}
-                        skillUrl={skillUrl}
-                      />
-                    )}
-                  </div>
-                ) : null}
-
+                <div>{renderCardScrollList}</div>
                 {metricsHidden ? (
                   <div>
-                    {searchQuery.length || routeType || ratingRefine ? (
-                      <div id={'page-filter'}>
-                        {renderSkillCount}
-                        {skills.length > 10 && (
-                          <div id={'pagination'}>
-                            <SelectField
-                              floatingLabelText="Skills per page"
-                              floatingLabelFixed={false}
-                              hintText="Entries per page"
-                              style={{ width: '150px' }}
-                              value={entriesPerPage}
-                              onChange={this.handleEntriesPerPageChange}
-                            >
-                              <MenuItem
-                                value={10}
-                                key={10}
-                                primaryText={'10'}
-                                label={'10'}
-                              />
-                              <MenuItem
-                                value={20}
-                                key={20}
-                                primaryText={'20'}
-                                label={'20'}
-                              />
-                              <MenuItem
-                                value={50}
-                                key={50}
-                                primaryText={'50'}
-                                label={'50'}
-                              />
-                              <MenuItem
-                                value={100}
-                                key={100}
-                                primaryText={'100'}
-                                label={'100'}
-                              />
-                            </SelectField>
-                            <SelectField
-                              floatingLabelText="Page"
-                              floatingLabelFixed={false}
-                              hintText="Page"
-                              style={{ width: '150px' }}
-                              value={listPage}
-                              onChange={this.handlePageChange}
-                            >
-                              {this.pageMenuItems()}
-                            </SelectField>
-                          </div>
-                        )}
-                      </div>
-                    ) : (
-                      ''
-                    )}
+                    <div id={'page-filter'}>
+                      {renderSkillCount}
+                      {skills.length > 10 && (
+                        <div id={'pagination'}>
+                          <SelectField
+                            floatingLabelText="Skills per page"
+                            floatingLabelFixed={false}
+                            hintText="Entries per page"
+                            style={{ width: '150px' }}
+                            value={entriesPerPage}
+                            onChange={this.handleEntriesPerPageChange}
+                          >
+                            <MenuItem
+                              value={10}
+                              key={10}
+                              primaryText={'10'}
+                              label={'10'}
+                            />
+                            <MenuItem
+                              value={20}
+                              key={20}
+                              primaryText={'20'}
+                              label={'20'}
+                            />
+                            <MenuItem
+                              value={50}
+                              key={50}
+                              primaryText={'50'}
+                              label={'50'}
+                            />
+                            <MenuItem
+                              value={100}
+                              key={100}
+                              primaryText={'100'}
+                              label={'100'}
+                            />
+                          </SelectField>
+                          <SelectField
+                            floatingLabelText="Page"
+                            floatingLabelFixed={false}
+                            hintText="Page"
+                            style={{ width: '150px' }}
+                            value={listPage}
+                            onChange={this.handlePageChange}
+                          >
+                            {this.pageMenuItems()}
+                          </SelectField>
+                        </div>
+                      )}
+                    </div>
                     <div>
                       {viewType === 'list' ? (
                         <SkillCardList
@@ -1379,7 +1212,11 @@ export default class BrowseSkill extends React.Component {
                       )}
                     </div>
                     {skills.length > 10 && (
-                      <div id={'pageNavigation'}>
+                      <div className="pageNavigation">
+                        <div className="pagination-test">
+                          Page: {this.state.listPage} out of{' '}
+                          {Math.ceil(skills.length / entriesPerPage)}
+                        </div>
                         <FloatingActionButton
                           disabled={listPage === 1}
                           style={{ marginRight: '15px' }}
@@ -1402,17 +1239,7 @@ export default class BrowseSkill extends React.Component {
                     )}
                   </div>
                 ) : (
-                  <div>
-                    {routeType || searchQuery.length || timeFilter ? (
-                      <div style={styles.noSkill}>
-                        No Skills found. Be the first one to
-                        <Link to="/skillCreator"> create</Link> a skill in this
-                        category
-                      </div>
-                    ) : (
-                      ''
-                    )}
-                  </div>
+                  ''
                 )}
                 {/* Check if mobile view is currently active*/}
                 <div className="category-mobile-section">
