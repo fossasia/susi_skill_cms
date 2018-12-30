@@ -7,6 +7,19 @@
 	width: 100%;
 }
 
+button {
+	transition: none !important;
+}
+button > div {
+	transition: none !important;
+}
+button > div > div {
+	transition: none !important;
+}
+button > svg {
+	transition: none !important;
+}
+
 @media only screen and (max-width:769px){
 	.skillcreator-col{
 		position: inherit  ;
