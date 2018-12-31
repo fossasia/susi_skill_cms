@@ -1,27 +1,34 @@
 import React, { Component } from 'react';
-import $ from 'jquery';
-import StaticAppBar from '../../StaticAppBar/StaticAppBar.react';
-import Cookies from 'universal-cookie';
 import PropTypes from 'prop-types';
+import $ from 'jquery';
+import Cookies from 'universal-cookie';
 import Paper from 'material-ui/Paper';
 import Table from 'antd/lib/table';
 import Tabs from 'antd/lib/tabs';
 import { LocaleProvider } from 'antd';
 import enUS from 'antd/lib/locale-provider/en_US';
 import NotFound from '../../NotFound/NotFound.react';
-
+import StaticAppBar from '../../StaticAppBar/StaticAppBar.react';
 import { urls } from '../../../utils';
 
 const cookies = new Cookies();
 
 const TabPane = Tabs.TabPane;
 
+const styles = {
+  tabStyle: {
+    width: '100%',
+    animated: false,
+    textAlign: 'left',
+    display: 'inline-block',
+  },
+};
+
 class SystemSettings extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      tabPosition: 'top',
       apiKeys: [],
       loading: true,
     };
@@ -46,8 +53,7 @@ class SystemSettings extends Component {
   }
 
   componentDidMount() {
-    let url;
-    url = `${urls.API_URL}/aaa/getApiKeys.json`;
+    const url = `${urls.API_URL}/aaa/getApiKeys.json`;
     $.ajax({
       url: url,
       dataType: 'jsonp',
@@ -59,7 +65,7 @@ class SystemSettings extends Component {
         let i = 1;
         let keys = Object.keys(response.keys);
         keys.forEach(j => {
-          let apiKey = {
+          const apiKey = {
             serialNum: i,
             keyName: j,
             value: response.keys[j],
@@ -94,13 +100,7 @@ class SystemSettings extends Component {
   };
 
   render() {
-    const tabStyle = {
-      width: '100%',
-      animated: false,
-      textAlign: 'left',
-      display: 'inline-block',
-    };
-
+    const { tabStyle } = styles;
     return (
       <div>
         {cookies.get('showAdmin') === 'true' ? (
@@ -114,7 +114,7 @@ class SystemSettings extends Component {
                 <Tabs
                   defaultActiveKey="4"
                   onTabClick={this.handleTabChange}
-                  tabPosition={this.state.tabPosition}
+                  tabPosition="top"
                   animated={false}
                   type="card"
                   style={{ minHeight: '500px' }}

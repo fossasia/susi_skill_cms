@@ -166,6 +166,11 @@ const styles = {
   searchBar: {
     width: '100%',
     marginRight: '20px',
+    flexShrink: '10',
+  },
+  sortBy: {
+    display: 'flex',
+    alignItems: 'center',
   },
   home: {
     display: 'flex',
@@ -219,6 +224,16 @@ const styles = {
   },
   staffPick: {
     margin: '4px 0 0 6px',
+  },
+  checkboxStyle: {
+    width: '256px',
+    paddingLeft: '8px',
+    top: '3px',
+  },
+  selectedFilterStyle: {
+    marginLeft: '10px',
+    fontWeight: 'bold',
+    fontSize: '14px',
   },
 };
 

@@ -3,6 +3,7 @@
   max-width: 95%;
   width: 330px;
   margin: auto;
+  padding: 0 20px;
 }
 .susi-body-noscroll {
     position: fixed;

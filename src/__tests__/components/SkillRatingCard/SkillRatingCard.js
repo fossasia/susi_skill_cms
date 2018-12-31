@@ -1,5 +1,5 @@
 import React from 'react';
-import SkillRatingCard from '../../../components/SkillRatingCard/SkillRatingCard';
+import SkillRatingCard from '../../../components/SkillRating/SkillRatingCard';
 import { shallow } from 'enzyme';
 
 describe('<SkillRatingCard />', () => {

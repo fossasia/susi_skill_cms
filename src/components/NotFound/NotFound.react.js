@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
 import './NotFound.css';
-import LogoImg from '../images/susi-logo.svg';
+import LogoImg from '../../images/susi-logo.svg';
 import Login from '../Auth/Login/Login';
 import SignUp from '../Auth/SignUp/SignUp';
 import Dialog from 'material-ui/Dialog';

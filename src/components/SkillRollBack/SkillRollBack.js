@@ -10,7 +10,7 @@ import notification from 'antd/lib/notification';
 import CircularProgress from 'material-ui/CircularProgress';
 
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
-import SkillEditor from '../SkillEditor/SkillEditor';
+import SkillCreator from '../SkillCreator/SkillCreator';
 import { urls } from '../../utils';
 
 import 'brace/mode/markdown';
@@ -32,7 +32,7 @@ const cookies = new Cookies();
 class SkillRollBack extends Component {
   constructor(props) {
     super(props);
-    var parsePath = this.props.location.pathname.split('/');
+    const parsePath = this.props.location.pathname.split('/');
     this.state = {
       code:
         '::name <Skill_name>\n::author <author_name>\n::author_url <author_url>\n::description <description> \n::dynamic_content <Yes/No>\n::developer_privacy_policy <link>\n::image <image_url>\n::terms_of_use <link>\n\n\nUser query1|query2|quer3....\n!example:<The question that should be shown in public skill displays>\n!expect:<The answer expected for the above example>\nAnswer for the user query',
@@ -74,7 +74,7 @@ class SkillRollBack extends Component {
     document.title = 'SUSI.AI - Skill RollBack';
     let baseUrl = this.getSkillAtCommitIDUrl();
     let self = this;
-    var url1 = baseUrl + self.state.latestCommit;
+    const url1 = baseUrl + self.state.latestCommit;
     // console.log(url1);
     $.ajax({
       url: url1,
@@ -82,7 +82,7 @@ class SkillRollBack extends Component {
       jsonp: 'callback',
       crossDomain: true,
       success: function(data1) {
-        var url2 = baseUrl + self.state.revertingCommit;
+        const url2 = baseUrl + self.state.revertingCommit;
         // console.log(url2);
         $.ajax({
           url: url2,
@@ -208,7 +208,7 @@ class SkillRollBack extends Component {
          console.log(pair[0]+ ', '+ pair[1]);
       } */
 
-    var settings = {
+    const settings = {
       async: true,
       crossDomain: true,
       url: urls.API_URL + '/cms/modifySkill.json',
@@ -380,7 +380,7 @@ class SkillRollBack extends Component {
               </h1>
             </div>
             <div style={{ marginTop: '-100px', width: '100%' }}>
-              <SkillEditor
+              <SkillCreator
                 showTopBar={false}
                 revertingCommit={this.state.revertingCommit}
                 location={{

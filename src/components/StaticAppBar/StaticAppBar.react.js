@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import Cookies from 'universal-cookie';
-import Auth from '../Auth/';
+import $ from 'jquery';
+import { connect } from 'react-redux';
 import List from 'material-ui/svg-icons/action/list';
 import AppBar from 'material-ui/AppBar';
 import IconButton from 'material-ui/IconButton';
@@ -14,22 +16,24 @@ import Assessment from 'material-ui/svg-icons/action/assessment';
 import LoginIcon from 'material-ui/svg-icons/action/account-circle';
 import Info from 'material-ui/svg-icons/action/info';
 import Settings from 'material-ui/svg-icons/action/settings';
+import MenuItem from 'material-ui/MenuItem';
 import Chat from 'material-ui/svg-icons/communication/chat';
 import SkillIcon from 'material-ui/svg-icons/action/dashboard';
 import CircleImage from '../CircleImage/CircleImage';
-import MenuItem from 'material-ui/MenuItem';
-import { Link } from 'react-router-dom';
-import susiWhite from '../images/SUSIAI-white.png';
+import susiWhite from '../../images/SUSIAI-white.png';
+import Auth from '../Auth/';
 import { urls, colors, isProduction } from '../../utils';
-import $ from 'jquery';
 import './StaticAppBar.css';
-// import ListUser from '../Admin/ListUser/ListUser';
 
 const cookieDomain = isProduction() ? '.susi.ai' : '';
 
 const cookies = new Cookies();
 
-let TopRightMenuItems = props => (
+const headerStyle = {
+  background: colors.header,
+};
+
+const TopRightMenuItems = props => (
   <div>
     <MenuItem href={urls.CHAT_URL} rightIcon={<Chat />}>
       Chat
@@ -46,6 +50,11 @@ let TopRightMenuItems = props => (
 );
 
 class StaticAppBar extends Component {
+  static propTypes = {
+    location: PropTypes.object,
+    history: PropTypes.object,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -58,90 +67,90 @@ class StaticAppBar extends Component {
   }
 
   handleScroll = event => {
-    let scrollTop = event.pageY || event.target.body.scrollTop,
-      itemTranslate = scrollTop > 60;
+    const scrollTop = event.pageY || event.target.body.scrollTop;
+    const itemTranslate = scrollTop > 60;
     if (itemTranslate) {
       this.closeOptions();
     }
   };
 
+  initializeShowAdminService = () => {
+    $.ajax({
+      url: `${
+        urls.API_URL
+      }/aaa/showAdminService.json?access_token=${cookies.get('loggedIn')}`,
+      dataType: 'jsonp',
+      jsonpCallback: 'pfns',
+      jsonp: 'callback',
+      crossDomain: true,
+      success: newResponse => {
+        const showAdmin = newResponse.showAdmin;
+        cookies.set('showAdmin', showAdmin, {
+          path: '/',
+          domain: cookieDomain,
+        });
+        this.setState({
+          showAdmin,
+        });
+      },
+      error: newErrorThrown => {
+        console.log(newErrorThrown);
+      },
+    });
+  };
+
+  initializeListUserSettings = () => {
+    $.ajax({
+      url: `${
+        urls.API_URL
+      }/aaa/listUserSettings.json?access_token=${cookies.get('loggedIn')}`,
+      jsonpCallback: 'pc',
+      dataType: 'jsonp',
+      jsonp: 'callback',
+      crossDomain: true,
+      success: data => {
+        let userName = '';
+        if (data.settings && data.settings.userName) {
+          userName = data.settings.userName;
+        }
+        cookies.set('username', userName, {
+          path: '/',
+          domain: cookieDomain,
+        });
+      },
+      error: errorThrown => {
+        console.log(errorThrown);
+      },
+    });
+  };
+
   componentDidMount() {
     window.addEventListener('scroll', this.handleScroll);
-    let url;
     if (cookies.get('loggedIn')) {
-      url =
-        urls.API_URL +
-        '/aaa/showAdminService.json?access_token=' +
-        cookies.get('loggedIn');
-
-      $.ajax({
-        url: url,
-        dataType: 'jsonp',
-        jsonpCallback: 'pfns',
-        jsonp: 'callback',
-        crossDomain: true,
-        success: function(newResponse) {
-          let ShowAdmin = newResponse.showAdmin;
-          cookies.set('showAdmin', ShowAdmin, {
-            path: '/',
-            domain: cookieDomain,
-          });
-          this.setState({
-            showAdmin: ShowAdmin,
-          });
-          // console.log(newResponse.showAdmin)
-        }.bind(this),
-        error: function(newErrorThrown) {
-          console.log(newErrorThrown);
-        },
-      });
-
-      $.ajax({
-        url:
-          urls.API_URL +
-          '/aaa/listUserSettings.json?access_token=' +
-          cookies.get('loggedIn'),
-        jsonpCallback: 'pc',
-        dataType: 'jsonp',
-        jsonp: 'callback',
-        crossDomain: true,
-        success: function(data) {
-          let userName = '';
-          if (data.settings && data.settings.userName) {
-            userName = data.settings.userName;
-          }
-          cookies.set('username', userName, {
-            path: '/',
-            domain: cookieDomain,
-          });
-        },
-        error: function(errorThrown) {
-          console.log(errorThrown);
-        },
-      });
+      this.initializeShowAdminService();
+      this.initializeListUserSettings();
     }
 
-    var didScroll;
-    var lastScrollTop = 0;
-    var delta = 5;
+    let didScroll;
+    let lastScrollTop = 0;
+    let delta = 5;
+    let windowHeight =
+      window.innerHeight ||
+      document.documentElement.clientHeight ||
+      document.body.clientHeight;
+    let headerElement = document.getElementsByTagName('header')[0];
     this.setState({
       showAdmin: cookies.get('showAdmin'),
     });
-    var navbarHeight = $('header').outerHeight();
-    $(window).scroll(event => {
+    const navbarHeight = headerElement.offsetHeight;
+
+    window.addEventListener('scroll', () => {
       didScroll = true;
       this.setState({ showOptions: false });
     });
 
-    setInterval(function() {
-      if (didScroll) {
-        hasScrolled();
-        didScroll = false;
-      }
-    }, 500);
-
-    function hasScrolled() {
-      var st = $(window).scrollTop();
+    const hasScrolled = () => {
+      let st = document.scrollingElement.scrollTop;
       // Make sure they scroll more than delta
       if (Math.abs(lastScrollTop - st) <= delta) {
         return;
@@ -150,18 +159,21 @@ class StaticAppBar extends Component {
       // If they scrolled down and are past the navbar, add class .nav-up.
       // This is necessary so you never see what is 'behind' the navbar.
       if (st > lastScrollTop && st > navbarHeight + 400) {
+        this.setState({ scroll: 'nav-up' });
+      } else if (st + windowHeight < document.body.scrollHeight) {
         // Scroll Down
-        $('header')
-          .removeClass('nav-down')
-          .addClass('nav-up');
-      } else if (st + $(window).height() < $(document).height()) {
-        $('header')
-          .removeClass('nav-up')
-          .addClass('nav-down');
+        this.setState({ scroll: 'nav-down' });
       }
 
       lastScrollTop = st;
-    }
+    };
+
+    setInterval(() => {
+      if (didScroll) {
+        hasScrolled();
+        didScroll = false;
+      }
+    }, 500);
   }
 
   showOptions = event => {
@@ -173,7 +185,8 @@ class StaticAppBar extends Component {
   };
 
   closeOptions = () => {
-    if (this.state.showOptions) {
+    const { showOptions } = this.state;
+    if (showOptions) {
       this.setState({
         showOptions: false,
       });
@@ -190,9 +203,13 @@ class StaticAppBar extends Component {
   closeAuthDialog = () => this.setState({ showAuth: false });
 
   render() {
-    const headerStyle = {
-      background: colors.header,
-    };
+    const {
+      timestamp,
+      showOptions,
+      anchorEl,
+      showAdmin,
+      showAuth,
+    } = this.state;
 
     const isLoggedIn = !!cookies.get('loggedIn');
     let avatarProps = null;
@@ -201,11 +218,11 @@ class StaticAppBar extends Component {
         name: cookies.get('emailId'),
         src: `${urls.API_URL}/getAvatar.png?access_token=${cookies.get(
           'loggedIn',
-        )}&q=${this.state.timestamp}`,
+        )}&q=${timestamp}`,
       };
     }
 
-    let TopRightMenu = props => (
+    const TopRightMenu = props => (
       <div className="topRightMenu" onScroll={this.handleScroll}>
         {isLoggedIn && (
           <div
@@ -251,8 +268,8 @@ class StaticAppBar extends Component {
             marginTop: '46px',
             marginRight: '8px',
           }}
-          open={this.state.showOptions}
-          anchorEl={this.state.anchorEl}
+          open={showOptions}
+          anchorEl={anchorEl}
           anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
           targetOrigin={{ horizontal: 'right', vertical: 'top' }}
           onRequestClose={this.closeOptions}
@@ -285,7 +302,7 @@ class StaticAppBar extends Component {
               About
             </MenuItem>
           ) : null}
-          {this.state.showAdmin === true ? (
+          {showAdmin === true ? (
             <MenuItem
               primaryText="Admin"
               containerElement={<Link to="/admin" />}
@@ -311,14 +328,18 @@ class StaticAppBar extends Component {
 
     return (
       <div>
-        <header className="nav-down" style={headerStyle} id="headerSection">
+        <header
+          className={this.state.scroll}
+          style={headerStyle}
+          id="headerSection"
+        >
           <AppBar
             className="topAppBar"
             id="appBar"
             title={
               <div id="rightIconButton">
-                <Link
-                  to="/"
+                <a
+                  href="https://skills.susi.ai/"
                   style={{
                     float: 'left',
                     marginTop: '-10px',
@@ -327,7 +348,7 @@ class StaticAppBar extends Component {
                   }}
                 >
                   <img src={susiWhite} alt="susi-logo" className="siteTitle" />
-                </Link>
+                </a>
               </div>
             }
             style={{
@@ -341,7 +362,7 @@ class StaticAppBar extends Component {
           />
         </header>
         {/* Auth */}
-        {this.state.showAuth ? (
+        {showAuth ? (
           <Auth
             history={this.props.history}
             defaultAuthSection="login"
@@ -353,9 +374,13 @@ class StaticAppBar extends Component {
   }
 }
 
-StaticAppBar.propTypes = {
-  location: PropTypes.object,
-  history: PropTypes.object,
+const mapStateToProps = ({ app }) => {
+  return {
+    app,
+  };
 };
 
-export default StaticAppBar;
+export default connect(
+  mapStateToProps,
+  null,
+)(StaticAppBar);

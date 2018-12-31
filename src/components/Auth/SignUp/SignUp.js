@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import zxcvbn from 'zxcvbn';
+import { connect } from 'react-redux';
 
 /* Material-UI */
 import PasswordField from 'material-ui-password-field';
@@ -11,19 +13,19 @@ import $ from 'jquery';
 import Cookies from 'universal-cookie';
 import { colors, urls } from '../../../utils';
 import Recaptcha from 'react-recaptcha';
-import KEY from '../../../utils/config';
 
 /* CSS */
 import './SignUp.css';
 
 const cookies = new Cookies();
 
-export default class SignUp extends Component {
+class SignUp extends Component {
   static propTypes = {
     history: PropTypes.object,
     updateAuthDialog: PropTypes.func,
     updateSnackbar: PropTypes.func,
     closeDialog: PropTypes.func,
+    captchaKey: PropTypes.string,
   };
 
   constructor(props) {
@@ -40,6 +42,8 @@ export default class SignUp extends Component {
       passwordConfirmError: true,
       confirmPasswordValue: '',
       passwordConfirmErrorMessage: '',
+      passwordStrength: '',
+      passwordScore: -1,
       success: false,
       open: false,
       openLogin: false,
@@ -87,6 +91,8 @@ export default class SignUp extends Component {
       passwordErrorMessage,
       passwordConfirmErrorMessage,
       validForm,
+      passwordStrength,
+      passwordScore,
       isCaptchaVerified,
       // eslint-disable-next-line
       captchaVerifyErrorMessage,
@@ -98,11 +104,20 @@ export default class SignUp extends Component {
       emailError = !(email && isEmail);
     } else if (event.target.name === 'password') {
       passwordValue = event.target.value;
-      validPassword = passwordValue.length >= 6;
+      validPassword = passwordValue.length >= 6 && passwordValue.length <= 64;
       passwordError = !(passwordValue && validPassword);
       passwordConfirmError = !(
         passwordValue === this.state.confirmPasswordValue
       );
+      if (validPassword) {
+        let result = zxcvbn(passwordValue);
+        passwordScore = result.score;
+        let strength = ['Worst', 'Bad', 'Weak', 'Good', 'Strong'];
+        passwordStrength = strength[result.score];
+      } else {
+        passwordStrength = '';
+        passwordScore = -1;
+      }
     } else if (event.target.name === 'confirmPassword') {
       confirmPasswordValue = event.target.value;
       validPassword = confirmPasswordValue === passwordValue;
@@ -113,7 +128,7 @@ export default class SignUp extends Component {
       emailErrorMessage = 'Enter a valid Email Address';
     } else if (passwordError) {
       emailErrorMessage = '';
-      passwordErrorMessage = 'Minimum 6 characters required';
+      passwordErrorMessage = 'Allowed password length is 6 to 64 characters';
       passwordConfirmErrorMessage = '';
       captchaVerifyErrorMessage = '';
     } else if (passwordConfirmError) {
@@ -133,12 +148,7 @@ export default class SignUp extends Component {
       captchaVerifyErrorMessage = '';
     }
 
-    if (
-      !emailError &&
-      !passwordError &&
-      !passwordConfirmError &&
-      isCaptchaVerified
-    ) {
+    if (!emailError && !passwordError && !passwordConfirmError) {
       validForm = true;
     } else {
       validForm = false;
@@ -157,6 +167,8 @@ export default class SignUp extends Component {
       passwordErrorMessage,
       passwordConfirmErrorMessage,
       validForm,
+      passwordStrength,
+      passwordScore,
     });
   };
 
@@ -266,15 +278,20 @@ export default class SignUp extends Component {
       },
     };
 
+    const PasswordClass = [`is-strength-${this.state.passwordScore}`];
+
     const {
       email,
       passwordValue,
       passwordErrorMessage,
       emailErrorMessage,
       validForm,
+      isCaptchaVerified,
+      captchaVerifyErrorMessage,
       confirmPasswordValue,
       passwordConfirmErrorMessage,
     } = this.state;
+    const { captchaKey } = this.props;
 
     return (
       <div className="signupForm">
@@ -285,7 +302,6 @@ export default class SignUp extends Component {
               name="email"
               type="email"
               value={email}
-              className="textFields"
               onChange={this.handleChange}
               style={styles.emailStyle}
               inputStyle={styles.inputStyle}
@@ -295,7 +311,7 @@ export default class SignUp extends Component {
               errorText={emailErrorMessage}
             />
           </div>
-          <div>
+          <div className={PasswordClass.join(' ')}>
             <PasswordField
               name="password"
               style={styles.fieldStyle}
@@ -313,12 +329,15 @@ export default class SignUp extends Component {
               }}
               textFieldStyle={{ padding: '0px' }}
             />
+            <div className="ReactPasswordStrength-strength-bar" />
+            <div>
+              <p>{this.state.passwordStrength}</p>
+            </div>
           </div>
           <div>
             <PasswordField
               name="confirmPassword"
               style={styles.fieldStyle}
-              className="textFields"
               inputStyle={styles.inputpassStyle}
               value={confirmPasswordValue}
               placeholder="Confirm Password"
@@ -335,27 +354,27 @@ export default class SignUp extends Component {
             />
           </div>
           <div style={{ width: '304px', margin: '10px auto 0' }}>
-            <Recaptcha
-              sitekey={KEY.CAPTCHA_KEY}
-              render="explicit"
-              onloadCallback={this.onCaptchaLoad}
-              verifyCallback={this.verifyCaptchaCallback}
-              badge="inline"
-              type="audio"
-              size="normal"
-            />
-            {!this.state.isCaptchaVerified &&
-              this.state.captchaVerifyErrorMessage && (
-                <p className="error-message">
-                  {this.state.captchaVerifyErrorMessage}
-                </p>
+            {captchaKey && (
+              <Recaptcha
+                sitekey={captchaKey}
+                render="explicit"
+                onloadCallback={this.onCaptchaLoad}
+                verifyCallback={this.verifyCaptchaCallback}
+                badge="inline"
+                type="audio"
+                size="normal"
+              />
+            )}
+            {!isCaptchaVerified &&
+              captchaVerifyErrorMessage && (
+                <p className="error-message">{captchaVerifyErrorMessage}</p>
               )}
           </div>
           <div>
             <RaisedButton
               label="Sign Up"
               type="submit"
-              disabled={!validForm}
+              disabled={!validForm || !isCaptchaVerified}
               backgroundColor={colors.header}
               labelColor="#fff"
               style={{ width: '275px', margin: '10px 0px' }}
@@ -377,3 +396,15 @@ export default class SignUp extends Component {
     );
   }
 }
+
+function mapStateToProps(store) {
+  const { captchaKey } = store.app.apiKeys;
+  return {
+    captchaKey,
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  null,
+)(SignUp);

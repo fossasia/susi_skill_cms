@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { Card } from 'material-ui/Card';
 import PropTypes from 'prop-types';
 import CircleImage from '../CircleImage/CircleImage';
-import StaffPick from '../images/staff_pick.png';
+import StaffPick from '../../images/staff_pick.png';
 
 import styles from '../BrowseSkill/SkillStyle';
 import { urls } from '../../utils';

@@ -460,7 +460,7 @@ class UIView extends Component {
   };
 
   handleClickColorBox = id => {
-    $('#colorPicker' + id).click();
+    document.getElementById(`colorPicker${id}`).click();
   };
 
   handleShowBackgroundImageChangeToggle = () => {
@@ -623,7 +623,7 @@ class UIView extends Component {
                           disabled={this.state.uploadingBodyBackgroundImg}
                           type="file"
                           onChange={this.handleChangeBodyBackgroundImage}
-                          accept="image/x-png,image/gif,image/jpeg"
+                          accept="image/*"
                         />
                         {this.state.uploadingBodyBackgroundImg ? (
                           <CircularProgress color="#ffffff" size={32} />
@@ -725,6 +725,7 @@ class UIView extends Component {
           <div className="design-box">
             {this.state.loadedSettings && <Grid>{customizeComponents}</Grid>}
             <RaisedButton
+              backgroundColor={colors.header}
               label={
                 this.state.resetting ? (
                   <CircularProgress color={colors.header} size={32} />

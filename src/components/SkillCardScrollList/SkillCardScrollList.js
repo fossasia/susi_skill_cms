@@ -4,15 +4,14 @@ import { Link } from 'react-router-dom';
 import { Card } from 'material-ui/Card';
 import PropTypes from 'prop-types';
 import CircleImage from '../CircleImage/CircleImage';
+import { scrollAnimation } from '../../utils';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import NavigationChevronLeft from 'material-ui/svg-icons/navigation/chevron-left';
 import NavigationChevronRight from 'material-ui/svg-icons/navigation/chevron-right';
-import StaffPick from '../images/staff_pick.png';
+import StaffPick from '../../images/staff_pick.png';
 import { urls } from '../../utils';
 
 import styles from './ScrollStyle';
-
-import $ from 'jquery';
 
 class SkillCardScrollList extends Component {
   constructor(props) {
@@ -21,6 +20,8 @@ class SkillCardScrollList extends Component {
       cards: [],
       skills: this.props.skills,
       scrollCards: 4,
+      leftBtnDisplay: 'none',
+      rightBtnDisplay: 'inline',
     };
   }
 
@@ -29,15 +30,15 @@ class SkillCardScrollList extends Component {
     this.updateWindowDimensions();
     window.addEventListener('resize', this.updateWindowDimensions);
 
-    let width = window.innerWidth - 304;
+    let width = window.innerWidth - 317;
+
+    let element = document.getElementsByClassName('scrolling-wrapper')[0];
 
     if (window.innerWidth >= 430) {
-      $('.scrolling-wrapper').css({ width: width });
+      element.style = { width };
     } else {
-      $('.scrolling-wrapper').css({
-        width: window.innerWidth,
-        margin: '10px 0px 10px 0px',
-      });
+      element.style.width = window.innerWidth;
+      element.style.margin = '10px 0px 10px 0px';
     }
   };
 
@@ -60,18 +61,18 @@ class SkillCardScrollList extends Component {
       default:
         scrollCards = 1;
     }
-    let width = window.innerWidth - 304;
+    let width = window.innerWidth - 317;
     this.setState({
       scrollCards: scrollCards,
     });
 
+    let element = document.getElementsByClassName('scrolling-wrapper')[0];
+
     if (window.innerWidth >= 430) {
-      $('.scrolling-wrapper').css({ width: width });
+      element.style = { width };
     } else {
-      $('.scrolling-wrapper').css({
-        width: window.innerWidth,
-        margin: '10px 0px 10px 0px',
-      });
+      element.style.width = window.innerWidth;
+      element.style.margin = '10px 0px 10px 0px';
     }
   };
 
@@ -86,20 +87,30 @@ class SkillCardScrollList extends Component {
     }
   }
 
+  changeBtnDisplay = (scrollValue, maxScrollValue) => {
+    scrollValue >= maxScrollValue
+      ? this.setState({ rightBtnDisplay: 'none' })
+      : this.setState({ rightBtnDisplay: 'inline' });
+    scrollValue <= 0
+      ? this.setState({ leftBtnDisplay: 'none' })
+      : this.setState({ leftBtnDisplay: 'inline' });
+  };
+
   scrollLeft = () => {
+    debugger;
     let parentEle = document.getElementById(this.props.scrollId);
-    let scrollValue = $(parentEle).scrollLeft() - 280 * this.state.scrollCards;
-    $(parentEle)
-      .stop()
-      .animate({ scrollLeft: scrollValue }, 100);
+    let maxScrollValue = parentEle.scrollWidth - parentEle.clientWidth;
+    let scrollValue = parentEle.scrollLeft - 280 * this.state.scrollCards;
+    scrollAnimation(parentEle, scrollValue, 100, 'horizontal');
+    this.changeBtnDisplay(scrollValue, maxScrollValue);
   };
 
   scrollRight = () => {
     let parentEle = document.getElementById(this.props.scrollId);
-    let scrollValue = $(parentEle).scrollLeft() + 280 * this.state.scrollCards;
-    $(parentEle)
-      .stop()
-      .animate({ scrollLeft: scrollValue }, 100);
+    let scrollValue = parentEle.scrollLeft + 280 * this.state.scrollCards;
+    let maxScrollValue = parentEle.scrollWidth - parentEle.clientWidth;
+    scrollAnimation(parentEle, scrollValue, 100, 'horizontal');
+    this.changeBtnDisplay(scrollValue, maxScrollValue);
   };
 
   loadSkillCards = () => {
@@ -184,7 +195,7 @@ class SkillCardScrollList extends Component {
                   '/' +
                   skill.skill_tag +
                   '/' +
-                  this.props.languageValue,
+                  skill.language,
                 state: {
                   url: this.props.skillUrl,
                   element: el,
@@ -217,7 +228,7 @@ class SkillCardScrollList extends Component {
                   '/' +
                   skill.skill_tag +
                   '/' +
-                  this.props.languageValue +
+                  skill.language +
                   '/feedbacks',
                 state: {
                   url: this.props.skillUrl,
@@ -249,6 +260,9 @@ class SkillCardScrollList extends Component {
         </Card>,
       );
     });
+    if (cards.length <= this.state.scrollCards) {
+      this.setState({ rightBtnDisplay: 'none' });
+    }
     this.setState({
       cards,
     });
@@ -281,7 +295,10 @@ class SkillCardScrollList extends Component {
             <FloatingActionButton
               mini={true}
               backgroundColor={'#4285f4'}
-              style={leftFabStyle}
+              style={{
+                ...leftFabStyle,
+                display: this.state.leftBtnDisplay,
+              }}
               onClick={this.scrollLeft}
             >
               <NavigationChevronLeft />
@@ -290,7 +307,10 @@ class SkillCardScrollList extends Component {
             <FloatingActionButton
               mini={true}
               backgroundColor={'#4285f4'}
-              style={rightFabStyle}
+              style={{
+                ...rightFabStyle,
+                display: this.state.rightBtnDisplay,
+              }}
               onClick={this.scrollRight}
             >
               <NavigationChevronRight />

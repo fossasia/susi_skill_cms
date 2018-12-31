@@ -4,13 +4,8 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import CircleImage from '../CircleImage/CircleImage';
 import styles from './SkillCardStyle';
-import StaffPick from '../images/staff_pick.png';
-import { urls } from '../../utils';
-
-function testExample(e, exampleText) {
-  let link = urls.CHAT_URL + '/?testExample=' + exampleText;
-  window.open(link, '_blank');
-}
+import StaffPick from '../../images/staff_pick.png';
+import { urls, testExample } from '../../utils';
 
 function createListCard(
   el,

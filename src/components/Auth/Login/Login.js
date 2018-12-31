@@ -1,19 +1,21 @@
+// Packages
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 
-/* Material-UI */
+// Components
 import CircularProgress from 'material-ui/CircularProgress';
 import PasswordField from 'material-ui-password-field';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
-
-/* Utils */
-import $ from 'jquery';
 import Cookies from 'universal-cookie';
-import { urls, isProduction } from '../../../utils';
+import { isProduction } from '../../../utils';
 import { addUrlProps, UrlQueryParamTypes } from 'react-url-query';
+import isEmail from '../../../utils/isEmail';
+import actions from '../../../redux/actions/app';
 
-/* CSS */
+// Static assets
 import './Login.css';
 
 const cookies = new Cookies();
@@ -58,16 +60,13 @@ const styles = {
 
 class Login extends Component {
   static propTypes = {
-    // URL props are automatically decoded and passed in based on the config
     token: PropTypes.string,
-    // change handlers are automatically generated when given a config.
-    // By default they update that single query parameter and maintain existing
-    // values in the other parameters.
     onChangeToken: PropTypes.func,
     history: PropTypes.object,
     updateAuthDialog: PropTypes.func,
     updateSnackbar: PropTypes.func,
     closeDialog: PropTypes.func,
+    actions: PropTypes.func,
   };
 
   static defaultProps = {
@@ -78,16 +77,11 @@ class Login extends Component {
     super(props);
     this.state = {
       email: '',
-      password: '',
-      success: false,
-      validForm: false,
-      emailError: true,
-      passwordError: false,
-      checked: false,
-      loading: false,
-      showDialog: false,
       emailErrorMessage: '',
+      password: '',
       passwordErrorMessage: '',
+      success: false,
+      loading: false,
     };
   }
 
@@ -99,146 +93,92 @@ class Login extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
-
-    let { email, password, validEmail } = this.state;
+    let { email, password } = this.state;
     const { updateSnackbar, closeDialog } = this.props;
-    let BASE_URL = urls.API_URL;
-
-    email = email.trim();
-    password = password.trim();
+    const { getLogin } = this.props.actions;
 
     if (!email || !password) {
       return;
     }
-
-    let loginEndPoint =
-      BASE_URL +
-      '/aaa/login.json?type=access-token&login=' +
-      this.state.email +
-      '&password=' +
-      encodeURIComponent(this.state.password);
-    validEmail = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
-
-    if (email && validEmail) {
+    if (isEmail(email)) {
       this.setState({ loading: true });
-      $.ajax({
-        url: loginEndPoint,
-        dataType: 'jsonp',
-        jsonp: 'callback',
-        crossDomain: true,
-        success: function(response) {
-          if (response.accepted) {
-            cookies.set('serverUrl', BASE_URL, {
-              path: '/',
-              domain: cookieDomain,
+      getLogin({ email, password: encodeURIComponent(password) })
+        .then(({ payload }) => {
+          if (payload.accepted) {
+            this.setCookies({ ...payload, email });
+            this.setState({
+              success: true,
+              loading: false,
             });
-            let accessToken = response.access_token;
-            let uuid = response.uuid;
-            let time = response.valid_seconds;
-            let success = true;
-            this.setState({ accessToken, time, success });
-            this.setCookies(email, accessToken, uuid, time);
-            let message = 'You are logged in';
+            const { message } = payload;
             updateSnackbar && updateSnackbar(message);
             closeDialog && closeDialog();
           } else {
-            password = '';
-            let message = 'Login Failed. Try Again';
-            this.setState({ password });
+            const message = 'Login Failed. Try Again';
             updateSnackbar && updateSnackbar(message);
+            this.setState({
+              password: '',
+              loading: false,
+            });
           }
-        }.bind(this),
-        error: function(errorThrown) {
-          password = '';
-          let message = 'Login Failed. Try Again';
-          this.setState({ password });
+        })
+        .catch(error => {
+          console.log(error);
+          const message = 'Login Failed. Try Again';
           updateSnackbar && updateSnackbar(message);
-        }.bind(this),
-        complete: function(jqXHR, textStatus) {
-          this.setState({ loading: false });
-        }.bind(this),
-      });
+          this.setState({
+            password: '',
+            loading: false,
+          });
+        });
     }
+  };
+
+  setCookies = ({ email, accessToken, uuid, time }) => {
+    cookies.set('loggedIn', accessToken, {
+      path: '/',
+      maxAge: time,
+      domain: cookieDomain,
+    });
+    cookies.set('uuid', uuid, {
+      path: '/',
+      maxAge: time,
+      domain: cookieDomain,
+    });
+    cookies.set('emailId', email, {
+      path: '/',
+      maxAge: time,
+      domain: cookieDomain,
+    });
+    this.props.history.push('/');
+    window.location.reload();
   };
 
   handleChange = event => {
-    let {
-      email,
-      password,
-      validEmail,
-      validPassword,
-      emailError,
-      passwordError,
-      emailErrorMessage,
-      passwordErrorMessage,
-      validForm,
-    } = this.state;
-
-    if (event.target.name === 'email') {
-      email = event.target.value.trim();
-      validEmail = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
-      emailError = !(email && validEmail);
-    } else if (event.target.name === 'password') {
-      password = event.target.value;
-      validPassword = password.length >= 6;
-      passwordError = !(password && validPassword);
-    }
-
-    if (emailError) {
-      emailErrorMessage = 'Enter a valid Email Address';
-    } else {
-      emailErrorMessage = '';
-    }
-    if (passwordError) {
-      passwordErrorMessage = 'Minimum 6 characters required';
-    } else {
-      passwordErrorMessage = '';
-    }
-    if (!emailError && !passwordError && password !== '' && email !== '') {
-      validForm = true;
-    } else {
-      validForm = false;
-    }
-
-    this.setState({
-      email,
-      password,
-      validEmail,
-      validPassword,
-      emailError,
-      passwordError,
-      emailErrorMessage,
-      passwordErrorMessage,
-      validForm,
-    });
-  };
-
-  setCookies = (email, loggedIn, uuid, time) => {
-    let { success } = this.state;
-    if (success) {
-      cookies.set('loggedIn', loggedIn, {
-        path: '/',
-        maxAge: time,
-        domain: cookieDomain,
-      });
-      cookies.set('uuid', uuid, {
-        path: '/',
-        maxAge: time,
-        domain: cookieDomain,
-      });
-      cookies.set('emailId', this.state.email, {
-        path: '/',
-        maxAge: time,
-        domain: cookieDomain,
-      });
-      this.props.history.push('/');
-      window.location.reload();
-    } else {
-      this.setState({
-        error: true,
-        accessToken: '',
-        success: false,
-      });
+    switch (event.target.name) {
+      case 'email': {
+        const email = event.target.value.trim();
+        this.setState({
+          email,
+          emailErrorMessage: !isEmail(email)
+            ? 'Enter a valid Email Address'
+            : '',
+        });
+        break;
+      }
+      case 'password': {
+        const password = event.target.value.trim();
+        const passwordError = !(password.length >= 6 && password);
+        this.setState({
+          password,
+          passwordErrorMessage: passwordError
+            ? 'Minimum 6 characters required'
+            : '',
+        });
+        break;
+      }
+      default:
+        break;
     }
   };
 
@@ -256,11 +196,13 @@ class Login extends Component {
     const {
       email,
       password,
-      passwordErrorMessage,
       emailErrorMessage,
+      passwordErrorMessage,
       loading,
-      validForm,
     } = this.state;
+
+    const isValid =
+      email && !emailErrorMessage && password && !passwordErrorMessage;
 
     return (
       <div className="loginForm">
@@ -287,9 +229,9 @@ class Login extends Component {
               inputStyle={inputPasswordStyle}
               value={password}
               placeholder="Password"
+              errorText={passwordErrorMessage}
               underlineStyle={{ display: 'none' }}
               onChange={this.handleChange}
-              errorText={passwordErrorMessage}
               visibilityButtonStyle={{
                 marginTop: '-3px',
               }}
@@ -305,7 +247,7 @@ class Login extends Component {
             type="submit"
             backgroundColor="#4285f4"
             labelColor="#fff"
-            disabled={!validForm}
+            disabled={!isValid}
             style={{ width: '275px', margin: '10px 0px' }}
             icon={loading ? <CircularProgress size={24} /> : undefined}
           />
@@ -327,4 +269,13 @@ class Login extends Component {
   }
 }
 
-export default addUrlProps({ urlPropsQueryConfig })(Login);
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(actions, dispatch),
+  };
+}
+
+export default connect(
+  null,
+  mapDispatchToProps,
+)(addUrlProps({ urlPropsQueryConfig })(Login));
