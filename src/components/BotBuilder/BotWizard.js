@@ -1,20 +1,21 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import RaisedButton from 'material-ui/RaisedButton';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import { Step, Stepper, StepButton } from 'material-ui/Stepper';
 import { Grid, Col, Row } from 'react-flexbox-grid';
 import Build from './BotBuilderPages/Build';
-import PropTypes from 'prop-types';
 import Design from './BotBuilderPages/Design';
 import Preview from './Preview/Preview';
 import CircularProgress from 'material-ui/CircularProgress';
-import { Link } from 'react-router-dom';
 import Configure from './BotBuilderPages/Configure';
 import notification from 'antd/lib/notification';
 import Deploy from './BotBuilderPages/Deploy';
 import Snackbar from 'material-ui/Snackbar';
 import { Paper, TextField } from 'material-ui';
 import ChevronLeft from 'material-ui/svg-icons/navigation/chevron-left';
+import ReactTooltip from 'react-tooltip';
 import ChevronRight from 'material-ui/svg-icons/navigation/chevron-right';
 import { urls, colors, avatars } from '../../utils';
 import Icon from 'antd/lib/icon';
@@ -790,11 +791,12 @@ class BotWizard extends React.Component {
                   className="botBuilder-page-card"
                   zDepth={1}
                 >
-                  <span title="collapse preview">
+                  <span>
                     <ChevronRight
                       className="botbuilder-chevron"
                       onClick={this.handlePreviewToggle}
                       style={styles.chevron}
+                      data-tip="Hide preview"
                     />
                   </span>
                   <br className="display-mobile-only" />
@@ -817,6 +819,12 @@ class BotWizard extends React.Component {
               </Col>
             </Row>
           </Grid>
+          <ReactTooltip
+            effect="solid"
+            place="bottom"
+            delayHide={500}
+            html={true}
+          />
         </div>
         <Snackbar
           open={this.state.openSnackbar}

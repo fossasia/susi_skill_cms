@@ -164,7 +164,7 @@ const styles = {
     fontSize: '14px',
   },
   searchBar: {
-    width: '100%',
+    width: '65%',
     marginRight: '20px',
     flexShrink: '10',
   },
