@@ -7,12 +7,16 @@
 }
 
 .footer-container {
-    display: -ms-flexbox;
     display: -webkit-box;
     display: flex;
     align-items: center;
-    padding: 30px;
+    padding: 30px 50px;
+    display: -ms-flexbox;
+    max-width: 100%;
+    width: 100%;
+    margin: 0 auto;
 }
+
 
 .footer{
     background: #f6f6f6;
@@ -66,7 +70,7 @@
 }
 
 .susi-logo{
-    height: 30px;
+    height: 10px;
     vertical-align: middle;
     max-width: 100px;
     margin: 10px 48px 10px 0px;
@@ -102,6 +106,8 @@
     }
 
     .susi-logo {
+        height:10px;
+        max-width: 100px;
         margin: 10px;
     }
 }
