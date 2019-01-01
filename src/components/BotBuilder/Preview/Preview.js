@@ -285,8 +285,28 @@ class Preview extends Component {
       },
     };
     return (
-      <div className="preview-component" style={{ marginTop: '20px' }}>
-        <div style={{ minHeight: '460px' }}>
+      <div className="preview-component" style={{ marginTop: '10px' }}>
+        {this.props.botBuilder ? (
+          <div style={{ textAlign: 'right' }}>
+            <div
+              id="susi-launcher-container"
+              className=" susi-avatar-launcher susi-launcher-enabled"
+            >
+              <div
+                id="susi-launcher"
+                className="susi-launcher susi-launcher-active"
+                style={styles.launcher}
+              >
+                <div
+                  id="susi-launcher-button"
+                  className="susi-launcher-button"
+                  style={styles.botIcon}
+                />
+              </div>
+            </div>
+          </div>
+        ) : null}
+        <div>
           <div
             id="susi-frame-container"
             className="susi-frame-container-active"
@@ -341,26 +361,6 @@ class Preview extends Component {
             ) : null}
           </div>
         </div>
-        {this.props.botBuilder ? (
-          <div style={{ textAlign: 'right' }}>
-            <div
-              id="susi-launcher-container"
-              className=" susi-avatar-launcher susi-launcher-enabled"
-            >
-              <div
-                id="susi-launcher"
-                className="susi-launcher susi-launcher-active"
-                style={styles.launcher}
-              >
-                <div
-                  id="susi-launcher-button"
-                  className="susi-launcher-button"
-                  style={styles.botIcon}
-                />
-              </div>
-            </div>
-          </div>
-        ) : null}
       </div>
     );
   }

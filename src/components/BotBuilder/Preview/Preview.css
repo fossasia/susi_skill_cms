@@ -94,7 +94,7 @@
 
 #susi-frame-container.susi-frame-container-active {
     display: block;
-    height: 460px;
+    height: 370px;
     margin: auto;
     width: 100%;
     -webkit-backface-visibility: hidden;
