@@ -19,12 +19,12 @@ import Add from 'material-ui/svg-icons/content/add';
 import Person from 'material-ui/svg-icons/social/person';
 import ActionViewModule from 'material-ui/svg-icons/action/view-module';
 import ActionViewStream from 'material-ui/svg-icons/action/view-stream';
-import ChevronRight from 'material-ui/svg-icons/navigation/chevron-right';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import NavigationArrowBack from 'material-ui/svg-icons/navigation/arrow-back';
 import NavigationArrowForward from 'material-ui/svg-icons/navigation/arrow-forward';
 import NavigationArrowUpward from 'material-ui/svg-icons/navigation/arrow-upward';
 import NavigationArrowDownward from 'material-ui/svg-icons/navigation/arrow-downward';
+import NavigationMenu from 'material-ui/svg-icons/navigation/menu';
 import IconButton from 'material-ui/IconButton';
 import SearchBar from 'material-ui-search-bar';
 import { scrollAnimation } from '../../utils';
@@ -107,7 +107,10 @@ export default class BrowseSkill extends React.Component {
       this.loadMetricsSkills();
     }
     this.updateWindowDimensions();
-    window.addEventListener('resize', this.updateWindowDimensions);
+    window.addEventListener(
+      'resize',
+      _.debounce(this.updateWindowDimensions, 300),
+    );
   }
 
   componentWillUnmount() {
@@ -117,7 +120,14 @@ export default class BrowseSkill extends React.Component {
   updateWindowDimensions = () => {
     this.setState({
       innerWidth: window.innerWidth,
+      showMenu: !(window.innerWidth < 430),
     });
+  };
+
+  toggleMenu = () => {
+    this.setState(prevState => ({
+      showMenu: !prevState.showMenu,
+    }));
   };
 
   // FilterChange
@@ -272,20 +282,7 @@ export default class BrowseSkill extends React.Component {
   };
 
   createCategoryMenuItem = categoryName => {
-    const mobileView = window.innerWidth < 430;
     const linkValue = '/category/' + categoryName;
-    if (mobileView) {
-      return (
-        <MenuItem
-          value={categoryName}
-          key={categoryName}
-          primaryText={categoryName}
-          containerElement={<Link to={linkValue} />}
-          style={styles.mobileMenuItem}
-          rightIcon={<ChevronRight style={{ top: -8 }} />}
-        />
-      );
-    }
     return (
       <MenuItem
         value={categoryName}
@@ -609,30 +606,18 @@ export default class BrowseSkill extends React.Component {
     const { routeType, routeValue } = this.props;
     let sidebarStyle = styles.sidebar;
     let topBarStyle = styles.topBar;
-    let groupsMobile = null;
-    let backToHome = null;
 
     let metricsContainerStyle = {
       width: '100%',
       margin: innerWidth >= 430 ? '10px' : '10px 0px 10px 0px',
     };
 
+    sidebarStyle.display = 'block';
+
     if (innerWidth < 430) {
-      sidebarStyle.display = 'none';
       topBarStyle.flexDirection = 'column';
-      groupsMobile = this.groups;
-      backToHome = (
-        <MenuItem
-          value="Back to SUSI Skills"
-          key="Back to SUSI Skills"
-          primaryText="Back to SUSI Skills"
-          containerElement={<Link to="/" />}
-          style={{ minHeight: '32px', textAlign: 'center', lineHeight: '32px' }}
-        />
-      );
     }
     if (innerWidth >= 430) {
-      sidebarStyle.display = 'block';
       topBarStyle.flexDirection = 'row';
     }
 
@@ -788,199 +773,204 @@ export default class BrowseSkill extends React.Component {
 
     return (
       <div style={styles.browseSkillRoot}>
-        <StaticAppBar
-          {...this.props}
-          zDepth={1}
-          toggleDrawer={this.handleDrawerToggle}
-        />
+        <StaticAppBar {...this.props} zDepth={1} />
         <div style={styles.main}>
-          <div style={styles.sidebar}>
-            <div style={styles.newSkillBtn}>
-              <IconMenu
-                style={{ width: '60%' }}
-                animated={false}
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'middle',
-                }}
-                iconButtonElement={
-                  <RaisedButton
-                    className="create-button"
-                    style={{ width: '100%', height: 48 }}
-                    buttonStyle={{
-                      height: '48px',
+          {this.state.showMenu && (
+            <div style={styles.sidebar}>
+              <div style={styles.newSkillBtn}>
+                <IconMenu
+                  style={{ width: '60%' }}
+                  animated={false}
+                  anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'middle',
+                  }}
+                  iconButtonElement={
+                    <RaisedButton
+                      className="create-button"
+                      style={{ width: '100%', height: 48 }}
+                      buttonStyle={{
+                        height: '48px',
+                        width: '100%',
+                        display: 'flex',
+                        justifyContent: 'center',
+                      }}
+                      label="Create"
+                      icon={<Add />}
+                      backgroundColor="#4285f4"
+                      labelStyle={{ color: '#fff' }}
+                    />
+                  }
+                >
+                  <Link to="/skillCreator">
+                    <MenuItem leftIcon={<Add />} primaryText="Create a Skill" />
+                  </Link>
+                  <Link to="/botbuilder">
+                    <MenuItem
+                      leftIcon={<Person />}
+                      primaryText="Create Skill bot"
+                    />
+                  </Link>
+                </IconMenu>
+              </div>
+              <Menu desktop={true} disableAutoFocus={true}>
+                {timeFilter ? (
+                  <div className="category-sidebar-section">
+                    <div
+                      className="index-link-sidebar"
+                      onClick={() => this.handleArrivalTimeChange(null)}
+                    >
+                      {'< Any release'}
+                    </div>
+                    <div style={styles.selectedFilterStyle}>
+                      {`Last ${timeFilter} Days`}
+                    </div>
+                  </div>
+                ) : (
+                  <Subheader style={styles.sidebarSubheader}>
+                    New Arrivals
+                  </Subheader>
+                )}
+                {!timeFilter && (
+                  <MenuItem
+                    value="creation_date&duration=7"
+                    key="Last 7 Days"
+                    primaryText="Last 7 Days"
+                    onClick={() => this.handleArrivalTimeChange(7)}
+                    style={styles.sidebarMenuItem}
+                  />
+                )}
+                {!timeFilter && (
+                  <MenuItem
+                    value="creation_date&duration=30"
+                    key="Last 30 Days"
+                    primaryText="Last 30 Days"
+                    onClick={() => this.handleArrivalTimeChange(30)}
+                    style={styles.sidebarMenuItem}
+                  />
+                )}
+                {!timeFilter && (
+                  <MenuItem
+                    value="creation_date&duration=90"
+                    key="Last 90 Days"
+                    primaryText="Last 90 Days"
+                    onClick={() => this.handleArrivalTimeChange(90)}
+                    style={styles.sidebarMenuItem}
+                  />
+                )}
+                <Divider style={{ marginLeft: '16px', marginRight: '16px' }} />
+
+                {routeType === 'category' ? (
+                  <div className="category-sidebar-section">
+                    <Link to="/">
+                      <div className="index-link-sidebar">
+                        {'< SUSI Skills'}
+                      </div>
+                    </Link>
+                    <div style={styles.selectedFilterStyle}>{routeValue}</div>
+                  </div>
+                ) : (
+                  <div>
+                    <Subheader style={styles.sidebarSubheader}>
+                      SUSI Skills
+                    </Subheader>
+                    <div>{this.groups}</div>
+                  </div>
+                )}
+
+                <Divider style={{ marginLeft: '16px', marginRight: '16px' }} />
+                {/* Refine by rating section*/}
+                <Subheader style={styles.sidebarSubheader}>Refine by</Subheader>
+
+                {metricsHidden && (
+                  <div
+                    style={{
+                      marginBottom: '12px',
                       width: '100%',
                       display: 'flex',
                       justifyContent: 'center',
+                      flexDirection: 'column',
                     }}
-                    label="Create"
-                    icon={<Add />}
-                    backgroundColor="#4285f4"
-                    labelStyle={{ color: '#fff' }}
-                  />
-                }
-              >
-                <Link to="/skillCreator">
-                  <MenuItem leftIcon={<Add />} primaryText="Create a Skill" />
-                </Link>
-                <Link to="/botbuilder">
-                  <MenuItem
-                    leftIcon={<Person />}
-                    primaryText="Create Skill bot"
-                  />
-                </Link>
-              </IconMenu>
-            </div>
-            <Menu desktop={true} disableAutoFocus={true}>
-              {timeFilter ? (
-                <div className="category-sidebar-section">
-                  <div
-                    className="index-link-sidebar"
-                    onClick={() => this.handleArrivalTimeChange(null)}
                   >
-                    {'< Any release'}
+                    <Checkbox
+                      label="Staff Picks"
+                      labelPosition="right"
+                      className="select"
+                      checked={showStaffPicks}
+                      labelStyle={{ fontSize: '14px' }}
+                      iconStyle={{ left: '4px' }}
+                      style={styles.checkboxStyle}
+                      onCheck={(event, isInputChecked) => {
+                        this.handleShowSkills({ staffPicks: isInputChecked });
+                      }}
+                    />
+                    <Checkbox
+                      label="Show Only Reviewed Skills"
+                      labelPosition="right"
+                      className="select"
+                      checked={showReviewedSkills}
+                      labelStyle={{ fontSize: '14px' }}
+                      iconStyle={{ left: '4px' }}
+                      style={styles.checkboxStyle}
+                      onCheck={(event, isInputChecked) => {
+                        this.handleShowSkills({ reviewed: isInputChecked });
+                      }}
+                    />
                   </div>
-                  <div style={styles.selectedFilterStyle}>
-                    {`Last ${timeFilter} Days`}
-                  </div>
-                </div>
-              ) : (
-                <Subheader style={styles.sidebarSubheader}>
-                  New Arrivals
-                </Subheader>
-              )}
-              {!timeFilter && (
-                <MenuItem
-                  value="creation_date&duration=7"
-                  key="Last 7 Days"
-                  primaryText="Last 7 Days"
-                  onClick={() => this.handleArrivalTimeChange(7)}
-                  style={styles.sidebarMenuItem}
-                />
-              )}
-              {!timeFilter && (
-                <MenuItem
-                  value="creation_date&duration=30"
-                  key="Last 30 Days"
-                  primaryText="Last 30 Days"
-                  onClick={() => this.handleArrivalTimeChange(30)}
-                  style={styles.sidebarMenuItem}
-                />
-              )}
-              {!timeFilter && (
-                <MenuItem
-                  value="creation_date&duration=90"
-                  key="Last 90 Days"
-                  primaryText="Last 90 Days"
-                  onClick={() => this.handleArrivalTimeChange(90)}
-                  style={styles.sidebarMenuItem}
-                />
-              )}
-              <Divider style={{ marginLeft: '16px', marginRight: '16px' }} />
+                )}
 
-              {routeType === 'category' ? (
-                <div className="category-sidebar-section">
-                  <Link to="/">
-                    <div className="index-link-sidebar">{'< SUSI Skills'}</div>
-                  </Link>
-                  <div style={styles.selectedFilterStyle}>{routeValue}</div>
-                </div>
-              ) : (
-                <div>
-                  <Subheader style={styles.sidebarSubheader}>
-                    SUSI Skills
-                  </Subheader>
-                  <div>{this.groups}</div>
-                </div>
-              )}
-
-              <Divider style={{ marginLeft: '16px', marginRight: '16px' }} />
-              {/* Refine by rating section*/}
-              <Subheader style={styles.sidebarSubheader}>Refine by</Subheader>
-
-              {metricsHidden && (
-                <div
+                <h4
                   style={{
-                    marginBottom: '12px',
-                    width: '100%',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    flexDirection: 'column',
+                    marginLeft: '24px',
+                    marginBottom: '4px',
+                    fontSize: 14,
                   }}
                 >
-                  <Checkbox
-                    label="Staff Picks"
-                    labelPosition="right"
-                    className="select"
-                    checked={showStaffPicks}
-                    labelStyle={{ fontSize: '14px' }}
-                    iconStyle={{ left: '4px' }}
-                    style={styles.checkboxStyle}
-                    onCheck={(event, isInputChecked) => {
-                      this.handleShowSkills({ staffPicks: isInputChecked });
-                    }}
+                  Avg. Customer Review
+                </h4>
+                {ratingRefine ? (
+                  <div
+                    className="clear-button"
+                    style={styles.clearButton}
+                    onClick={() => this.handleRatingRefine(null)}
+                  >
+                    {'< Clear'}
+                  </div>
+                ) : (
+                  ''
+                )}
+                <div style={styles.starRefine}>
+                  <SkillRating
+                    handleRatingRefine={this.handleRatingRefine}
+                    rating={4}
+                    ratingRefine={ratingRefine}
                   />
-                  <Checkbox
-                    label="Show Only Reviewed Skills"
-                    labelPosition="right"
-                    className="select"
-                    checked={showReviewedSkills}
-                    labelStyle={{ fontSize: '14px' }}
-                    iconStyle={{ left: '4px' }}
-                    style={styles.checkboxStyle}
-                    onCheck={(event, isInputChecked) => {
-                      this.handleShowSkills({ reviewed: isInputChecked });
-                    }}
+                  <SkillRating
+                    handleRatingRefine={this.handleRatingRefine}
+                    rating={3}
+                    ratingRefine={ratingRefine}
+                  />
+                  <SkillRating
+                    handleRatingRefine={this.handleRatingRefine}
+                    rating={2}
+                    ratingRefine={ratingRefine}
+                  />
+                  <SkillRating
+                    handleRatingRefine={this.handleRatingRefine}
+                    rating={1}
+                    ratingRefine={ratingRefine}
                   />
                 </div>
-              )}
-
-              <h4
-                style={{
-                  marginLeft: '24px',
-                  marginBottom: '4px',
-                  fontSize: 14,
-                }}
-              >
-                Avg. Customer Review
-              </h4>
-              {ratingRefine ? (
-                <div
-                  className="clear-button"
-                  style={styles.clearButton}
-                  onClick={() => this.handleRatingRefine(null)}
-                >
-                  {'< Clear'}
-                </div>
-              ) : (
-                ''
-              )}
-              <div style={styles.starRefine}>
-                <SkillRating
-                  handleRatingRefine={this.handleRatingRefine}
-                  rating={4}
-                  ratingRefine={ratingRefine}
-                />
-                <SkillRating
-                  handleRatingRefine={this.handleRatingRefine}
-                  rating={3}
-                  ratingRefine={ratingRefine}
-                />
-                <SkillRating
-                  handleRatingRefine={this.handleRatingRefine}
-                  rating={2}
-                  ratingRefine={ratingRefine}
-                />
-                <SkillRating
-                  handleRatingRefine={this.handleRatingRefine}
-                  rating={1}
-                  ratingRefine={ratingRefine}
-                />
-              </div>
-            </Menu>
-          </div>
+              </Menu>
+            </div>
+          )}
           <div style={styles.home}>
             <div style={styles.topBar} className="top-bar">
+              {this.state.innerWidth < 430 && (
+                <IconButton aria-label="Open drawer" onClick={this.toggleMenu}>
+                  <NavigationMenu />
+                </IconButton>
+              )}
               <div style={styles.searchBar} className="search-bar">
                 <SearchBar
                   onChange={_.debounce(this.handleSearch, 500)}
@@ -1242,10 +1232,6 @@ export default class BrowseSkill extends React.Component {
                 ) : (
                   ''
                 )}
-                {/* Check if mobile view is currently active*/}
-                <div className="category-mobile-section">
-                  {routeType === 'category' ? backToHome : groupsMobile}
-                </div>
               </div>
             ) : null}
           </div>
