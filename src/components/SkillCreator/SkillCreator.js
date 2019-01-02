@@ -14,6 +14,7 @@ import PropTypes from 'prop-types';
 import Cookies from 'universal-cookie';
 import * as $ from 'jquery';
 import './SkillCreator.css';
+import './Animation.min.css';
 
 // Material-UI Components
 import { Dialog, Paper, RaisedButton, TextField } from 'material-ui';
@@ -1106,6 +1107,7 @@ export default class SkillCreator extends Component {
                     }}
                   >
                     <IconButton
+                      className="iconbutton"
                       tooltip="Code View"
                       onTouchTap={() => {
                         this.setState({
@@ -1125,6 +1127,7 @@ export default class SkillCreator extends Component {
                       />
                     </IconButton>
                     <IconButton
+                      className="iconbutton"
                       tooltip="Conversation View"
                       onTouchTap={() => {
                         this.setState({
@@ -1144,6 +1147,7 @@ export default class SkillCreator extends Component {
                       />
                     </IconButton>
                     <IconButton
+                      className="iconbutton"
                       tooltip="Tree View"
                       onTouchTap={() => {
                         this.setState({

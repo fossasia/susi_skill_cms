@@ -5,6 +5,7 @@ import Code from 'material-ui/svg-icons/action/code';
 import Table from 'material-ui/svg-icons/av/web';
 import CodeView from './DesignViews/CodeView';
 import UIView from './DesignViews/UIView';
+import './Animation.min.css';
 
 class Design extends React.Component {
   constructor(props) {
@@ -45,6 +46,7 @@ class Design extends React.Component {
           <h1 style={{ lineHeight: '50px' }}>2. Choose Color and Background</h1>
           <div style={{ marginLeft: 'auto', marginRight: '0px' }}>
             <IconButton
+              className="iconbutton"
               tooltip="Code View"
               onTouchTap={() => {
                 this.setState({
@@ -64,6 +66,7 @@ class Design extends React.Component {
               />
             </IconButton>
             <IconButton
+              className="iconbutton"
               tooltip="UI View"
               onTouchTap={() => {
                 this.setState({
