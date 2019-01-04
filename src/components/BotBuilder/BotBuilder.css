@@ -306,7 +306,12 @@ input[type=file]{
 		margin-bottom: 40px;
 	}
 }
-
+@media (max-width:580px){
+	.bot-template-wrap{
+		display: flex;
+		justify-content: center;
+	}
+}
 .preview-button {
 	height: 45px;
 	width: 42px;
