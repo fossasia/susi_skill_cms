@@ -9,7 +9,7 @@ import NavigationChevronLeft from 'material-ui/svg-icons/navigation/chevron-left
 import NavigationChevronRight from 'material-ui/svg-icons/navigation/chevron-right';
 import StaffPick from '../../images/staff_pick.png';
 import { urls } from '../../utils';
-
+import './SkillCardScrollList.min.css';
 import styles from './ScrollStyle';
 
 import $ from 'jquery';
@@ -300,6 +300,7 @@ class SkillCardScrollList extends Component {
           >
             <FloatingActionButton
               mini={true}
+              className="leftFab"
               backgroundColor={'#4285f4'}
               style={{
                 ...leftFabStyle,
