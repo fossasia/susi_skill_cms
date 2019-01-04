@@ -167,6 +167,7 @@ const styles = {
     width: '100%',
     marginRight: '20px',
     flexShrink: '10',
+    maxWidth: '500px',
   },
   sortBy: {
     display: 'flex',
