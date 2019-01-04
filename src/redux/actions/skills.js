@@ -1,6 +1,6 @@
 import { createAction } from 'redux-actions';
 import actionTypes from '../actionTypes';
-import * as apis from '../../apis';
+import * as apis from '../../api';
 
 const returnArgumentsFn = function(payload) {
   return Promise.resolve(payload);
@@ -52,10 +52,29 @@ const skillActions = {
     actionTypes.SKILLS_SET_STAR_RATING_FILTER,
     returnArgumentsFn,
   ),
+  setTimeFilter: createAction(
+    actionTypes.SKILLS_SET_TIME_FILTER,
+    returnArgumentsFn,
+  ),
   setSkillsViewType: createAction(
     actionTypes.SKILLS_SET_VIEWTYPE,
     returnArgumentsFn,
   ),
+  setSkillsPerPage: createAction(
+    actionTypes.SKILLS_SET_SKILLS_PER_PAGE,
+    returnArgumentsFn,
+  ),
+  setSkillsPageNumber: createAction(
+    actionTypes.SKILLS_SET_PAGE_NUMBER,
+    returnArgumentsFn,
+  ),
+  setSkillsLoading: createAction(
+    actionTypes.SKILLS_SET_SKILLS_LOADING,
+    returnArgumentsFn,
+  ),
+  // setSkillsLoaded: createAction)
+  // actionTypes.SKILLS_SET_SKILLS_LOADED,
+  // returnArgumentsFn
 };
 
 export default skillActions;

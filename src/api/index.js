@@ -42,19 +42,23 @@ export function fetchGroupOptions() {
 
 export function fetchSkills(payload) {
   const {
-    modelValue,
     groupValue,
-    languageValue,
+    language,
     filterName,
     filterType,
+    showReviewedSkills,
+    showStaffPicks,
+    searchQuery,
   } = payload;
   const url = `${API_URL}/${CMS_API_PREFIX}/getSkillList.json`;
   return ajax.get(url, {
-    model: modelValue,
     group: groupValue,
-    language: languageValue,
+    language: language,
     applyFilter: 'true',
     filter_name: filterName,
     filter_type: filterType,
+    reviewed: showReviewedSkills,
+    staff_picks: showStaffPicks,
+    q: searchQuery,
   });
 }
