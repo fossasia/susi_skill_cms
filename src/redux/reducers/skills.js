@@ -22,7 +22,7 @@ const defaultState = {
   languages: [],
   // Filter
   groupValue: 'All',
-  languageValue: ['en'],
+  languageValue: cookies.get('languages') || ['en'],
   orderBy: 'ascending',
   filterType: '',
   searchQuery: '',
@@ -34,10 +34,6 @@ const defaultState = {
   listPage: 1,
   listOffset: 0,
   listSkills: [],
-};
-
-const cookiesSettingValues = {
-  languageValue: cookies.get('languages'),
 };
 
 export default handleActions(
@@ -223,6 +219,5 @@ export default handleActions(
   },
   {
     ...defaultState,
-    ...cookiesSettingValues,
   },
 );

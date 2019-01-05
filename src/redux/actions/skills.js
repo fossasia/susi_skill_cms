@@ -72,9 +72,6 @@ const skillActions = {
     actionTypes.SKILLS_SET_SKILLS_LOADING,
     returnArgumentsFn,
   ),
-  // setSkillsLoaded: createAction)
-  // actionTypes.SKILLS_SET_SKILLS_LOADED,
-  // returnArgumentsFn
 };
 
 export default skillActions;
