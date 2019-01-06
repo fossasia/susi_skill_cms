@@ -6,12 +6,15 @@ import PropTypes from 'prop-types';
 import CircleImage from '../CircleImage/CircleImage';
 import { scrollAnimation } from '../../utils';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
+import SocialShare from 'material-ui/svg-icons/social/share';
 import NavigationChevronLeft from 'material-ui/svg-icons/navigation/chevron-left';
 import NavigationChevronRight from 'material-ui/svg-icons/navigation/chevron-right';
 import StaffPick from '../../images/staff_pick.png';
 import { urls } from '../../utils';
 import './SkillCardScrollList.min.css';
+
 import styles from './ScrollStyle';
+import { IconButton } from 'material-ui';
 
 class SkillCardScrollList extends Component {
   constructor(props) {
@@ -257,6 +260,26 @@ class SkillCardScrollList extends Component {
               </span>
             </Link>
           </div>
+          <IconButton
+            tooltip="Share On Facebook"
+            onClick={() => {
+              window.open(
+                'https://www.facebook.com/sharer/sharer.php?u=' +
+                  'https://skills.susi.ai' +
+                  '/' +
+                  skill.group +
+                  '/' +
+                  skill.skill_tag +
+                  '/' +
+                  skill.language +
+                  '&quote=Hey , Checkout this Susi skill.',
+                '_blank',
+              );
+            }}
+            style={{ top: '-40px', margin: '0', right: '-25px' }}
+          >
+            <SocialShare />
+          </IconButton>
         </Card>,
       );
     });
