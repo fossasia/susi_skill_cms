@@ -62,3 +62,146 @@ export function fetchSkills(payload) {
     q: searchQuery,
   });
 }
+
+export function fetchSkillMetaData(payload) {
+  const { model, group, language, skill } = payload;
+  const url = `${API_URL}/${CMS_API_PREFIX}/getSkillMetadata.json`;
+  return ajax.get(url, {
+    model,
+    group,
+    language,
+    skill,
+  });
+}
+
+export function fetchUserSkillRating(payload) {
+  const { model, group, language, skill } = payload;
+  const url = `${API_URL}/${CMS_API_PREFIX}/getRatingByUser.json`;
+  return ajax.get(url, {
+    model,
+    group,
+    language,
+    skill,
+  });
+}
+
+export function changeRating(payload) {
+  const { model, group, language, skill, stars } = payload;
+  const url = `${API_URL}/${CMS_API_PREFIX}/fiveStarRateSkill.json`;
+  return ajax.get(url, {
+    model,
+    group,
+    language,
+    skill,
+    stars,
+  });
+}
+
+export function fetchDateWiseSkillUsage(payload) {
+  const { model, group, language, skill } = payload;
+  const url = `${API_URL}/${CMS_API_PREFIX}/getSkillUsage.json`;
+  return ajax.get(url, {
+    model,
+    group,
+    language,
+    skill,
+  });
+}
+
+export function fetchCountryWiseSkillUsage(payload) {
+  const { model, group, language, skill } = payload;
+  const url = `${API_URL}/${CMS_API_PREFIX}/getCountryWiseSkillUsage.json`;
+  return ajax.get(url, {
+    model,
+    group,
+    language,
+    skill,
+  });
+}
+
+export function fetchDeviceWiseSkillUsage(payload) {
+  const { model, group, language, skill } = payload;
+  const url = `${API_URL}/${CMS_API_PREFIX}/getDeviceWiseSkillUsage.json`;
+  return ajax.get(url, {
+    model,
+    group,
+    language,
+    skill,
+  });
+}
+
+export function fetchRatingsOverTime(payload) {
+  const { model, group, language, skill } = payload;
+  const url = `${API_URL}/${CMS_API_PREFIX}/getRatingsOverTime.json`;
+  return ajax.get(url, {
+    model,
+    group,
+    language,
+    skill,
+  });
+}
+
+export function fetchSkillFeedbacks(payload) {
+  const { model, group, language, skill } = payload;
+  const url = `${API_URL}/${CMS_API_PREFIX}/getSkillFeedback.json`;
+  return ajax.get(url, {
+    model,
+    group,
+    language,
+    skill,
+  });
+}
+
+export function postSkillFeedback(payload) {
+  const { model, group, language, skill, feedback } = payload;
+  const url = `${API_URL}/${CMS_API_PREFIX}/feedbackSkill.json`;
+  return ajax.get(url, {
+    model,
+    group,
+    language,
+    skill,
+    feedback,
+  });
+}
+
+export function deleteSkillFeedback(payload) {
+  const { model, group, language, skill } = payload;
+  const url = `${API_URL}/${CMS_API_PREFIX}/removeFeedback.json`;
+  return ajax.get(url, {
+    model,
+    group,
+    language,
+    skill,
+  });
+}
+
+export function reportSkill(payload) {
+  const { model, group, language, skill, feedback } = payload;
+  const url = `${API_URL}/${CMS_API_PREFIX}/reportSkill.json`;
+  return ajax.get(url, {
+    model,
+    group,
+    language,
+    skill,
+    feedback,
+  });
+}
+
+export function fetchSkillsByAuthor(payload) {
+  const { author } = payload;
+  const url = `${API_URL}/${CMS_API_PREFIX}/getSkillsByAuthor.json`;
+  return ajax.get(url, {
+    author,
+  });
+}
+
+export function deleteSkill(payload) {
+  const { model, group, language, skill } = payload;
+  const url = `${API_URL}/${CMS_API_PREFIX}/deleteSkill.json`;
+  return ajax.get(url, {
+    model,
+    group,
+    language,
+    skill,
+  });
+}
