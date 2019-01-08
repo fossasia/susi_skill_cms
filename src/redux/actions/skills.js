@@ -6,7 +6,7 @@ const returnArgumentsFn = function(payload) {
   return Promise.resolve(payload);
 };
 
-const skillActions = {
+const skillsActions = {
   initializeSkillData: createAction(
     actionTypes.SKILLS_INITIALIZE_SKILL_DATA,
     returnArgumentsFn,
@@ -78,4 +78,4 @@ const skillActions = {
   ),
 };
 
-export default skillActions;
+export default skillsActions;
