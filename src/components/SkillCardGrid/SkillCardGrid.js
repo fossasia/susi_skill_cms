@@ -4,9 +4,12 @@ import { Link } from 'react-router-dom';
 import { Card } from 'material-ui/Card';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import ReactTooltip from 'react-tooltip';
+import SkillRatingPopover from '../SkillRating/SkillRatingPopover.js';
+import NavigationArrowDropDown from 'material-ui/svg-icons/navigation/arrow-drop-down';
 import CircleImage from '../CircleImage/CircleImage';
 import StaffPick from '../../images/staff_pick.png';
-
+import '../SkillRating/ReviewPopoverStyle.css';
 import styles from '../BrowseSkill/SkillStyle';
 import { urls } from '../../utils';
 class SkillCardGrid extends Component {
@@ -14,12 +17,26 @@ class SkillCardGrid extends Component {
     let cards = [];
     Object.keys(this.props.skills).forEach(el => {
       let skill = this.props.skills[el];
+      const dataId = `index-${el}`;
+      const skillPathname = `/${skill.group}/${skill.skillTag}/${
+        this.props.languageValue
+      }`;
+      const skillFeedbackPathname = `${skillPathname}/feedbacks`;
       let skillName,
         examples,
         image,
         staffPick = false;
       let averageRating = 0,
         totalRating = 0;
+      let stars = {
+        oneStar: 0,
+        twoStar: 0,
+        threeStar: 0,
+        fourStar: 0,
+        fiveStar: 0,
+        avgStar: 0,
+        totalStar: 0,
+      };
       if (skill.skillName) {
         skillName = skill.skillName;
         skillName = skillName.charAt(0).toUpperCase() + skillName.slice(1);
@@ -34,16 +51,15 @@ class SkillCardGrid extends Component {
         image = '';
       }
       if (skill.examples) {
-        examples = skill.examples;
-        examples = examples[0];
+        examples = skill.examples[0];
       } else {
         examples = null;
       }
       if (skill.skillRating) {
         averageRating = parseFloat(skill.skillRating.stars.avgStar);
         totalRating = parseInt(skill.skillRating.stars.totalStar, 10);
+        stars = skill.skillRating.stars;
       }
-
       if (skill.staffPick) {
         staffPick = true;
       }
@@ -52,13 +68,7 @@ class SkillCardGrid extends Component {
           <Link
             key={el}
             to={{
-              pathname:
-                '/' +
-                skill.group +
-                '/' +
-                skill.skillTag +
-                '/' +
-                this.props.languageValue,
+              pathname: skillPathname,
             }}
           >
             <div style={styles.imageContainer} key={el}>
@@ -87,36 +97,51 @@ class SkillCardGrid extends Component {
             </div>
           </Link>
           <div style={styles.rating}>
-            <Link
-              key={el}
-              to={{
-                pathname:
-                  '/' +
-                  skill.group +
-                  '/' +
-                  skill.skillTag +
-                  '/' +
-                  this.props.languageValue +
-                  '/feedbacks',
-              }}
-            >
-              <Ratings
-                style={{ display: 'flex' }}
-                rating={averageRating || 0}
-                widgetRatedColors="#ffbb28"
-                widgetDimensions="20px"
-                widgetSpacings="0px"
+            <div data-tip="custom" data-for={dataId}>
+              <Link
+                key={el}
+                to={{
+                  pathname: skillFeedbackPathname,
+                }}
               >
-                <Ratings.Widget />
-                <Ratings.Widget />
-                <Ratings.Widget />
-                <Ratings.Widget />
-                <Ratings.Widget />
-              </Ratings>
-              <span style={styles.totalRating} title="Total ratings">
-                {totalRating || 0}
-              </span>
-            </Link>
+                <Ratings
+                  style={{ display: 'flex' }}
+                  rating={averageRating || 0}
+                  widgetRatedColors="#ffbb28"
+                  widgetDimensions="20px"
+                  widgetSpacings="0px"
+                >
+                  <Ratings.Widget />
+                  <Ratings.Widget />
+                  <Ratings.Widget />
+                  <ReactTooltip
+                    className="customeTheme"
+                    id={dataId}
+                    type={'light'}
+                    place="bottom"
+                    effect="solid"
+                    delayHide={200}
+                    border="true"
+                  >
+                    <Link to={{ pathname: skillFeedbackPathname }}>
+                      <SkillRatingPopover stars={stars} />
+                    </Link>
+                  </ReactTooltip>
+                  <Ratings.Widget />
+                  <Ratings.Widget />
+                </Ratings>
+                <NavigationArrowDropDown
+                  style={{
+                    fill: '#595959',
+                    marginBottom: '-7px',
+                    cursor: 'pointer',
+                  }}
+                />
+                <span style={styles.totalRating} title="Total ratings">
+                  {totalRating || 0}
+                </span>
+              </Link>
+            </div>
           </div>
         </Card>,
       );
