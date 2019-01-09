@@ -47,6 +47,13 @@ export default handleActions(
         ...defaultState,
       };
     },
+    [actionTypes.APP_GET_ADMIN](state, { payload }) {
+      const { showAdmin: isAdmin } = payload;
+      return {
+        ...state,
+        isAdmin,
+      };
+    },
   },
   {
     ...defaultState,

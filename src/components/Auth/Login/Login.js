@@ -137,36 +137,42 @@ class Login extends Component {
       actions
         .getLogin({ email, password: encodeURIComponent(password) })
         .then(({ payload }) => {
+          let snackBarMessage;
           if (payload.accepted) {
-            this.setState(
-              {
-                success: true,
-                loading: false,
-              },
-              () => this.setCookies({ ...payload, email }),
-            );
-            const { message } = payload;
-            openSnackBar({ snackBarMessage: message });
-            this.closeDialog();
-            if (location.pathname !== '/') {
-              history.push('/');
-            } else {
-              actions.initializeSkillData().then(() => {
-                actions.getLanguageOptions({ groupValue: 'All' });
-                actions.getGroupOptions();
-                actions.getMetricsSkills({
-                  languageValue: languageValue,
+            console.log(payload);
+            snackBarMessage = payload.message;
+            this.setCookies({ ...payload, email });
+            // eslint-disable-next-line camelcase
+            actions
+              // eslint-disable-next-line camelcase
+              .getAdmin({ access_token: payload.accessToken })
+              // eslint-disable-next-line
+              .then(({ payload }) => {
+                this.setState({
+                  success: true,
+                  loading: false,
                 });
+                this.closeDialog();
+                if (location.pathname !== '/') {
+                  history.push('/');
+                } else {
+                  actions.initializeSkillData().then(() => {
+                    actions.getLanguageOptions({ groupValue: 'All' });
+                    actions.getGroupOptions();
+                    actions.getMetricsSkills({
+                      languageValue: languageValue,
+                    });
+                  });
+                }
               });
-            }
           } else {
-            const message = 'Login Failed. Try Again';
-            openSnackBar({ snackBarMessage: message });
+            snackBarMessage = 'Login Failed. Try Again';
             this.setState({
               password: '',
               loading: false,
             });
           }
+          openSnackBar({ snackBarMessage });
         })
         .catch(error => {
           console.log(error);
@@ -209,30 +215,23 @@ class Login extends Component {
   };
 
   setCookies = ({ email, accessToken, uuid, validSeconds }) => {
-    let { success } = this.state;
-    if (success) {
-      cookies.set('loggedIn', accessToken, {
-        path: '/',
-        maxAge: validSeconds,
-        domain: cookieDomain,
-      });
-      cookies.set('uuid', uuid, {
-        path: '/',
-        maxAge: validSeconds,
-        domain: cookieDomain,
-      });
-      cookies.set('emailId', email, {
-        path: '/',
-        maxAge: validSeconds,
-        domain: cookieDomain,
-      });
-      this.props.history.push('/');
-    } else {
-      this.setState({
-        error: true,
-        success: false,
-      });
-    }
+    console.log(email, accessToken, uuid, validSeconds);
+    cookies.set('loggedIn', accessToken, {
+      path: '/',
+      maxAge: validSeconds,
+      domain: cookieDomain,
+    });
+    cookies.set('uuid', uuid, {
+      path: '/',
+      maxAge: validSeconds,
+      domain: cookieDomain,
+    });
+    cookies.set('emailId', email, {
+      path: '/',
+      maxAge: validSeconds,
+      domain: cookieDomain,
+    });
+    this.props.history.push('/');
   };
 
   render() {
