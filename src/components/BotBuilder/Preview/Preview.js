@@ -4,7 +4,6 @@ import urls from '../../../utils/urls';
 import PropTypes from 'prop-types';
 import './Chatbot.css';
 import './Preview.css';
-
 const host = window.location.protocol + '//' + window.location.host;
 class Preview extends Component {
   constructor() {
@@ -353,6 +352,7 @@ class Preview extends Component {
                 style={styles.launcher}
               >
                 <div
+                  data-tip="Toogle Launcher"
                   id="susi-launcher-button"
                   className="susi-launcher-button"
                   style={styles.botIcon}

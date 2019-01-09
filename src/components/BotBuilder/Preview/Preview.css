@@ -5,6 +5,26 @@
   margin: auto;
   padding: 0 20px;
 }
+.tooltiptext
+{ 
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+    float: left ;
+    position: relative;
+    left:-125px;
+} 
+
+.susi-launcher:hover   .tooltiptext
+{ 
+    visibility: visible;
+} 
+
+
 .susi-body-noscroll {
     position: fixed;
     overflow: hidden;
