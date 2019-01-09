@@ -66,7 +66,7 @@ class Login extends Component {
     updateAuthDialog: PropTypes.func,
     updateSnackbar: PropTypes.func,
     closeDialog: PropTypes.func,
-    actions: PropTypes.func,
+    actions: PropTypes.object,
   };
 
   static defaultProps = {

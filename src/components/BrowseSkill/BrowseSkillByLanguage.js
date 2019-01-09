@@ -11,18 +11,10 @@ export default class BrowseSkillByCategory extends React.Component {
   }
   render() {
     let language = '';
-    let text = '';
     if (this.props.location) {
       language = this.props.location.pathname.split('/')[2];
-      text = `Language: ${ISO6391.getNativeName(language)}`;
     }
-    return (
-      <BrowseSkill
-        routeType="language"
-        routeValue={language}
-        routeTitle={text}
-      />
-    );
+    return <BrowseSkill routeType="language" routeValue={language} />;
   }
 }
 

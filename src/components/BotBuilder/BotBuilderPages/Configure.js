@@ -18,7 +18,7 @@ import Table from 'material-ui/svg-icons/av/web';
 import PropTypes from 'prop-types';
 import CodeView from './ConfigureViews/CodeView';
 import UIView from './ConfigureViews/UIView';
-
+import './Animation.min.css';
 class Configure extends Component {
   constructor(props) {
     super(props);
@@ -56,6 +56,7 @@ class Configure extends Component {
           <h1 style={{ lineHeight: '50px' }}>3. Configure your bot</h1>
           <div style={{ marginLeft: 'auto', marginRight: '0px' }}>
             <IconButton
+              className="iconbutton"
               tooltip="Code View"
               onTouchTap={() => {
                 this.setState({
@@ -75,6 +76,7 @@ class Configure extends Component {
               />
             </IconButton>
             <IconButton
+              className="iconbutton"
               tooltip="UI View"
               onTouchTap={() => {
                 this.setState({

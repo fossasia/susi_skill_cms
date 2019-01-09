@@ -10,19 +10,11 @@ export default class BrowseSkillByCategory extends Component {
   }
   render() {
     let category = '';
-    let text = '';
     if (this.props.location) {
       category = this.props.location.pathname.split('/')[2];
-      text = `Category: ${category}`;
     }
 
-    return (
-      <BrowseSkill
-        routeType="category"
-        routeValue={category}
-        routeTitle={text}
-      />
-    );
+    return <BrowseSkill routeType="category" routeValue={category} />;
   }
 }
 
