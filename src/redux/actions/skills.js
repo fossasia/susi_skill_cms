@@ -7,6 +7,10 @@ const returnArgumentsFn = function(payload) {
 };
 
 const skillActions = {
+  initializeSkillData: createAction(
+    actionTypes.SKILLS_INITIALIZE_SKILL_DATA,
+    returnArgumentsFn,
+  ),
   getMetricsSkills: createAction(
     actionTypes.SKILLS_GET_METRICS_SKILLS,
     apis.fetchMetricsSkills,

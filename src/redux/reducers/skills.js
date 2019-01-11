@@ -6,7 +6,7 @@ const cookies = new Cookies();
 
 const defaultState = {
   viewType: 'list',
-  loadingSkills: true,
+  loadingSkills: false,
   metricSkills: {
     staffPicksSkills: [],
     topRatedSkills: [],
@@ -38,6 +38,12 @@ const defaultState = {
 
 export default handleActions(
   {
+    [actionTypes.SKILLS_INITIALIZE_SKILL_DATA](state, { payload }) {
+      return {
+        ...state,
+        loadingSkills: true,
+      };
+    },
     [actionTypes.SKILLS_GET_METRICS_SKILLS](state, { payload }) {
       const { metrics } = payload;
       const metricSkills = {

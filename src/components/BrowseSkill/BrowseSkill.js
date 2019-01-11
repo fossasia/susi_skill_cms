@@ -7,7 +7,7 @@ import _ from 'lodash';
 import { Link } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import actions from '../../redux/actions/skills';
+import skillActions from '../../redux/actions/skills';
 import SelectField from 'material-ui/SelectField';
 import Checkbox from 'material-ui/Checkbox';
 import IconMenu from 'material-ui/IconMenu';
@@ -77,11 +77,14 @@ class BrowseSkill extends React.Component {
 
   componentDidMount() {
     document.title = 'SUSI.AI - Browse Skills';
-    this.loadLanguages('All');
-    this.loadGroups();
+    const { actions, routeType } = this.props;
+    actions.initializeSkillData().then(() => {
+      this.loadLanguages('All');
+      this.loadGroups();
+    });
 
     if (
-      this.props.routeType ||
+      routeType ||
       ['category', 'language'].includes(window.location.href.split('/')[3])
     ) {
       this.loadCards();
@@ -927,7 +930,7 @@ function mapStateToProps(store) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(actions, dispatch),
+    actions: bindActionCreators(skillActions, dispatch),
   };
 }
 
