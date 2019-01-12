@@ -305,6 +305,11 @@ class Preview extends Component {
                                   placeholder="Enter your response"
                                   rows="1"
                                   value={this.state.message}
+                                  onKeyPress={event => {
+                                    if (event.which === 13 /* Enter */) {
+                                      event.preventDefault();
+                                    }
+                                  }}
                                   onChange={ev =>
                                     this.setState({ message: ev.target.value })
                                   }
