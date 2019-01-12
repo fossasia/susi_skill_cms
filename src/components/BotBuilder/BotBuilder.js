@@ -365,7 +365,13 @@ class BotBuilder extends React.Component {
             <h2 style={styles.heading}>Saved Bots</h2>
             <div className="bot-template-wrap">
               <Link to="/botbuilder/botwizard">
-                <Card className="bot-template-card">
+                <Card
+                  className="bot-template-card"
+                  style={{
+                    backgroundImage: 'url(/botTemplates/chat-bot.jpg)',
+                    backgroundSize: 'cover',
+                  }}
+                >
                   <FloatingActionButton
                     backgroundColor={colors.fabButton}
                     mini={true}
