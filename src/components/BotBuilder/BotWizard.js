@@ -118,25 +118,32 @@ class BotWizard extends React.Component {
       configCode: this.state.configCode,
     };
     let object = JSON.stringify(skillData);
-    let url;
-    url = urls.API_URL + '/cms/storeDraft.json?object=' + object;
-    $.ajax({
-      url: url,
-      dataType: 'jsonp',
-      crossDomain: true,
-      success: function(data) {
-        this.setState({
-          openSnackbar: true,
-          msgSnackbar: 'Successfully saved draft of your chatbot.',
-        });
-      }.bind(this),
-      error: function(error) {
-        this.setState({
-          openSnackbar: true,
-          msgSnackbar: "Couldn't save the draft. Please try again.",
-        });
-      }.bind(this),
-    });
+    if (skillData.group !== null) {
+      let url;
+      url = urls.API_URL + '/cms/storeDraft.json?object=' + object;
+      $.ajax({
+        url: url,
+        dataType: 'jsonp',
+        crossDomain: true,
+        success: function(data) {
+          this.setState({
+            openSnackbar: true,
+            msgSnackbar: 'Successfully saved draft of your chatbot.',
+          });
+        }.bind(this),
+        error: function(error) {
+          this.setState({
+            openSnackbar: true,
+            msgSnackbar: "Couldn't save the draft. Please try again.",
+          });
+        }.bind(this),
+      });
+    } else {
+      this.setState({
+        openSnackbar: true,
+        msgSnackbar: "Couldn't save the draft. Please select the Category",
+      });
+    }
   };
 
   getDraftBotDetails = id => {
