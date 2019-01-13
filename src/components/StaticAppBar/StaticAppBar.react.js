@@ -338,8 +338,8 @@ class StaticAppBar extends Component {
             id="appBar"
             title={
               <div id="rightIconButton">
-                <a
-                  href="https://skills.susi.ai/"
+                <Link
+                  to="/"
                   style={{
                     float: 'left',
                     marginTop: '-10px',
@@ -348,7 +348,7 @@ class StaticAppBar extends Component {
                   }}
                 >
                   <img src={susiWhite} alt="susi-logo" className="siteTitle" />
-                </a>
+                </Link>
               </div>
             }
             style={{
