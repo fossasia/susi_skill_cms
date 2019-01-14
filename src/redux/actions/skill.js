@@ -56,6 +56,9 @@ const skillActions = {
     apis.fetchSkillsByAuthor,
   ),
   deleteSkill: createAction(actionTypes.SKILL_DELETE_SKILL, apis.deleteSkill),
+  setSkillLoading: createAction(actionTypes.SKILL_SET_SKILL_LOADING),
+  openSnackBar: createAction(actionTypes.SKILL_OPEN_SNACKBAR),
+  closeSnackBar: createAction(actionTypes.SKILL_CLOSE_SNACKBAR),
 };
 
 export default skillActions;
