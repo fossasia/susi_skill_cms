@@ -1,6 +1,7 @@
 // Packages
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 // Components
 import {
@@ -24,10 +25,10 @@ import { Paper } from 'material-ui';
 // Static assets
 import './SkillUsage.css';
 
-export default class SkillUsageCard extends Component {
+class SkillUsageCard extends Component {
   static propTypes = {
-    skillUsage: PropTypes.array,
-    deviceUsageData: PropTypes.array,
+    dateWiseSkillUsage: PropTypes.array,
+    deviceWiseSkillUsage: PropTypes.array,
     countryWiseSkillUsage: PropTypes.array,
   };
 
@@ -60,10 +61,10 @@ export default class SkillUsageCard extends Component {
     });
   };
 
-  totalUsage = (skillUsage = []) => {
+  totalUsage = (dateWiseSkillUsage = []) => {
     let totalSkillUsage = 0;
-    if (skillUsage) {
-      totalSkillUsage = skillUsage.reduce((totalCount, day) => {
+    if (dateWiseSkillUsage) {
+      totalSkillUsage = dateWiseSkillUsage.reduce((totalCount, day) => {
         if (day) {
           return totalCount + day.count;
         }
@@ -74,10 +75,14 @@ export default class SkillUsageCard extends Component {
   };
 
   render() {
-    const { skillUsage, deviceUsageData, countryWiseSkillUsage } = this.props;
+    const {
+      dateWiseSkillUsage,
+      deviceWiseSkillUsage,
+      countryWiseSkillUsage,
+    } = this.props;
     const { width, activePieIndex } = this.state;
 
-    let totalSkillUsage = this.totalUsage(skillUsage);
+    let totalSkillUsage = this.totalUsage(dateWiseSkillUsage);
 
     return (
       <div>
@@ -93,7 +98,7 @@ export default class SkillUsageCard extends Component {
                   <div>
                     <ResponsiveContainer width={width} height={300}>
                       <LineChart
-                        data={skillUsage}
+                        data={dateWiseSkillUsage}
                         margin={{
                           top: 5,
                           right: 30,
@@ -128,24 +133,24 @@ export default class SkillUsageCard extends Component {
             )}
             <div className="device-usage">
               <div className="sub-title">Device wise Usage</div>
-              {deviceUsageData && deviceUsageData.length ? (
+              {deviceWiseSkillUsage && deviceWiseSkillUsage.length ? (
                 <div className="pie-chart">
                   <ResponsiveContainer width={600} height={350}>
                     <PieChart>
                       <Pie
                         activeIndex={activePieIndex}
                         activeShape={renderActiveShape}
-                        data={deviceUsageData}
+                        data={deviceWiseSkillUsage}
                         cx={300}
                         cy={175}
                         innerRadius={80}
-                        nameKey="device_type"
+                        nameKey="deviceType"
                         dataKey="count"
                         outerRadius={120}
                         fill="#8884d8"
                         onMouseEnter={this.onPieEnter}
                       >
-                        {deviceUsageData.map((entry, index) => (
+                        {deviceWiseSkillUsage.map((entry, index) => (
                           <Cell key={index} fill={entry.color} />
                         ))}
                       </Pie>
@@ -171,6 +176,19 @@ export default class SkillUsageCard extends Component {
     );
   }
 }
+
+function mapStateToProps(store) {
+  return {
+    dateWiseSkillUsage: store.skill.dateWiseSkillUsage,
+    countryWiseSkillUsage: store.skill.countryWiseSkillUsage,
+    deviceWiseSkillUsage: store.skill.deviceWiseSkillUsage,
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  null,
+)(SkillUsageCard);
 
 const renderActiveShape = props => {
   const RADIAN = Math.PI / 180;

@@ -4,6 +4,9 @@ import { Paper } from 'material-ui';
 import Cookies from 'universal-cookie';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import skillActions from '../../redux/actions/skill';
 // Components
 import { List, ListItem } from 'material-ui/List';
 import Divider from 'material-ui/Divider';
@@ -69,26 +72,50 @@ class SkillFeedbackCard extends Component {
 
   editFeedback = () => {
     let feedbackText = document.getElementById('edit-feedback').value;
-    if (!feedbackText) {
-      this.setState({ errorText: 'Feedback cannot be empty' });
-    } else {
-      this.props.postFeedback(feedbackText);
-      this.handleEditClose();
-    }
+    this.setState({ feedbackValue: feedbackText });
+  };
+
+  setFeedback = event => {
+    this.setState({ feedbackValue: event.target.value });
   };
 
   postFeedback = () => {
-    let feedbackText = document.getElementById('post-feedback').value;
-    if (!feedbackText) {
-      this.setState({ errorText: 'Feedback cannot be empty' });
-    } else {
-      this.props.postFeedback(feedbackText);
+    const { group, language, skillTag: skill, actions } = this.props;
+    const { feedbackValue } = this.state;
+    const skillData = {
+      model: 'general',
+      group,
+      language,
+      skill,
+      feedback: feedbackValue,
+    };
+    if (feedbackValue) {
+      actions
+        .setSkillFeedback(skillData)
+        .then(payload => {
+          actions.getSkillFeedbacks(skillData);
+        })
+        .catch(error => {
+          console.log(error);
+        });
       this.handleEditClose();
+    } else {
+      this.setState({ errorText: 'Feedback cannot be empty' });
     }
   };
 
   deleteFeedback = () => {
-    this.props.deleteFeedback();
+    const { group, language, skillTag: skill, actions } = this.props;
+    const skillData = {
+      model: 'general',
+      group,
+      language,
+      skill,
+    };
+    actions
+      .deleteSkillFeedback(skillData)
+      .then(payload => actions.getSkillFeedbacks(skillData))
+      .catch(error => console.log(error));
     this.handleDeleteClose();
   };
 
@@ -99,6 +126,8 @@ class SkillFeedbackCard extends Component {
   };
 
   render() {
+    const { skillFeedbacks, skillTag, language } = this.props;
+    const { errorText, openEditDialog, openDeleteDialog } = this.state;
     const editActions = [
       <FlatButton
         key={0}
@@ -112,7 +141,7 @@ class SkillFeedbackCard extends Component {
         primary={true}
         keyboardFocused={true}
         labelStyle={{ color: '#4285f4' }}
-        onClick={this.editFeedback}
+        onClick={this.postFeedback}
       />,
     ];
 
@@ -141,12 +170,12 @@ class SkillFeedbackCard extends Component {
     let emailId = cookies.get('emailId');
     let loggedIn = cookies.get('loggedIn');
     let feedbackCards;
-    if (this.props.skill_feedback) {
-      feedbackCards = this.props.skill_feedback.map((data, index) => {
+    if (skillFeedbacks) {
+      feedbackCards = skillFeedbacks.map((data, index) => {
         userEmail = data.email;
         userFeedback = data.feedback;
         userAvatarLink = data.avatar;
-        userName = data.user_name;
+        userName = data.userName;
         const avatarProps = {
           src: userAvatarLink,
           name: userName === '' ? userEmail : userName,
@@ -230,8 +259,7 @@ class SkillFeedbackCard extends Component {
           <div>
             <div className="subTitle">
               {' '}
-              Write your invaluable feedback with {this.props.skill_name} on
-              SUSI.AI{' '}
+              Write your invaluable feedback with {skillTag} on SUSI.AI{' '}
             </div>
             <div>
               <div className="feedback-textbox">
@@ -239,9 +267,10 @@ class SkillFeedbackCard extends Component {
                   id="post-feedback"
                   hintText="Skill Feedback"
                   defaultValue=""
-                  errorText={this.state.errorText}
+                  errorText={errorText}
                   multiLine={true}
                   fullWidth={true}
+                  onChange={this.setFeedback}
                 />
                 <RaisedButton
                   label="Post"
@@ -259,9 +288,9 @@ class SkillFeedbackCard extends Component {
             <List style={{ padding: '8px 0px 0px 0px' }}>
               {userFeedbackCard}
               {feedbackCards}
-              {(userFeedbackCard && this.props.skill_feedback.length >= 4) ||
-              this.props.skill_feedback.length >= 5 ? (
-                <Link to={`${this.props.skill_language}/feedbacks`}>
+              {(userFeedbackCard && skillFeedbacks.length >= 4) ||
+              skillFeedbacks.length >= 5 ? (
+                <Link to={`${language}/feedbacks`}>
                   <ListItem
                     className="display-all"
                     primaryText={'Show all reviews'}
@@ -278,23 +307,24 @@ class SkillFeedbackCard extends Component {
           title="Edit Feedback"
           actions={editActions}
           modal={false}
-          open={this.state.openEditDialog}
+          open={openEditDialog}
           onRequestClose={this.handleEditClose}
         >
           <TextField
             id="edit-feedback"
             hintText="Skill Feedback"
             defaultValue={userFeedback}
-            errorText={this.state.errorText}
+            errorText={errorText}
             multiLine={true}
             fullWidth={true}
+            onChange={this.editFeedback}
           />
         </Dialog>
         <Dialog
           title="Delete Feedback"
           actions={deleteActions}
           modal={true}
-          open={this.state.openDeleteDialog}
+          open={openDeleteDialog}
           onRequestClose={this.handleEditClose}
         >
           Are you sure, you want to delete your feedback?
@@ -305,11 +335,31 @@ class SkillFeedbackCard extends Component {
 }
 
 SkillFeedbackCard.propTypes = {
-  skill_name: PropTypes.string,
-  skill_feedback: PropTypes.array,
-  postFeedback: PropTypes.func,
-  deleteFeedback: PropTypes.func,
-  skill_language: PropTypes.string,
+  skillTag: PropTypes.string,
+  skillFeedbacks: PropTypes.array,
+  language: PropTypes.string,
+  group: PropTypes.string,
+  feedback: PropTypes.string,
+  actions: PropTypes.object,
 };
 
-export default SkillFeedbackCard;
+function mapStateToProps(store) {
+  return {
+    language: store.skill.metaData.language,
+    group: store.skill.metaData.group,
+    skillTag: store.skill.metaData.skillTag,
+    feedback: store.skill.feedback,
+    skillFeedbacks: store.skill.skillFeedbacks,
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(skillActions, dispatch),
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(SkillFeedbackCard);

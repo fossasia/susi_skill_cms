@@ -32,7 +32,6 @@ const defaultState = {
     lastAccessTime: '',
   },
   userRating: 0,
-  author: '',
   feedback: '',
   dateWiseSkillUsage: [],
   countryWiseSkillUsage: [],
@@ -231,24 +230,47 @@ export default handleActions(
       return {
         ...state,
         feedback: '',
+        loadingSkill: false,
       };
     },
     [actionTypes.SKILL_GET_AUTHOR_SKILLS](state, { payload }) {
       let skillKeys = Object.keys(payload);
-      skillKeys = skillKeys.slice(0, skillKeys.length - 1);
-      const authorSkills = skillKeys.map((skillKey, index) => {
-        const dataPoints = payload[skillKey].split('/');
+      skillKeys = skillKeys.slice(0, skillKeys.length - 5);
+      const authorSkills = skillKeys.map(skillKey => {
+        const dataPoints = payload[skillKey].toString().split('/');
         let name = dataPoints[6].split('.')[0];
-        name = name.charAt(0).toUpperCase() + name.slice(1);
-
-        if (name.split('_').length > 1) {
-          name = name.split('_').join(' ');
-        }
-        return name;
+        let language = dataPoints[5];
+        let category = dataPoints[4];
+        const obj = {
+          name,
+          category,
+          language,
+        };
+        return obj;
       });
       return {
         ...state,
         authorSkills,
+      };
+    },
+    [actionTypes.SKILL_SET_SKILL_LOADING](state, { payload }) {
+      return {
+        ...state,
+        loadingSkill: true,
+      };
+    },
+    [actionTypes.SKILL_OPEN_SNACKBAR](state, { payload }) {
+      const { snackMessage } = payload;
+      return {
+        ...state,
+        openSnack: true,
+        snackMessage,
+      };
+    },
+    [actionTypes.SKILL_CLOSE_SNACKBAR](state, { payload }) {
+      return {
+        ...state,
+        openSnack: false,
       };
     },
   },

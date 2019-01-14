@@ -10,9 +10,11 @@ import {
   TableRowColumn,
 } from 'material-ui/Table';
 import CircularProgress from 'material-ui/CircularProgress';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import skillActions from '../../redux/actions/skill';
 import Img from 'react-image';
 import ISO6391 from 'iso-639-1';
-import * as $ from 'jquery';
 import CircleImage from '../CircleImage/CircleImage';
 import { urls } from '../../utils';
 import './AuthorSkills.css';
@@ -54,87 +56,77 @@ const styles = {
 
 const { imageStyle, githubAvatarStyle, closingStyle, headingStyle } = styles;
 
-export default class AuthorSkills extends Component {
+class AuthorSkills extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      skills: [],
       loading: true,
     };
   }
 
-  loadSkillCards = author => {
-    const url = `${urls.API_URL}/cms/getSkillsByAuthor.json?author=${author}`;
+  componentDidMount() {
+    const { author, actions } = this.props;
+    actions.getAuthorSkills({ author });
+  }
 
-    $.ajax({
-      url: url,
-      dataType: 'jsonp',
-      jsonp: 'callback',
-      crossDomain: true,
-      success: data => {
-        let skillKeys = Object.keys(data);
-        skillKeys = skillKeys.slice(0, skillKeys.length - 1);
-        //eslint-disable-next-line
-        const skills = skillKeys.map((skillKey, index) => {
-          //eslint-disable-next-line
-          if (skillKey == index) {
-            const dataPoints = data[skillKey].split('/');
-            let name = dataPoints[6].split('.')[0];
-            name = name.charAt(0).toUpperCase() + name.slice(1);
+  componentDidUpdate(prevProps) {
+    const { author, actions } = this.props;
+    if (author !== prevProps.author) {
+      actions
+        .getAuthorSkills({ author })
+        .then(() => this.setState({ loading: false }))
+        .catch(error => console.log('Failed to Get Author Skills'));
+    }
+  }
 
-            if (name.split('_').length > 1) {
-              name = name.split('_').join(' ');
-            }
+  loadSkillCards = () => {
+    const { authorSkills } = this.props;
+    const skills = authorSkills.map((skill, index) => {
+      const { category, language } = skill;
+      let { name } = skill;
+      const image = `${
+        urls.API_URL
+      }/cms/getImage.png?model=general&language=${language}&group=${category}&image=${'/images/' +
+        name}`;
+      const pngImage = `${image}.png`;
+      const jpgImage = `${image}.jpg`;
 
-            const image = `${
-              urls.API_URL
-            }/cms/getImage.png?model=general&language=${dataPoints[5]}&group=${
-              dataPoints[4]
-            }&image=${'/images/' + dataPoints[6].split('.')[0]}`;
-            const pngImage = `${image}.png`;
-            const jpgImage = `${image}.jpg`;
-
-            const skillURL = `${window.location.protocol}//${
-              window.location.host
-            }/${dataPoints[4]}/${dataPoints[6].split('.')[0]}/${dataPoints[5]}`;
-
-            return (
-              <TableRow key={index}>
-                <TableRowColumn>
-                  <a href={skillURL}>
-                    <Img
-                      style={imageStyle}
-                      src={[pngImage, jpgImage]}
-                      unloader={<CircleImage name={name} size="40" />}
-                    />
-                  </a>
-                </TableRowColumn>
-                <TableRowColumn>
-                  <div>
-                    <a href={skillURL} className="effect-underline">
-                      {name}
-                    </a>
-                  </div>
-                </TableRowColumn>
-                <TableRowColumn>{dataPoints[4]}</TableRowColumn>
-                <TableRowColumn>
-                  {ISO6391.getNativeName(dataPoints[5])}
-                </TableRowColumn>
-              </TableRow>
-            );
-          }
-        });
-        this.setState({ skills, loading: false });
-      },
-      error: e => {
-        console.log('Error while fetching author skills', e);
-      },
+      const skillURL = `${window.location.protocol}//${
+        window.location.host
+      }/${category}/${name}/${language}`;
+      name = name.charAt(0).toUpperCase() + name.slice(1);
+      if (name.split('_').length > 1) {
+        name = name.split('_').join(' ');
+      }
+      return (
+        <TableRow key={index}>
+          <TableRowColumn>
+            <a href={skillURL}>
+              <Img
+                style={imageStyle}
+                src={[pngImage, jpgImage]}
+                unloader={<CircleImage name={name} size="40" />}
+              />
+            </a>
+          </TableRowColumn>
+          <TableRowColumn>
+            <div>
+              <a href={skillURL} className="effect-underline">
+                {name}
+              </a>
+            </div>
+          </TableRowColumn>
+          <TableRowColumn>{category}</TableRowColumn>
+          <TableRowColumn>{ISO6391.getNativeName(language)}</TableRowColumn>
+        </TableRow>
+      );
     });
+    return skills;
   };
 
   render() {
     const { author, authorUrl, open, requestClose } = this.props;
-    const { skills } = this.state;
+    const { loading } = this.state;
     let githubAvatarSrc = '';
 
     if (authorUrl) {
@@ -145,7 +137,7 @@ export default class AuthorSkills extends Component {
       githubAvatarSrc = githubLogo;
     }
     let renderElement = null;
-    if (this.state.loading) {
+    if (loading === true) {
       renderElement = (
         <div style={{ textAlign: 'center' }}>
           <CircularProgress size={44} />
@@ -171,7 +163,9 @@ export default class AuthorSkills extends Component {
                 <TableHeaderColumn>Language</TableHeaderColumn>
               </TableRow>
             </TableHeader>
-            <TableBody displayRowCheckbox={false}>{skills}</TableBody>
+            <TableBody displayRowCheckbox={false}>
+              {this.loadSkillCards()}
+            </TableBody>
           </Table>
         </div>
       );
@@ -207,9 +201,30 @@ export default class AuthorSkills extends Component {
 }
 
 AuthorSkills.propTypes = {
-  location: PropTypes.object,
   open: PropTypes.bool,
   requestClose: PropTypes.func,
   author: PropTypes.string,
   authorUrl: PropTypes.string,
+  loading: PropTypes.bool,
+  authorSkills: PropTypes.array,
+  actions: PropTypes.object,
 };
+
+function mapStateToProps(store) {
+  return {
+    authorSkills: store.skill.authorSkills,
+    authorUrl: store.skill.metaData.authorUrl,
+    author: store.skill.metaData.author,
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(skillActions, dispatch),
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(AuthorSkills);
