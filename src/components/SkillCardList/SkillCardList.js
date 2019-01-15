@@ -18,7 +18,6 @@ function createListCard(
   authorName,
   description,
   image,
-  language,
   skill,
   examples,
   totalRating,
@@ -27,7 +26,7 @@ function createListCard(
   stars,
 ) {
   const dataId = `index-${el}`;
-  const skillPathname = `/${skill.group}/${skill.skillTag}/${language}`;
+  const skillPathname = `/${skill.group}/${skill.skillTag}/${skill.language}`;
   const skillFeedbackPathname = `${skillPathname}/feedbacks`;
   const mobileView = window.innerWidth < 430;
   if (mobileView) {
@@ -154,9 +153,9 @@ function createListCard(
                   <Link
                     key={el}
                     to={{
-                      pathname: `/${skill.group}/${
-                        skill.skillTag
-                      }/${language}/feedbacks`,
+                      pathname: `/${skill.group}/${skill.skillTag}/${
+                        skill.language
+                      }/feedbacks`,
                     }}
                   >
                     <Ratings
@@ -264,8 +263,6 @@ class SkillCardList extends Component {
       if (skill.staffPick) {
         staffPick = true;
       }
-
-      let language = this.props.languageValue;
       cards.push(
         createListCard(
           el,
@@ -273,7 +270,6 @@ class SkillCardList extends Component {
           authorName,
           description,
           image,
-          language,
           skill,
           examples,
           totalRating,
@@ -293,12 +289,10 @@ class SkillCardList extends Component {
 
 SkillCardList.propTypes = {
   skills: PropTypes.array,
-  languageValue: PropTypes.array,
 };
 
 function mapStateToProps(store) {
   return {
-    languageValue: store.skills.languageValue,
     skills: store.skills.listSkills,
   };
 }

@@ -30,6 +30,12 @@ const styles = {
     alignItems: 'center',
     marginBottom: '6px',
   },
+  author: {
+    textAlign: 'left',
+    marginBottom: '4px',
+    fontSize: '12px',
+    color: '#555555',
+  },
   feedback: {
     color: '#4285f4',
     fill: '#4285f4',
@@ -60,7 +66,7 @@ const styles = {
   },
   skillCard: {
     width: 260,
-    height: 170,
+    height: 190,
     minHeight: '150px',
     margin: '10px 0 0 10px',
     overflow: 'hidden',

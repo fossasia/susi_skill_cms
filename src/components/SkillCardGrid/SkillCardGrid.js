@@ -19,7 +19,7 @@ class SkillCardGrid extends Component {
       let skill = this.props.skills[el];
       const dataId = `index-${el}`;
       const skillPathname = `/${skill.group}/${skill.skillTag}/${
-        this.props.languageValue
+        skill.language
       }`;
       const skillFeedbackPathname = `${skillPathname}/feedbacks`;
       let skillName,
@@ -27,7 +27,8 @@ class SkillCardGrid extends Component {
         image,
         staffPick = false;
       let averageRating = 0,
-        totalRating = 0;
+        totalRating = 0,
+        authorName = '';
       let stars = {
         oneStar: 0,
         twoStar: 0,
@@ -63,6 +64,9 @@ class SkillCardGrid extends Component {
       if (skill.staffPick) {
         staffPick = true;
       }
+      if (skill.author) {
+        authorName = skill.author;
+      }
       cards.push(
         <Card style={styles.skillCard} key={el}>
           <Link
@@ -96,6 +100,9 @@ class SkillCardGrid extends Component {
               )}
             </div>
           </Link>
+          <div style={styles.author}>
+            <p>{authorName}</p>
+          </div>
           <div style={styles.rating}>
             <div data-tip="custom" data-for={dataId}>
               <Link
@@ -170,12 +177,10 @@ class SkillCardGrid extends Component {
 
 SkillCardGrid.propTypes = {
   skills: PropTypes.array,
-  languageValue: PropTypes.array,
 };
 
 function mapStateToProps(store) {
   return {
-    languageValue: store.skills,
     skills: store.skills.listSkills,
   };
 }
