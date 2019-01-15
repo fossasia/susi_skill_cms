@@ -168,9 +168,11 @@ class Login extends Component {
         })
         .catch(error => {
           console.log(error);
-          const message = 'Login Failed. Try Again';
+          const message =
+            'Invalid details. Please check the Email ID - Password combination.';
           openSnackBar({ snackBarMessage: message });
           this.setState({
+            email: '',
             password: '',
             loading: false,
           });
