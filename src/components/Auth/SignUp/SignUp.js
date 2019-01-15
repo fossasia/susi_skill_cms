@@ -184,13 +184,18 @@ class SignUp extends Component {
 
   handleSubmit = event => {
     event.preventDefault();
+    this.setState({
+      signupErrorMessage: '',
+    });
+
     const {
       email,
       password,
-      emailError,
-      passwordConfirmError,
+      emailErrorMessage,
+      passwordConfirmErrorMessage,
       isCaptchaVerified,
     } = this.state;
+
     const { openSnackBar } = this.props;
     const { getSignup } = this.props.actions;
 
@@ -200,7 +205,11 @@ class SignUp extends Component {
       });
     }
 
-    if (!emailError && !passwordConfirmError && isCaptchaVerified) {
+    if (
+      !emailErrorMessage &&
+      !passwordConfirmErrorMessage &&
+      isCaptchaVerified
+    ) {
       this.setState({ loading: true });
       getSignup({
         email,
@@ -208,47 +217,42 @@ class SignUp extends Component {
       })
         .then(({ payload }) => {
           if (payload.accepted) {
-            this.setState(
-              {
-                success: true,
-                loading: false,
-              },
-              () => {
-                openSnackBar({ snackBarMessage: payload.message });
-                this.closeDialog();
-              },
-            );
+            this.setState({
+              password: '',
+              confirmPassword: '',
+              passwordStrength: '',
+              passwordScore: -1,
+              signupErrorMessage: payload.message,
+              success: true,
+              loading: false,
+            });
           } else {
-            this.setState(
-              {
-                password: '',
-                confirmPassword: '',
-                passwordScore: -1,
-                passwordStrength: '',
-                success: false,
-                loading: false,
-              },
-              () => {
-                openSnackBar({ snackBarMessage: 'Failed. Try Again' });
-              },
-            );
-          }
-        })
-        .catch(error => {
-          console.log(error);
-          this.setState(
-            {
-              success: false,
+            this.setState({
               password: '',
               confirmPassword: '',
               passwordScore: -1,
               passwordStrength: '',
+              success: false,
               loading: false,
-            },
-            () => {
-              openSnackBar({ snackBarMessage: 'Signup Failed. Try Again' });
-            },
-          );
+            });
+            openSnackBar({
+              snackBarMessage: 'Signup Failed. Try Again',
+            });
+          }
+        })
+        .catch(error => {
+          console.log(error);
+          this.setState({
+            confirmPassword: '',
+            passwordScore: -1,
+            passwordStrength: '',
+            success: false,
+            password: '',
+            loading: false,
+          });
+          openSnackBar({
+            snackBarMessage: 'Signup Failed. Try Again',
+          });
         });
     }
   };
@@ -263,7 +267,9 @@ class SignUp extends Component {
       captchaVerifyErrorMessage,
       confirmPassword,
       passwordConfirmErrorMessage,
+      signupErrorMessage,
       loading,
+      success,
       passwordScore,
     } = this.state;
     const { captchaKey, onRequestOpenLogin, isSignUpOpen } = this.props;
@@ -369,6 +375,11 @@ class SignUp extends Component {
                   <p className="error-message">{captchaVerifyErrorMessage}</p>
                 )}
             </div>
+            {signupErrorMessage && (
+              <div style={{ color: success ? '#388e3c' : '#f44336' }}>
+                {signupErrorMessage}
+              </div>
+            )}
             <div>
               <RaisedButton
                 label={!loading && 'Sign Up'}
