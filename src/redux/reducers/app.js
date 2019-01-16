@@ -1,6 +1,10 @@
 import { handleActions } from 'redux-actions';
 import actionTypes from '../actionTypes';
 
+import Cookies from 'universal-cookie';
+
+const cookies = new Cookies();
+
 const defaultState = {
   userName: '',
   email: '',
@@ -8,6 +12,15 @@ const defaultState = {
   accessToken: '',
   isAdmin: false,
   apiKeys: {},
+};
+
+const { emailId, uuid, loggedIn, username } = cookies.getAll();
+
+const cookiesAppValues = {
+  email: emailId,
+  uuid,
+  accessToken: loggedIn,
+  userName: username,
 };
 
 export default handleActions(
@@ -26,9 +39,17 @@ export default handleActions(
         ...state,
         uuid,
         accessToken,
-        email: uuid ? email : '',
+        email: accessToken ? email : '',
+      };
+    },
+    [actionTypes.APP_LOGOUT](state, { payload }) {
+      return {
+        ...defaultState,
       };
     },
   },
-  defaultState,
+  {
+    ...defaultState,
+    ...cookiesAppValues,
+  },
 );

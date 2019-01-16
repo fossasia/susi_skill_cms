@@ -138,11 +138,13 @@ class Login extends Component {
         .getLogin({ email, password: encodeURIComponent(password) })
         .then(({ payload }) => {
           if (payload.accepted) {
-            this.setCookies({ ...payload, email });
-            this.setState({
-              success: true,
-              loading: false,
-            });
+            this.setState(
+              {
+                success: true,
+                loading: false,
+              },
+              () => this.setCookies({ ...payload, email }),
+            );
             const { message } = payload;
             openSnackBar({ snackBarMessage: message });
             this.closeDialog();
@@ -206,26 +208,25 @@ class Login extends Component {
     }
   };
 
-  setCookies = ({ email, loggedIn, uuid, time }) => {
+  setCookies = ({ email, accessToken, uuid, validSeconds }) => {
     let { success } = this.state;
     if (success) {
-      cookies.set('loggedIn', loggedIn, {
+      cookies.set('loggedIn', accessToken, {
         path: '/',
-        maxAge: time,
+        maxAge: validSeconds,
         domain: cookieDomain,
       });
       cookies.set('uuid', uuid, {
         path: '/',
-        maxAge: time,
+        maxAge: validSeconds,
         domain: cookieDomain,
       });
-      cookies.set('emailId', this.state.email, {
+      cookies.set('emailId', email, {
         path: '/',
-        maxAge: time,
+        maxAge: validSeconds,
         domain: cookieDomain,
       });
       this.props.history.push('/');
-      window.location.reload();
     } else {
       this.setState({
         error: true,
