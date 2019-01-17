@@ -1,8 +1,8 @@
-# Skill categories
-This path contains skill groups which we call a 'category'
-A skill is a collection of intents for each language. Skills can be bundled into a skill category.
+# Skill Categories
+This path contains skill groups which we call a 'category'. 
+A skill is a collection of intents for each language. Skills can be bundled into a 'skill category'.
 The skill categories are the subdirectories here.
-In each of the containing skill category subdirectories you find paths for a language in ISO 639-2 code.
+In each of the containing skill category subdirectories, you find paths for a language in ISO 639-2 code.
 Each of those language subdirectories can contain a skill. A skill is a file with a set of intents.
 
 
@@ -13,17 +13,17 @@ Skills which helps to manage buisness and finances. This may contain skills rela
 Skills which just do simple answers on anything else. May contain jokes and 'easter eggs' as well.
 
 ## Connected Car
-Skills which provides informations for a car, about the location, activity, latest models, economy, offers and prices of a the cars.
+Skills which provide information for a car, about the location, activity, latest models, economy, offers and prices of the cars.
 
 ## Food and Drink
-Skills which provides the latest trending recipes, classic favorites, chef & restaurant news and more.
+Skills which provide the latest trending recipes, classic favorites, chef & restaurant news and more.
 
 ## Games, Trivia and Accessories
-Skills which presents with pop culture, sports, fun facts, and more entertaining games, provide any kind of visual or audio arts, funny things and any kind of entertainment.
+Skills which present with pop culture, sports, fun facts, and more entertaining games, provide any kind of visual or audio arts, funny things and any kind of entertainment.
 
 
 ## Health and Fitness
-Skills which allows to monitor one's health, provides tips on healthy routines and suggests diet to get in the best shape of life.  
+Skills which allow to monitor one's health, provide tips on healthy routines and suggest diet to get in the best shape of life.  
 
 ## Knowledge
 Skills with console intents or fixed set of intents with answers to respond on queries about anything in the world.
@@ -45,25 +45,26 @@ Skills which helps to follow the latest news and breaking news for world, weathe
 Skills having the quality of being new, exciting, unusual or unique, humorous.
 
 ## Problem Solving
-Skills which implement question- and answer dialoges to solve a specific problem of the user, like "what gift should I buy for my wife".
+Skills which implement question- and answer dialoges to solve a specific problem of the user, like "What gift should I buy for my wife?".
 
 ## Productivity
-Skills which helps in remember what one need for work,daily motivational quotes, phrases and more.
+Skills which help to remember what one needs for work,daily motivational quotes, phrases and more.
 
 ## Shopping
-Skills which provide query interfaces to shopping plattforms.
+Skills which provide query interfaces to shopping platforms.
 
 ## Social
-Skills which helps in efficient communciation, keeps updated with social life.
+Skills which help in efficient communciation, keep updated with social life.
 
 ## Sports
-Skills which helps to follow updates from latest sports news and updates from Cricket, Tennis, Football, Formula One, and many more.
+Skills which help to follow updates from latest sports news and updates from Cricket, Tennis, Football, Formula One, and many more.
 
 ## Travel and Transportation
-Skills which provides information on favourite tourist destinations, how to reach a destination with numerous transportation options.
+Skills which provide information on favourite tourist destinations, how to reach a destination with numerous transportation options.
 
 ## Utilities
-Skills which are handy in making day to day tasks easy.
+Skills which are handy in making day to day tasks easier.
 
 ## Weather
-Skills which provide  updates on the current weather conditions, and the forecast for the day.
+Skills which provide updates on the current weather conditions, and the forecast for the day.
+
