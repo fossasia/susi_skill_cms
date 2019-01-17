@@ -123,6 +123,13 @@ class SkillRatingCard extends Component {
     }
   };
 
+  roundOffRating = ratingsOverTime => {
+    ratingsOverTime = ratingsOverTime.map(obj => {
+      return { ...obj, rating: parseFloat(obj.rating.toFixed(1)) };
+    });
+    return ratingsOverTime;
+  };
+
   render() {
     const { chartWidth, ratingsOverTimeWidth, offset } = this.state;
     const { skillTag, userRating, skillRatings, ratingsOverTime } = this.props;
@@ -241,7 +248,7 @@ class SkillRatingCard extends Component {
                       width={ratingsOverTimeWidth}
                       debounce={1}
                     >
-                      <LineChart data={ratingsOverTime}>
+                      <LineChart data={this.roundOffRating(ratingsOverTime)}>
                         <XAxis dataKey="timestamp" padding={{ right: 20 }} />
                         <YAxis
                           dataKey="rating"
