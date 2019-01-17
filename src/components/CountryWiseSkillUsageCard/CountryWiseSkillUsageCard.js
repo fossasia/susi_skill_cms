@@ -29,7 +29,7 @@ const CountryWiseSkillUsageCard = props => {
               return (
                 <TableRow key={id}>
                   <TableRowColumn style={{ width: '70%', padding: '0' }}>
-                    {countryName}:
+                    {countryName}({countryCode}):
                   </TableRowColumn>
                   <TableRowColumn
                     style={{ width: '30%', padding: '0', textAlign: 'right' }}
