@@ -147,18 +147,21 @@ class SkillFeedbackCard extends Component {
 
     const deleteActions = [
       <FlatButton
-        key={1}
-        label="Yes"
+        key={0}
+        label="Cancel"
         primary={true}
-        keyboardFocused={true}
-        labelStyle={{ color: '#4285f4' }}
-        onClick={this.deleteFeedback}
+        style={{ marginRight: '10px' }}
+        onClick={this.handleDeleteClose}
       />,
       <FlatButton
-        key={0}
-        label="No"
-        labelStyle={{ color: '#4285f4' }}
-        onClick={this.handleDeleteClose}
+        key={1}
+        label="Delete"
+        primary={true}
+        keyboardFocused={true}
+        labelStyle={{ color: '#fff' }}
+        backgroundColor={'#ff0000'}
+        hoverColor={'rgba(255,0,0,0.7)'}
+        onClick={this.deleteFeedback}
       />,
     ];
 
@@ -321,7 +324,6 @@ class SkillFeedbackCard extends Component {
           />
         </Dialog>
         <Dialog
-          title="Delete Feedback"
           actions={deleteActions}
           modal={true}
           open={openDeleteDialog}
