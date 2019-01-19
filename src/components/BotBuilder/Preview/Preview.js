@@ -81,11 +81,14 @@ class Preview extends Component {
       let url = `${urls.API_URL}/susi/chat.json?q=${encodeURIComponent(
         this.state.message,
       )}&instant=${encodeURIComponent(this.props.skill)}`;
-      const enableDefaultSkillsMatch = this.props.configCode.match(
-        /^::enable_default_skills\s(.*)$/m,
-      );
-      if (enableDefaultSkillsMatch && enableDefaultSkillsMatch[1] === 'no') {
-        url += '&excludeDefaultSkills=true';
+      const { configCode } = this.props;
+      if (configCode) {
+        const enableDefaultSkillsMatch = configCode.match(
+          /^::enable_default_skills\s(.*)$/m,
+        );
+        if (enableDefaultSkillsMatch && enableDefaultSkillsMatch[1] === 'no') {
+          url += '&excludeDefaultSkills=true';
+        }
       }
       this.msgNumber++;
       this.addMessage(this.state.message, 'You');
