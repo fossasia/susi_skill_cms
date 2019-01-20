@@ -673,6 +673,7 @@ class BrowseSkill extends React.Component {
                     <IconButton
                       iconStyle={{ fill: '#4285F4' }}
                       onClick={this.handleOrderByChange}
+                      tooltip={this.props.orderBy}
                     >
                       {renderOrderBy}
                     </IconButton>
