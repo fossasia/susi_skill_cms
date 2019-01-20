@@ -7,6 +7,7 @@ const cookies = new Cookies();
 const defaultState = {
   viewType: 'list',
   loadingSkills: false,
+  loadingSkillsError: false,
   metricSkills: {
     staffPicksSkills: [],
     topRatedSkills: [],
@@ -41,7 +42,15 @@ export default handleActions(
     [actionTypes.SKILLS_INITIALIZE_SKILL_DATA](state, { payload }) {
       return {
         ...state,
+        loadingSkillsError: false,
         loadingSkills: true,
+      };
+    },
+    [actionTypes.SKILLS_INITIALIZE_SKILL_DATA_FAILED](state, { payload }) {
+      return {
+        ...state,
+        loadingSkillsError: true,
+        loadingSkills: false,
       };
     },
     [actionTypes.SKILLS_GET_METRICS_SKILLS](state, { payload }) {
@@ -61,7 +70,6 @@ export default handleActions(
         loadingSkills: false,
       };
     },
-
     [actionTypes.SKILLS_GET_LANGUAGE_OPTIONS](state, { payload }) {
       const { languagesArray } = payload;
       let languages = [];

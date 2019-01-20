@@ -11,6 +11,10 @@ const skillsActions = {
     actionTypes.SKILLS_INITIALIZE_SKILL_DATA,
     returnArgumentsFn,
   ),
+  initializeSkillDataFailed: createAction(
+    actionTypes.SKILLS_INITIALIZE_SKILL_DATA_FAILED,
+    returnArgumentsFn,
+  ),
   getMetricsSkills: createAction(
     actionTypes.SKILLS_GET_METRICS_SKILLS,
     apis.fetchMetricsSkills,
