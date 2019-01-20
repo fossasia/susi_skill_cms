@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import Cookies from 'universal-cookie';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import CircularProgress from 'material-ui/CircularProgress';
 import Snackbar from 'material-ui/Snackbar';
-import * as $ from 'jquery';
+import { fetchSkillsByAuthor } from '../../api';
 import {
   Legend,
   PieChart,
@@ -12,9 +12,6 @@ import {
   Cell,
   ResponsiveContainer,
 } from 'recharts';
-import { urls } from '../../utils';
-
-const cookies = new Cookies();
 
 class MyAnalytics extends Component {
   constructor(props) {
@@ -28,40 +25,32 @@ class MyAnalytics extends Component {
     };
   }
   componentDidMount() {
-    this.loadSKillsUsage();
+    this.loadSkillsUsage();
   }
 
-  loadSKillsUsage = () => {
-    let url =
-      urls.API_URL +
-      `/cms/getSkillsByAuthor.json?author_email=${cookies.get('emailId')}`;
-    let self = this;
-    $.ajax({
-      url: url,
-      dataType: 'jsonp',
-      jsonp: 'callback',
-      crossDomain: true,
-      success: function(data) {
-        self.saveUsageData(data.author_skills || []);
-        self.setState({
+  loadSkillsUsage = () => {
+    const { email } = this.props;
+    fetchSkillsByAuthor({ author_email: email })
+      .then(payload => {
+        this.saveUsageData(payload.authorSkills || []);
+        this.setState({
           loading: false,
         });
-      },
-      error: function(err) {
-        self.setState({
+      })
+      .catch(error => {
+        this.setState({
           loading: false,
           openSnackbar: false,
           msgSnackbar: "Error. Couldn't fetch skill usage.",
         });
-      },
-    });
+      });
   };
 
   saveUsageData = data => {
     const skillUsage = data.map(skill => {
       let dataObject = {};
-      dataObject.skill_name = skill.skill_name;
-      dataObject.usage_count = skill.usage_count || 0;
+      dataObject.skill_name = skill.skillName;
+      dataObject.usage_count = skill.usageCount || 0;
       return dataObject;
     });
     this.setState({ skillUsage });
@@ -74,26 +63,32 @@ class MyAnalytics extends Component {
   };
 
   render() {
-    let skillUsage = this.state.skillUsage;
+    let {
+      skillUsage,
+      activePieIndex,
+      loading,
+      openSnackbar,
+      msgSnackbar,
+    } = this.state;
     return (
       <div>
-        {this.state.loading ? (
+        {loading ? (
           <div className="center">
             <CircularProgress size={62} color="#4285f5" />
             <h4>Loading</h4>
           </div>
         ) : (
           <div>
-            {this.state.skillUsage.length !== 0 && (
+            {skillUsage.length !== 0 && (
               <div className="device-usage">
                 <div className="sub-title">Skill Usage Distribution</div>
                 <div className="pie-chart">
                   <ResponsiveContainer width={600} height={350}>
                     <PieChart>
                       <Pie
-                        activeIndex={this.state.activePieIndex}
+                        activeIndex={activePieIndex}
                         activeShape={renderActiveShape}
-                        data={this.state.skillUsage}
+                        data={skillUsage}
                         cx={300}
                         cy={175}
                         innerRadius={80}
@@ -103,7 +98,7 @@ class MyAnalytics extends Component {
                         fill="#8884d8"
                         onMouseEnter={this.onPieEnter}
                       >
-                        {this.state.skillUsage.map((entry, index) => (
+                        {skillUsage.map((entry, index) => (
                           <Cell
                             key={index}
                             fill={
@@ -127,7 +122,7 @@ class MyAnalytics extends Component {
           </div>
         )}
         {skillUsage.length === 0 &&
-          !this.state.loading && (
+          !loading && (
             <div>
               <div className="center">
                 <br />
@@ -141,8 +136,8 @@ class MyAnalytics extends Component {
           )}
 
         <Snackbar
-          open={this.state.openSnackbar}
-          message={this.state.msgSnackbar}
+          open={openSnackbar}
+          message={msgSnackbar}
           autoHideDuration={2000}
           onRequestClose={() => {
             this.setState({ openSnackbar: false });
@@ -152,6 +147,21 @@ class MyAnalytics extends Component {
     );
   }
 }
+
+MyAnalytics.propTypes = {
+  email: PropTypes.string,
+};
+
+function mapStateToProps(store) {
+  return {
+    email: store.app.email,
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  null,
+)(MyAnalytics);
 
 const renderActiveShape = props => {
   const RADIAN = Math.PI / 180;
@@ -239,5 +249,3 @@ renderActiveShape.propTypes = {
   value: PropTypes.number,
   name: PropTypes.string,
 };
-
-export default MyAnalytics;

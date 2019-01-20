@@ -194,11 +194,8 @@ export function reportSkill(payload) {
 }
 
 export function fetchSkillsByAuthor(payload) {
-  const { author } = payload;
   const url = `${API_URL}/${CMS_API_PREFIX}/getSkillsByAuthor.json`;
-  return ajax.get(url, {
-    author,
-  });
+  return ajax.get(url, payload);
 }
 
 export function deleteSkill(payload) {
@@ -323,4 +320,18 @@ export function storeDraft(payload) {
 export function uploadBotImage(payload) {
   const url = `${API_URL}/${CMS_API_PREFIX}/uploadImage.json`;
   return ajax.post(url, payload);
+}
+export function fetchUserRatings(payload) {
+  const url = `${API_URL}/${CMS_API_PREFIX}/getProfileDetails.json`;
+  return ajax.get(url, {});
+}
+
+export function fetchUserSkill(payload) {
+  const { filterName, filterType } = payload;
+  const url = `${API_URL}/${CMS_API_PREFIX}/getSkillList.json`;
+  return ajax.get(url, {
+    filter_name: filterName,
+    filter_type: filterType,
+    applyFilter: 'true',
+  });
 }

@@ -7,14 +7,11 @@ import {
   TableRow,
   TableRowColumn,
 } from 'material-ui/Table';
-import Cookies from 'universal-cookie';
 import { Link } from 'react-router-dom';
 import CircularProgress from 'material-ui/CircularProgress';
 import Snackbar from 'material-ui/Snackbar';
-import * as $ from 'jquery';
-import { urls, parseDate } from '../../utils';
-
-const cookies = new Cookies();
+import { fetchUserRatings } from '../../api';
+import { parseDate } from '../../utils';
 
 class MyRatings extends Component {
   constructor(props) {
@@ -32,53 +29,42 @@ class MyRatings extends Component {
   }
 
   loadSkills = () => {
-    let url;
-    url =
-      urls.API_URL +
-      '/cms/getProfileDetails.json?access_token=' +
-      cookies.get('loggedIn');
-    let self = this;
     let ratingsData = [];
-    $.ajax({
-      url: url,
-      dataType: 'jsonp',
-      jsonp: 'callback',
-      crossDomain: true,
-      success: function(data) {
-        if (data.rated_skills) {
-          for (let i of data.rated_skills) {
-            let skill_name = Object.keys(i)[0];
+    fetchUserRatings()
+      .then(payload => {
+        if (payload.ratedSkills) {
+          for (let i of payload.ratedSkills) {
+            let skillName = Object.keys(i)[0];
             ratingsData.push({
-              skill_name: skill_name,
-              group: i[skill_name].group,
-              language: i[skill_name].language,
-              skill_star: i[skill_name].stars,
-              rating_timestamp: i[skill_name].timestamp,
+              skillName: skillName,
+              group: i[skillName].group,
+              language: i[skillName].language,
+              skillStar: i[skillName].stars,
+              ratingTimestamp: i[skillName].timestamp,
             });
           }
-          self.setState({
+          this.setState({
             ratingsData,
           });
         }
-        self.setState({
+        this.setState({
           loading: false,
         });
-      },
-      error: function(err) {
-        self.setState({
+      })
+      .catch(err => {
+        this.setState({
           loading: false,
           openSnackbar: true,
           msgSnackbar: "Error. Couldn't rating data.",
         });
-      },
-    });
+      });
   };
 
   render() {
-    let ratingsData = this.state.ratingsData;
+    let { ratingsData, loading, openSnackbar, msgSnackbar } = this.state;
     return (
       <div>
-        {this.state.loading ? (
+        {loading ? (
           <div className="center">
             <CircularProgress size={62} color="#4285f5" />
             <h4>Loading</h4>
@@ -104,24 +90,22 @@ class MyRatings extends Component {
                               '/' +
                               skill.group +
                               '/' +
-                              skill.skill_name
-                                .toLowerCase()
-                                .replace(/ /g, '_') +
+                              skill.skillName.toLowerCase().replace(/ /g, '_') +
                               '/' +
                               skill.language,
                           }}
                         >
                           {(
-                            skill.skill_name.charAt(0).toUpperCase() +
-                            skill.skill_name.slice(1)
+                            skill.skillName.charAt(0).toUpperCase() +
+                            skill.skillName.slice(1)
                           ).replace(/[_-]/g, ' ')}
                         </Link>
                       </TableRowColumn>
                       <TableRowColumn style={{ fontSize: '16px' }}>
-                        {skill.skill_star}
+                        {skill.skillStar}
                       </TableRowColumn>
                       <TableRowColumn>
-                        {parseDate(skill.rating_timestamp)}
+                        {parseDate(skill.ratingTimestamp)}
                       </TableRowColumn>
                     </TableRow>
                   );
@@ -131,7 +115,7 @@ class MyRatings extends Component {
           </div>
         )}
         {ratingsData.length === 0 &&
-          !this.state.loading && (
+          !loading && (
             <div>
               <div className="center">
                 <br />
@@ -145,8 +129,8 @@ class MyRatings extends Component {
           )}
 
         <Snackbar
-          open={this.state.openSnackbar}
-          message={this.state.msgSnackbar}
+          open={openSnackbar}
+          message={msgSnackbar}
           autoHideDuration={2000}
           onRequestClose={() => {
             this.setState({ openSnackbar: false });

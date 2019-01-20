@@ -7,9 +7,12 @@ import {
   TableRow,
   TableRowColumn,
 } from 'material-ui/Table';
-import Cookies from 'universal-cookie';
 import SelectField from 'material-ui/SelectField';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import actions from '../../redux/actions/app';
+import PropTypes from 'prop-types';
 import Person from 'material-ui/svg-icons/social/person';
 import IconMenu from 'material-ui/IconMenu';
 import IconButton from 'material-ui/IconButton';
@@ -18,12 +21,9 @@ import CircularProgress from 'material-ui/CircularProgress';
 import CircleImage from '../CircleImage/CircleImage';
 import Snackbar from 'material-ui/Snackbar';
 import MenuItem from 'material-ui/MenuItem';
-import * as $ from 'jquery';
 import Img from 'react-image';
 import Add from 'material-ui/svg-icons/content/add';
 import { urls, colors } from '../../utils';
-
-const cookies = new Cookies();
 
 const styles = {
   imageStyle: {
@@ -43,7 +43,6 @@ class MySkills extends Component {
       skillsData: [],
       loading: true,
       openSnackbar: false,
-      showMySkills: true,
       msgSnackbar: '',
       openMenu: false,
       openMenuBottom: false,
@@ -54,42 +53,24 @@ class MySkills extends Component {
   }
 
   loadSkills = () => {
-    let url =
-      urls.API_URL +
-      '/cms/getSkillList.json?applyFilter=true&filter_name=ascending&filter_type=lexicographical';
-    let self = this;
-    let skillsData = [];
-    $.ajax({
-      url: url,
-      dataType: 'jsonp',
-      jsonp: 'callback',
-      crossDomain: true,
-      success: function(data) {
-        for (let i of data.filteredData) {
-          skillsData.push({
-            skill_name: i.skill_name,
-            type: 'public',
-            status: 'active',
-            ...i,
-          });
-        }
-        self.setState({
-          skillsData,
+    let dataObj = {
+      filterName: 'ascending',
+      filterType: 'lexicographical',
+    };
+    this.props.actions
+      .getUserSkills(dataObj)
+      .then(() => {
+        this.setState({
           loading: false,
         });
-      },
-      error: function(err) {
-        self.setState({
+      })
+      .catch(error => {
+        this.setState({
           loading: false,
           openSnackbar: false,
           msgSnackbar: "Error. Couldn't fetch skills.",
         });
-      },
-    });
-  };
-
-  handleShowMySkills = (event, isInputChecked) => {
-    this.setState({ showMySkills: isInputChecked });
+      });
   };
 
   handleOnRequestChangeBottom = value => {
@@ -104,15 +85,8 @@ class MySkills extends Component {
     });
   };
   render() {
-    let skillsData = this.state.skillsData.filter(item => {
-      if (
-        !this.state.showMySkills ||
-        item.author_email === cookies.get('emailId')
-      ) {
-        return item;
-      }
-      return null;
-    });
+    const { userSkills } = this.props;
+    const { openMenu, loading, openSnackbar, msgSnackbar } = this.state;
     return (
       <div>
         <div style={{ textAlign: 'right' }}>
@@ -120,7 +94,7 @@ class MySkills extends Component {
             anchorOrigin={{ vertical: 'bottom', horizontal: 'middle' }}
             label="Add new skill"
             animated={false}
-            open={this.state.openMenu}
+            open={openMenu}
             onRequestChange={this.handleOnRequestChange}
             iconButtonElement={
               <IconButton className="add-button" iconStyle={{ color: '#fff' }}>
@@ -147,7 +121,7 @@ class MySkills extends Component {
           />
         </div>
 
-        {this.state.loading ? (
+        {loading ? (
           <div className="center">
             <CircularProgress size={62} color="#4285f5" />
             <h4>Loading</h4>
@@ -164,7 +138,7 @@ class MySkills extends Component {
                 </TableRow>
               </TableHeader>
               <TableBody displayRowCheckbox={false}>
-                {skillsData.map((skill, index) => {
+                {userSkills.map((skill, index) => {
                   return (
                     <TableRow key={index}>
                       <TableRowColumn>
@@ -174,7 +148,7 @@ class MySkills extends Component {
                               '/' +
                               skill.group +
                               '/' +
-                              skill.skill_tag.toLowerCase().replace(/ /g, '_') +
+                              skill.skillTag.toLowerCase().replace(/ /g, '_') +
                               '/' +
                               skill.language,
                           }}
@@ -187,27 +161,27 @@ class MySkills extends Component {
                               skill.language
                             }&group=${skill.group}&image=/${skill.image}`}
                             unloader={
-                              <CircleImage name={skill.skill_name} size="40" />
+                              <CircleImage name={skill.skillName} size="40" />
                             }
                           />
                         </Link>
                       </TableRowColumn>
                       <TableRowColumn style={{ fontSize: '16px' }}>
-                        {skill.skill_name ? (
+                        {skill.skillName ? (
                           <Link
                             to={{
                               pathname:
                                 '/' +
                                 skill.group +
                                 '/' +
-                                skill.skill_tag
+                                skill.skillTag
                                   .toLowerCase()
                                   .replace(/ /g, '_') +
                                 '/' +
                                 skill.language,
                             }}
                           >
-                            {skill.skill_name}
+                            {skill.skillName}
                           </Link>
                         ) : (
                           'NA'
@@ -232,8 +206,8 @@ class MySkills extends Component {
             </Table>
           </div>
         )}
-        {skillsData.length === 0 &&
-          !this.state.loading && (
+        {userSkills.length === 0 &&
+          !loading && (
             <div>
               <div className="center">
                 <br />
@@ -256,8 +230,8 @@ class MySkills extends Component {
           )}
 
         <Snackbar
-          open={this.state.openSnackbar}
-          message={this.state.msgSnackbar}
+          open={openSnackbar}
+          message={msgSnackbar}
           autoHideDuration={2000}
           onRequestClose={() => {
             this.setState({ openSnackbar: false });
@@ -268,4 +242,25 @@ class MySkills extends Component {
   }
 }
 
-export default MySkills;
+MySkills.propTypes = {
+  userSkills: PropTypes.array,
+  actions: PropTypes.object,
+};
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(actions, dispatch),
+  };
+}
+
+function mapStateToProps({ app }) {
+  const { userSkills } = app;
+  return {
+    userSkills,
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(MySkills);
