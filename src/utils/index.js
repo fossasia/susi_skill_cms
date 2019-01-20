@@ -11,3 +11,4 @@ export { default as toFormData } from './toFormData';
 export { default as scrollAnimation } from './scrollAnimation.js';
 export { default as testExample } from './testExample';
 export { default as isEmail } from './isEmail';
+export { default as formatDate } from './formatDate';
