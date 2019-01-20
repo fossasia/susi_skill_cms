@@ -28,7 +28,7 @@ import EditBtn from 'material-ui/svg-icons/editor/mode-edit';
 // CSS
 import './SkillFeedbackCard.css';
 
-import { parseDate } from '../../utils';
+import { parseDate, formatDate } from '../../utils';
 
 const cookies = new Cookies();
 
@@ -119,12 +119,6 @@ class SkillFeedbackCard extends Component {
     this.handleDeleteClose();
   };
 
-  formatDate = timestamp => {
-    timestamp = timestamp.split(' ').slice(1, 4);
-    timestamp[1] = `${timestamp[1]},`;
-    return timestamp.join(' ');
-  };
-
   render() {
     const { skillFeedbacks, skillTag, language } = this.props;
     const { errorText, openEditDialog, openDeleteDialog } = this.state;
@@ -193,7 +187,7 @@ class SkillFeedbackCard extends Component {
                   <div>
                     <div>{userName === '' ? userEmail : userName}</div>
                     <div className="feedback-timestamp">
-                      {this.formatDate(parseDate(data.timestamp))}
+                      {formatDate(parseDate(data.timestamp))}
                     </div>
                   </div>
                 }
@@ -234,7 +228,7 @@ class SkillFeedbackCard extends Component {
                       : `${userEmail.slice(0, userEmail.indexOf('@') + 1)}...`}
                   </div>
                   <div className="feedback-timestamp">
-                    {this.formatDate(parseDate(data.timestamp))}
+                    {formatDate(parseDate(data.timestamp))}
                   </div>
                 </div>
               }
