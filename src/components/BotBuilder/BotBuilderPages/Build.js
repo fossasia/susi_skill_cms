@@ -82,7 +82,7 @@ class Build extends Component {
     return (
       <div className="menu-page">
         <div>
-          <div style={{ display: 'flex', flexDirection: 'row' }}>
+          <div style={{ width: '100%' }}>
             <SkillCreator
               botBuilder={{
                 sendInfoToProps: this.sendInfoToProps,
