@@ -408,8 +408,6 @@ class BotWizard extends React.Component {
             image={this.state.image}
             imageUrl={this.state.imageUrl}
             onImageChange={() => this.setState({ imageChanged: true })}
-            preferUiView={this.state.preferUiView}
-            onChangePreferUiView={this.onChangePreferUiView}
           />
         );
       case 1:
