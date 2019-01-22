@@ -1265,52 +1265,14 @@ export default class SkillCreator extends Component {
                                 src={this.state.image}
                               />
                             )}
-                            {this.props.botBuilder ? (
-                              <form style={{ display: 'inline-block' }}>
-                                <label
-                                  title="Upload bot image"
-                                  style={styles.uploadCircularButton}
-                                >
-                                  <input
-                                    accept="image/*"
-                                    type="file"
-                                    ref={c => {
-                                      this.file = c;
-                                    }}
-                                    name="user[image]"
-                                    multiple="false"
-                                    onChange={this._onChange}
-                                  />
-                                  <Add
-                                    style={{
-                                      height: '30px',
-                                      marginTop: '15px',
-                                      color: 'rgb(66, 133, 245)',
-                                    }}
-                                  />
-                                </label>
-                              </form>
-                            ) : (
-                              <RaisedButton
-                                label="Choose an Image"
-                                labelPosition="before"
-                                backgroundColor={colors.header}
-                                containerElement="label"
-                                labelColor="#fff"
+                            <form style={{ display: 'inline-block' }}>
+                              <label
+                                title="Upload bot image"
+                                style={styles.uploadCircularButton}
                               >
                                 <input
-                                  type="file"
                                   accept="image/*"
-                                  style={{
-                                    cursor: 'pointer',
-                                    position: 'absolute',
-                                    top: 0,
-                                    bottom: 0,
-                                    right: 0,
-                                    left: 0,
-                                    width: '100%',
-                                    opacity: 0,
-                                  }}
+                                  type="file"
                                   ref={c => {
                                     this.file = c;
                                   }}
@@ -1318,8 +1280,15 @@ export default class SkillCreator extends Component {
                                   multiple="false"
                                   onChange={this._onChange}
                                 />
-                              </RaisedButton>
-                            )}
+                                <Add
+                                  style={{
+                                    height: '30px',
+                                    marginTop: '15px',
+                                    color: 'rgb(66, 133, 245)',
+                                  }}
+                                />
+                              </label>
+                            </form>
                           </div>
                         </div>
                       </div>
