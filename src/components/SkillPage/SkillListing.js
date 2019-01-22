@@ -232,6 +232,7 @@ class SkillListing extends Component {
         key="submit"
         style={{ color: colors.warningColor }}
         onClick={this.handleReportSubmit}
+        disabled={!this.state.feedbackMessage.trim()}
       />,
       <FlatButton
         label="Cancel"
