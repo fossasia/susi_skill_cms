@@ -89,7 +89,7 @@ class SkillFeedbackCard extends Component {
       skill,
       feedback: feedbackValue,
     };
-    if (feedbackValue) {
+    if (feedbackValue.trim()) {
       actions
         .setSkillFeedback(skillData)
         .then(payload => {
