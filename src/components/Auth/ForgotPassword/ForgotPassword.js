@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import actions from '../../../redux/actions/app';
 
 /* Material-UI*/
 import Close from 'material-ui/svg-icons/navigation/close';
@@ -10,8 +13,7 @@ import CircularProgress from 'material-ui/CircularProgress';
 import TextField from 'material-ui/TextField';
 
 /* Utils*/
-import $ from 'jquery';
-import { colors, urls } from '../../../utils';
+import { colors } from '../../../utils';
 
 /* CSS*/
 import './ForgotPassword.css';
@@ -41,12 +43,13 @@ const styles = {
   },
 };
 
-export default class ForgotPassword extends Component {
+class ForgotPassword extends Component {
   static propTypes = {
     history: PropTypes.object,
     openSnackBar: PropTypes.func,
     onRequestCloseDialog: PropTypes.func,
     isForgotPasswordOpen: PropTypes.bool,
+    actions: PropTypes.object,
   };
 
   constructor(props) {
@@ -122,60 +125,59 @@ export default class ForgotPassword extends Component {
   handleSubmit = event => {
     event.preventDefault();
 
-    const { openSnackBar } = this.props;
-    let { email, success } = this.state;
+    const { openSnackBar, actions } = this.props;
+    let { email } = this.state;
     email = email.trim();
     let validEmail = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
-    let BASE_URL = urls.API_URL;
-    let message = '';
 
     this.setState({ loading: true });
 
     if (email && validEmail) {
-      $.ajax({
-        url: `${BASE_URL}/aaa/recoverpassword.json?forgotemail=${email}`,
-        dataType: 'jsonp',
-        crossDomain: true,
-        timeout: 3000,
-        statusCode: {
-          422: () => {
-            message = 'Email does not exist';
-            this.setState({ loading: false }, () => {
-              openSnackBar({ snackBarMessage: message });
-            });
-          },
-        },
-        success: response => {
-          message = `${response.message}.`;
-          if (response.accepted) {
+      this.setState({ loading: true });
+      actions
+        .getForgotPassword({ email })
+        .then(({ payload }) => {
+          let snackBarMessage = payload.message;
+          let success;
+          if (payload.accepted) {
             success = true;
           } else {
             success = false;
-            message += ' Please Try Again.';
+            snackBarMessage = 'Please Try Again';
           }
-          this.setState({ success, loading: false }, () => {
-            openSnackBar({ snackBarMessage: message });
-
-            if (success) {
-              setTimeout(() => {
-                this.closeDialog();
-              }, 2000);
-            }
+          this.setState(
+            {
+              success,
+              loading: false,
+            },
+            () => {
+              if (success) {
+                setTimeout(() => {
+                  this.closeDialog();
+                }, 2000);
+              }
+            },
+          );
+          openSnackBar({
+            snackBarMessage,
           });
-        },
-        error: jqXHR => {
-          let jsonValue = jqXHR.status;
-          message = '';
-          if (jsonValue === 404) {
-            message = 'Email does not exist.';
+        })
+        .catch(error => {
+          debugger;
+          this.setState({
+            loading: false,
+            success: false,
+          });
+          if (error.statusCode === 422) {
+            openSnackBar({
+              snackBarMessage: 'Email does not exist.',
+            });
           } else {
-            message = 'Failed. Try Again.';
+            openSnackBar({
+              snackBarMessage: 'Failed. Try Again',
+            });
           }
-          this.setState({ loading: false }, () => {
-            openSnackBar({ snackBarMessage: message });
-          });
-        },
-      });
+        });
     }
   };
 
@@ -232,3 +234,14 @@ export default class ForgotPassword extends Component {
     );
   }
 }
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(actions, dispatch),
+  };
+}
+
+export default connect(
+  null,
+  mapDispatchToProps,
+)(ForgotPassword);

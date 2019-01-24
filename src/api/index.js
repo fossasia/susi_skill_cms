@@ -27,6 +27,12 @@ export function getAdmin(payload) {
   return ajax.get(url, payload);
 }
 
+export function getForgotPassword(payload) {
+  const { email } = payload;
+  const url = `${API_URL}/${AUTH_API_PREFIX}/recoverpassword.json`;
+  return ajax.get(url, { forgotemail: email });
+}
+
 export function fetchMetricsSkills(payload) {
   const { languageValue } = payload;
   const url = `${urls.API_URL}/cms/getSkillMetricsData.json`;
