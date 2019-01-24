@@ -490,6 +490,7 @@ class BotWizard extends React.Component {
       return 0;
     }
     let imageUrl = this.state.imageUrl;
+    let skillName = this.state.expertValue.trim().replace(/\s/g, '_');
     if (
       !new RegExp(/.+\.\w+/g).test(imageUrl) &&
       imageUrl !== 'images/<image_name>' &&
@@ -500,6 +501,14 @@ class BotWizard extends React.Component {
       notification.open({
         message: 'Error Processing your Request',
         description: 'image must be in format of images/imageName.jpg',
+        icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
+      });
+      return 0;
+    }
+    if (skillName === '') {
+      notification.open({
+        message: 'Error Processing your Request',
+        description: 'Bot name is not given',
         icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
       });
       return 0;
