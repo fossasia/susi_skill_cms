@@ -6,6 +6,7 @@ import {
   fetchApiKeys,
   getAdmin,
   fetchUserSkill,
+  getForgotPassword,
 } from '../../api';
 
 const returnArgumentsFn = function(payload) {
@@ -19,4 +20,8 @@ export default {
   logout: createAction(actionTypes.APP_LOGOUT, returnArgumentsFn),
   getAdmin: createAction(actionTypes.APP_GET_ADMIN, getAdmin),
   getUserSkills: createAction(actionTypes.APP_GET_USER_SKILLS, fetchUserSkill),
+  getForgotPassword: createAction(
+    actionTypes.APP_GET_FORGOT_PASSWORD,
+    getForgotPassword,
+  ),
 };
