@@ -79,14 +79,14 @@ const styles = {
 class Login extends Component {
   static propTypes = {
     history: PropTypes.object,
-    actions: PropTypes.func,
+    actions: PropTypes.object,
     isLoginOpen: PropTypes.bool,
     onRequestCloseDialog: PropTypes.func,
     onRequestOpenSignUp: PropTypes.func,
     onRequestOpenForgotPassword: PropTypes.func,
     openSnackBar: PropTypes.func,
     location: PropTypes.object,
-    languageValue: PropTypes.string,
+    languageValue: PropTypes.array,
   };
 
   constructor(props) {

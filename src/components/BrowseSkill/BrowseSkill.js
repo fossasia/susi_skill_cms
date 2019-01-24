@@ -60,7 +60,7 @@ class BrowseSkill extends React.Component {
     skills: PropTypes.array,
     entriesPerPage: PropTypes.number,
     ratingRefine: PropTypes.number,
-    timeFilter: PropTypes.string,
+    timeFilter: PropTypes.number,
     listOffset: PropTypes.number,
     viewType: PropTypes.string,
     metricSkills: PropTypes.object,

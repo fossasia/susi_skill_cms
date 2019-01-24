@@ -87,6 +87,9 @@ class App extends React.Component {
       snackBarDuration: 4000,
       snackBarAction: null,
       snackBarActionHandler: null,
+      isLoginOpen: false,
+      isSignUpOpen: false,
+      isForgotPasswordOpen: false,
     };
   }
 
