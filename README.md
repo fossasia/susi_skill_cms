@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/fossasia/susi_skill_cms.svg?branch=master)](https://travis-ci.org/fossasia/susi_skill_cms)
 
-A web application framework to edit SUSI Skills
+A web application framework to edit SUSI.AI Skills
 
 ## Communication
 
@@ -14,7 +14,7 @@ Our chat channel is on gitter here: https://gitter.im/fossasia/susi_server
 
 ### Components
 * HTML - Structure of the web page generated.
-* CSS - Styling options and details ofthe web page.
+* CSS - Styling options and details of the web page.
 * Javascript(JSON) - Used to store information for deploying the application such as dependencies.
 * ReactJS - Structure for deployment of the web page.
 
@@ -46,4 +46,4 @@ Surge will automatically generate deployment link whenever a pull request passes
 
 ### Learn the skill language
 
-Read [SUSI Skill language](./docs/Skill_Tutorial.md) Learn how to add your own AI skills.
+Read [SUSI Skill language](./docs/Skill_Tutorial.md) to learn how to add your own AI skills.
