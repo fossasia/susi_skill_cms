@@ -13,10 +13,7 @@ import CircularProgress from 'material-ui/CircularProgress';
 import Close from 'material-ui/svg-icons/navigation/close';
 
 /* Utils */
-import $ from 'jquery';
-import Cookies from 'universal-cookie';
-import { colors, urls } from '../../../utils';
-import isEmail from '../../../utils/isEmail';
+import { colors, isEmail } from '../../../utils';
 import Recaptcha from 'react-recaptcha';
 import actions from '../../../redux/actions/app';
 
@@ -139,7 +136,7 @@ class SignUp extends Component {
     }
   };
 
-  handleChange = event => {
+  handleTextFieldChange = event => {
     let {
       email,
       passwordValue,
@@ -148,28 +145,26 @@ class SignUp extends Component {
       validPassword,
       passwordError,
       passwordConfirmError,
-      passwordStrength,
-      passwordScore,
       emailErrorMessage,
       passwordErrorMessage,
       passwordConfirmErrorMessage,
       validForm,
+      passwordStrength,
+      passwordScore,
     } = this.state;
 
     // eslint-disable-next-line
     switch (event.target.name) {
-      case 'email': {
+      case 'email':
         email = event.target.value.trim();
-        emailError = !isEmail(email);
-        if (emailError) {
+        if (!isEmail(email)) {
           emailErrorMessage = 'Enter a valid Email Address';
         } else {
           emailErrorMessage = '';
         }
         break;
-      }
 
-      case 'password': {
+      case 'password':
         passwordValue = event.target.value;
         validPassword = passwordValue.length >= 6;
         let validConfirmPassword = confirmPasswordValue.length >= 1;
@@ -177,15 +172,6 @@ class SignUp extends Component {
         passwordConfirmError = !(
           passwordValue === this.state.confirmPasswordValue
         );
-        if (validPassword) {
-          let result = zxcvbn(passwordValue);
-          passwordScore = result.score;
-          let strength = ['Worst', 'Bad', 'Weak', 'Good', 'Strong'];
-          passwordStrength = strength[result.score];
-        } else {
-          passwordStrength = '';
-          passwordScore = -1;
-        }
         if (passwordError) {
           passwordErrorMessage = 'Minimum 6 characters required';
         } else {
@@ -196,10 +182,18 @@ class SignUp extends Component {
         } else {
           passwordConfirmErrorMessage = '';
         }
+        if (validPassword) {
+          let result = zxcvbn(passwordValue);
+          passwordScore = result.score;
+          let strength = ['Worst', 'Bad', 'Weak', 'Good', 'Strong'];
+          passwordStrength = strength[result.score];
+        } else {
+          passwordStrength = '';
+          passwordScore = -1;
+        }
         break;
-      }
 
-      case 'confirmPassword': {
+      case 'confirmPassword':
         confirmPasswordValue = event.target.value;
         // let validConfirmPasswordLength = confirmPasswordValue.length >= 6;
         validPassword = confirmPasswordValue === passwordValue;
@@ -215,7 +209,6 @@ class SignUp extends Component {
           passwordConfirmErrorMessage = '';
         }
         break;
-      }
     }
 
     if (!emailError && !passwordError && !passwordConfirmError) {
@@ -223,6 +216,22 @@ class SignUp extends Component {
     } else {
       validForm = false;
     }
+
+    this.setState({
+      email,
+      passwordValue,
+      confirmPasswordValue,
+      emailError,
+      validPassword,
+      passwordError,
+      passwordConfirmError,
+      emailErrorMessage,
+      passwordErrorMessage,
+      passwordConfirmErrorMessage,
+      validForm,
+      passwordStrength,
+      passwordScore,
+    });
   };
 
   handleSubmit = event => {
