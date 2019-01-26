@@ -1,6 +1,7 @@
 import { handleActions } from 'redux-actions';
 import actionTypes from '../actionTypes';
 import { parseDate } from '../../utils';
+import moment from 'moment';
 
 const defaultState = {
   metaData: {
@@ -123,6 +124,7 @@ export default handleActions(
         const filterSkillUsage = skillUsage.filter(day => day !== undefined);
         const dateWiseSkillUsage = filterSkillUsage.map(usage => {
           if (usage !== null) {
+            usage.date = moment(usage.date, 'YYYY-MM-DD').format('DD MMM YY');
             usage.count = parseInt(usage.count, 10);
             return usage;
           }
