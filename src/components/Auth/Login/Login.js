@@ -235,8 +235,6 @@ class Login extends Component {
   };
 
   render() {
-    console.log(this.props);
-
     const {
       fieldStyle,
       passwordFieldStyle,
