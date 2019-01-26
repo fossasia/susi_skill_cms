@@ -3,50 +3,46 @@ import Ratings from 'react-ratings-declarative';
 import { Link } from 'react-router-dom';
 import { Card } from 'material-ui/Card';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import ReactTooltip from 'react-tooltip';
+import SkillRatingPopover from '../SkillRating/SkillRatingPopover.js';
+import NavigationArrowDropDown from 'material-ui/svg-icons/navigation/arrow-drop-down';
 import CircleImage from '../CircleImage/CircleImage';
 import StaffPick from '../../images/staff_pick.png';
-
+import '../SkillRating/ReviewPopoverStyle.css';
 import styles from '../BrowseSkill/SkillStyle';
 import { urls } from '../../utils';
 class SkillCardGrid extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      cards: [],
-      skills: this.props.skills,
-    };
-  }
-
-  componentDidMount() {
-    this.loadSkillCards();
-  }
-
-  componentDidUpdate() {
-    if (this.props.skills !== this.state.skills) {
-      this.setState(
-        {
-          skills: this.props.skills,
-        },
-        () => this.loadSkillCards(),
-      );
-    }
-  }
-
   loadSkillCards = () => {
     let cards = [];
-    Object.keys(this.state.skills).forEach(el => {
-      let skill = this.state.skills[el];
-      let skill_name,
+    Object.keys(this.props.skills).forEach(el => {
+      let skill = this.props.skills[el];
+      const dataId = `index-${el}`;
+      const skillPathname = `/${skill.group}/${skill.skillTag}/${
+        skill.language
+      }`;
+      const skillFeedbackPathname = `${skillPathname}/feedbacks`;
+      let skillName,
         examples,
         image,
-        staffPick = false; // , description;
-      let average_rating = 0,
-        total_rating = 0;
-      if (skill.skill_name) {
-        skill_name = skill.skill_name;
-        skill_name = skill_name.charAt(0).toUpperCase() + skill_name.slice(1);
+        staffPick = false;
+      let averageRating = 0,
+        totalRating = 0,
+        authorName = '';
+      let stars = {
+        oneStar: 0,
+        twoStar: 0,
+        threeStar: 0,
+        fourStar: 0,
+        fiveStar: 0,
+        avgStar: 0,
+        totalStar: 0,
+      };
+      if (skill.skillName) {
+        skillName = skill.skillName;
+        skillName = skillName.charAt(0).toUpperCase() + skillName.slice(1);
       } else {
-        skill_name = 'Name not available';
+        skillName = 'Name not available';
       }
       if (skill.image) {
         image = `${urls.API_URL}/cms/getImage.png?model=${
@@ -56,45 +52,33 @@ class SkillCardGrid extends Component {
         image = '';
       }
       if (skill.examples) {
-        examples = skill.examples;
-        examples = examples[0];
+        examples = skill.examples[0];
       } else {
         examples = null;
       }
-      if (skill.skill_rating) {
-        average_rating = parseFloat(skill.skill_rating.stars.avg_star);
-        total_rating = parseInt(skill.skill_rating.stars.total_star, 10);
+      if (skill.skillRating) {
+        averageRating = parseFloat(skill.skillRating.stars.avgStar);
+        totalRating = parseInt(skill.skillRating.stars.totalStar, 10);
+        stars = skill.skillRating.stars;
       }
-
       if (skill.staffPick) {
         staffPick = true;
+      }
+      if (skill.author) {
+        authorName = skill.author;
       }
       cards.push(
         <Card style={styles.skillCard} key={el}>
           <Link
             key={el}
             to={{
-              pathname:
-                '/' +
-                skill.group +
-                '/' +
-                skill.skill_tag +
-                '/' +
-                this.props.languageValue,
-              state: {
-                url: this.props.skillUrl,
-                element: el,
-                name: el,
-                modelValue: this.props.modelValue,
-                groupValue: skill.group,
-                languageValue: this.props.languageValue,
-              },
+              pathname: skillPathname,
             }}
           >
             <div style={styles.imageContainer} key={el}>
               {image ? (
                 <div style={styles.image}>
-                  <img alt={skill_name} src={image} style={styles.image} />
+                  <img alt={skillName} src={image} style={styles.image} />
                 </div>
               ) : (
                 <CircleImage name={el} size="48" />
@@ -104,7 +88,7 @@ class SkillCardGrid extends Component {
               ) : null}
             </div>
             <div style={styles.name}>
-              <span>{skill_name}</span>
+              <span>{skillName}</span>
               {staffPick && (
                 <div style={styles.staffPick}>
                   <img
@@ -116,60 +100,63 @@ class SkillCardGrid extends Component {
               )}
             </div>
           </Link>
+          <div style={styles.author}>
+            <p>{authorName}</p>
+          </div>
           <div style={styles.rating}>
-            <Link
-              key={el}
-              to={{
-                pathname:
-                  '/' +
-                  skill.group +
-                  '/' +
-                  skill.skill_tag +
-                  '/' +
-                  this.props.languageValue +
-                  '/feedbacks',
-                state: {
-                  url: this.props.skillUrl,
-                  element: el,
-                  name: el,
-                  modelValue: this.props.modelValue,
-                  groupValue: skill.group,
-                  languageValue: this.props.languageValue,
-                },
-              }}
-            >
-              <Ratings
-                style={{ display: 'flex' }}
-                rating={average_rating || 0}
-                widgetRatedColors="#ffbb28"
-                widgetDimensions="20px"
-                widgetSpacings="0px"
+            <div data-tip="custom" data-for={dataId}>
+              <Link
+                key={el}
+                to={{
+                  pathname: skillFeedbackPathname,
+                }}
               >
-                <Ratings.Widget />
-                <Ratings.Widget />
-                <Ratings.Widget />
-                <Ratings.Widget />
-                <Ratings.Widget />
-              </Ratings>
-              <span style={styles.totalRating} title="Total ratings">
-                {total_rating || 0}
-              </span>
-            </Link>
+                <Ratings
+                  style={{ display: 'flex' }}
+                  rating={averageRating || 0}
+                  widgetRatedColors="#ffbb28"
+                  widgetDimensions="20px"
+                  widgetSpacings="0px"
+                >
+                  <Ratings.Widget />
+                  <Ratings.Widget />
+                  <Ratings.Widget />
+                  <ReactTooltip
+                    className="customeTheme"
+                    id={dataId}
+                    type={'light'}
+                    place="bottom"
+                    effect="solid"
+                    delayHide={200}
+                    border="true"
+                  >
+                    <Link to={{ pathname: skillFeedbackPathname }}>
+                      <SkillRatingPopover stars={stars} />
+                    </Link>
+                  </ReactTooltip>
+                  <Ratings.Widget />
+                  <Ratings.Widget />
+                </Ratings>
+                <NavigationArrowDropDown
+                  style={{
+                    fill: '#595959',
+                    marginBottom: '-7px',
+                    cursor: 'pointer',
+                  }}
+                />
+                <span style={styles.totalRating} title="Total ratings">
+                  {totalRating || 0}
+                </span>
+              </Link>
+            </div>
           </div>
         </Card>,
       );
     });
-    this.setState({
-      cards,
-    });
+    return cards;
   };
 
   render() {
-    let skillDisplay = '';
-    if (this.props.skills && this.props.skills.length) {
-      skillDisplay = this.state.cards;
-    }
-
     return (
       <div
         style={{
@@ -181,7 +168,7 @@ class SkillCardGrid extends Component {
         }}
       >
         <div>
-          <div style={styles.gridList}>{skillDisplay}</div>
+          <div style={styles.gridList}>{this.loadSkillCards()}</div>
         </div>
       </div>
     );
@@ -190,9 +177,15 @@ class SkillCardGrid extends Component {
 
 SkillCardGrid.propTypes = {
   skills: PropTypes.array,
-  languageValue: PropTypes.array,
-  skillUrl: PropTypes.string,
-  modelValue: PropTypes.string,
 };
 
-export default SkillCardGrid;
+function mapStateToProps(store) {
+  return {
+    skills: store.skills.listSkills,
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  null,
+)(SkillCardGrid);

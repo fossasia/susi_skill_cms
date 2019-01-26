@@ -1,11 +1,16 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import zxcvbn from 'zxcvbn';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 /* Material-UI */
 import PasswordField from 'material-ui-password-field';
+import Dialog from 'material-ui/Dialog';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
+import CircularProgress from 'material-ui/CircularProgress';
+import Close from 'material-ui/svg-icons/navigation/close';
 
 /* Utils */
 import $ from 'jquery';
@@ -13,19 +18,67 @@ import Cookies from 'universal-cookie';
 import { colors, urls } from '../../../utils';
 import isEmail from '../../../utils/isEmail';
 import Recaptcha from 'react-recaptcha';
-import KEY from '../../../utils/config';
+import actions from '../../../redux/actions/app';
 
 /* CSS */
 import './SignUp.css';
 
-const cookies = new Cookies();
+const styles = {
+  emailStyle: {
+    height: '35px',
+    borderRadius: 4,
+    border: '1px solid #ced4da',
+    fontSize: 16,
+    padding: '0px 10px',
+    width: '272px',
+    marginTop: '10px',
+  },
+  fieldStyle: {
+    height: '35px',
+    borderRadius: 4,
+    border: '1px solid #ced4da',
+    fontSize: 16,
+    padding: '0px 10px',
+    width: '250px',
+    marginTop: '10px',
+  },
+  inputStyle: {
+    height: '35px',
+    marginBottom: '10px',
+    webkitTextFillColor: 'unset',
+  },
+  inputpassStyle: {
+    height: '35px',
+    marginBottom: '10px',
+    marginRight: '50px',
+    width: '90%',
+    webkitTextFillColor: 'unset',
+  },
+  bodyStyle: {
+    padding: 0,
+    textAlign: 'center',
+  },
+  closingStyle: {
+    position: 'absolute',
+    zIndex: 1200,
+    fill: '#444',
+    width: '26px',
+    height: '26px',
+    right: '10px',
+    top: '10px',
+    cursor: 'pointer',
+  },
+};
 
-export default class SignUp extends Component {
+class SignUp extends Component {
   static propTypes = {
     history: PropTypes.object,
-    updateAuthDialog: PropTypes.func,
-    updateSnackbar: PropTypes.func,
-    closeDialog: PropTypes.func,
+    openSnackBar: PropTypes.func,
+    captchaKey: PropTypes.string,
+    actions: PropTypes.object,
+    onRequestCloseDialog: PropTypes.func,
+    onRequestOpenLogin: PropTypes.func,
+    isSignUpOpen: PropTypes.bool,
   };
 
   constructor(props) {
@@ -33,33 +86,42 @@ export default class SignUp extends Component {
 
     this.state = {
       email: '',
-      isEmail: false,
-      emailError: true,
       emailErrorMessage: '',
-      passwordValue: '',
-      passwordError: true,
+      password: '',
       passwordErrorMessage: '',
-      passwordConfirmError: true,
-      confirmPasswordValue: '',
+      confirmPassword: '',
       passwordConfirmErrorMessage: '',
       passwordStrength: '',
       passwordScore: -1,
       success: false,
-      open: false,
-      openLogin: false,
-      openForgotPassword: false,
       isCaptchaVerified: false,
       captchaVerifyErrorMessage: '',
-      validForm: false,
-      serverUrl: '',
-      msgOpen: false,
-      serverFieldError: false,
+      loading: false,
     };
-
-    if (cookies.get('loggedIn')) {
-      window.location.reload();
-    }
   }
+
+  closeDialog = () => {
+    const { onRequestCloseDialog } = this.props;
+    this.setState(
+      {
+        email: '',
+        emailErrorMessage: '',
+        password: '',
+        passwordErrorMessage: '',
+        confirmPassword: '',
+        passwordConfirmErrorMessage: '',
+        passwordStrength: '',
+        passwordScore: -1,
+        success: false,
+        isCaptchaVerified: false,
+        captchaVerifyErrorMessage: '',
+        loading: false,
+      },
+      () => {
+        onRequestCloseDialog();
+      },
+    );
+  };
 
   onCaptchaLoad = () => {
     this.setState({
@@ -161,44 +223,24 @@ export default class SignUp extends Component {
     } else {
       validForm = false;
     }
-
-    this.setState({
-      email,
-      passwordValue,
-      confirmPasswordValue,
-      isEmail,
-      emailError,
-      validPassword,
-      passwordError,
-      passwordConfirmError,
-      emailErrorMessage,
-      passwordErrorMessage,
-      passwordConfirmErrorMessage,
-      validForm,
-      passwordStrength,
-      passwordScore,
-    });
   };
 
   handleSubmit = event => {
     event.preventDefault();
+    this.setState({
+      signupErrorMessage: '',
+    });
 
     const {
       email,
-      passwordValue,
-      emailError,
-      passwordConfirmError,
+      password,
+      emailErrorMessage,
+      passwordConfirmErrorMessage,
       isCaptchaVerified,
     } = this.state;
-    const { updateSnackbar, closeDialog } = this.props;
 
-    let API_ENDPOINT = `${
-      urls.API_URL
-    }/aaa/signup.json?signup=${email}&password=${encodeURIComponent(
-      passwordValue,
-    )}`;
-    let message = '';
-    let success = false;
+    const { openSnackBar } = this.props;
+    const { getSignup } = this.props.actions;
 
     if (!isCaptchaVerified) {
       this.setState({
@@ -206,198 +248,225 @@ export default class SignUp extends Component {
       });
     }
 
-    if (!emailError && !passwordConfirmError && isCaptchaVerified) {
-      $.ajax({
-        url: API_ENDPOINT,
-        dataType: 'jsonp',
-        crossDomain: true,
-        timeout: 3000,
-        async: false,
-        statusCode: {
-          422: function() {
-            message = 'Email already taken. Please try with another email.';
-            updateSnackbar && updateSnackbar(message);
-          },
-        },
-        success: function(response) {
-          message = response.message;
-          success = true;
-          this.setState(
-            {
-              message,
-              success,
-            },
-            () => {
-              updateSnackbar && updateSnackbar(message);
-              closeDialog && closeDialog();
-            },
-          );
-        }.bind(this),
-        error: function(jqXHR, textStatus, errorThrown) {
-          const jsonValue = jqXHR.status;
-          if (jsonValue === 404) {
-            message = 'Email already taken. Please try with another email.';
+    if (
+      !emailErrorMessage &&
+      !passwordConfirmErrorMessage &&
+      isCaptchaVerified
+    ) {
+      this.setState({ loading: true });
+      getSignup({
+        email,
+        password: encodeURIComponent(password),
+      })
+        .then(({ payload }) => {
+          if (payload.accepted) {
+            this.setState({
+              password: '',
+              confirmPassword: '',
+              passwordStrength: '',
+              passwordScore: -1,
+              signupErrorMessage: payload.message,
+              success: true,
+              loading: false,
+            });
           } else {
-            message = 'Failed. Try Again';
+            this.setState({
+              password: '',
+              confirmPassword: '',
+              passwordScore: -1,
+              passwordStrength: '',
+              success: false,
+              loading: false,
+            });
+            openSnackBar({
+              snackBarMessage: 'Signup Failed. Try Again',
+            });
           }
-          success = false;
-          this.setState({ message, success }, () => {
-            updateSnackbar && updateSnackbar(message);
+        })
+        .catch(error => {
+          console.log(error);
+          this.setState({
+            confirmPassword: '',
+            passwordScore: -1,
+            passwordStrength: '',
+            success: false,
+            password: '',
+            loading: false,
           });
-        }.bind(this),
-      });
+          openSnackBar({
+            snackBarMessage: 'Signup Failed. Try Again',
+          });
+        });
     }
   };
 
-  // Open Login Dialog
-  handleLogin = () => this.props.updateAuthDialog('login');
-
   render() {
-    const styles = {
-      emailStyle: {
-        height: '35px',
-        borderRadius: 4,
-        border: '1px solid #ced4da',
-        fontSize: 16,
-        padding: '0px 10px',
-        width: '272px',
-        marginTop: '10px',
-      },
-      fieldStyle: {
-        height: '35px',
-        borderRadius: 4,
-        border: '1px solid #ced4da',
-        fontSize: 16,
-        padding: '0px 10px',
-        width: '250px',
-        marginTop: '10px',
-      },
-      inputStyle: {
-        height: '35px',
-        marginBottom: '10px',
-        webkitTextFillColor: 'unset',
-      },
-      inputpassStyle: {
-        height: '35px',
-        marginBottom: '10px',
-        marginRight: '50px',
-        width: '90%',
-        webkitTextFillColor: 'unset',
-      },
-    };
-
-    const PasswordClass = [`is-strength-${this.state.passwordScore}`];
-
     const {
       email,
-      passwordValue,
+      password,
       passwordErrorMessage,
       emailErrorMessage,
-      validForm,
       isCaptchaVerified,
       captchaVerifyErrorMessage,
-      confirmPasswordValue,
+      confirmPassword,
       passwordConfirmErrorMessage,
+      signupErrorMessage,
+      loading,
+      success,
+      passwordScore,
     } = this.state;
+    const { captchaKey, onRequestOpenLogin, isSignUpOpen } = this.props;
+    const {
+      bodyStyle,
+      emailStyle,
+      inputStyle,
+      fieldStyle,
+      inputpassStyle,
+      closingStyle,
+    } = styles;
+
+    const isValid =
+      email &&
+      !emailErrorMessage &&
+      password &&
+      !passwordErrorMessage &&
+      confirmPassword &&
+      !passwordConfirmErrorMessage &&
+      isCaptchaVerified;
 
     return (
-      <div className="signupForm">
-        <div>Sign Up with SUSI</div>
-        <form onSubmit={this.handleSubmit}>
-          <div>
-            <TextField
-              name="email"
-              type="email"
-              value={email}
-              onChange={this.handleChange}
-              style={styles.emailStyle}
-              inputStyle={styles.inputStyle}
-              labelText={{ color: '#878faf' }}
-              underlineStyle={{ display: 'none' }}
-              placeholder="Email"
-              errorText={emailErrorMessage}
-            />
-          </div>
-          <div className={PasswordClass.join(' ')}>
-            <PasswordField
-              name="password"
-              style={styles.fieldStyle}
-              inputStyle={styles.inputpassStyle}
-              value={passwordValue}
-              placeholder="Password"
-              underlineStyle={{ display: 'none' }}
-              onChange={this.handleChange}
-              errorText={passwordErrorMessage}
-              visibilityButtonStyle={{
-                marginTop: '-3px',
-              }}
-              visibilityIconStyle={{
-                marginTop: '-3px',
-              }}
-              textFieldStyle={{ padding: '0px' }}
-            />
-            <div className="ReactPasswordStrength-strength-bar" />
+      <Dialog
+        modal={false}
+        open={isSignUpOpen}
+        onRequestClose={this.closeDialog}
+        autoScrollBodyContent={true}
+        bodyStyle={bodyStyle}
+        contentStyle={{ width: '35%', minWidth: '300px' }}
+      >
+        <div className="signupForm">
+          <div>Sign Up with SUSI</div>
+          <form onSubmit={this.handleSubmit}>
             <div>
-              <p>{this.state.passwordStrength}</p>
+              <TextField
+                name="email"
+                type="email"
+                value={email}
+                onChange={this.handleTextFieldChange}
+                style={emailStyle}
+                inputStyle={inputStyle}
+                underlineStyle={{ display: 'none' }}
+                placeholder="Email"
+                errorText={emailErrorMessage}
+              />
             </div>
-          </div>
-          <div>
-            <PasswordField
-              name="confirmPassword"
-              style={styles.fieldStyle}
-              inputStyle={styles.inputpassStyle}
-              value={confirmPasswordValue}
-              placeholder="Confirm Password"
-              underlineStyle={{ display: 'none' }}
-              onChange={this.handleChange}
-              errorText={passwordConfirmErrorMessage}
-              visibilityButtonStyle={{
-                marginTop: '-3px',
-              }}
-              visibilityIconStyle={{
-                marginTop: '-3px',
-              }}
-              textFieldStyle={{ padding: '0px' }}
-            />
-          </div>
-          <div style={{ width: '304px', margin: '10px auto 0' }}>
-            <Recaptcha
-              sitekey={KEY.CAPTCHA_KEY}
-              render="explicit"
-              onloadCallback={this.onCaptchaLoad}
-              verifyCallback={this.verifyCaptchaCallback}
-              badge="inline"
-              type="audio"
-              size="normal"
-            />
-            {!isCaptchaVerified &&
-              captchaVerifyErrorMessage && (
-                <p className="error-message">{captchaVerifyErrorMessage}</p>
+            <div className={`is-strength-${passwordScore}`}>
+              <PasswordField
+                name="password"
+                style={fieldStyle}
+                inputStyle={inputpassStyle}
+                value={password}
+                placeholder="Password"
+                underlineStyle={{ display: 'none' }}
+                onChange={this.handleTextFieldChange}
+                errorText={passwordErrorMessage}
+                visibilityButtonStyle={{
+                  marginTop: '-3px',
+                }}
+                visibilityIconStyle={{
+                  marginTop: '-3px',
+                }}
+                textFieldStyle={{ padding: '0px' }}
+              />
+              <div className="ReactPasswordStrength-strength-bar" />
+              <div>
+                <p>{this.state.passwordStrength}</p>
+              </div>
+            </div>
+            <div>
+              <PasswordField
+                name="confirmPassword"
+                style={fieldStyle}
+                inputStyle={inputpassStyle}
+                value={confirmPassword}
+                placeholder="Confirm Password"
+                underlineStyle={{ display: 'none' }}
+                onChange={this.handleTextFieldChange}
+                errorText={passwordConfirmErrorMessage}
+                visibilityButtonStyle={{
+                  marginTop: '-3px',
+                }}
+                visibilityIconStyle={{
+                  marginTop: '-3px',
+                }}
+                textFieldStyle={{ padding: '0px' }}
+              />
+            </div>
+            <div style={{ width: '304px', margin: '10px auto 0' }}>
+              {captchaKey && (
+                <Recaptcha
+                  sitekey={captchaKey}
+                  render="explicit"
+                  onloadCallback={this.onCaptchaLoad}
+                  verifyCallback={this.verifyCaptchaCallback}
+                  badge="inline"
+                  type="audio"
+                  size="normal"
+                />
               )}
-          </div>
-          <div>
-            <RaisedButton
-              label="Sign Up"
-              type="submit"
-              disabled={!validForm || !isCaptchaVerified}
-              backgroundColor={colors.header}
-              labelColor="#fff"
-              style={{ width: '275px', margin: '10px 0px' }}
-            />
-          </div>
+              {!isCaptchaVerified &&
+                captchaVerifyErrorMessage && (
+                  <p className="error-message">{captchaVerifyErrorMessage}</p>
+                )}
+            </div>
+            {signupErrorMessage && (
+              <div style={{ color: success ? '#388e3c' : '#f44336' }}>
+                {signupErrorMessage}
+              </div>
+            )}
+            <div>
+              <RaisedButton
+                label={!loading && 'Sign Up'}
+                type="submit"
+                disabled={!isValid || loading}
+                backgroundColor={colors.header}
+                labelColor="#fff"
+                style={{ width: '275px', margin: '10px 0px' }}
+                icon={loading && <CircularProgress size={24} />}
+              />
+            </div>
 
-          <span
-            style={{
-              display: 'inline-block',
-              marginTop: '10px',
-            }}
-            className="loginLinks"
-            onClick={this.handleLogin}
-          >
-            Already have an account? Login here
-          </span>
-        </form>
-      </div>
+            <span
+              style={{
+                display: 'inline-block',
+                marginTop: '10px',
+              }}
+              className="loginLinks"
+              onClick={onRequestOpenLogin}
+            >
+              Already have an account? Login here
+            </span>
+          </form>
+        </div>
+        <Close style={closingStyle} onClick={this.closeDialog} />
+      </Dialog>
     );
   }
 }
+
+function mapStateToProps(store) {
+  const { captchaKey } = store.app.apiKeys;
+  return {
+    captchaKey,
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(actions, dispatch),
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(SignUp);

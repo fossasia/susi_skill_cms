@@ -59,7 +59,6 @@ class SkillVersion extends Component {
       currLeftChecked: null,
       currRightChecked: null,
     };
-    // console.log(this.props);
   }
 
   componentDidMount() {
@@ -75,7 +74,6 @@ class SkillVersion extends Component {
   }
 
   getCommitHistory = commitHistoryURL => {
-    // console.log(commitHistoryURL);
     $.ajax({
       url: commitHistoryURL,
       dataType: 'jsonp',
@@ -97,7 +95,6 @@ class SkillVersion extends Component {
   };
 
   setCommitHistory = commitsData => {
-    // console.log(commitsData);
     if (commitsData.accepted) {
       let commits = commitsData.commits ? commitsData.commits : [];
       let currLeftChecked = null;
@@ -195,6 +192,7 @@ class SkillVersion extends Component {
     );
 
     let commitHistoryTableRows = commits.map((commit, index) => {
+      const { commitID, commitDate, author, commit_message } = commit;
       let leftRadioBtn = null;
       let rightRadioBtn = null;
       if (leftChecks && rightChecks) {
@@ -250,20 +248,20 @@ class SkillVersion extends Component {
               to={{
                 pathname: `/${skillMeta.groupValue}/${
                   skillMeta.skillName
-                }/edit/${skillMeta.languageValue}/${commit.commitID}`,
+                }/edit/${skillMeta.languageValue}/${commitID}`,
               }}
             >
-              <abbr title={commit.commitDate}>{commit.commitDate}</abbr>
+              <abbr title={commitDate}>{commitDate}</abbr>
             </Link>
           </TableRowColumn>
           <TableRowColumn>
-            <abbr title={commit.commitID}>{commit.commitID}</abbr>
+            <abbr title={commitID}>{commitID}</abbr>
           </TableRowColumn>
           <TableRowColumn>
-            <abbr title={commit.author}>{commit.author}</abbr>
+            <abbr title={author}>{author}</abbr>
           </TableRowColumn>
           <TableRowColumn>
-            <abbr title={commit.commit_message}>{commit.commit_message}</abbr>
+            <abbr title={commit_message}>{commit_message}</abbr>
           </TableRowColumn>
         </TableRow>
       );

@@ -1,6 +1,9 @@
 // Packages
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import skillActions from '../../redux/actions/skill';
 
 // Components
 import {
@@ -27,15 +30,15 @@ import './SkillRatingCard.css';
 
 const cookies = new Cookies();
 
-export default class SkillRatingCard extends Component {
+class SkillRatingCard extends Component {
   static propTypes = {
-    skillName: PropTypes.string,
-    skillRatings: PropTypes.array,
-    rating: PropTypes.number,
-    avgRating: PropTypes.number,
-    totalStar: PropTypes.number,
-    changeRating: PropTypes.func,
+    skillTag: PropTypes.string,
+    skillRatings: PropTypes.object,
+    language: PropTypes.string,
+    group: PropTypes.string,
     ratingsOverTime: PropTypes.array,
+    userRating: PropTypes.number,
+    actions: PropTypes.object,
   };
 
   constructor(props) {
@@ -44,8 +47,36 @@ export default class SkillRatingCard extends Component {
       chartWidth: 0,
       ratingsOverTimeWidth: 0,
       offset: 0,
+      openSnack: false,
     };
   }
+
+  changeRating = userRating => {
+    const { group, language, skillTag: skill, actions } = this.props;
+    const skillData = {
+      model: 'general',
+      group,
+      language,
+      skill,
+      stars: userRating,
+    };
+    actions
+      .setUserRating({ userRating: userRating })
+      .then(payload => {
+        actions.openSnackBar({
+          snackMessage: 'The skill was successfully rated!',
+        });
+        actions
+          .getSkillRating(skillData)
+          .then(response => {})
+          .catch(error => {
+            console.log(error);
+          });
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
 
   componentDidMount = () => {
     this.updateWindowDimensions();
@@ -73,7 +104,8 @@ export default class SkillRatingCard extends Component {
   };
 
   getRatingMessage = () => {
-    switch (this.props.rating) {
+    const { userRating } = this.props;
+    switch (userRating) {
       case 0:
         return 'The skill has not been rated by you';
       case 1:
@@ -91,18 +123,23 @@ export default class SkillRatingCard extends Component {
     }
   };
 
+  roundOffRating = ratingsOverTime => {
+    ratingsOverTime = ratingsOverTime.map(obj => {
+      return { ...obj, rating: parseFloat(obj.rating.toFixed(1)) };
+    });
+    return ratingsOverTime;
+  };
+
   render() {
     const { chartWidth, ratingsOverTimeWidth, offset } = this.state;
-    const {
-      skillName,
-      rating,
-      changeRating,
-      totalStar,
-      avgRating,
-      skillRatings,
-      ratingsOverTime,
-    } = this.props;
-
+    const { skillTag, userRating, skillRatings, ratingsOverTime } = this.props;
+    const ratings_data = [
+      { name: '5.0 ⭐', value: parseInt(skillRatings.fiveStar, 10) || 0 },
+      { name: '4.0 ⭐', value: parseInt(skillRatings.fourStar, 10) || 0 },
+      { name: '3.0 ⭐', value: parseInt(skillRatings.threeStar, 10) || 0 },
+      { name: '2.0 ⭐', value: parseInt(skillRatings.twoStar, 10) || 0 },
+      { name: '1.0 ⭐', value: parseInt(skillRatings.oneStar, 10) || 0 },
+    ];
     return (
       <div>
         <Paper className="margin-b-md margin-t-md">
@@ -113,16 +150,16 @@ export default class SkillRatingCard extends Component {
             <div>
               <div className="subTitle">
                 {' '}
-                Rate your experience with {skillName} on SUSI.AI{' '}
+                Rate your experience with {skillTag} on SUSI.AI{' '}
               </div>
               <div className="ratings-section">
                 <div>
                   <Ratings
-                    rating={rating}
+                    rating={userRating}
                     widgetRatedColors="#ffbb28"
                     widgetHoverColors="#ffbb28"
                     widgetDimensions="50px"
-                    changeRating={changeRating}
+                    changeRating={this.changeRating}
                   >
                     <Ratings.Widget />
                     <Ratings.Widget />
@@ -135,10 +172,12 @@ export default class SkillRatingCard extends Component {
               <div className="rating-message">{this.getRatingMessage()}</div>
             </div>
           )}
-          {totalStar ? (
+          {skillRatings.totalStar ? (
             <div className="ratings-section">
               <div className="average">
-                <div className="large-text">{avgRating || 0}</div>
+                <div className="large-text">
+                  {parseFloat(skillRatings.avgStar.toFixed(2)) || 0}
+                </div>
                 Average Rating
               </div>
               <div className="rating-bar-chart">
@@ -146,7 +185,7 @@ export default class SkillRatingCard extends Component {
                   <BarChart
                     layout="vertical"
                     margin={{ right: 48 }}
-                    data={skillRatings}
+                    data={ratings_data}
                   >
                     <XAxis type="number" hide={true} />
                     <YAxis
@@ -176,7 +215,7 @@ export default class SkillRatingCard extends Component {
                         offset={offset}
                         fill="#666666"
                       />
-                      {skillRatings.map((entry, index) => (
+                      {ratings_data.map((entry, index) => (
                         <Cell
                           key={index}
                           fill={
@@ -195,7 +234,7 @@ export default class SkillRatingCard extends Component {
                 </ResponsiveContainer>
               </div>
               <div className="total-rating">
-                <div className="large-text">{totalStar || 0}</div>
+                <div className="large-text">{skillRatings.totalStar || 0}</div>
                 Total Ratings
               </div>
               <div className="time-chart">
@@ -209,7 +248,7 @@ export default class SkillRatingCard extends Component {
                       width={ratingsOverTimeWidth}
                       debounce={1}
                     >
-                      <LineChart data={ratingsOverTime}>
+                      <LineChart data={this.roundOffRating(ratingsOverTime)}>
                         <XAxis dataKey="timestamp" padding={{ right: 20 }} />
                         <YAxis
                           dataKey="rating"
@@ -244,3 +283,25 @@ export default class SkillRatingCard extends Component {
     );
   }
 }
+
+function mapStateToProps(store) {
+  return {
+    language: store.skill.metaData.language,
+    group: store.skill.metaData.group,
+    skillTag: store.skill.metaData.skillTag,
+    skillRatings: store.skill.metaData.skillRatings,
+    ratingsOverTime: store.skill.ratingsOverTime,
+    userRating: store.skill.userRating,
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(skillActions, dispatch),
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(SkillRatingCard);

@@ -3,14 +3,16 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import Cookies from 'universal-cookie';
-import $ from 'jquery';
 import ISO6391 from 'iso-639-1';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 
 // Components
+import skillActions from '../../redux/actions/skill';
 import AuthorSkills from '../AuthorSkills/AuthorSkills';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import SkillUsageCard from '../SkillUsageCard/SkillUsageCard';
-import SkillRatingCard from '../SkillRatingCard/SkillRatingCard';
+import SkillRatingCard from '../SkillRating/SkillRatingCard';
 import SkillFeedbackCard from '../SkillFeedbackCard/SkillFeedbackCard';
 import Footer from '../Footer/Footer.react';
 import { FloatingActionButton, Paper } from 'material-ui';
@@ -22,17 +24,6 @@ import TextField from 'material-ui/TextField';
 import Ratings from 'react-ratings-declarative';
 
 // Static Assets
-import 'brace/mode/markdown';
-import 'brace/theme/github';
-import 'brace/theme/monokai';
-import 'brace/theme/tomorrow';
-import 'brace/theme/kuroir';
-import 'brace/theme/twilight';
-import 'brace/theme/xcode';
-import 'brace/theme/textmate';
-import 'brace/theme/solarized_dark';
-import 'brace/theme/solarized_light';
-import 'brace/theme/terminal';
 import CircleImage from '../CircleImage/CircleImage';
 import EditBtn from 'material-ui/svg-icons/editor/mode-edit';
 import VersionBtn from 'material-ui/svg-icons/action/history';
@@ -40,7 +31,8 @@ import DeleteBtn from 'material-ui/svg-icons/action/delete';
 import NavigateDown from 'material-ui/svg-icons/navigation/expand-more';
 import NavigateUp from 'material-ui/svg-icons/navigation/expand-less';
 import ReactTooltip from 'react-tooltip';
-import { urls, colors, parseDate } from '../../utils';
+import { urls, colors, parseDate, testExample } from '../../utils';
+import { reportSkill } from '../../api';
 
 import './SkillListing.css';
 
@@ -73,475 +65,55 @@ class SkillListing extends Component {
     super(props);
 
     this.state = {
-      fontSizeCode: 14,
-      editorTheme: 'github',
-      image: '',
-      author: '',
-      authorUrl: '',
-      developerPrivacyPolicy: '',
-      termsOfUse: '',
-      dynamic_content: '',
-      examples: '',
-      languagesSupported: [],
-      descriptions: '',
-      skillName: '',
-      skillTag: '',
-      lastModifiedTime: '',
-      lastAccessTime: '',
       showAuthorSkills: false,
-      dataReceived: false,
-      imgUrl: null,
-      commits: [],
-      commitsChecked: [],
-      avgRating: 0,
-      totalStar: 0,
-      skillRatings: [],
-      skillUsage: [],
-      countryWiseSkillUsage: [],
-      rating: 0,
-      openSnack: false,
-      snackMessage: '',
       skillFeedback: [],
-      deviceUsageData: [],
-      ratingsOverTime: [],
       showReportDialog: false,
       feedbackMessage: '',
-      editStatus: true,
       showDeleteDialog: false,
       skillExampleCount: 4,
       seeMoreSkillExamples: true,
     };
 
-    const clickedSkill = this.props.location.pathname.split('/')[2];
-    this.skillName = clickedSkill;
-    this.name = null;
-    this.url = urls.API_URL + '/cms/getSkillList.json?group=Knowledge';
-    if (this.url !== undefined) {
-      const url = this.url;
-      if (url.indexOf('model') < 0) {
-        this.urlCode = `${url}?skill=${this.skillName}`;
-      } else {
-        this.urlCode = `${url}&skill=${this.skillName}`;
-      }
-
-      this.urlCode = this.urlCode.toString();
-      this.urlCode = this.urlCode.replace('getSkillList', 'getSkill');
-    }
+    this.groupValue = this.props.location.pathname.split('/')[1];
+    this.skillTag = this.props.location.pathname.split('/')[2];
+    this.languageValue = this.props.location.pathname.split('/')[3];
+    this.skillData = {
+      model: 'general',
+      group: this.groupValue,
+      language: this.languageValue,
+      skill: this.skillTag,
+    };
+    this.skillName = this.skillTag
+      ? this.skillTag
+          .split('_')
+          .map(data => {
+            const s = data.charAt(0).toUpperCase() + data.substring(1);
+            return s;
+          })
+          .join(' ')
+      : '';
   }
 
   componentDidMount() {
-    document.title = `SUSI.AI - ${
-      this.skillName
-        ? this.skillName
-            .split('_')
-            .map(data => {
-              const s = data.charAt(0).toUpperCase() + data.substring(1);
-              return s;
-            })
-            .join(' ')
-        : ''
-    } Skills`;
-    if (this.url !== undefined) {
-      const baseUrl = `${urls.API_URL}/cms/getSkillMetadata.json`;
-
-      const modelValue = 'general';
-      this.groupValue = this.props.location.pathname.split('/')[1];
-      this.languageValue = this.props.location.pathname.split('/')[3];
-
-      const url = `${baseUrl}?model=${modelValue}&group=${
-        this.groupValue
-      }&language=${this.languageValue}&skill=${this.skillName}`;
-
-      const userSkillRatingUrl = `${
-        urls.API_URL
-      }/cms/getRatingByUser.json?model=${modelValue}&group=${
-        this.groupValue
-      }&language=${this.languageValue}&skill=${
-        this.skillName
-      }&access_token=${cookies.get('loggedIn')}`;
-
-      const skillUsageUrl = `${
-        urls.API_URL
-      }/cms/getSkillUsage.json?model=${modelValue}&group=${
-        this.groupValue
-      }&language=${this.languageValue}&skill=${this.skillName}`;
-
-      const countryWiseSkillUsageUrl = `${
-        urls.API_URL
-      }/cms/getCountryWiseSkillUsage.json?model=${modelValue}&group=${
-        this.groupValue
-      }&language=${this.languageValue}&skill=${this.skillName}`;
-
-      const deviceUsageUrl = `${
-        urls.API_URL
-      }/cms/getDeviceWiseSkillUsage.json?model=${modelValue}&group=${
-        this.groupValue
-      }&language=${this.languageValue}&skill=${this.skillName}`;
-
-      const ratingOverTimeUrl = `${
-        urls.API_URL
-      }/cms/getRatingsOverTime.json?model=${modelValue}&group=${
-        this.groupValue
-      }&language=${this.languageValue}&skill=${this.skillName}`;
-
-      $.ajax({
-        url: url,
-        dataType: 'jsonp',
-        jsonp: 'callback',
-        crossDomain: true,
-        success: data => {
-          this.setState({
-            editStatus: data.skill_metadata.editable,
-          });
-          this.updateData(data.skill_metadata);
-        },
-      });
-      // Fetch user ratings for the visited skill if logged-in
-      if (cookies.get('loggedIn')) {
-        $.ajax({
-          url: userSkillRatingUrl,
-          dataType: 'jsonp',
-          jsonp: 'callback',
-          crossDomain: true,
-          success: data => {
-            if (data.ratings) {
-              this.setState({
-                rating: parseInt(data.ratings.stars, 10),
-              });
-            }
-          },
-          error: e => {
-            console.log(e);
-          },
-        });
-      }
-      // Fetch skill usage of the visited skill
-      $.ajax({
-        url: skillUsageUrl,
-        dataType: 'jsonp',
-        crossDomain: true,
-        jsonp: 'callback',
-        success: data => {
-          if (data.skill_usage) {
-            const skillUsage = data.skill_usage.filter(
-              day => day !== undefined,
-            );
-            this.saveSkillUsage(skillUsage);
-          }
-        },
-        error: e => {
-          this.saveSkillUsage();
-        },
-      });
-      // Fetch country wise skill usage of the visited skill
-      $.ajax({
-        url: countryWiseSkillUsageUrl,
-        dataType: 'json',
-        crossDomain: true,
-        success: data => {
-          if (data.skill_usage) {
-            this.saveCountryWiseSkillUsage(data.skill_usage);
-          }
-        },
-        error: e => {
-          this.saveCountryWiseSkillUsage();
-        },
-      });
-
-      // Fetch device wise skill usage data
-      $.ajax({
-        url: deviceUsageUrl,
-        dataType: 'json',
-        crossDomain: true,
-        success: data => {
-          if (data.skill_usage) {
-            this.saveDeviceUsageData(data.skill_usage);
-          }
-        },
-        error: e => {
-          this.saveDeviceUsageData();
-        },
-      });
-
-      // Fetch the skill ratings over time
-      $.ajax({
-        url: ratingOverTimeUrl,
-        dataType: 'json',
-        crossDomain: true,
-        success: data => {
-          if (data.ratings_over_time) {
-            const ratingData = data.ratings_over_time.map(item => {
-              return {
-                rating: item.rating,
-                count: item.count,
-                timestamp: parseDate(item.timestamp)
-                  .split(' ')
-                  .slice(2, 4)
-                  .join(' '),
-              };
-            });
-            this.saveRatingOverTime(ratingData);
-          }
-        },
-        error: e => {
-          console.log(e);
-          this.saveRatingOverTime();
-        },
-      });
-
-      this.getFeedback();
-    }
+    document.title = `SUSI.AI - ${this.skillName} Skills`;
+    this.fetchSkillData();
   }
 
-  saveSkillRatings = skillRatings => {
-    // Added 10 as radix to remove warnings
-    const ratings_data = [
-      { name: '5.0 ⭐', value: parseInt(skillRatings.five_star, 10) || 0 },
-      { name: '4.0 ⭐', value: parseInt(skillRatings.four_star, 10) || 0 },
-      { name: '3.0 ⭐', value: parseInt(skillRatings.three_star, 10) || 0 },
-      { name: '2.0 ⭐', value: parseInt(skillRatings.two_star, 10) || 0 },
-      { name: '1.0 ⭐', value: parseInt(skillRatings.one_star, 10) || 0 },
-    ];
-
-    const avgRating = parseFloat(skillRatings.avg_star);
-    this.setState({
-      skillRatings: ratings_data,
-      avgRating: parseFloat(avgRating.toFixed(2)),
-      totalStar: parseInt(skillRatings.total_star, 10),
-    });
-  };
-
-  saveSkillUsage = (skillUsage = []) => {
-    // eslint-disable-next-line
-    const data = skillUsage.map(usage => {
-      if (usage !== null) {
-        usage.count = parseInt(usage.count, 10);
-        return usage;
-      }
-    });
-    this.setState({
-      skillUsage: data,
-    });
-  };
-
-  saveCountryWiseSkillUsage = (countryWiseSkillUsage = []) => {
-    // Add sample data to test
-    const data = countryWiseSkillUsage.map(country => [
-      country.country_code,
-      parseInt(country.count, 10),
-    ]);
-
-    this.setState({
-      countryWiseSkillUsage: data,
-    });
-  };
-
-  saveSkillFeedback = (skillFeedback = []) => {
-    this.setState({
-      skillFeedback,
-    });
-  };
-
-  saveDeviceUsageData = (deviceUsageData = []) => {
-    if (deviceUsageData.length) {
-      deviceUsageData.map(device => {
-        switch (device.device_type) {
-          case 'Web Client':
-            device.color = '#0088FE';
-            break;
-          case 'Android':
-            device.color = '#00C49F';
-            break;
-          case 'iOS':
-            device.color = '#FFBB28';
-            break;
-          case 'Smart Speaker':
-            device.color = '#FF8042';
-            break;
-          case 'Others':
-            device.color = '#EA4335';
-            break;
-          default:
-            device.color = '#673AB7';
-            break;
-        }
-        return null;
-      });
+  fetchSkillData = () => {
+    const { actions } = this.props;
+    actions.getSkillMetaData(this.skillData);
+    if (cookies.get('loggedIn')) {
+      actions.getUserRating(this.skillData);
     }
-    this.setState({
-      deviceUsageData,
-    });
-  };
-
-  // Save ratings over time data in the component state
-  saveRatingOverTime = (ratingsOverTime = []) => {
-    this.setState({
-      ratingsOverTime,
-    });
-  };
-
-  updateData = skillData => {
-    if (skillData.skill_rating) {
-      this.saveSkillRatings(skillData.skill_rating.stars);
-    }
-    let imgUrl = `${urls.API_URL}/cms/getImage.png?model=general&language=${
-      this.languageValue
-    }&group=${this.groupValue}&image=${skillData.image}`;
-    if (!skillData.image) {
-      imgUrl = '/favicon-512x512.jpg';
-    }
-    const descriptions =
-      skillData.descriptions === null
-        ? 'No Description Provided'
-        : skillData.descriptions;
-    const skillName =
-      skillData.skill_name === null ? 'No Name Given' : skillData.skill_name;
-    const {
-      image,
-      author,
-      author_url,
-      developer_privacy_policy,
-      terms_of_use,
-      dynamic_content,
-      examples,
-    } = skillData;
-    this.name = skillName;
-    this.setState({
-      imgUrl,
-      descriptions,
-      skillName,
-      lastModifiedTime: skillData.lastModifiedTime,
-      lastAccessTime: skillData.lastAccessTime,
-      dataReceived: true,
-      image,
-      author,
-      authorUrl: author_url,
-      developerPrivacyPolicy: developer_privacy_policy,
-      termsOfUse: terms_of_use,
-      dynamic_content,
-      examples,
-      languagesSupported: skillData.supported_languages,
-      skillModel: skillData.model,
-      skillGroup: skillData.group,
-      skillLanguage: skillData.language,
-      skillTag: skillData.skill_tag,
-    });
-  };
-
-  changeRating = newRating => {
-    const baseUrl = `${urls.API_URL}/cms/fiveStarRateSkill.json`;
-    const modelValue = 'general';
-    this.groupValue = this.props.location.pathname.split('/')[1];
-    this.languageValue = this.props.location.pathname.split('/')[3];
-    const changeRatingUrl = `${baseUrl}?model=${modelValue}&group=${
-      this.groupValue
-    }&language=${this.languageValue}&skill=${
-      this.skillName
-    }&stars=${newRating}&access_token=${cookies.get('loggedIn')}`;
-    $.ajax({
-      url: changeRatingUrl,
-      dataType: 'jsonp',
-      jsonp: 'callback',
-      crossDomain: true,
-      success: data => {
-        this.saveSkillRatings(data.ratings);
-        this.setState({
-          openSnack: true,
-          snackMessage: 'The skill was successfully rated!',
-        });
-      },
-      error: e => {
-        console.log(e);
-      },
-    });
-
-    this.setState({
-      rating: parseInt(newRating, 10),
-    });
-  };
-
-  handleSnackRequestClose = () => {
-    this.setState({
-      openSnack: false,
-    });
-  };
-
-  getFeedback = () => {
-    let getFeedbackUrl = `${urls.API_URL}/cms/getSkillFeedback.json`;
-    const modelValue = 'general';
-    this.groupValue = this.props.location.pathname.split('/')[1];
-    this.languageValue = this.props.location.pathname.split('/')[3];
-    getFeedbackUrl = `${getFeedbackUrl}?model=${modelValue}&group=${
-      this.groupValue
-    }&language=${this.languageValue}&skill=${this.skillName}`;
-
-    // Get skill feedback of the visited skill
-    $.ajax({
-      url: getFeedbackUrl,
-      dataType: 'jsonp',
-      crossDomain: true,
-      jsonp: 'callback',
-      success: data => {
-        this.saveSkillFeedback(data.feedback);
-      },
-      error: e => {
-        console.log(e);
-      },
-    });
-  };
-
-  postFeedback = newFeedback => {
-    const baseUrl = `${urls.API_URL}/cms/feedbackSkill.json`;
-    const modelValue = 'general';
-    this.groupValue = this.props.location.pathname.split('/')[1];
-    this.languageValue = this.props.location.pathname.split('/')[3];
-    const postFeedbackUrl = `${baseUrl}?model=${modelValue}&group=${
-      this.groupValue
-    }&language=${this.languageValue}&skill=${
-      this.skillName
-    }&feedback=${newFeedback}&access_token=${cookies.get('loggedIn')}`;
-    $.ajax({
-      url: postFeedbackUrl,
-      dataType: 'jsonp',
-      jsonp: 'callback',
-      crossDomain: true,
-      success: data => {
-        this.getFeedback();
-      },
-      error: e => {
-        console.log(e);
-      },
-    });
-  };
-
-  deleteFeedback = () => {
-    const baseUrl = `${urls.API_URL}/cms/removeFeedback.json`;
-    const modelValue = 'general';
-    this.groupValue = this.props.location.pathname.split('/')[1];
-    this.languageValue = this.props.location.pathname.split('/')[3];
-    const deleteFeedbackUrl = `${baseUrl}?model=${modelValue}&group=${
-      this.groupValue
-    }&language=${this.languageValue}&skill=${
-      this.skillName
-    }&access_token=${cookies.get('loggedIn')}`;
-    $.ajax({
-      url: deleteFeedbackUrl,
-      dataType: 'jsonp',
-      jsonp: 'callback',
-      crossDomain: true,
-      success: data => {
-        this.getFeedback();
-      },
-      error: e => {
-        console.log(e);
-      },
-    });
+    actions.getDateWiseSkillUsage(this.skillData);
+    actions.getCountryWiseSkillUsage(this.skillData);
+    actions.getDeviceWiseSkillUsage(this.skillData);
+    actions.getRatingsOverTime(this.skillData);
+    actions.getSkillFeedbacks(this.skillData);
   };
 
   openAuthorSkills = () => {
-    const { author } = this.state;
     if (this.author) {
-      this.author.loadSkillCards(author);
       this.setState({ showAuthorSkills: true });
     }
   };
@@ -558,41 +130,21 @@ class SkillListing extends Component {
   };
 
   handleReportSubmit = () => {
-    const {
-      skillGroup,
-      skillTag,
-      skillLanguage,
-      feedbackMessage,
-      skillModel,
-    } = this.state;
-
-    const reportUrl = `${
-      urls.API_URL
-      // eslint-disable-next-line
-    }/cms/reportSkill.json?model=${skillModel}&group=${skillGroup}&language=${skillLanguage}&skill=${skillTag}&feedback=${feedbackMessage}&access_token=${cookies.get(
-      'loggedIn',
-    )}`;
-    $.ajax({
-      url: reportUrl,
-      dataType: 'jsonp',
-      jsonp: 'callback',
-      crossDomain: true,
-      success: data => {
+    const { actions } = this.props;
+    const { feedbackMessage } = this.state;
+    reportSkill({ ...this.skillData, feedback: feedbackMessage })
+      .then(payload => {
         this.handleReportToggle();
-        console.log(data);
-        this.setState({
-          openSnack: true,
+        actions.openSnackBar({
           snackMessage: 'Skill has been reported successfully.',
         });
-      },
-      error: e => {
+      })
+      .catch(error => {
         this.handleReportToggle();
-        this.setState({
-          openSnack: true,
+        actions.openSnackBar({
           snackMessage: 'Failed to report the skill.',
         });
-      },
-    });
+      });
   };
 
   saveReportFeedback = feedbackMessage => {
@@ -602,95 +154,77 @@ class SkillListing extends Component {
   };
 
   handleDeleteToggle = () => {
-    const { showDeleteDialog } = this.state;
-    this.setState({
-      showDeleteDialog: !showDeleteDialog,
-    });
+    this.setState(prevState => ({
+      showDeleteDialog: !prevState.showDeleteDialog,
+    }));
   };
 
   deleteSkill = () => {
-    const { skillModel, skillGroup, skillName, skillLanguage } = this.state;
-    this.setState({
-      dataReceived: false,
-    });
-
-    const deleteUrl = `${
-      urls.API_URL
-      // eslint-disable-next-line
-    }/cms/deleteSkill.json?model=${skillModel}&group=${skillGroup}&language=${skillLanguage}&skill=${skillName}&access_token=${cookies.get(
-      'loggedIn',
-    )}`;
-    $.ajax({
-      url: deleteUrl,
-      dataType: 'jsonp',
-      jsonp: 'callback',
-      crossDomain: true,
-      success: data => {
-        // redirect to the index page since the skill page won't be accessible
-        this.handleDeleteToggle();
-        this.setState({
-          dataReceived: true,
+    const { actions, history } = this.props;
+    actions.setSkillLoading().then(response => {
+      actions
+        .deleteSkill(this.skillData)
+        .then(payload => {
+          this.handleDeleteToggle();
+          history.push('/');
+        })
+        .catch(error => {
+          console.log(error);
+          this.handleReportToggle();
+          actions.openSnackBar({
+            snackMessage: 'Failed to delete the skill.',
+          });
         });
-        this.props.history.push('/');
-      },
-      error: err => {
-        console.log(err);
-        this.handleReportToggle();
-        this.setState({
-          openSnack: true,
-          snackMessage: 'Failed to delete the skill.',
-        });
-      },
     });
   };
 
   toggleSkillExamples = () => {
-    const { seeMoreSkillExamples, examples, skillExampleCount } = this.state;
-    this.setState({
-      seeMoreSkillExamples: !seeMoreSkillExamples,
-      skillExampleCount: skillExampleCount === 4 ? examples.length : 4,
-    });
-  };
-
-  testExample = (e, exampleText) => {
-    const link = `${urls.CHAT_URL}/?testExample=${exampleText}`;
-    window.open(link, '_blank');
+    this.setState(prevState => ({
+      seeMoreSkillExamples: !prevState.seeMoreSkillExamples,
+      skillExampleCount:
+        prevState.skillExampleCount === 4
+          ? prevState.examples && prevState.examples.length
+          : 4,
+    }));
   };
 
   render() {
     const showAdmin = cookies.get('showAdmin');
     const {
-      imgUrl,
-      image,
-      examples,
-      dataReceived,
-      skillName,
       showDeleteDialog,
-      author,
-      avgRating,
-      totalStar,
       skillExampleCount,
-      descriptions,
-      dynamic_content,
-      termsOfUse,
-      developerPrivacyPolicy,
-      lastModifiedTime,
-      languagesSupported,
       showReportDialog,
-      rating,
-      ratingsOverTime,
-      skillFeedback,
-      skillUsage,
-      deviceUsageData,
-      countryWiseSkillUsage,
-      skillRatings,
       showAuthorSkills,
-      authorUrl,
-      openSnack,
-      snackMessage,
     } = this.state;
+
+    const {
+      image,
+      author,
+      descriptions: _descriptions,
+      skillName: _skillName,
+      supportedLanguages,
+      lastModifiedTime,
+      developerPrivacyPolicy,
+      termsOfUse,
+      dynamicContent,
+      examples,
+      skillRatings,
+    } = this.props.metaData;
+
+    const { loadingSkill, actions, openSnack, snackMessage } = this.props;
+
+    const imgUrl = !image
+      ? '/favicon-512x512.jpg'
+      : `${urls.API_URL}/cms/getImage.png?model=general&language=${
+          this.languageValue
+        }&group=${this.groupValue}&image=${image}`;
+
+    const descriptions =
+      _descriptions === null ? 'No Description Provided' : _descriptions;
+
+    const skillName = _skillName === null ? 'No Name Given' : _skillName;
+
     let { seeMoreSkillExamples } = this.state;
-    const { location } = this.props;
 
     const reportDialogActions = [
       <FlatButton
@@ -698,6 +232,7 @@ class SkillListing extends Component {
         key="submit"
         style={{ color: colors.warningColor }}
         onClick={this.handleReportSubmit}
+        disabled={!this.state.feedbackMessage.trim()}
       />,
       <FlatButton
         label="Cancel"
@@ -723,10 +258,6 @@ class SkillListing extends Component {
     ];
 
     let renderElement = null;
-    let oldGroupValue = location.pathname.split('/')[1];
-    let oldLanguageValue = location.pathname.split('/')[3];
-    let oldImageValue = imgUrl;
-    let imageValue = image;
     if (examples.length > 4) {
       seeMoreSkillExamples = seeMoreSkillExamples ? (
         <div className="skill-read-more-container">
@@ -746,7 +277,7 @@ class SkillListing extends Component {
         </div>
       );
     }
-    if (!dataReceived) {
+    if (loadingSkill === true) {
       renderElement = (
         <div>
           <StaticAppBar {...this.props} />
@@ -798,18 +329,9 @@ class SkillListing extends Component {
               <div>
                 <Link
                   to={{
-                    pathname: `/${this.groupValue}/${this.skillName}/edit/${
+                    pathname: `/${this.groupValue}/${this.skillTag}/edit/${
                       this.languageValue
                     }`,
-                    state: {
-                      url: this.urlCode,
-                      name: this.name,
-                      oldExpertValue: this.skillName,
-                      oldGroupValue: oldGroupValue,
-                      oldLanguageValue: oldLanguageValue,
-                      oldImageUrl: oldImageValue,
-                      oldImageValue: imageValue,
-                    },
                   }}
                 >
                   <FloatingActionButton
@@ -824,7 +346,7 @@ class SkillListing extends Component {
               <div>
                 <Link
                   to={{
-                    pathname: `/${this.groupValue}/${this.skillName}/versions/${
+                    pathname: `/${this.groupValue}/${this.skillTag}/versions/${
                       this.languageValue
                     }`,
                   }}
@@ -842,9 +364,7 @@ class SkillListing extends Component {
               </div>
             </div>
             <div className="meta">
-              <h1 className="name">
-                {this.skillName && this.skillName.split('_').join(' ')}
-              </h1>
+              <h1 className="name">{this.skillName}</h1>
               <h4>
                 by{' '}
                 <span
@@ -856,7 +376,7 @@ class SkillListing extends Component {
               </h4>
               <a className="singleRating" href="#rating">
                 <Ratings
-                  rating={avgRating}
+                  rating={skillRatings.avgStar}
                   widgetRatedColors="#ffbb28"
                   widgetDimensions="20px"
                   widgetSpacings="0px"
@@ -867,7 +387,7 @@ class SkillListing extends Component {
                   <Ratings.Widget />
                   <Ratings.Widget />
                 </Ratings>
-                <div className="ratingLabel">{totalStar}</div>
+                <div className="ratingLabel">{skillRatings.totalStar}</div>
               </a>
               <div className="avatar-meta margin-b-md">
                 <div className="example-container">
@@ -882,7 +402,7 @@ class SkillListing extends Component {
                             <div
                               key={index}
                               className="example-comment"
-                              onClick={event => this.testExample(event, data)}
+                              onClick={event => testExample(event, data)}
                             >
                               <q>{data}</q>
                             </div>
@@ -901,8 +421,7 @@ class SkillListing extends Component {
               <div className="desc margin-b-md margin-t-md">
                 <h1 className="title">Description</h1>
                 <p className="card-content">{descriptions}</p>
-
-                {dynamic_content ? (
+                {dynamicContent ? (
                   <div className="card-content">
                     <ul>
                       <li>
@@ -978,9 +497,9 @@ class SkillListing extends Component {
                     <tr>
                       <td>Languages supported:</td>
                       <td>
-                        {languagesSupported.map((data, index) => {
+                        {supportedLanguages.map((data, index) => {
                           let delimiter =
-                            languagesSupported.length === index + 1
+                            supportedLanguages.length === index + 1
                               ? null
                               : ', ';
                           return (
@@ -1043,27 +562,9 @@ class SkillListing extends Component {
                 </div>
               </div>
             </Paper>
-            <SkillRatingCard
-              skillName={skillName}
-              skillRatings={skillRatings}
-              rating={rating}
-              avgRating={avgRating}
-              totalStar={totalStar}
-              changeRating={this.changeRating}
-              ratingsOverTime={ratingsOverTime}
-            />
-            <SkillFeedbackCard
-              skill_name={skillName}
-              skill_feedback={skillFeedback}
-              postFeedback={this.postFeedback}
-              deleteFeedback={this.deleteFeedback}
-              skill_language={this.languageValue}
-            />
-            <SkillUsageCard
-              skillUsage={skillUsage}
-              deviceUsageData={deviceUsageData}
-              countryWiseSkillUsage={countryWiseSkillUsage}
-            />
+            <SkillRatingCard />
+            <SkillFeedbackCard />
+            <SkillUsageCard />
           </div>
         </div>
       );
@@ -1081,15 +582,13 @@ class SkillListing extends Component {
             }}
             open={showAuthorSkills}
             requestClose={this.closeAuthorSkills}
-            author={author}
-            authorUrl={authorUrl}
           />
         </div>
         <Snackbar
           open={openSnack}
           message={snackMessage}
           autoHideDuration={3000}
-          onRequestClose={this.handleSnackRequestClose}
+          onRequestClose={actions.closeSnackBar}
         />
         <Footer />
       </div>
@@ -1100,6 +599,26 @@ class SkillListing extends Component {
 SkillListing.propTypes = {
   history: PropTypes.object,
   location: PropTypes.object,
+  actions: PropTypes.object,
+  metaData: PropTypes.object,
+  loadingSkill: PropTypes.bool,
+  openSnack: PropTypes.bool,
+  snackMessage: PropTypes.string,
 };
 
-export default SkillListing;
+function mapStateToProps(store) {
+  return {
+    ...store.skill,
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(skillActions, dispatch),
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(SkillListing);

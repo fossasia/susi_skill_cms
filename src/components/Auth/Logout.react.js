@@ -1,6 +1,9 @@
 import { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { isProduction } from '../../utils';
+import actions from '../../redux/actions/app';
 
 const cookieDomain = isProduction() ? '.susi.ai' : '';
 
@@ -25,13 +28,13 @@ class Logout extends Component {
   }
 
   componentDidMount() {
+    const { actions, history } = this.props;
+    actions.logout();
     deleteCookie('loggedIn', { domain: cookieDomain, path: '/' });
     deleteCookie('serverUrl', { domain: cookieDomain, path: '/' });
     deleteCookie('emailId', { domain: cookieDomain, path: '/' });
-    deleteCookie('showAdmin', { domain: cookieDomain, path: '/' });
     deleteCookie('username', { domain: cookieDomain, path: '/' });
-    this.props.history.push('/');
-    window.location.reload();
+    history.push('/');
   }
   render() {
     return null;
@@ -40,6 +43,16 @@ class Logout extends Component {
 
 Logout.propTypes = {
   history: PropTypes.object,
+  actions: PropTypes.object,
 };
 
-export default Logout;
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators({ ...actions }, dispatch),
+  };
+}
+
+export default connect(
+  null,
+  mapDispatchToProps,
+)(Logout);

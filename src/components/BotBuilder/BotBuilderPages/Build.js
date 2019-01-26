@@ -27,10 +27,6 @@ class Build extends Component {
         .trim();
     }
     this.state = {
-      skillData: {
-        name: 'Welcome!', // Starting message of chatbot
-        children: [], // contains subsequent user queries and bot responses
-      },
       skillCode,
       skillCategory,
       skillLanguage,
@@ -43,46 +39,11 @@ class Build extends Component {
     this.props.sendInfoToProps(values);
   };
 
-  generateSkillCode = () => {
-    let { skillCode, skillData } = this.state;
-    let lines = skillCode.split('\n');
-    let newSkillCode = '';
-    let i = 0;
-    for (i = 0; i < lines.length; i++) {
-      let line = lines[i];
-      // add meta data from top
-      if (
-        line === '' ||
-        line.startsWith('::') ||
-        line.startsWith('!') ||
-        line.startsWith('#')
-      ) {
-        newSkillCode += line + '\n';
-      } else {
-        break;
-      }
-    }
-    for (let j = 0; j < skillData.children.length; j++) {
-      let node = skillData.children[j];
-      newSkillCode += node.name + '\n';
-      if (node.children) {
-        for (let k = 0; k < node.children.length; k++) {
-          if (k !== node.children.length - 1) {
-            newSkillCode += node.children[k].name + ' | ';
-          } else {
-            newSkillCode += node.children[k].name + '\n';
-          }
-        }
-      }
-    }
-    this.setState({ skillCode: newSkillCode }, this.generateSkillData());
-  };
-
   render() {
     return (
       <div className="menu-page">
         <div>
-          <div style={{ display: 'flex', flexDirection: 'row' }}>
+          <div style={{ width: '100%' }}>
             <SkillCreator
               botBuilder={{
                 sendInfoToProps: this.sendInfoToProps,
@@ -90,7 +51,6 @@ class Build extends Component {
                 name: this.state.skillName,
                 category: this.state.skillCategory,
                 language: this.state.skillLanguage,
-                onSkillInfoChange: this.onSkillInfoChange,
                 onImageChange: this.props.onImageChange,
                 imageFile: this.props.imageFile,
                 image: this.props.image,
@@ -111,8 +71,6 @@ Build.propTypes = {
   imageFile: PropTypes.object,
   image: PropTypes.string,
   imageUrl: PropTypes.string,
-  preferUiView: PropTypes.string,
-  onChangePreferUiView: PropTypes.func,
 };
 
 export default Build;

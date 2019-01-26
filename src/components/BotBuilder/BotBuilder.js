@@ -111,24 +111,24 @@ class BotBuilder extends React.Component {
     if (bots) {
       bots.forEach(bot => {
         let imageUrl;
-        if (bot.image !== 'images/<image_name>') {
-          imageUrl = bot.image
-            ? BASE_URL +
-              '/cms/getImage.png?access_token=' +
-              cookies.get('loggedIn') +
-              '&language=' +
-              bot.language +
-              '&group=' +
-              bot.group.replace(/ /g, '%20') +
-              '&image=' +
-              bot.image.replace(/ /g, '%20')
-            : null;
+        let { protocol, host } = window.location;
+        if (bot.image === 'images/<image_name>') {
+          imageUrl = `${protocol}//${host}/customAvatars/1.png`;
+        } else if (bot.image === 'images/<image_name_event>') {
+          imageUrl = `${protocol}//${host}/botTemplates/event-registration.jpg`;
+        } else if (bot.image === 'images/<image_name_job>') {
+          imageUrl = `${protocol}//${host}/botTemplates/job-application.jpg`;
+        } else if (bot.image === 'images/<image_name_contact>') {
+          imageUrl = `${protocol}//${host}/botTemplates/contact-us.png`;
         } else {
-          imageUrl =
-            window.location.protocol +
-            '//' +
-            window.location.host +
-            '/customAvatars/1.png';
+          imageUrl = bot.image
+            ? `${BASE_URL}/cms/getImage.png?access_token=${cookies.get(
+                'loggedIn',
+              )}&language=${bot.language}&group=${bot.group.replace(
+                / /g,
+                '%20',
+              )}&image=${bot.image.replace(/ /g, '%20')}`
+            : null;
         }
         chatbots.push(
           <Card
@@ -365,7 +365,13 @@ class BotBuilder extends React.Component {
             <h2 style={styles.heading}>Saved Bots</h2>
             <div className="bot-template-wrap">
               <Link to="/botbuilder/botwizard">
-                <Card className="bot-template-card">
+                <Card
+                  className="bot-template-card"
+                  style={{
+                    backgroundImage: 'url(/botTemplates/chat-bot.jpg)',
+                    backgroundSize: 'cover',
+                  }}
+                >
                   <FloatingActionButton
                     backgroundColor={colors.fabButton}
                     mini={true}

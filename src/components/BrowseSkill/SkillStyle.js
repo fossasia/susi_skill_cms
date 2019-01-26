@@ -30,6 +30,12 @@ const styles = {
     alignItems: 'center',
     marginBottom: '6px',
   },
+  author: {
+    textAlign: 'left',
+    marginBottom: '4px',
+    fontSize: '12px',
+    color: '#555555',
+  },
   feedback: {
     color: '#4285f4',
     fill: '#4285f4',
@@ -60,7 +66,7 @@ const styles = {
   },
   skillCard: {
     width: 260,
-    height: 170,
+    height: 190,
     minHeight: '150px',
     margin: '10px 0 0 10px',
     overflow: 'hidden',
@@ -164,8 +170,13 @@ const styles = {
     fontSize: '14px',
   },
   searchBar: {
-    width: '100%',
+    width: '64%',
     marginRight: '20px',
+    flexShrink: '10',
+  },
+  sortBy: {
+    display: 'flex',
+    alignItems: 'center',
   },
   home: {
     display: 'flex',
@@ -219,6 +230,16 @@ const styles = {
   },
   staffPick: {
     margin: '4px 0 0 6px',
+  },
+  checkboxStyle: {
+    width: '256px',
+    paddingLeft: '8px',
+    top: '3px',
+  },
+  selectedFilterStyle: {
+    marginLeft: '10px',
+    fontWeight: 'bold',
+    fontSize: '14px',
   },
 };
 

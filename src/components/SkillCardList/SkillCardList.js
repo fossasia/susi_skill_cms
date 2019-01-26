@@ -1,31 +1,33 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import Ratings from 'react-ratings-declarative';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import CircleImage from '../CircleImage/CircleImage';
+import SkillRatingPopover from '../SkillRating/SkillRatingPopover.js';
+import NavigationArrowDropDown from 'material-ui/svg-icons/navigation/arrow-drop-down';
 import styles from './SkillCardStyle';
 import StaffPick from '../../images/staff_pick.png';
-import { urls } from '../../utils';
-
-function testExample(e, exampleText) {
-  let link = urls.CHAT_URL + '/?testExample=' + exampleText;
-  window.open(link, '_blank');
-}
+import { urls, testExample } from '../../utils';
+import ReactTooltip from 'react-tooltip';
+import '../SkillRating/ReviewPopoverStyle.css';
 
 function createListCard(
   el,
   skillName,
-  skillUrl,
   authorName,
   description,
   image,
-  language,
   skill,
   examples,
   totalRating,
   averageRating,
   staffPick,
+  stars,
 ) {
+  const dataId = `index-${el}`;
+  const skillPathname = `/${skill.group}/${skill.skillTag}/${skill.language}`;
+  const skillFeedbackPathname = `${skillPathname}/feedbacks`;
   const mobileView = window.innerWidth < 430;
   if (mobileView) {
     return (
@@ -45,15 +47,7 @@ function createListCard(
               <Link
                 key={el}
                 to={{
-                  pathname: `/${skill.group}/${skill.skill_tag}/${language}`,
-                  state: {
-                    url: skillUrl,
-                    element: el,
-                    name: el,
-                    modelValue: skill.model,
-                    groupValue: skill.group,
-                    languageValue: language,
-                  },
+                  pathname: skillPathname,
                 }}
               >
                 <span>{skillName}</span>
@@ -69,17 +63,7 @@ function createListCard(
               <Link
                 key={el}
                 to={{
-                  pathname: `/${skill.group}/${
-                    skill.skill_tag
-                  }/${language}/feedbacks`,
-                  state: {
-                    url: skillUrl,
-                    element: el,
-                    name: el,
-                    modelValue: skill.model,
-                    groupValue: skill.group,
-                    languageValue: language,
-                  },
+                  pathname: skillFeedbackPathname,
                 }}
               >
                 <Ratings
@@ -113,15 +97,7 @@ function createListCard(
             <Link
               key={el}
               to={{
-                pathname: `/${skill.group}/${skill.skill_tag}/${language}`,
-                state: {
-                  url: skillUrl,
-                  element: el,
-                  name: el,
-                  modelValue: skill.model,
-                  groupValue: skill.group,
-                  languageValue: language,
-                },
+                pathname: skillPathname,
               }}
             >
               <img alt={skillName} src={image} style={styles.image} />
@@ -137,15 +113,7 @@ function createListCard(
             <Link
               key={el}
               to={{
-                pathname: `/${skill.group}/${skill.skill_tag}/${language}`,
-                state: {
-                  url: skillUrl,
-                  element: el,
-                  name: el,
-                  modelValue: skill.model,
-                  groupValue: skill.group,
-                  languageValue: language,
-                },
+                pathname: skillPathname,
               }}
             >
               <span>{skillName}</span>
@@ -181,39 +149,53 @@ function createListCard(
           <div style={styles.textData}>
             <div style={styles.row}>
               <div style={styles.rating}>
-                <Link
-                  key={el}
-                  to={{
-                    pathname: `/${skill.group}/${
-                      skill.skill_tag
-                    }/${language}/feedbacks`,
-                    state: {
-                      url: skillUrl,
-                      element: el,
-                      name: el,
-                      modelValue: skill.model,
-                      groupValue: skill.group,
-                      languageValue: language,
-                    },
-                  }}
-                >
-                  <Ratings
-                    style={{ display: 'flex' }}
-                    rating={averageRating || 0}
-                    widgetRatedColors="#ffbb28"
-                    widgetDimensions="20px"
-                    widgetSpacings="0px"
+                <div data-tip="custom" data-for={dataId}>
+                  <Link
+                    key={el}
+                    to={{
+                      pathname: `/${skill.group}/${skill.skillTag}/${
+                        skill.language
+                      }/feedbacks`,
+                    }}
                   >
-                    <Ratings.Widget />
-                    <Ratings.Widget />
-                    <Ratings.Widget />
-                    <Ratings.Widget />
-                    <Ratings.Widget />
-                  </Ratings>
-                  <span style={styles.totalRating} title="Total ratings">
-                    {totalRating || 0}
-                  </span>
-                </Link>
+                    <Ratings
+                      style={{ display: 'flex' }}
+                      rating={averageRating || 0}
+                      widgetRatedColors="#ffbb28"
+                      widgetDimensions="20px"
+                      widgetSpacings="0px"
+                    >
+                      <Ratings.Widget />
+                      <Ratings.Widget />
+                      <Ratings.Widget />
+                      <ReactTooltip
+                        className="customeTheme"
+                        id={dataId}
+                        type={'light'}
+                        place="bottom"
+                        effect="solid"
+                        delayHide={250}
+                        border="true"
+                      >
+                        <Link to={{ pathname: skillFeedbackPathname }}>
+                          <SkillRatingPopover stars={stars} />
+                        </Link>
+                      </ReactTooltip>
+                      <Ratings.Widget />
+                      <Ratings.Widget />
+                    </Ratings>
+                    <NavigationArrowDropDown
+                      style={{
+                        fill: '#595959',
+                        marginBottom: '-7px',
+                        cursor: 'pointer',
+                      }}
+                    />
+                    <span style={styles.totalRating} title="Total ratings">
+                      {totalRating || 0}
+                    </span>
+                  </Link>
+                </div>
               </div>
             </div>
             <div style={styles.row}>
@@ -228,44 +210,33 @@ function createListCard(
 }
 
 class SkillCardList extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      cards: [],
-      skills: this.props.skills,
-    };
-  }
-
   componentDidMount() {
     this.loadSkillCards();
   }
 
-  componentDidUpdate() {
-    if (this.props.skills !== this.state.skills) {
-      this.setState(
-        {
-          skills: this.props.skills,
-        },
-        () => this.loadSkillCards(),
-      );
-    }
-  }
-
   loadSkillCards = () => {
     let cards = [];
-    Object.keys(this.state.skills).forEach(el => {
-      let skill = this.state.skills[el];
+    Object.keys(this.props.skills).forEach(el => {
+      let skill = this.props.skills[el];
       let skillName = 'Name not available',
         examples = [],
         image = '',
         description = 'No description available',
         authorName = 'Author',
-        skillUrl = this.props.skillUrl,
         averageRating = 0,
         totalRating = 0,
-        staffPick = false;
-      if (skill.skill_name) {
-        skillName = skill.skill_name;
+        staffPick = false,
+        stars = {
+          oneStar: 0,
+          twoStar: 0,
+          threeStar: 0,
+          fourStar: 0,
+          fiveStar: 0,
+          avgStar: 0,
+          totalStar: 0,
+        };
+      if (skill.skillName) {
+        skillName = skill.skillName;
         skillName = skillName.charAt(0).toUpperCase() + skillName.slice(1);
       }
       if (skill.image) {
@@ -283,53 +254,50 @@ class SkillCardList extends Component {
       if (skill.author) {
         authorName = skill.author;
       }
-      if (skill.skill_rating) {
-        averageRating = parseFloat(skill.skill_rating.stars.avg_star);
-        totalRating = parseInt(skill.skill_rating.stars.total_star, 10);
+      if (skill.skillRating) {
+        averageRating = parseFloat(skill.skillRating.stars.avgStar);
+        totalRating = parseInt(skill.skillRating.stars.totalStar, 10);
+        stars = skill.skillRating.stars;
       }
 
       if (skill.staffPick) {
         staffPick = true;
       }
-
-      let language = this.props.languageValue;
       cards.push(
         createListCard(
           el,
           skillName,
-          skillUrl,
           authorName,
           description,
           image,
-          language,
           skill,
           examples,
           totalRating,
           averageRating,
           staffPick,
+          stars,
         ),
       );
     });
-    this.setState({
-      cards,
-    });
+    return cards;
   };
 
   render() {
-    let skillDisplay = '';
-    if (this.props.skills && this.props.skills.length) {
-      skillDisplay = this.state.cards;
-    }
-
-    return <div style={styles.gridList}>{skillDisplay}</div>;
+    return <div style={styles.gridList}>{this.loadSkillCards()}</div>;
   }
 }
 
 SkillCardList.propTypes = {
   skills: PropTypes.array,
-  languageValue: PropTypes.array,
-  skillUrl: PropTypes.string,
-  modelValue: PropTypes.string,
 };
 
-export default SkillCardList;
+function mapStateToProps(store) {
+  return {
+    skills: store.skills.listSkills,
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  null,
+)(SkillCardList);

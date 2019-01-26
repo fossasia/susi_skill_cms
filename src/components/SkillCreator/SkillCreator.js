@@ -14,6 +14,7 @@ import PropTypes from 'prop-types';
 import Cookies from 'universal-cookie';
 import * as $ from 'jquery';
 import './SkillCreator.css';
+import './Animation.min.css';
 
 // Material-UI Components
 import { Dialog, Paper, RaisedButton, TextField } from 'material-ui';
@@ -101,8 +102,6 @@ export default class SkillCreator extends Component {
         oldImageUrl: '',
         imageUrl: '<image_url>',
         image_name_changed: false,
-        fontSizeCode: 14,
-        editorTheme: 'github',
         showAdmin: false,
         deleteDisabled: true,
         slideState: 1, // 1 means in middle, 2 means preview collapsed
@@ -693,7 +692,6 @@ export default class SkillCreator extends Component {
       if (this.props.botBuilder) {
         form.append('private', '1');
       }
-
       settings = {
         async: true,
         crossDomain: true,
@@ -732,7 +730,6 @@ export default class SkillCreator extends Component {
         file = this.state.file; // append file to image
         form.append('image', file);
       }
-
       settings = {
         async: true,
         crossDomain: true,
@@ -754,7 +751,6 @@ export default class SkillCreator extends Component {
         console.log(this.state.code);
         console.log(this.state.imageUrl.replace('images/',''));
         */
-
     $.ajax(settings)
       .done(response => {
         this.setState({
@@ -1106,6 +1102,7 @@ export default class SkillCreator extends Component {
                     }}
                   >
                     <IconButton
+                      className="iconbutton"
                       tooltip="Code View"
                       onTouchTap={() => {
                         this.setState({
@@ -1125,6 +1122,7 @@ export default class SkillCreator extends Component {
                       />
                     </IconButton>
                     <IconButton
+                      className="iconbutton"
                       tooltip="Conversation View"
                       onTouchTap={() => {
                         this.setState({
@@ -1144,6 +1142,7 @@ export default class SkillCreator extends Component {
                       />
                     </IconButton>
                     <IconButton
+                      className="iconbutton"
                       tooltip="Tree View"
                       onTouchTap={() => {
                         this.setState({
@@ -1261,52 +1260,14 @@ export default class SkillCreator extends Component {
                                 src={this.state.image}
                               />
                             )}
-                            {this.props.botBuilder ? (
-                              <form style={{ display: 'inline-block' }}>
-                                <label
-                                  title="Upload bot image"
-                                  style={styles.uploadCircularButton}
-                                >
-                                  <input
-                                    accept="image/*"
-                                    type="file"
-                                    ref={c => {
-                                      this.file = c;
-                                    }}
-                                    name="user[image]"
-                                    multiple="false"
-                                    onChange={this._onChange}
-                                  />
-                                  <Add
-                                    style={{
-                                      height: '30px',
-                                      marginTop: '15px',
-                                      color: 'rgb(66, 133, 245)',
-                                    }}
-                                  />
-                                </label>
-                              </form>
-                            ) : (
-                              <RaisedButton
-                                label="Choose an Image"
-                                labelPosition="before"
-                                backgroundColor={colors.header}
-                                containerElement="label"
-                                labelColor="#fff"
+                            <form style={{ display: 'inline-block' }}>
+                              <label
+                                title="Upload bot image"
+                                style={styles.uploadCircularButton}
                               >
                                 <input
-                                  type="file"
                                   accept="image/*"
-                                  style={{
-                                    cursor: 'pointer',
-                                    position: 'absolute',
-                                    top: 0,
-                                    bottom: 0,
-                                    right: 0,
-                                    left: 0,
-                                    width: '100%',
-                                    opacity: 0,
-                                  }}
+                                  type="file"
                                   ref={c => {
                                     this.file = c;
                                   }}
@@ -1314,8 +1275,15 @@ export default class SkillCreator extends Component {
                                   multiple="false"
                                   onChange={this._onChange}
                                 />
-                              </RaisedButton>
-                            )}
+                                <Add
+                                  style={{
+                                    height: '30px',
+                                    marginTop: '15px',
+                                    color: 'rgb(66, 133, 245)',
+                                  }}
+                                />
+                              </label>
+                            </form>
                           </div>
                         </div>
                       </div>

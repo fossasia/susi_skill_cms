@@ -27,19 +27,21 @@ const Footer = () => {
               <li>
                 <a href={urls.CMS_GITHUB_URL}>Code</a>
               </li>
+              <li>&nbsp;</li>
+              <li>&nbsp;</li>
+              <li>&nbsp;</li>
+              <li>
+                <a href={urls.CHAT_URL + '/privacy'}>Privacy</a>
+              </li>
+              <li>
+                <a href={urls.CHAT_URL + '/terms'}>Terms</a>
+              </li>
+              <li>
+                <a href={urls.CHAT_URL + '/contact'}>Contact</a>
+              </li>
             </ul>
           </div>
-          <ul>
-            <li>
-              <a href={urls.CHAT_URL + '/contact'}>Contact</a>
-            </li>
-            <li>
-              <a href={urls.CHAT_URL + '/terms'}>Terms</a>
-            </li>
-            <li>
-              <a href={urls.CHAT_URL + '/privacy'}>Privacy</a>
-            </li>
-          </ul>
+          <ul />
         </div>
       </div>
     </div>

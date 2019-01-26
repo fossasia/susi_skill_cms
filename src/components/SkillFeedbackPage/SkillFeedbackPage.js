@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import skillActions from '../../redux/actions/skill';
 import { Paper } from 'material-ui';
-import Cookies from 'universal-cookie';
 import PropTypes from 'prop-types';
-import $ from 'jquery';
 
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import Footer from '../Footer/Footer.react';
@@ -27,13 +28,15 @@ import Emoji from 'react-emoji-render';
 
 import '../SkillFeedbackCard/SkillFeedbackCard.css';
 import './SkillFeedbackPage.css';
-import { urls, parseDate } from '../../utils';
+import { urls, parseDate, formatDate } from '../../utils';
 
-const cookies = new Cookies();
-
-const defaultNullSkillList = ['image', 'author', 'author_url'];
-// eslint-disable-next-line
-let name;
+const styles = {
+  containerStyle: {
+    marginTop: '50px',
+    width: '100%',
+    fontSize: '14px',
+  },
+};
 
 const iconButtonElement = (
   <IconButton touch={true} tooltip="More" tooltipPosition="bottom-left">
@@ -63,11 +66,9 @@ class SkillFeedbackPage extends Component {
 
     this.state = {
       openEditDialog: false,
-      openDeleteDialog: false,
+      openDeleteModal: false,
       errorText: '',
-      skill_feedback: [],
-      imgUrl: null,
-      dataReceived: false,
+      loading: true,
       showAuthorSkills: false,
       currentPage: 1,
       currentRecords: [],
@@ -77,14 +78,32 @@ class SkillFeedbackPage extends Component {
       typeof this.pageNeighbours === 'number'
         ? Math.max(0, Math.min(this.pageNeighbours, 2))
         : 0;
-    let clickedSkill = this.props.location.pathname.split('/')[2];
-    this.name = clickedSkill;
-    this.url = urls.API_URL + '/cms/getSkillList.json?group=Knowledge';
+    const { pathname } = this.props.location;
+    this.groupValue = pathname.split('/')[1];
+    this.skillTag = pathname.split('/')[2];
+    this.languageValue = pathname.split('/')[3];
+    this.skillName = this.skillTag
+      ? this.skillTag
+          .split('_')
+          .map(data => {
+            const s = data.charAt(0).toUpperCase() + data.substring(1);
+            return s;
+          })
+          .join(' ')
+      : '';
+
+    this.skillData = {
+      model: 'general',
+      group: this.groupValue,
+      language: this.languageValue,
+      skill: this.skillTag,
+    };
   }
 
   fetchPageNumbers = () => {
-    const totalPages = Math.ceil(this.state.skill_feedback.length / pageLimit);
-    const currentPage = this.state.currentPage;
+    const { skillFeedbacks } = this.props;
+    const { currentPage } = this.state;
+    const totalPages = Math.ceil(skillFeedbacks.length / pageLimit);
     const pageNeighbours = this.pageNeighbours;
     /**
      * totalNumbers: the total page numbers to show on the control
@@ -131,54 +150,30 @@ class SkillFeedbackPage extends Component {
   };
 
   componentDidMount() {
-    if (this.url !== undefined) {
-      let baseUrl = urls.API_URL + '/cms/getSkillMetadata.json';
-      let url = this.url;
-      let modelValue = 'general';
-      this.groupValue = this.props.location.pathname.split('/')[1];
-      this.languageValue = this.props.location.pathname.split('/')[3];
-      url =
-        baseUrl +
-        '?model=' +
-        modelValue +
-        '&group=' +
-        this.groupValue +
-        '&language=' +
-        this.languageValue +
-        '&skill=' +
-        this.name;
-      let self = this;
-      $.ajax({
-        url: url,
-        dataType: 'jsonp',
-        jsonp: 'callback',
-        crossDomain: true,
-        success: function(data) {
-          self.updateData(data.skill_metadata);
-        },
-      });
-      this.getFeedback();
-    }
+    const { actions } = this.props;
+    actions.getSkillMetaData(this.skillData);
+    actions
+      .getSkillFeedbacks(this.skillData)
+      .then(response => this.setState({ loading: false }));
     this.gotoPage(1);
   }
 
   onPageChanged = data => {
-    const currentPage = this.state.currentPage;
+    const { currentPage } = this.state;
+    const { skillFeedbacks } = this.props;
     const offset = (currentPage - 1) * pageLimit;
-    const currentRecords = this.state.skill_feedback.slice(
-      offset,
-      offset + pageLimit,
-    );
+    const currentRecords = skillFeedbacks.slice(offset, offset + pageLimit);
     this.setState({ currentPage, currentRecords });
   };
 
   gotoPage = page => {
+    const { skillFeedbacks } = this.props;
     const currentPage = Math.max(0, page);
     const paginationData = {
       currentPage,
-      totalPages: Math.ceil(this.state.skill_feedback.length / pageLimit),
+      totalPages: Math.ceil(skillFeedbacks.length / pageLimit),
       pageLimit,
-      totalRecords: this.state.skill_feedback,
+      totalRecords: skillFeedbacks,
     };
     this.setState({ currentPage }, () => this.onPageChanged(paginationData));
     if (this.feedbackRef) {
@@ -192,34 +187,30 @@ class SkillFeedbackPage extends Component {
   };
 
   handleMoveLeft = evt => {
+    const { currentPage } = this.state;
     evt.preventDefault();
-    if (this.state.currentPage !== 1) {
-      this.gotoPage(this.state.currentPage - 1);
+    if (currentPage !== 1) {
+      this.gotoPage(currentPage - 1);
     }
   };
 
   handleMoveRight = evt => {
+    const { currentPage } = this.state;
+    const { skillFeedbacks } = this.props;
     evt.preventDefault();
-    if (
-      this.state.currentPage !==
-      Math.ceil(this.state.skill_feedback.length / pageLimit)
-    ) {
-      this.gotoPage(this.state.currentPage + 1);
+    if (currentPage !== Math.ceil(skillFeedbacks.length / pageLimit)) {
+      this.gotoPage(currentPage + 1);
     }
-  };
-
-  formatDate = timestamp => {
-    timestamp = timestamp.split(' ').slice(1, 4);
-    timestamp[1] = `${timestamp[1]},`;
-    return timestamp.join(' ');
   };
 
   handleEditOpen = () => {
     this.setState({ openEditDialog: true });
   };
 
-  handleDeleteOpen = () => {
-    this.setState({ openDeleteDialog: true });
+  toggleDeleteModal = () => {
+    this.setState(prevState => ({
+      openDeleteModal: !prevState.openDeleteModal,
+    }));
   };
 
   handleEditClose = () => {
@@ -229,207 +220,89 @@ class SkillFeedbackPage extends Component {
     });
   };
 
-  handleDeleteClose = () => {
-    this.setState({
-      openDeleteDialog: false,
-    });
+  handleEditOpen = () => {
+    this.setState({ openEditDialog: true });
   };
 
   editFeedback = () => {
     let feedbackText = document.getElementById('edit-feedback').value;
-    if (!feedbackText) {
-      this.setState({ errorText: 'Feedback cannot be empty' });
-    } else {
-      this.postFeedbackApi(feedbackText);
-      this.handleEditClose();
-      this.forceUpdate();
-    }
+    this.setState({ feedbackValue: feedbackText });
+  };
+
+  setFeedback = event => {
+    this.setState({ feedbackValue: event.target.value });
   };
 
   postFeedback = () => {
-    let feedbackText = document.getElementById('post-feedback').value;
-    if (!feedbackText) {
-      this.setState({ errorText: 'Feedback cannot be empty' });
-    } else {
-      this.postFeedbackApi(feedbackText);
+    const { group, language, skillTag: skill, actions } = this.props;
+    const { feedbackValue } = this.state;
+    const skillData = {
+      model: 'general',
+      group,
+      language,
+      skill,
+      feedback: feedbackValue,
+    };
+    if (feedbackValue) {
+      actions
+        .setSkillFeedback(skillData)
+        .then(payload => {
+          actions.getSkillFeedbacks(skillData);
+        })
+        .catch(error => {
+          console.log(error);
+        });
       this.handleEditClose();
+    } else {
+      this.setState({ errorText: 'Feedback cannot be empty' });
     }
-  };
-
-  updateData = skillData => {
-    let imgUrl = `${urls.API_URL}/cms/getImage.png?model=general&language=${
-      this.languageValue
-    }&group=${this.groupValue}&image=${skillData.image}`;
-    if (!skillData.image) {
-      imgUrl = '/favicon-512x512.jpg';
-    }
-    this.setState({
-      imgUrl,
-    });
-
-    defaultNullSkillList.forEach(data => {
-      this.setState({
-        [data]: skillData[data],
-      });
-    });
-    let skill_name =
-      skillData.skill_name === null ? 'No Name Given' : skillData.skill_name;
-    this.setState({
-      skill_name,
-    });
-    name = skill_name;
-    this.setState({
-      dataReceived: true,
-    });
-  };
-
-  saveSkillFeedback = (skill_feedback = []) => {
-    this.setState({
-      skill_feedback,
-    });
-  };
-
-  getFeedback = () => {
-    let getFeedbackUrl = `${urls.API_URL}/cms/getSkillFeedback.json`;
-    let modelValue = 'general';
-    this.groupValue = this.props.location.pathname.split('/')[1];
-    this.languageValue = this.props.location.pathname.split('/')[3];
-    getFeedbackUrl =
-      getFeedbackUrl +
-      '?model=' +
-      modelValue +
-      '&group=' +
-      this.groupValue +
-      '&language=' +
-      this.languageValue +
-      '&skill=' +
-      this.name;
-
-    let self = this;
-    // Get skill feedback of the visited skill
-    $.ajax({
-      url: getFeedbackUrl,
-      dataType: 'jsonp',
-      crossDomain: true,
-      jsonp: 'callback',
-      success: function(data) {
-        self.saveSkillFeedback(data.feedback);
-      },
-      error: function(e) {
-        console.log(e);
-      },
-    });
-  };
-
-  postFeedbackApi = newFeedback => {
-    let baseUrl = urls.API_URL + '/cms/feedbackSkill.json';
-    let modelValue = 'general';
-    this.groupValue = this.props.location.pathname.split('/')[1];
-    this.languageValue = this.props.location.pathname.split('/')[3];
-    let postFeedbackUrl =
-      baseUrl +
-      '?model=' +
-      modelValue +
-      '&group=' +
-      this.groupValue +
-      '&language=' +
-      this.languageValue +
-      '&skill=' +
-      this.name +
-      '&feedback=' +
-      newFeedback +
-      '&access_token=' +
-      cookies.get('loggedIn');
-    let self = this;
-    $.ajax({
-      url: postFeedbackUrl,
-      dataType: 'jsonp',
-      jsonp: 'callback',
-      crossDomain: true,
-      success: function(data) {
-        self.getFeedback();
-      },
-      error: function(e) {
-        console.log(e);
-      },
-    });
-    this.forceUpdate();
-  };
-
-  deleteFeedbackApi = () => {
-    let baseUrl = urls.API_URL + '/cms/removeFeedback.json';
-    let modelValue = 'general';
-    this.groupValue = this.props.location.pathname.split('/')[1];
-    this.languageValue = this.props.location.pathname.split('/')[3];
-    let deleteFeedbackUrl =
-      baseUrl +
-      '?model=' +
-      modelValue +
-      '&group=' +
-      this.groupValue +
-      '&language=' +
-      this.languageValue +
-      '&skill=' +
-      this.name +
-      '&access_token=' +
-      cookies.get('loggedIn');
-    let self = this;
-    $.ajax({
-      url: deleteFeedbackUrl,
-      dataType: 'jsonp',
-      jsonp: 'callback',
-      crossDomain: true,
-      success: function(data) {
-        self.getFeedback();
-        self.setState({ data });
-        //
-      },
-      error: function(e) {
-        console.log(e);
-      },
-    });
   };
 
   deleteFeedback = () => {
-    this.deleteFeedbackApi();
-    this.handleDeleteClose();
-    this.getFeedback();
+    const { actions } = this.props;
+    actions
+      .deleteSkillFeedback(this.skillData)
+      .then(payload => actions.getSkillFeedbacks(this.skillData))
+      .catch(error => console.log(error));
+    this.toggleDeleteModal();
   };
 
-  handleEditOpen = () => {
-    this.setState({ openEditDialog: true });
-  };
-
-  handleDeleteOpen = () => {
-    this.setState({ openDeleteDialog: true });
-  };
-
-  handleEditClose = () => {
-    this.setState({
-      openEditDialog: false,
-      errorText: '',
-    });
-  };
-
-  handleDeleteClose = () => {
-    this.setState({
-      openDeleteDialog: false,
-    });
-  };
-
-  openAuthorSkills = () => {
+  toggleAuthorSkills = () => {
     if (this.author) {
-      this.author.loadSkillCards(this.state.author);
-      this.setState({ showAuthorSkills: true });
+      this.setState(prevState => ({
+        showAuthorSkills: !prevState.showAuthorSkills,
+      }));
     }
   };
 
-  closeAuthorSkills = () => {
-    this.setState({ showAuthorSkills: false });
-  };
-
   render() {
-    const { currentPage } = this.state;
+    const {
+      currentPage,
+      showAuthorSkills,
+      errorText,
+      openEditDialog,
+      openDeleteModal,
+      loading,
+    } = this.state;
+    const {
+      image,
+      author,
+      skillName: _skillName,
+      skillFeedbacks,
+      email,
+      accessToken,
+    } = this.props;
+
+    const { containerStyle } = styles;
+
+    const imgUrl = !image
+      ? '/favicon-512x512.jpg'
+      : `${urls.API_URL}/cms/getImage.png?model=general&language=${
+          this.languageValue
+        }&group=${this.groupValue}&image=${image}`;
+
+    const skillName = _skillName === null ? 'No Name Given' : _skillName;
+
     const pages = this.fetchPageNumbers();
 
     const editActions = [
@@ -445,7 +318,7 @@ class SkillFeedbackPage extends Component {
         primary={true}
         keyboardFocused={true}
         labelStyle={{ color: '#4285f4' }}
-        onClick={this.editFeedback}
+        onClick={this.postFeedback}
       />,
     ];
 
@@ -462,19 +335,9 @@ class SkillFeedbackPage extends Component {
         key={0}
         label="No"
         labelStyle={{ color: '#4285f4' }}
-        onClick={this.handleDeleteClose}
+        onClick={this.toggleDeleteModal}
       />,
     ];
-
-    const styles = {
-      home: {
-        marginTop: '50px',
-        width: '100%',
-        fontSize: '14px',
-      },
-    };
-    let emailId = cookies.get('emailId');
-    let loggedIn = cookies.get('loggedIn');
 
     let feedbackCards = [];
     let userFeedbackCard;
@@ -483,14 +346,13 @@ class SkillFeedbackPage extends Component {
     let userAvatarLink = '';
     let userEmail = '';
 
-    if (this.state.skill_feedback) {
-      userFeedback = this.state.skill_feedback[
-        this.state.skill_feedback.findIndex(x => x.email === emailId)
-      ];
-      if (userFeedback && this.state.currentPage === 1) {
+    if (skillFeedbacks) {
+      userFeedback =
+        skillFeedbacks[skillFeedbacks.findIndex(x => x.email === email)];
+      if (userFeedback && currentPage === 1) {
         userEmail = userFeedback.email;
         userAvatarLink = userFeedback.avatar;
-        userName = userFeedback.user_name;
+        userName = userFeedback.userName;
         const avatarProps = {
           src: userAvatarLink,
           name: userName === '' ? userEmail : userName,
@@ -503,7 +365,7 @@ class SkillFeedbackPage extends Component {
                 <div>
                   <div>{userName === '' ? userEmail : userName}</div>
                   <div className="feedback-timestamp">
-                    {this.formatDate(parseDate(userFeedback.timestamp))}
+                    {formatDate(parseDate(userFeedback.timestamp))}
                   </div>
                 </div>
               }
@@ -516,7 +378,7 @@ class SkillFeedbackPage extends Component {
                     Edit
                   </MenuItem>
                   <MenuItem
-                    onClick={this.handleDeleteOpen}
+                    onClick={this.toggleDeleteModal}
                     leftIcon={<Delete />}
                   >
                     Delete
@@ -530,21 +392,18 @@ class SkillFeedbackPage extends Component {
         );
       }
     }
-    if (this.state.skill_feedback) {
-      feedbackCards = this.state.skill_feedback
-        .slice(
-          (this.state.currentPage - 1) * pageLimit,
-          this.state.currentPage * pageLimit,
-        )
+    if (skillFeedbacks) {
+      feedbackCards = skillFeedbacks
+        .slice((currentPage - 1) * pageLimit, currentPage * pageLimit)
         .map((data, index) => {
           userEmail = data.email;
           userAvatarLink = data.avatar;
-          userName = data.user_name;
+          userName = data.userName;
           const avatarProps = {
             src: userAvatarLink,
             name: userName === '' ? userEmail : userName,
           };
-          if (userEmail !== emailId) {
+          if (userEmail !== email) {
             return (
               <ListItem
                 key={index}
@@ -560,7 +419,7 @@ class SkillFeedbackPage extends Component {
                           )}...`}
                     </div>
                     <div className="feedback-timestamp">
-                      {this.formatDate(parseDate(data.timestamp))}
+                      {formatDate(parseDate(data.timestamp))}
                     </div>
                   </div>
                 }
@@ -574,11 +433,11 @@ class SkillFeedbackPage extends Component {
     let feedbackCardsElement = null;
     feedbackCardsElement = (
       <div>
-        {loggedIn && !userFeedback ? (
+        {accessToken && !userFeedback ? (
           <div>
             <div className="subTitle">
               {`Write your invaluable feedback with
-            ${this.state.skill_name} on SUSI.AI`}
+            ${this.skillName} on SUSI.AI`}
             </div>
             <div>
               <div className="feedback-textbox">
@@ -586,9 +445,10 @@ class SkillFeedbackPage extends Component {
                   id="post-feedback"
                   hintText="Skill Feedback"
                   defaultValue=""
-                  errorText={this.state.errorText}
+                  errorText={errorText}
                   multiLine={true}
                   fullWidth={true}
+                  onChange={this.setFeedback}
                 />
                 <RaisedButton
                   label="Post"
@@ -608,18 +468,20 @@ class SkillFeedbackPage extends Component {
       </div>
     );
     let renderElement = null;
-    if (this.state.dataReceived) {
+    if (!loading) {
       renderElement = (
         <div>
           <StaticAppBar {...this.props} />
-          <div className="skill_listing_container" style={styles.home}>
+          <div className="skill_listing_container" style={containerStyle}>
             <Paper className="margin-b-md margin-t-md">
               <p style={{ marginLeft: 10 }}>
                 <Link
-                  to={`/${this.groupValue}/${this.name}/${this.languageValue}`}
+                  to={`/${this.groupValue}/${this.skillTag}/${
+                    this.languageValue
+                  }`}
                   style={{ color: '#000000' }}
                 >
-                  {this.state.skill_name}
+                  {this.skillName}
                 </Link>
                 <NavigationChevronRight style={{ paddingTop: 10 }} />
                 Feedback
@@ -627,20 +489,20 @@ class SkillFeedbackPage extends Component {
               <div className="feedback-skill-detail">
                 <div className="feedback-avatar">
                   <Link
-                    to={`/${this.groupValue}/${this.name}/${
+                    to={`/${this.groupValue}/${this.skillTag}/${
                       this.languageValue
                     }`}
                   >
-                    {this.state.image == null ? (
+                    {image == null ? (
                       <CircleImage
-                        name={this.state.skill_name.toUpperCase()}
+                        name={this.skillName.toUpperCase()}
                         size="60"
                       />
                     ) : (
                       <img
                         className="feedback-avatar-img"
                         alt="Thumbnail"
-                        src={this.state.imgUrl}
+                        src={imgUrl}
                       />
                     )}
                   </Link>
@@ -648,47 +510,39 @@ class SkillFeedbackPage extends Component {
                 <div className="feedback-skill-name-author">
                   <h1 className="feedback-name">
                     <Link
-                      to={`/${this.groupValue}/${this.name}/${
+                      to={`/${this.groupValue}/${this.skillTag}/${
                         this.languageValue
                       }`}
                     >
-                      {this.name &&
-                        this.name
-                          .split(' ')
-                          .map(data => {
-                            let s =
-                              data.charAt(0).toUpperCase() + data.substring(1);
-                            return s;
-                          })
-                          .join(' ')}
+                      {skillName}
                     </Link>
                   </h1>
                   <div>
                     by{' '}
                     <span
                       className="feedback-author"
-                      onClick={this.openAuthorSkills}
+                      onClick={this.toggleAuthorSkills}
                     >
-                      {this.state.author}
+                      {author}
                     </span>
                   </div>
                 </div>
               </div>
               <h1 className="title">Feedback</h1>
               {feedbackCardsElement}
-              {this.state.skill_feedback &&
-                (this.state.skill_feedback.length > 0 ? (
+              {skillFeedbacks &&
+                (skillFeedbacks.length > 0 ? (
                   <div className="pagination-container">
                     <ul className="pagination">
                       <div
                         className={`navigation-pagination${
-                          this.state.currentPage === 1 ? '-disabled' : ''
+                          currentPage === 1 ? '-disabled' : ''
                         } `}
                       >
                         <a
                           onClick={this.handleMoveLeft}
                           className={`navigation-pagination-text${
-                            this.state.currentPage === 1 ? '-disabled' : ''
+                            currentPage === 1 ? '-disabled' : ''
                           }`}
                         >
                           ← Previous
@@ -727,10 +581,8 @@ class SkillFeedbackPage extends Component {
                       })}
                       <div
                         className={`navigation-pagination${
-                          this.state.currentPage ===
-                          Math.ceil(
-                            this.state.skill_feedback.length / pageLimit,
-                          )
+                          currentPage ===
+                          Math.ceil(skillFeedbacks.length / pageLimit)
                             ? '-disabled'
                             : ''
                         }`}
@@ -738,10 +590,8 @@ class SkillFeedbackPage extends Component {
                         <a
                           onClick={this.handleMoveRight}
                           className={`navigation-pagination-text${
-                            this.state.currentPage ===
-                            Math.ceil(
-                              this.state.skill_feedback.length / pageLimit,
-                            )
+                            currentPage ===
+                            Math.ceil(skillFeedbacks.length / pageLimit)
                               ? '-disabled'
                               : ''
                           }`}
@@ -758,12 +608,14 @@ class SkillFeedbackPage extends Component {
                 ))}
               <div className="feedback-footer-skill">
                 <Link
-                  to={`/${this.groupValue}/${this.name}/${this.languageValue}`}
+                  to={`/${this.groupValue}/${this.skillTag}/${
+                    this.languageValue
+                  }`}
                   style={{ color: '#417DDE' }}
                 >
                   <b>
-                    {`‹ See all details for ${this.name &&
-                      this.name
+                    {`‹ See all details for ${this.skillTag &&
+                      this.skillTag
                         .split(' ')
                         .map(data => {
                           let s =
@@ -799,23 +651,24 @@ class SkillFeedbackPage extends Component {
           title="Edit Feedback"
           actions={editActions}
           modal={false}
-          open={this.state.openEditDialog}
+          open={openEditDialog}
           onRequestClose={this.handleEditClose}
         >
           <TextField
             id="edit-feedback"
             hintText="Skill Feedback"
             defaultValue={userFeedback ? userFeedback.feedback : ''}
-            errorText={this.state.errorText}
+            errorText={errorText}
             multiLine={true}
             fullWidth={true}
+            onChange={this.editFeedback}
           />
         </Dialog>
         <Dialog
           title="Delete Feedback"
           actions={deleteActions}
           modal={true}
-          open={this.state.openDeleteDialog}
+          open={openDeleteModal}
           onRequestClose={this.handleEditClose}
         >
           Are you sure, you want to delete your feedback?
@@ -825,10 +678,8 @@ class SkillFeedbackPage extends Component {
             ref={c => {
               this.author = c;
             }}
-            open={this.state.showAuthorSkills}
-            requestClose={this.closeAuthorSkills}
-            author={this.state.author}
-            authorUrl={this.state.author_url}
+            open={showAuthorSkills}
+            requestClose={this.toggleAuthorSkills}
           />
         </div>
       </div>
@@ -837,7 +688,42 @@ class SkillFeedbackPage extends Component {
 }
 
 SkillFeedbackPage.propTypes = {
+  skillTag: PropTypes.string,
+  skillFeedbacks: PropTypes.array,
+  language: PropTypes.string,
+  group: PropTypes.string,
+  feedback: PropTypes.string,
+  actions: PropTypes.object,
   location: PropTypes.object,
+  author: PropTypes.object,
+  image: PropTypes.string,
+  skillName: PropTypes.string,
+  email: PropTypes.string,
+  accessToken: PropTypes.string,
 };
 
-export default SkillFeedbackPage;
+function mapStateToProps(store) {
+  return {
+    language: store.skill.metaData.language,
+    group: store.skill.metaData.group,
+    skillTag: store.skill.metaData.skillTag,
+    feedback: store.skill.feedback,
+    skillFeedbacks: store.skill.skillFeedbacks,
+    author: store.skill.metaData.author,
+    image: store.skill.metaData.image,
+    skillName: store.skill.metaData.skillName,
+    email: store.app.email,
+    accessToken: store.app.accessToken,
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(skillActions, dispatch),
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(SkillFeedbackPage);

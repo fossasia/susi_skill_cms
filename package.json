@@ -7,6 +7,7 @@
   "dependencies": {
     "add-px": "1.0.0",
     "antd": "2.13.14",
+    "axios": "^0.18.0",
     "babel-core": "6.26.3",
     "babel-loader": "7.1.4",
     "babel-preset-es2015": "6.24.1",

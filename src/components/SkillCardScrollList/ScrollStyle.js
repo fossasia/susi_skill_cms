@@ -63,7 +63,6 @@ const styles = {
   },
   gridList: {
     margin: '10px',
-    textAlign: 'center',
     overflowX: 'scroll',
     // eslint-disable-next-line
     overflowX: '-moz-hidden-unscrollable',
