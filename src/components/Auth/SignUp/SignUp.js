@@ -96,7 +96,7 @@ export default class SignUp extends Component {
 
     // eslint-disable-next-line
     switch (event.target.name) {
-      case 'email':
+      case 'email': {
         email = event.target.value.trim();
         emailError = !isEmail(email);
         if (emailError) {
@@ -105,8 +105,9 @@ export default class SignUp extends Component {
           emailErrorMessage = '';
         }
         break;
+      }
 
-      case 'password':
+      case 'password': {
         passwordValue = event.target.value;
         validPassword = passwordValue.length >= 6;
         let validConfirmPassword = confirmPasswordValue.length >= 1;
@@ -134,8 +135,9 @@ export default class SignUp extends Component {
           passwordConfirmErrorMessage = '';
         }
         break;
+      }
 
-      case 'confirmPassword':
+      case 'confirmPassword': {
         confirmPasswordValue = event.target.value;
         // let validConfirmPasswordLength = confirmPasswordValue.length >= 6;
         validPassword = confirmPasswordValue === passwordValue;
@@ -151,6 +153,7 @@ export default class SignUp extends Component {
           passwordConfirmErrorMessage = '';
         }
         break;
+      }
     }
 
     if (!emailError && !passwordError && !passwordConfirmError) {
