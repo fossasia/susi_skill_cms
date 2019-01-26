@@ -21,6 +21,11 @@ export function getSignup(payload) {
   return ajax.get(url, { signup: email, password });
 }
 
+export function getAdmin(payload) {
+  const url = `${API_URL}/${AUTH_API_PREFIX}/showAdminService.json`;
+  return ajax.get(url, payload);
+}
+
 export function fetchMetricsSkills(payload) {
   const { languageValue } = payload;
   const url = `${urls.API_URL}/cms/getSkillMetricsData.json`;

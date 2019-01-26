@@ -76,6 +76,7 @@ class App extends React.Component {
   static propTypes = {
     getApiKeys: PropTypes.func,
     actions: PropTypes.object,
+    accessToken: PropTypes.string,
   };
 
   constructor(props) {
@@ -91,8 +92,9 @@ class App extends React.Component {
   }
 
   componentDidMount = () => {
-    const { actions } = this.props;
+    const { actions, accessToken } = this.props;
     actions.getApiKeys();
+    accessToken && actions.getAdmin();
     window.addEventListener('offline', this.onUserOffline);
     window.addEventListener('online', this.onUserOnline);
   };
@@ -299,8 +301,15 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
+function mapStateToProps(state) {
+  const { app } = state;
+  return {
+    ...app,
+  };
+}
+
 const ConnectedApp = connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps,
 )(App);
 
