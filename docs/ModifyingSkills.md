@@ -1,10 +1,10 @@
 # Modifying SUSI Skills in SUSI Skill CMS
 
- With SUSI Skill CMS, one can easily modify SUSI Skills once the user is logged in. The following SUSI Server endpoint is used to the modify a skill.
+ With SUSI Skill CMS, one can easily modify SUSI.AI Skills once the user is logged in. The following SUSI Server endpoint is used to the modify a SUSI.AI skill:
 
   >- [https://api.susi.ai/cms/modifySkill.json](https://api.susi.ai/cms/modifySkill.json)
 
-This endpoint accepts `POST` request with data supplied in the following parameters.
+This endpoint accepts `POST` request with data supplied in the following parameters:
 
    >- OldModel: general
    >- OldGroup: Knowledge
@@ -40,7 +40,7 @@ This endpoint accepts `POST` request with data supplied in the following paramet
    >- image: <image oject>
 
 
-Through our [Skill Editor Component](https://github.com/fossasia/susi_skill_cms/tree/master/src/components/SkillEditor) we send request to the aforementioned endpoint to make the requisite changes to a particular skill. 
+Through our [Skill Editor Component](https://github.com/fossasia/susi_skill_cms/tree/master/src/components/SkillEditor) we send request to the aforementioned endpoint to make the requisite changes to a particular SUSI.AI skill. 
 
 To modify a skill,
 - Go to [http://skills.susi.ai](http://skills.susi.ai)
