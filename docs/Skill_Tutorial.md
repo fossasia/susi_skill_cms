@@ -1,21 +1,21 @@
 # SUSI.AI Skill Development Tutorial
 
-Do you want your own AI Skills for SUSI? It's surprisingly easy to add more Skills to SUSI.
+Do you want your own AI Skills for SUSI? It's surprisingly easy to add more Skills to SUSI.AI
 
 ## Getting Started
 
-It's easy, DON'T PANIC. You don't need to be a software developer to enhance SUSI.
+It's easy, DON'T PANIC. You don't need to be a software developer to enhance SUSI.AI
 
 ### What you have to do
 
-We have a SUSI Skill CMS at https://skills.susi.ai. Here you can create public skills in a simpled editor window or private skill bots. Both can be created in the same way except that one is public and can be edited by anyone and the other is private, which can be edited only by you. The private skill bot also provides a Javascript embed code, which you can add to your website. You can configure colors and icons to suite your style.
+We have a SUSI Skill CMS at https://skills.susi.ai. Here you can create public SUSI.AI skills in a simpled editor window or private skill bots. Both can be created in the same way except that one is public and can be edited by anyone and the other is private, which can be edited only by you. The private skill bot also provides a Javascript embeded code, which you can add to your website. You can configure colors and icons to suite your style.
 
 ### Preparation to start testing
 
-To test the SUSI Skills you are editing, you can use the public chat at:
+To test the SUSI.AI Skills you are editing, you can use the public chat at:
 https://chat.susi.ai
 
-One you created a public skill you could also test it using the SUSI.AI Android Application at:
+Once you create a public SUSI.AI skill you could also test it using the SUSI.AI Android Application at:
 https://play.google.com/store/apps/details?id=ai.susi
 
 ### Skill Format
@@ -37,7 +37,7 @@ Answer answer1|answer2|answer3...
 ```
 
 ### Schema to organize Skills
-An expert is a set of skills. That means if we edit one text file, that text file represents one expert as it may contain several skills which all belong together.
+An expert is a set of SUSI.AI skills. That means if we edit one text file, that text file represents one expert as it may contain several skills which all belong together.
 
 An 'expert' is stored within the following ontology:
 ```
@@ -52,7 +52,7 @@ Therefore, we can access every expert with the 4-tuple
 {model, group, language, expert}
 ```
 ### The SUSI.AI Skill Language: A Language of Thought
-As you will see in the tutorial levels below, the language looks like an extremely simple pattern-matching Question-Answer declaration. But that is just the facade, it is easy for beginners but under the hood there is an expert system which is able to do planning and proving. The artificial intelligence in Susi is implemented as a theorem prover which can explore the domain of possible answers and gives one which is _true_ in SUSI's universe of knowledge.
+As you will see in the tutorial levels below, the language looks like an extremely simple pattern-matching Question-Answer declaration. But that is just the facade, it is easy for beginners but under the hood there is an expert system which is able to do planning and proving. The artificial intelligence in SUSI.AI is implemented as a theorem prover which can explore the domain of possible answers and gives one which is _true_ in SUSI's universe of knowledge.
 
 However, we had to combine the complex world of declaration-based logic programming with natural language declarations.
 We believe that the result is a easy-to-learn skill language with the ability to advance to true artificial intelligence when we reach a certain level of experience.
@@ -71,7 +71,7 @@ This defines one simple intent: to answer on "roses are red" the phrase "SUSI is
 
 Now you can test the new intent:
 * send the following query to SUSI: "roses are red"
-* SUSI will answer with "SUSI is a hack".
+* SUSI.AI will answer with "SUSI is a hack".
 The Skill file is just a text file where two lines which are not separated by an empty line represent a conversation pattern.
 You can actually add a third line to your file:
 ```
@@ -81,7 +81,7 @@ roses are red
 susi is a hack
 skynet is back
 ```
-With that file, SUSI would respond on "roses are red" the answer "SUSI is a hack" and on the query "SUSI is a hack" it would respond "skynet is back". Try it!
+With that file, SUSI.AI would respond on "roses are red" the answer "SUSI is a hack" and on the query "SUSI is a hack" it would respond "skynet is back". Try it!
 
 ### Tutorial Level 1: Random Answers
 Skills without a deterministic behavior will create less predictable results.
@@ -94,7 +94,7 @@ Potatoes|Vegetables|Fish
 ```
 
 ### Tutorial Level 2: Query Alternatives
-Maybe you want that SUSI responds to several different queries with the same answer. This can be
+Maybe you want that SUSI.AI responds to several different queries with the same answer. This can be
 done very easy with Alternatives in the query line:
 ```
 Bonjour|Buenos días|Ciao
@@ -143,8 +143,8 @@ variable pattern: `$0$` denotes the whole sentence, identical to what the user a
 
 
 ### Tutorial Level 6: Using Variables from Answer Terms
-Susi has a memory! It is possible to store information inside Susi's user session
-and use that information later on. For example, you can tell Susi your most favorite
+SUSI.AI has a memory! It is possible to store information inside SUSI's user session
+and use that information later on. For example, you can tell SUSI your most favorite
 beer brand:
 
 ```
@@ -152,8 +152,8 @@ I * like * beer
 You then should have one $2$>_beerbrand!
 ```
 
-Now Susi knows your most favorite beer brand, it is stored inside the variable `_beerbrand`. Note that the variable starts with a leading '\_'. That has a special meaning: variables without a leading '\_' are only valid while Susi is thinking about
-a phrase, not after the response has computed. Susi will not remember a variable if
+Now SUSI.AI knows your most favorite beer brand, it is stored inside the variable `_beerbrand`. Note that the variable starts with a leading '\_'. That has a special meaning: variables without a leading '\_' are only valid while SUSI.AI is thinking about
+a phrase, not after the response has computed. SUSI.AI will not remember a variable if
 that variable was set in a past conversation and has not a leading '\_'.
 
 You can now use that variable in another rule:
@@ -165,7 +165,7 @@ Note that the `*` wildcards in the query are not used at all. They are just ther
 to make it easy that this rule matches. It will i.e. match on "What beer brand is the best?"
 
 Variables are only visible within the same user session. Therefore we need
-authenticated users and that is the main reason that you have to log on to use Susi.
+authenticated users and that is the main reason that you have to log on to use SUSI.AI
 
 
 ### Tutorial Level 7: Setting Status Variables
@@ -184,7 +184,7 @@ How do I feel?
 You are $_mood$.
 ```
 
-In this example, SUSI remembers your mood and can tell you about it. The actual word which was used to describe the mood was never printed to the user before because using the `^^` symbols it got quoted and became invisible.
+In this example, SUSI.AI remembers your mood and can tell you about it. The actual word which was used to describe the mood was never printed to the user before because using the `^^` symbols, it got quoted and became invisible.
 
 ### Tutorial Level 8: Conditions for Answers
 
@@ -205,7 +205,7 @@ Shall I *?
 
 ### Tutorial Level 9: Rules used as Functions/Templates (Basic Self-Reflection)
 
-SUSI can call itself during an answer preparation. This can be used to create rules which are designed
+SUSI.AI can call itself during an answer preparation. This can be used to create rules which are designed
 to be called in such a self-call. For example:
 
 ```
@@ -220,7 +220,7 @@ What is your favorite color?
 ?$_mycolour$:My favorite colour is $_mycolour$!:I like `function colour`>_mycolour!
 ```
 
-Here, the colour is randomly generated with the `function colour` call, but only if SUSI has not done that yet. If SUSI just generated a colour in the answer, that answer will be stored in the variable `_mycolour`. But if that variable already existed, it will be used to make the answer without the `function colour`.
+Here, the colour is randomly generated with the `function colour` call, but only if SUSI.AI has not done that yet. If SUSI.AI just generated a colour in the answer, that answer will be stored in the variable `_mycolour`. But if that variable already existed, it will be used to make the answer without the `function colour`.
 
 ### Tutorial Level 10: Embed Javascript into an intent
 
@@ -315,7 +315,7 @@ Here **"path": "$.query.text[0]"** will put **"a"** in $object$
 
 ### Tutorial Level 12: More Action Types
 
-SUSI Skills may return different types of actions. So far, the only action type we used is the `answer` action.
+SUSI.AI Skills may return different types of actions. So far, the only action type we used is the `answer` action.
 The result of an `answer` action can be seen with
 ```
 curl http://api.susi.ai/susi/chat.json?q=hello
@@ -501,7 +501,7 @@ Please be aware that a Susi answer may contain more than one action as answer.
 
 ### Tutorial Level 13: Problem-Solving Dialog with Counter-Questions
 
-Using Susis variables and if rules can be used to create experts which are able to do a dialog to solve a problem.
+Using SUSI's variables and if rules can be used to create experts which are able to do a dialog to solve a problem.
 
 (to be continued)
 
@@ -525,7 +525,7 @@ It is a core principle of intelligent systems to be able to learn and enhance th
 
 ### Tutorial Level 17: Inter-SUSI Instance Dialog
 
-Susi runs in user instances: every chat user of a SUSI instance is an individual instance. Instances may be customized i.e. if the user calls Susi to dream with a test skill. Therefore different SUSI instances behave differently. It should be possible that two different SUSI instances have different 'opinions' and that two instances start a dialog with each other to find a consensus.
+SUSI.AI runs in user instances: every chat user of a SUSI.AI instance is an individual instance. Instances may be customized i.e. if the user calls SUSI.AI to dream with a test skill. Therefore different SUSI.AI instances behave differently. It should be possible that two different SUSI.AI instances have different 'opinions' and that two instances start a dialog with each other to find a consensus.
 We will learn here how to connect those instances to each other so they can talk.
 
 (to be implemented)
@@ -542,3 +542,4 @@ My name is SUSI.
 
 Adding examples for each skill gives us an overview of what SUSI can do.
 We can look at all example queries at http://api.susi.ai/cms/getExampleSkill.json
+
