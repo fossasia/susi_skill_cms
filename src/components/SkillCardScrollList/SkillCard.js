@@ -86,7 +86,6 @@ class SkillCard extends Component {
   };
 
   scrollLeft = () => {
-    debugger;
     let parentEle = document.getElementById(this.props.scrollSkills);
     let maxScrollValue = parentEle.scrollWidth - parentEle.clientWidth;
     let scrollValue = parentEle.scrollLeft - 280 * this.state.scrollCards;

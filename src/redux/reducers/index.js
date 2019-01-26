@@ -4,6 +4,7 @@ import app from './app';
 import skills from './skills';
 import skill from './skill';
 import ui from './ui';
+import create from './create';
 
 export default combineReducers({
   routing: routerReducer,
@@ -11,4 +12,5 @@ export default combineReducers({
   skills,
   skill,
   ui,
+  create,
 });

@@ -102,8 +102,6 @@ export default class SkillCreator extends Component {
         oldImageUrl: '',
         imageUrl: '<image_url>',
         image_name_changed: false,
-        fontSizeCode: 14,
-        editorTheme: 'github',
         showAdmin: false,
         deleteDisabled: true,
         slideState: 1, // 1 means in middle, 2 means preview collapsed
@@ -694,7 +692,6 @@ export default class SkillCreator extends Component {
       if (this.props.botBuilder) {
         form.append('private', '1');
       }
-
       settings = {
         async: true,
         crossDomain: true,
@@ -733,7 +730,6 @@ export default class SkillCreator extends Component {
         file = this.state.file; // append file to image
         form.append('image', file);
       }
-
       settings = {
         async: true,
         crossDomain: true,
@@ -755,7 +751,6 @@ export default class SkillCreator extends Component {
         console.log(this.state.code);
         console.log(this.state.imageUrl.replace('images/',''));
         */
-
     $.ajax(settings)
       .done(response => {
         this.setState({

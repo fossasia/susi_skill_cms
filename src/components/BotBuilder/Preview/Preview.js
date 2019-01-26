@@ -98,7 +98,6 @@ class Preview extends Component {
         contentType: 'application/json',
         dataType: 'json',
         success: function(data) {
-          debugger;
           let index;
           for (var i = 0; i < self.state.messages.length; i++) {
             if (self.state.messages[i].loading === true) {
