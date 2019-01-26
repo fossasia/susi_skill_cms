@@ -295,7 +295,7 @@ class SkillListing extends Component {
           <StaticAppBar {...this.props} />
           <div className="skill_listing_container" style={styles.home}>
             <div className="avatar">
-              {image == null ? (
+              {!image ? (
                 <CircleImage name={skillName.toUpperCase()} size="250" />
               ) : (
                 <img className="avatar-img" alt="Thumbnail" src={imgUrl} />
@@ -391,23 +391,19 @@ class SkillListing extends Component {
               </a>
               <div className="avatar-meta margin-b-md">
                 <div className="example-container">
-                  {typeof examples === 'undefined' ||
-                  examples === null ||
-                  typeof examples[Object.keys(examples)[0]] === 'undefined'
-                    ? ''
-                    : examples
-                        .slice(0, skillExampleCount)
-                        .map((data, index) => {
-                          return (
-                            <div
-                              key={index}
-                              className="example-comment"
-                              onClick={event => testExample(event, data)}
-                            >
-                              <q>{data}</q>
-                            </div>
-                          );
-                        })}
+                  {examples &&
+                    examples[Object.keys(examples)[0]] &&
+                    examples.slice(0, skillExampleCount).map((data, index) => {
+                      return (
+                        <div
+                          key={index}
+                          className="example-comment"
+                          onClick={event => testExample(event, data)}
+                        >
+                          <q>{data}</q>
+                        </div>
+                      );
+                    })}
                 </div>
                 <div
                   className="skill-example-see-more"
@@ -421,7 +417,7 @@ class SkillListing extends Component {
               <div className="desc margin-b-md margin-t-md">
                 <h1 className="title">Description</h1>
                 <p className="card-content">{descriptions}</p>
-                {dynamicContent ? (
+                {dynamicContent && (
                   <div className="card-content">
                     <ul>
                       <li>
@@ -430,11 +426,9 @@ class SkillListing extends Component {
                       </li>
                     </ul>
                   </div>
-                ) : null}
+                )}
 
-                {termsOfUse == null ? (
-                  ''
-                ) : (
+                {termsOfUse && (
                   <div className="card-content">
                     <ul>
                       <li>
@@ -450,9 +444,7 @@ class SkillListing extends Component {
                   </div>
                 )}
 
-                {termsOfUse == null ? (
-                  ''
-                ) : (
+                {termsOfUse && (
                   <div className="card-content">
                     <ul>
                       <li>
@@ -499,7 +491,7 @@ class SkillListing extends Component {
                         <td>Languages supported:</td>
                         <td>
                           {supportedLanguages.map((data, index) => {
-                            let delimiter =
+                            const delimiter =
                               supportedLanguages.length === index + 1
                                 ? null
                                 : ', ';
@@ -518,7 +510,7 @@ class SkillListing extends Component {
                           })}
                         </td>
                       </tr>
-                      {cookies.get('loggedIn') ? (
+                      {cookies.get('loggedIn') && (
                         <tr>
                           <td>Report: </td>
                           <td>
@@ -553,11 +545,10 @@ class SkillListing extends Component {
                             />
                           </Dialog>
                         </tr>
-                      ) : (
-                        ''
                       )}
                       <tr>
-                        <td>Content Rating: </td> <td>4+ age</td>
+                        <td>Content Rating: </td>
+                        <td>4+ age</td>
                       </tr>
                     </tbody>
                   </table>
