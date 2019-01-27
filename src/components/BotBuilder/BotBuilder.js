@@ -237,8 +237,37 @@ class BotBuilder extends React.Component {
     if (drafts) {
       let draftsOfBots = [];
       for (let draft in drafts) {
+        let imageUrl;
+        let { protocol, host } = window.location;
+        if (drafts[draft].image === 'images/<image_name>') {
+          imageUrl = `${protocol}//${host}/customAvatars/1.png`;
+        } else if (drafts[draft].image === 'images/<image_name_event>') {
+          imageUrl = `${protocol}//${host}/botTemplates/event-registration.jpg`;
+        } else if (drafts[draft].image === 'images/<image_name_job>') {
+          imageUrl = `${protocol}//${host}/botTemplates/job-application.jpg`;
+        } else if (drafts[draft].image === 'images/<image_name_contact>') {
+          imageUrl = `${protocol}//${host}/botTemplates/contact-us.png`;
+        } else {
+          imageUrl = drafts[draft].image
+            ? `${BASE_URL}/cms/getImage.png?access_token=${cookies.get(
+                'loggedIn',
+              )}&language=${drafts[draft].language}&group=${drafts[
+                draft
+              ].group.replace(/ /g, '%20')}&image=${drafts[draft].image.replace(
+                / /g,
+                '%20',
+              )}`
+            : null;
+        }
         draftsOfBots.push(
-          <Card key={draft} className="bot-template-card">
+          <Card
+            key={draft}
+            className="bot-template-card"
+            style={{
+              backgroundImage: 'url(' + imageUrl + ')',
+              backgroundSize: 'cover',
+            }}
+          >
             <Link to={'/botbuilder/botwizard?draftID=' + draft}>
               <RaisedButton
                 label={drafts[draft].name === '' ? draft : drafts[draft].name}

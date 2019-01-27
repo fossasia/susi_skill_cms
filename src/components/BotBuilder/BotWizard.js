@@ -109,6 +109,10 @@ class BotWizard extends React.Component {
 
   saveDraft = () => {
     let designCode = this.state.designCode.replace(/#/g, '');
+    let image = this.state.imageUrl;
+    if (image.search('images/') === -1) {
+      image = 'images/' + image;
+    }
     let skillData = {
       group: this.state.groupValue,
       language: this.state.languageValue,
@@ -116,6 +120,7 @@ class BotWizard extends React.Component {
       buildCode: this.state.buildCode,
       designCode: designCode,
       configCode: this.state.configCode,
+      image: image,
     };
     let object = JSON.stringify(skillData);
     if (skillData.group !== null) {
@@ -160,6 +165,35 @@ class BotWizard extends React.Component {
           let buildCode = data.drafts[id].buildCode;
           let designCode = data.drafts[id].designCode;
           let configCode = data.drafts[id].configCode;
+          const imageNameMatch = buildCode.match(/^::image\s(.*)$/m);
+          let imagePreviewUrl;
+          let localImages = [
+            'images/<image_name>',
+            'images/<image_name_event>',
+            'images/<image_name_job>',
+            'images/<image_name_contact>',
+          ];
+          if (!localImages.includes(imageNameMatch[1])) {
+            imagePreviewUrl = `${
+              urls.API_URL
+            }/cms/getImage.png?access_token=${cookies.get(
+              'loggedIn',
+            )}&language=${skillLanguage}&group=${skillGroup}&image=${
+              imageNameMatch[1]
+            }`;
+          } else if (imageNameMatch[1] === 'images/<image_name_event>') {
+            imagePreviewUrl = '/botTemplates/event-registration.jpg';
+          } else if (imageNameMatch[1] === 'images/<image_name_job>') {
+            imagePreviewUrl = '/botTemplates/job-application.jpg';
+          } else if (imageNameMatch[1] === 'images/<image_name_contact>') {
+            imagePreviewUrl = '/botTemplates/contact-us.png';
+          } else {
+            imagePreviewUrl = this.state.image;
+          }
+          designCode = designCode.replace(
+            'bodyBackgroundImage ',
+            'bodyBackgroundImage #',
+          );
           designCode = designCode.replace(
             'bodyBackground ',
             'bodyBackground #',
@@ -189,6 +223,8 @@ class BotWizard extends React.Component {
               buildCode,
               designCode,
               configCode,
+              image: imagePreviewUrl,
+              imageUrl: imageNameMatch[1],
               loaded: true,
             },
             () => this.generateDesignData(),
