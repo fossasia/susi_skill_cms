@@ -655,6 +655,15 @@ export default class SkillCreator extends Component {
       return 0;
     }
 
+    if (mode === 'edit' && this.state.expertValue === '') {
+      notification.open({
+        message: 'Error Processing your Request',
+        description: 'Skill name cannot be empty',
+        icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
+      });
+      return 0;
+    }
+
     this.setState({
       loading: true,
     });
@@ -971,6 +980,13 @@ export default class SkillCreator extends Component {
         file: this.state.file,
       });
     }
+  };
+
+  handleLabel = mode => {
+    if (mode === 'edit') {
+      return 'Update';
+    }
+    return 'Save';
   };
 
   render() {
@@ -1343,7 +1359,7 @@ export default class SkillCreator extends Component {
                             this.state.loading ? (
                               <CircularProgress color="#ffffff" size={32} />
                             ) : (
-                              'Save'
+                              this.handleLabel(this.state.mode)
                             )
                           }
                           backgroundColor={colors.header}
