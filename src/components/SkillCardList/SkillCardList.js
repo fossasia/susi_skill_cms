@@ -175,7 +175,7 @@ function createListCard(
                         place="bottom"
                         effect="solid"
                         delayHide={250}
-                        border="true"
+                        border={true}
                       >
                         <Link to={{ pathname: skillFeedbackPathname }}>
                           <SkillRatingPopover stars={stars} />

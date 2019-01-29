@@ -474,90 +474,92 @@ class SkillListing extends Component {
                 <h1 className="title">Skill Details</h1>
                 <div className="card-content">
                   <table>
-                    <tr>
-                      <td>Category: </td>
-                      <td>
-                        <Link to={`/category/${this.groupValue}`}>
-                          {this.groupValue}
-                        </Link>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Language: </td>
-                      <td>
-                        <Link to={`/language/${this.languageValue}`}>
-                          {ISO6391.getNativeName(this.languageValue)}
-                        </Link>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Updated on: </td>
-                      <td>{` ${parseDate(lastModifiedTime)}`}</td>
-                    </tr>
-                    <tr>
-                      <td>Languages supported:</td>
-                      <td>
-                        {supportedLanguages.map((data, index) => {
-                          let delimiter =
-                            supportedLanguages.length === index + 1
-                              ? null
-                              : ', ';
-                          return (
-                            <Link
-                              key={index}
-                              onClick={this.forceUpdate}
-                              to={`/${this.groupValue}/${data.name}/${
-                                data.language
-                              }`}
-                            >
-                              {ISO6391.getNativeName(data.language)}
-                              {delimiter}
-                            </Link>
-                          );
-                        })}
-                      </td>
-                    </tr>
-                    {cookies.get('loggedIn') ? (
+                    <tbody>
                       <tr>
-                        <td>Report: </td>
+                        <td>Category: </td>
                         <td>
-                          <div
-                            style={{ color: '#108ee9', cursor: 'pointer' }}
-                            onClick={this.handleReportToggle}
-                          >
-                            Flag as inappropriate
-                          </div>
+                          <Link to={`/category/${this.groupValue}`}>
+                            {this.groupValue}
+                          </Link>
                         </td>
-                        <Dialog
-                          title="Flag as inappropriate"
-                          actions={reportDialogActions}
-                          modal={false}
-                          open={showReportDialog}
-                          onRequestClose={this.handleReportToggle}
-                        >
-                          <TextField
-                            hintText="Leave a feedback message"
-                            floatingLabelText="Feedback message"
-                            multiLine
-                            floatingLabelFocusStyle={{
-                              color: 'rgb(66, 133, 244)',
-                            }}
-                            underlineFocusStyle={{
-                              borderColor: 'rgb(66, 133, 244)',
-                            }}
-                            fullWidth
-                            onChange={(event, val) =>
-                              this.saveReportFeedback(val)
-                            }
-                          />
-                        </Dialog>
                       </tr>
-                    ) : (
-                      ''
-                    )}
-                    <tr>
-                      <td>Content Rating: </td> <td>4+ age</td>
-                    </tr>
+                      <tr>
+                        <td>Language: </td>
+                        <td>
+                          <Link to={`/language/${this.languageValue}`}>
+                            {ISO6391.getNativeName(this.languageValue)}
+                          </Link>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Updated on: </td>
+                        <td>{` ${parseDate(lastModifiedTime)}`}</td>
+                      </tr>
+                      <tr>
+                        <td>Languages supported:</td>
+                        <td>
+                          {supportedLanguages.map((data, index) => {
+                            let delimiter =
+                              supportedLanguages.length === index + 1
+                                ? null
+                                : ', ';
+                            return (
+                              <Link
+                                key={index}
+                                onClick={this.forceUpdate}
+                                to={`/${this.groupValue}/${data.name}/${
+                                  data.language
+                                }`}
+                              >
+                                {ISO6391.getNativeName(data.language)}
+                                {delimiter}
+                              </Link>
+                            );
+                          })}
+                        </td>
+                      </tr>
+                      {cookies.get('loggedIn') ? (
+                        <tr>
+                          <td>Report: </td>
+                          <td>
+                            <div
+                              style={{ color: '#108ee9', cursor: 'pointer' }}
+                              onClick={this.handleReportToggle}
+                            >
+                              Flag as inappropriate
+                            </div>
+                          </td>
+                          <Dialog
+                            title="Flag as inappropriate"
+                            actions={reportDialogActions}
+                            modal={false}
+                            open={showReportDialog}
+                            onRequestClose={this.handleReportToggle}
+                          >
+                            <TextField
+                              hintText="Leave a feedback message"
+                              floatingLabelText="Feedback message"
+                              multiLine
+                              floatingLabelFocusStyle={{
+                                color: 'rgb(66, 133, 244)',
+                              }}
+                              underlineFocusStyle={{
+                                borderColor: 'rgb(66, 133, 244)',
+                              }}
+                              fullWidth
+                              onChange={(event, val) =>
+                                this.saveReportFeedback(val)
+                              }
+                            />
+                          </Dialog>
+                        </tr>
+                      ) : (
+                        ''
+                      )}
+                      <tr>
+                        <td>Content Rating: </td> <td>4+ age</td>
+                      </tr>
+                    </tbody>
                   </table>
                 </div>
               </div>
