@@ -14,34 +14,36 @@ const Footer = () => {
         </Link>
         <div className="footer">
           <div className="footer-left">
-            <ul>
-              <li>
-                <a href={urls.CHAT_URL + '/overview'}>Overview</a>
-              </li>
-              <li>
-                <a href={urls.CHAT_URL + '/blog'}>Blog</a>
-              </li>
-              <li>
-                <a href={urls.API_URL}>API</a>
-              </li>
-              <li>
-                <a href={urls.CMS_GITHUB_URL}>Code</a>
-              </li>
-              <li>&nbsp;</li>
-              <li>&nbsp;</li>
-              <li>&nbsp;</li>
-              <li>
-                <a href={urls.CHAT_URL + '/privacy'}>Privacy</a>
-              </li>
-              <li>
-                <a href={urls.CHAT_URL + '/terms'}>Terms</a>
-              </li>
-              <li>
-                <a href={urls.CHAT_URL + '/contact'}>Contact</a>
-              </li>
-            </ul>
+            <div className="footer-elements">
+              <ul>
+                <li>
+                  <a href={urls.CHAT_URL + '/overview'}>Overview</a>
+                </li>
+                <li>
+                  <a href={urls.CHAT_URL + '/blog'}>Blog</a>
+                </li>
+                <li>
+                  <a href={urls.API_URL}>API</a>
+                </li>
+                <li>
+                  <a href={urls.CMS_GITHUB_URL}>Code</a>
+                </li>
+              </ul>
+            </div>
+            <div className="footer-elements">
+              <ul>
+                <li>
+                  <a href={urls.CHAT_URL + '/privacy'}>Privacy</a>
+                </li>
+                <li>
+                  <a href={urls.CHAT_URL + '/terms'}>Terms</a>
+                </li>
+                <li>
+                  <a href={urls.CHAT_URL + '/contact'}>Contact</a>
+                </li>
+              </ul>
+            </div>
           </div>
-          <ul />
         </div>
       </div>
     </div>
