@@ -1,16 +1,16 @@
 import React from 'react';
-import MySkills from '../../../components/Dashboard/MySkills';
+import MyAnalytics from '../../../components/Dashboard/MyAnalytics';
 import { shallow } from 'enzyme';
 import configureMockStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
 const mockStore = configureMockStore();
 const store = mockStore({});
 
-describe('<MySkills />', () => {
-  it('render MySkills without crashing', () => {
+describe('<MyAnalytics />', () => {
+  it('render MyAnalytics without crashing', () => {
     shallow(
       <Provider store={store}>
-        <MySkills />
+        <MyAnalytics />
       </Provider>,
     );
   });

@@ -12,6 +12,7 @@ const defaultState = {
   accessToken: '',
   isAdmin: false,
   apiKeys: {},
+  userSkills: [],
 };
 
 const { emailId, uuid, loggedIn, username } = cookies.getAll();
@@ -52,6 +53,27 @@ export default handleActions(
       return {
         ...state,
         isAdmin,
+      };
+    },
+    [actionTypes.APP_GET_USER_SKILLS](state, { payload }) {
+      let skillsData = [];
+      for (let i of payload.filteredData) {
+        skillsData.push({
+          skillName: i.skillName,
+          type: 'public',
+          status: 'active',
+          ...i,
+        });
+      }
+      const userSkills = skillsData.filter(item => {
+        if (item.authorEmail === state.email) {
+          return item;
+        }
+        return null;
+      });
+      return {
+        ...state,
+        userSkills,
       };
     },
   },
