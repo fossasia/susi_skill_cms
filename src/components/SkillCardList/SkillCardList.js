@@ -177,9 +177,7 @@ function createListCard(
                         delayHide={250}
                         border={true}
                       >
-                        <Link to={{ pathname: skillFeedbackPathname }}>
-                          <SkillRatingPopover stars={stars} />
-                        </Link>
+                        <SkillRatingPopover stars={stars} />
                       </ReactTooltip>
                       <Ratings.Widget />
                       <Ratings.Widget />
