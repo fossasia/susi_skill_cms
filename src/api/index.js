@@ -236,14 +236,14 @@ export function fetchAllGroupOptions(payload) {
 }
 
 export function fetchSkillByCommitId(payload) {
-  const { skill, model, group, language, commitId } = payload;
+  const { skill, model, group, language, commitID } = payload;
   const url = `${API_URL}/${CMS_API_PREFIX}/getFileAtCommitID.json`;
   return ajax.get(url, {
     skill,
     model,
     group,
     language,
-    commitId,
+    commitID,
   });
 }
 
@@ -348,4 +348,14 @@ export function getEmailExists(payload) {
   return ajax.get(url, {
     check_email: email,
   });
+}
+
+export function getSusiPreviewReply(message) {
+  const url = `${API_URL}/${SUSI_API_PREFIX}/chat.json`;
+  return ajax.get(url, { q: message });
+}
+
+export function fetchCommitHistory(payload) {
+  const url = `${API_URL}/${CMS_API_PREFIX}/getSkillHistory.json`;
+  return ajax.get(url, { ...payload });
 }

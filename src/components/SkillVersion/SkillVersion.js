@@ -1,6 +1,7 @@
 // Packages
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { fetchCommitHistory } from '../../api/index';
 import { Link } from 'react-router-dom';
 
 // Material-UI
@@ -21,8 +22,7 @@ import { RadioButton } from 'material-ui/RadioButton';
 // Other Utils
 import notification from 'antd/lib/notification';
 import Icon from 'antd/lib/icon';
-import $ from 'jquery';
-import { urls, colors } from '../../utils';
+import { colors } from '../../utils';
 
 const styles = {
   home: {
@@ -62,36 +62,29 @@ class SkillVersion extends Component {
   }
 
   componentDidMount() {
-    const { skillMeta } = this.state;
     document.title = 'SUSI.AI - Skill Version';
-    const commitHistoryBaseURL = `${urls.API_URL}/cms/getSkillHistory.json`;
-    const commitHistoryURL = `${commitHistoryBaseURL}?model=${
-      skillMeta.modelValue
-    }&group=${skillMeta.groupValue}&language=${skillMeta.languageValue}&skill=${
-      skillMeta.skillName
-    }`;
-    this.getCommitHistory(commitHistoryURL);
+    this.getCommitHistory();
   }
 
-  getCommitHistory = commitHistoryURL => {
-    $.ajax({
-      url: commitHistoryURL,
-      dataType: 'jsonp',
-      jsonp: 'callback',
-      crossDomain: true,
-      success: commitsData => {
-        console.log(commitsData);
+  getCommitHistory = () => {
+    const {
+      modelValue: model,
+      groupValue: group,
+      languageValue: language,
+      skillName: skill,
+    } = this.state.skillMeta;
+    fetchCommitHistory({ model, group, language, skill })
+      .then(commitsData => {
         this.setCommitHistory(commitsData);
-      },
-      error: (xhr, status, error) => {
+      })
+      .catch(error => {
         notification.open({
           message: 'Error Processing your Request',
           description: 'Failed to fetch data. Please Try Again',
           icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
         });
         return 0;
-      },
-    });
+      });
   };
 
   setCommitHistory = commitsData => {
@@ -192,7 +185,7 @@ class SkillVersion extends Component {
     );
 
     let commitHistoryTableRows = commits.map((commit, index) => {
-      const { commitID, commitDate, author, commit_message } = commit;
+      const { commitId, commitDate, author, commitMessage } = commit;
       let leftRadioBtn = null;
       let rightRadioBtn = null;
       if (leftChecks && rightChecks) {
@@ -248,20 +241,20 @@ class SkillVersion extends Component {
               to={{
                 pathname: `/${skillMeta.groupValue}/${
                   skillMeta.skillName
-                }/edit/${skillMeta.languageValue}/${commitID}`,
+                }/edit/${skillMeta.languageValue}/${commitId}`,
               }}
             >
               <abbr title={commitDate}>{commitDate}</abbr>
             </Link>
           </TableRowColumn>
           <TableRowColumn>
-            <abbr title={commitID}>{commitID}</abbr>
+            <abbr title={commitId}>{commitId}</abbr>
           </TableRowColumn>
           <TableRowColumn>
             <abbr title={author}>{author}</abbr>
           </TableRowColumn>
           <TableRowColumn>
-            <abbr title={commit_message}>{commit_message}</abbr>
+            <abbr title={commitMessage}>{commitMessage}</abbr>
           </TableRowColumn>
         </TableRow>
       );
@@ -314,8 +307,8 @@ class SkillVersion extends Component {
                       pathname: `/${skillMeta.groupValue}/${
                         skillMeta.skillName
                       }/compare/${skillMeta.languageValue}/${
-                        checkedCommits[0].commitID
-                      }/${checkedCommits[1].commitID}`,
+                        checkedCommits[0].commitId
+                      }/${checkedCommits[1].commitId}`,
                     }}
                   >
                     <RaisedButton
