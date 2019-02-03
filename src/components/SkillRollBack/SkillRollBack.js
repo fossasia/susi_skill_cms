@@ -56,27 +56,27 @@ class SkillRollBack extends Component {
     super(props);
     const parsePath = props.location.pathname.split('/');
     this.state = {
-      code:
-        '::name <Skill_name>\n::author <author_name>\n::author_url <author_url>\n::description <description> \n::dynamic_content <Yes/No>\n::developer_privacy_policy <link>\n::image <image_url>\n::terms_of_use <link>\n\n\nUser query1|query2|quer3....\n!example:<The question that should be shown in public skill displays>\n!expect:<The answer expected for the above example>\nAnswer for the user query',
-      fontSizeCode: 14,
-      editorTheme: 'github',
-      url: '',
-      skillMeta: {
-        modelValue: 'general',
-        groupValue: parsePath[1],
-        languageValue: parsePath[4],
-        skillName: parsePath[2],
-      },
-      latestCommit: parsePath[5],
-      revertingCommit: parsePath[6],
       commitData: [],
-      commitMessage: '',
     };
+
+    this.code =
+      '::name <Skill_name>\n::author <author_name>\n::author_url <author_url>\n::description <description> \n::dynamic_content <Yes/No>\n::developer_privacy_policy <link>\n::image <image_url>\n::terms_of_use <link>\n\n\nUser query1|query2|quer3....\n!example:<The question that should be shown in public skill displays>\n!expect:<The answer expected for the above example>\nAnswer for the user query';
+    this.commitMessage = '';
+    this.ontSizeCode = 14;
+    this.editorTheme = 'github';
+    this.url = '';
+    this.skillMeta = {
+      modelValue: 'general',
+      groupValue: parsePath[1],
+      languageValue: parsePath[4],
+      skillName: parsePath[2],
+    };
+    this.latestCommit = parsePath[5];
+    this.revertingCommit = parsePath[6];
   }
 
   getSkillAtCommitIDUrl = () => {
-    const { skillMeta } = this.state;
-    const { modelValue, groupValue, languageValue, skillName } = skillMeta;
+    const { modelValue, groupValue, languageValue, skillName } = this.skillMeta;
     const baseUrl = `${urls.API_URL}/cms/getFileAtCommitID.json`;
     // eslint-disable-next-line
     const skillAtCommitIDUrl = `${baseUrl}?model=${modelValue}&group=${groupValue}&language=${languageValue}&skill=${skillName}&commitID=`;
@@ -85,16 +85,15 @@ class SkillRollBack extends Component {
 
   componentDidMount() {
     document.title = 'SUSI.AI - Skill RollBack';
-    const { latestCommit, revertingCommit } = this.state;
     const baseUrl = this.getSkillAtCommitIDUrl();
-    const url1 = baseUrl + latestCommit;
+    const url1 = baseUrl + this.latestCommit;
     $.ajax({
       url: url1,
       dataType: 'jsonp',
       jsonp: 'callback',
       crossDomain: true,
       success: data1 => {
-        const url2 = baseUrl + revertingCommit;
+        const url2 = baseUrl + this.revertingCommit;
         $.ajax({
           url: url2,
           dataType: 'jsonp',
@@ -104,13 +103,13 @@ class SkillRollBack extends Component {
             this.updateData([
               {
                 code: data1.file,
-                commitID: latestCommit,
+                commitID: this.latestCommit,
                 author: data1.author,
                 date: data1.commitDate,
               },
               {
                 code: data2.file,
-                commitID: revertingCommit,
+                commitID: this.revertingCommit,
                 author: data2.author,
                 date: data2.commitDate,
               },
@@ -140,25 +139,21 @@ class SkillRollBack extends Component {
   updateData = commitData => {
     this.setState({
       commitData: commitData,
-      code: commitData[1].code,
-      commitMessage: 'Reverting to Commit - ' + commitData[1].commitID,
     });
+    this.code = commitData[1].code;
+    this.commitMessage = `Reverting to Commit - ${commitData[1].commitID}`;
   };
 
   updateCode = newCode => {
-    this.setState({
-      code: newCode,
-    });
+    this.code = newCode;
   };
 
   handleCommitMessageChange = event => {
-    this.setState({
-      commitMessage: event.target.value,
-    });
+    this.commitMessage = event.target.value;
   };
 
   handleRollBack = () => {
-    const { skillMeta, commitData, code } = this.state;
+    const { commitData } = this.state;
     const { accessToken } = this.props;
     if (!accessToken) {
       notification.open({
@@ -169,7 +164,7 @@ class SkillRollBack extends Component {
       return 0;
     }
 
-    let skillMetaData = skillMeta;
+    let skillMetaData = this.skillMeta;
 
     if (
       Object.keys(skillMetaData).length === 0 &&
@@ -186,7 +181,7 @@ class SkillRollBack extends Component {
 
     let latestRevisionCode = commitData[0].code;
     let oldImageName = latestRevisionCode.match(/^::image\s(.*)$/m);
-    let newImageName = code.match(/^::image\s(.*)$/m);
+    let newImageName = this.code.match(/^::image\s(.*)$/m);
     if (!oldImageName || !newImageName) {
       notification.open({
         message: 'Error Processing your Request',
@@ -209,7 +204,7 @@ class SkillRollBack extends Component {
     form.append('NewGroup', skillMetaData.groupValue);
     form.append('NewLanguage', skillMetaData.languageValue);
     form.append('NewSkill', skillMetaData.skillName);
-    form.append('content', this.state.code);
+    form.append('content', this.code);
     form.append('changelog', this.state.commitMessage);
     form.append('imageChanged', false);
     form.append('image_name_changed', true);
@@ -267,13 +262,7 @@ class SkillRollBack extends Component {
   };
 
   render() {
-    const {
-      commitData,
-      skillMeta,
-      editorTheme,
-      fontSizeCode,
-      revertingCommit,
-    } = this.state;
+    const { commitData } = this.state;
     const { homeStyle, paperStyle, boldStyle, codeEditorStyle } = styles;
     const rightEditorWidth = window.matchMedia(
       'only screen and (max-width: 768px)',
@@ -297,7 +286,7 @@ class SkillRollBack extends Component {
             <div style={homeStyle}>
               <Paper style={paperStyle} zDepth={1}>
                 {'You are currently editing an older version of the skill: '}
-                <b style={boldStyle}>{skillMeta.skillName}</b>
+                <b style={boldStyle}>{this.skillMeta.skillName}</b>
                 <br />
                 <span>
                   Author: <b style={boldStyle}>{commitData[1].author}</b>
@@ -323,9 +312,9 @@ class SkillRollBack extends Component {
                   <AceEditor
                     mode="java"
                     readOnly={true}
-                    theme={editorTheme}
+                    theme={this.editorTheme}
                     width="100%"
-                    fontSize={fontSizeCode}
+                    fontSize={this.fontSizeCode}
                     height="400px"
                     value={commitData[0].code}
                     showPrintMargin={false}
@@ -353,9 +342,9 @@ class SkillRollBack extends Component {
                   <AceEditor
                     mode="java"
                     readOnly={true}
-                    theme={editorTheme}
+                    theme={this.editorTheme}
                     width={rightEditorWidth}
-                    fontSize={fontSizeCode}
+                    fontSize={this.fontSizeCode}
                     height="400px"
                     value={commitData[1].code}
                     showPrintMargin={false}
@@ -389,11 +378,13 @@ class SkillRollBack extends Component {
             <div style={{ marginTop: '-100px', width: '100%' }}>
               <SkillCreator
                 showTopBar={false}
-                revertingCommit={revertingCommit}
+                revertingCommit={this.revertingCommit}
                 location={{
-                  pathname: `/${skillMeta.groupValue}/${
-                    skillMeta.skillName
-                  }/edit/${skillMeta.languageValue}/${revertingCommit}`,
+                  pathname: `/${this.skillMeta.groupValue}/${
+                    this.skillMeta.skillName
+                  }/edit/${this.skillMeta.languageValue}/${
+                    this.revertingCommit
+                  }`,
                 }}
               />
             </div>
