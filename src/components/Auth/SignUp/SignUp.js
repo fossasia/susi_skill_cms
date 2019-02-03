@@ -137,101 +137,57 @@ class SignUp extends Component {
   };
 
   handleTextFieldChange = event => {
-    let {
-      email,
-      passwordValue,
-      confirmPasswordValue,
-      emailError,
-      validPassword,
-      passwordError,
-      passwordConfirmError,
-      emailErrorMessage,
-      passwordErrorMessage,
-      passwordConfirmErrorMessage,
-      validForm,
-      passwordStrength,
-      passwordScore,
-    } = this.state;
-
-    // eslint-disable-next-line
     switch (event.target.name) {
-      case 'email':
-        email = event.target.value.trim();
-        if (!isEmail(email)) {
-          emailErrorMessage = 'Enter a valid Email Address';
-        } else {
-          emailErrorMessage = '';
-        }
+      case 'email': {
+        const email = event.target.value.trim();
+        this.setState({
+          email,
+          emailErrorMessage: !isEmail(email)
+            ? 'Enter a valid Email Address'
+            : '',
+        });
         break;
-
-      case 'password':
-        passwordValue = event.target.value;
-        validPassword = passwordValue.length >= 6;
-        let validConfirmPassword = confirmPasswordValue.length >= 1;
-        passwordError = !(passwordValue && validPassword);
-        passwordConfirmError = !(
-          passwordValue === this.state.confirmPasswordValue
+      }
+      case 'password': {
+        const { confirmPassword, passwordConfirmErrorMessage } = this.state;
+        const password = event.target.value.trim();
+        const passwordScore = zxcvbn(password).score;
+        const strength = ['Worst', 'Bad', 'Weak', 'Good', 'Strong'];
+        const passwordError = !(password.length >= 6 && password);
+        const passwordConfirmError =
+          (confirmPassword || passwordConfirmErrorMessage) &&
+          !(confirmPassword === password);
+        this.setState({
+          password,
+          passwordErrorMessage: passwordError
+            ? 'Minimum 6 characters required'
+            : '',
+          passwordScore: passwordError ? -1 : passwordScore,
+          passwordStrength: passwordError ? '' : strength[passwordScore],
+          passwordConfirmErrorMessage: passwordConfirmError
+            ? 'Password does not match'
+            : '',
+          signupErrorMessage: '',
+        });
+        break;
+      }
+      case 'confirmPassword': {
+        const { password } = this.state;
+        const confirmPassword = event.target.value;
+        const passwordConfirmError = !(
+          confirmPassword === password && confirmPassword
         );
-        if (passwordError) {
-          passwordErrorMessage = 'Minimum 6 characters required';
-        } else {
-          passwordErrorMessage = '';
-        }
-        if (passwordConfirmError && validConfirmPassword) {
-          passwordConfirmErrorMessage = 'Check your password again';
-        } else {
-          passwordConfirmErrorMessage = '';
-        }
-        if (validPassword) {
-          let result = zxcvbn(passwordValue);
-          passwordScore = result.score;
-          let strength = ['Worst', 'Bad', 'Weak', 'Good', 'Strong'];
-          passwordStrength = strength[result.score];
-        } else {
-          passwordStrength = '';
-          passwordScore = -1;
-        }
+        this.setState({
+          confirmPassword,
+          passwordConfirmErrorMessage: passwordConfirmError
+            ? 'Password does not match'
+            : '',
+        });
         break;
-
-      case 'confirmPassword':
-        confirmPasswordValue = event.target.value;
-        // let validConfirmPasswordLength = confirmPasswordValue.length >= 6;
-        validPassword = confirmPasswordValue === passwordValue;
-        passwordConfirmError = !(validPassword && confirmPasswordValue);
-        // if (passwordConfirmError && validConfirmPasswordLength) {
-        //   passwordConfirmErrorMessage = 'Check your password again';
-        // } else {
-        //   passwordConfirmErrorMessage = '';
-        // }
-        if (passwordConfirmError) {
-          passwordConfirmErrorMessage = 'Check your password again';
-        } else {
-          passwordConfirmErrorMessage = '';
-        }
+      }
+      default:
         break;
     }
-
-    if (!emailError && !passwordError && !passwordConfirmError) {
-      validForm = true;
-    } else {
-      validForm = false;
-    }
-
-    this.setState({
-      email,
-      passwordValue,
-      confirmPasswordValue,
-      emailError,
-      validPassword,
-      passwordError,
-      passwordConfirmError,
-      emailErrorMessage,
-      passwordErrorMessage,
-      passwordConfirmErrorMessage,
-      validForm,
-      passwordStrength,
-      passwordScore,
-    });
   };
 
   handleSubmit = event => {
