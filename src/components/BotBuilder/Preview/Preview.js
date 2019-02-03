@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import $ from 'jquery';
-import urls from '../../../utils/urls';
+import { getSusiPreviewReply } from '../../../api/index';
 import Send from 'material-ui/svg-icons/content/send';
 import loadingGIF from '../../../images/loading.gif';
 import './Chatbot.css';
@@ -74,64 +73,47 @@ class Preview extends Component {
     }));
   };
 
-  // Send request to SUSI API
-  sendMessage = () => {
-    if (this.state.message.trim().length > 0) {
-      let url = `${urls.API_URL}/susi/chat.json?q=${encodeURIComponent(
-        this.state.message,
-      )}&instant=${encodeURIComponent(this.props.skill)}`;
-      const { configCode } = this.props;
-      if (configCode) {
-        const enableDefaultSkillsMatch = configCode.match(
-          /^::enable_default_skills\s(.*)$/m,
-        );
-        if (enableDefaultSkillsMatch && enableDefaultSkillsMatch[1] === 'no') {
-          url += '&excludeDefaultSkills=true';
-        }
-      }
-      this.msgNumber++;
-      this.addMessage(this.state.message, 'You');
-      let self = this;
-      $.ajax({
-        type: 'GET',
-        url: url,
-        contentType: 'application/json',
-        dataType: 'json',
-        success: function(data) {
+  sendMessage = event => {
+    const { message } = this.state;
+    if (message.trim().length > 0) {
+      this.addMessage(message, 'You');
+      const encodedMessage = encodeURIComponent(message);
+      getSusiPreviewReply(encodedMessage)
+        .then(payload => {
+          const { messages } = this.state;
           let index;
-          for (var i = 0; i < self.state.messages.length; i++) {
-            if (self.state.messages[i].loading === true) {
+          for (let i = 0; i < messages.length; i++) {
+            if (messages[i].loading === true) {
               index = i;
               break;
             }
           }
 
-          let message;
-          if (data.answers[0]) {
-            message = {
-              message: data.answers[0].actions[0].expression,
+          let messageObj;
+          if (payload.answers[0]) {
+            messageObj = {
+              message: payload.answers[0].actions[0].expression,
               author: 'SUSI',
               loading: false,
             };
           } else {
-            message = {
+            messageObj = {
               message: 'Sorry, I could not understand what you just said.',
               author: 'SUSI',
               loading: false,
             };
           }
-          self.setState(prevState => ({
+          this.setState(prevState => ({
             messages: [
               ...prevState.messages.slice(0, index),
-              message,
+              messageObj,
               ...prevState.messages.slice(index + 1),
             ],
           }));
-        },
-        error: function(e) {
-          console.log(e);
-        },
-      });
+        })
+        .catch(error => {
+          console.log('Could not fetch reply');
+        });
       this.setState({ message: '' });
     }
   };

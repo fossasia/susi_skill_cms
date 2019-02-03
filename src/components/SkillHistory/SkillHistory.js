@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { fetchCommitHistory, fetchSkillByCommitId } from '../../api/index';
 import { Link } from 'react-router-dom';
 import notification from 'antd/lib/notification';
 import Icon from 'antd/lib/icon';
 import AceEditor from 'react-ace';
-import * as $ from 'jquery';
 import Diff from 'react-diff';
 import { RaisedButton } from 'material-ui';
 import CircularProgress from 'material-ui/CircularProgress';
 import { Paper } from 'material-ui';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
-import { urls, colors } from '../../utils';
+import { colors } from '../../utils';
 
 import 'brace/mode/markdown';
 import 'brace/theme/github';
@@ -28,6 +28,40 @@ import 'brace/ext/searchbox';
 
 import './SkillHistory.css';
 
+const ErrorNotification = () => {
+  return notification.open({
+    message: 'Error Processing your Request',
+    description: 'Failed to fetch data. Please Try Again',
+    icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
+  });
+};
+
+const styles = {
+  homeStyle: {
+    width: '100%',
+    padding: '80px 30px 30px',
+  },
+  codeEditorStyle: {
+    width: '100%',
+    marginTop: '20px',
+  },
+  compareBtnStyle: {
+    margin: '20px',
+    position: 'absolute',
+    right: '24',
+    top: '70',
+  },
+  paperStyle: {
+    width: '100%',
+    padding: '10px',
+  },
+};
+
+let rightEditorWidth = '50%';
+if (window.matchMedia('only screen and (max-width: 768px)').matches) {
+  rightEditorWidth = '100%';
+}
+
 class SkillHistory extends Component {
   constructor(props) {
     super(props);
@@ -40,8 +74,6 @@ class SkillHistory extends Component {
     this.state = {
       code:
         '::name <Skill_name>\n::author <author_name>\n::author_url <author_url>\n::description <description> \n::dynamic_content <Yes/No>\n::developer_privacy_policy <link>\n::image <image_url>\n::terms_of_use <link>\n\n\nUser query1|query2|quer3....\n!example:<The question that should be shown in public skill displays>\n!expect:<The answer expected for the above example>\nAnswer for the user query',
-      fontSizeCode: 14,
-      editorTheme: 'github',
       skillMeta: {
         modelValue: 'general',
         groupValue: parsePath[1],
@@ -52,128 +84,87 @@ class SkillHistory extends Component {
       commitData: [],
       allCommitsData: [],
     };
-    // console.log(this.props)
   }
-
-  getSkillAtCommitIDUrl = () => {
-    let baseUrl = `${urls.API_URL}/cms/getFileAtCommitID.json`;
-    let skillMetaData = this.state.skillMeta;
-    let skillAtCommitIDUrl =
-      baseUrl +
-      '?model=' +
-      skillMetaData.modelValue +
-      '&group=' +
-      skillMetaData.groupValue +
-      '&language=' +
-      skillMetaData.languageValue +
-      '&skill=' +
-      skillMetaData.skillName +
-      '&commitID=';
-    return skillAtCommitIDUrl;
-  };
 
   componentDidMount() {
     document.title = 'SUSI.AI - Skill History';
-    let commitHistoryBaseURL = urls.API_URL + '/cms/getSkillHistory.json';
-    let commitHistoryURL =
-      commitHistoryBaseURL +
-      '?model=' +
-      this.state.skillMeta.modelValue +
-      '&group=' +
-      this.state.skillMeta.groupValue +
-      '&language=' +
-      this.state.skillMeta.languageValue +
-      '&skill=' +
-      this.state.skillMeta.skillName;
-    let self = this;
-    $.ajax({
-      url: commitHistoryURL,
-      dataType: 'jsonp',
-      jsonp: 'callback',
-      crossDomain: true,
-      success: function(commitsData) {
+    const {
+      modelValue: model,
+      groupValue: group,
+      languageValue: language,
+      skillName: skill,
+    } = this.state.skillMeta;
+    fetchCommitHistory({ model, group, language, skill })
+      .then(commitsData => {
         if (commitsData.accepted) {
           let commits = commitsData.commits ? commitsData.commits : [];
           if (commits.length > 0) {
             commits[0].latest = true;
           }
-          self.setState({
+          this.setState({
             allCommitsData: commits,
           });
-          self.getCommitFiles();
+          this.getCommitFiles();
         }
-      },
-      error: function(xhr, status, error) {
-        notification.open({
-          message: 'Error Processing your Request',
-          description: 'Failed to fetch data. Please Try Again',
-          icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
-        });
-        return 0;
-      },
-    });
+      })
+      .catch(error => {
+        return <ErrorNotification />;
+      });
   }
 
   getCommitMeta = commitID => {
     let allCommits = this.state.allCommitsData;
     for (let i = 0; i < allCommits.length; i++) {
       let commitData = allCommits[i];
-      if (commitData.commitID === commitID) {
+      if (commitData.commitId === commitID) {
         return commitData;
       }
     }
   };
 
   getCommitFiles = () => {
-    let baseUrl = this.getSkillAtCommitIDUrl();
-    let self = this;
-    if (this.state.commits.length === 2) {
-      const url1 = baseUrl + self.state.commits[0];
-      // console.log(url1);
-      $.ajax({
-        url: url1,
-        dataType: 'jsonp',
-        jsonp: 'callback',
-        crossDomain: true,
-        success: function(data1) {
-          const url2 = baseUrl + self.state.commits[1];
-          // console.log(url2);
-          $.ajax({
-            url: url2,
-            dataType: 'jsonp',
-            jsonp: 'callback',
-            crossDomain: true,
-            success: function(data2) {
-              self.updateData([
+    const {
+      modelValue: model,
+      groupValue: group,
+      languageValue: language,
+      skillName: skill,
+    } = this.state.skillMeta;
+    const { commits } = this.state;
+    if (commits.length === 2) {
+      fetchSkillByCommitId({
+        model,
+        group,
+        language,
+        skill,
+        commitID: commits[0],
+      })
+        .then(data1 => {
+          fetchSkillByCommitId({
+            model,
+            group,
+            language,
+            skill,
+            commitID: commits[1],
+          })
+            .then(data2 => {
+              this.updateData([
                 {
                   code: data1.file,
-                  commit: self.getCommitMeta(self.state.commits[0]),
+                  commit: this.getCommitMeta(commits[0]),
                 },
                 {
                   code: data2.file,
-                  commit: self.getCommitMeta(self.state.commits[1]),
+                  commit: this.getCommitMeta(commits[1]),
                 },
               ]);
-            },
-            error: function(xhr, status, error) {
-              notification.open({
-                message: 'Error Processing your Request',
-                description: 'Failed to fetch data. Please Try Again',
-                icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
-              });
-              return 0;
-            },
-          });
-        },
-        error: function(xhr, status, error) {
-          notification.open({
-            message: 'Error Processing your Request',
-            description: 'Failed to fetch data. Please Try Again',
-            icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
-          });
-          return 0;
-        },
-      });
+            })
+            .catch(error => {
+              return <ErrorNotification />;
+            });
+        })
+        .catch(error => {
+          return <ErrorNotification />;
+        });
     }
   };
 
@@ -184,24 +175,12 @@ class SkillHistory extends Component {
   };
 
   render() {
-    const style = {
-      width: '100%',
-      padding: '10px',
-    };
-    const compareBtnStyle = {
-      margin: '20px',
-      position: 'absolute',
-      right: '24',
-      top: '70',
-    };
-    let rightEditorWidth = '50%';
-    if (window.matchMedia('only screen and (max-width: 768px)').matches) {
-      rightEditorWidth = '100%';
-    }
+    const { commitData, skillMeta, allCommitsData } = this.state;
+    const { homeStyle, codeEditorStyle, paperStyle, compareBtnStyle } = styles;
     return (
       <div>
         <StaticAppBar {...this.props} />
-        {this.state.commitData.length === 0 && (
+        {commitData.length === 0 && (
           <h1 className="skill_loading_container">
             <div className="center">
               <CircularProgress size={62} color="#4285f5" />
@@ -209,10 +188,10 @@ class SkillHistory extends Component {
             </div>
           </h1>
         )}
-        <div style={styles.home}>
-          {this.state.commitData.length === 2 && (
+        <div style={homeStyle}>
+          {commitData.length === 2 && (
             <div style={{ display: 'block' }}>
-              <Paper style={style} zDepth={1}>
+              <Paper style={paperStyle} zDepth={1}>
                 <div>
                   <div>
                     Currently Viewing :{' '}
@@ -220,11 +199,11 @@ class SkillHistory extends Component {
                       to={{
                         pathname:
                           '/' +
-                          this.state.skillMeta.groupValue +
+                          skillMeta.groupValue +
                           '/' +
-                          this.state.skillMeta.skillName +
+                          skillMeta.skillName +
                           '/' +
-                          this.state.skillMeta.languageValue,
+                          skillMeta.languageValue,
                       }}
                     >
                       <RaisedButton
@@ -236,29 +215,28 @@ class SkillHistory extends Component {
                     </Link>
                   </div>
                   <h3 style={{ textTransform: 'capitalize' }}>
-                    {this.state.skillMeta.skillName.split('_').join(' ')}
+                    {skillMeta.skillName.split('_').join(' ')}
                   </h3>
                 </div>
               </Paper>
               <div className="version-code-left">
                 <span>
-                  commitID: <b>{this.state.commitData[0].commit.commitID}</b>
+                  commitID: <b>{commitData[0].commit.commitId}</b>
                 </span>
                 <br />
                 <span>
-                  {this.state.commitData[0].commit.latest && 'Latest '}
-                  Revision as of{' '}
-                  <b>{this.state.commitData[0].commit.commitDate}</b>
+                  {commitData[0].commit.latest && 'Latest '}
+                  Revision as of <b>{commitData[0].commit.commitDate}</b>
                 </span>
-                <div style={styles.codeEditor}>
+                <div style={codeEditorStyle}>
                   <AceEditor
                     mode="java"
                     readOnly={true}
-                    theme={this.state.editorTheme}
+                    theme="github"
                     width="100%"
-                    fontSize={this.state.fontSizeCode}
+                    fontSize="14"
                     height="400px"
-                    value={this.state.commitData[0].code}
+                    value={commitData[0].code}
                     showPrintMargin={false}
                     name="skill_code_editor"
                     scrollPastEnd={false}
@@ -274,42 +252,41 @@ class SkillHistory extends Component {
               </div>
               <div className="version-code-right">
                 <span>
-                  commitID: <b>{this.state.commitData[1].commit.commitID}</b>
+                  commitID: <b>{commitData[1].commit.commitId}</b>
                 </span>
                 <br />
                 <span>
-                  {this.state.commitData[1].commit.latest && 'Latest '}
-                  Revision as of{' '}
-                  <b>{this.state.commitData[1].commit.commitDate}</b>
+                  {commitData[1].commit.latest && 'Latest '}
+                  Revision as of <b>{commitData[1].commit.commitDate}</b>
                   <b style={{ marginLeft: '5px' }}>
                     (<Link
                       to={{
                         pathname:
                           '/' +
-                          this.state.skillMeta.groupValue +
+                          skillMeta.groupValue +
                           '/' +
-                          this.state.skillMeta.skillName +
+                          skillMeta.skillName +
                           '/edit/' +
-                          this.state.skillMeta.languageValue +
+                          skillMeta.languageValue +
                           '/' +
-                          this.state.allCommitsData[0].commitID +
+                          allCommitsData[0].commitId +
                           '/' +
-                          this.state.commitData[0].commit.commitID,
+                          commitData[0].commit.commitId,
                       }}
                     >
                       Undo
                     </Link>)
                   </b>
                 </span>
-                <div style={styles.codeEditor}>
+                <div style={codeEditorStyle}>
                   <AceEditor
                     mode="java"
                     readOnly={true}
-                    theme={this.state.editorTheme}
+                    theme="github"
                     width={rightEditorWidth}
-                    fontSize={this.state.fontSizeCode}
+                    fontSize="14"
                     height="400px"
-                    value={this.state.commitData[1].code}
+                    value={commitData[1].code}
                     showPrintMargin={false}
                     name="skill_code_editor"
                     scrollPastEnd={false}
@@ -329,8 +306,8 @@ class SkillHistory extends Component {
                 </h1>
                 {/* latest code should be inputB */}
                 <Diff
-                  inputA={this.state.commitData[0].code}
-                  inputB={this.state.commitData[1].code}
+                  inputA={commitData[0].code}
+                  inputB={commitData[1].code}
                   type="chars"
                 />
               </div>
@@ -341,17 +318,6 @@ class SkillHistory extends Component {
     );
   }
 }
-
-const styles = {
-  home: {
-    width: '100%',
-    padding: '80px 30px 30px',
-  },
-  codeEditor: {
-    width: '100%',
-    marginTop: '20px',
-  },
-};
 
 SkillHistory.propTypes = {
   location: PropTypes.object,
