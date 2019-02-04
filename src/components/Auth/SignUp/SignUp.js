@@ -15,7 +15,8 @@ import Close from 'material-ui/svg-icons/navigation/close';
 /* Utils */
 import { colors, isEmail } from '../../../utils';
 import Recaptcha from 'react-recaptcha';
-import actions from '../../../redux/actions/app';
+import appActions from '../../../redux/actions/app';
+import uiActions from '../../../redux/actions/ui';
 
 /* CSS */
 import './SignUp.css';
@@ -73,9 +74,7 @@ class SignUp extends Component {
     openSnackBar: PropTypes.func,
     captchaKey: PropTypes.string,
     actions: PropTypes.object,
-    onRequestCloseDialog: PropTypes.func,
-    onRequestOpenLogin: PropTypes.func,
-    isSignUpOpen: PropTypes.bool,
+    modalProps: PropTypes.object,
   };
 
   constructor(props) {
@@ -98,26 +97,22 @@ class SignUp extends Component {
   }
 
   closeDialog = () => {
-    const { onRequestCloseDialog } = this.props;
-    this.setState(
-      {
-        email: '',
-        emailErrorMessage: '',
-        password: '',
-        passwordErrorMessage: '',
-        confirmPassword: '',
-        passwordConfirmErrorMessage: '',
-        passwordStrength: '',
-        passwordScore: -1,
-        success: false,
-        isCaptchaVerified: false,
-        captchaVerifyErrorMessage: '',
-        loading: false,
-      },
-      () => {
-        onRequestCloseDialog();
-      },
-    );
+    const { actions } = this.props;
+    this.setState({
+      email: '',
+      emailErrorMessage: '',
+      password: '',
+      passwordErrorMessage: '',
+      confirmPassword: '',
+      passwordConfirmErrorMessage: '',
+      passwordStrength: '',
+      passwordScore: -1,
+      success: false,
+      isCaptchaVerified: false,
+      captchaVerifyErrorMessage: '',
+      loading: false,
+    });
+    actions.closeModal();
   };
 
   onCaptchaLoad = () => {
@@ -204,8 +199,7 @@ class SignUp extends Component {
       isCaptchaVerified,
     } = this.state;
 
-    const { openSnackBar } = this.props;
-    const { getSignup } = this.props.actions;
+    const { getSignup, openSnackBar } = this.props.actions;
 
     if (!isCaptchaVerified) {
       this.setState({
@@ -245,6 +239,7 @@ class SignUp extends Component {
             });
             openSnackBar({
               snackBarMessage: 'Signup Failed. Try Again',
+              snackBarDuration: 4000,
             });
           }
         })
@@ -267,6 +262,7 @@ class SignUp extends Component {
           }
           openSnackBar({
             snackBarMessage,
+            snackBarDuration: 4000,
           });
         });
     }
@@ -287,7 +283,7 @@ class SignUp extends Component {
       success,
       passwordScore,
     } = this.state;
-    const { captchaKey, onRequestOpenLogin, isSignUpOpen } = this.props;
+    const { modalProps, actions, captchaKey } = this.props;
     const {
       bodyStyle,
       emailStyle,
@@ -309,11 +305,15 @@ class SignUp extends Component {
     return (
       <Dialog
         modal={false}
-        open={isSignUpOpen}
-        onRequestClose={this.closeDialog}
+        open={
+          modalProps &&
+          modalProps.isModalOpen &&
+          modalProps.modalType === 'signUp'
+        }
         autoScrollBodyContent={true}
         bodyStyle={bodyStyle}
         contentStyle={{ width: '35%', minWidth: '300px' }}
+        onRequestClose={actions.closeModal}
       >
         <div className="signupForm">
           <div>Sign Up with SUSI</div>
@@ -413,7 +413,7 @@ class SignUp extends Component {
                 marginTop: '10px',
               }}
               className="loginLinks"
-              onClick={onRequestOpenLogin}
+              onClick={() => actions.openModal({ modalType: 'login' })}
             >
               Already have an account? Login here
             </span>
@@ -429,12 +429,13 @@ function mapStateToProps(store) {
   const { captchaKey } = store.app.apiKeys;
   return {
     captchaKey,
+    ...store.ui,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(actions, dispatch),
+    actions: bindActionCreators({ ...appActions, ...uiActions }, dispatch),
   };
 }
 

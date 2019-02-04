@@ -11,7 +11,8 @@ import SelectField from 'material-ui/SelectField';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import actions from '../../redux/actions/app';
+import appActions from '../../redux/actions/app';
+import uiActions from '../../redux/actions/ui';
 import PropTypes from 'prop-types';
 import Person from 'material-ui/svg-icons/social/person';
 import IconMenu from 'material-ui/IconMenu';
@@ -19,7 +20,6 @@ import IconButton from 'material-ui/IconButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import CircularProgress from 'material-ui/CircularProgress';
 import CircleImage from '../CircleImage/CircleImage';
-import Snackbar from 'material-ui/Snackbar';
 import MenuItem from 'material-ui/MenuItem';
 import Img from 'react-image';
 import Add from 'material-ui/svg-icons/content/add';
@@ -42,8 +42,6 @@ class MySkills extends Component {
     this.state = {
       skillsData: [],
       loading: true,
-      openSnackbar: false,
-      msgSnackbar: '',
       openMenu: false,
       openMenuBottom: false,
     };
@@ -53,11 +51,12 @@ class MySkills extends Component {
   }
 
   loadSkills = () => {
+    const { actions } = this.props;
     let dataObj = {
       filterName: 'ascending',
       filterType: 'lexicographical',
     };
-    this.props.actions
+    actions
       .getUserSkills(dataObj)
       .then(() => {
         this.setState({
@@ -67,8 +66,10 @@ class MySkills extends Component {
       .catch(error => {
         this.setState({
           loading: false,
-          openSnackbar: false,
-          msgSnackbar: "Error. Couldn't fetch skills.",
+        });
+        actions.openSnackBar({
+          snackBarMessage: "Error. Couldn't fetch skills.",
+          snackBarDuration: 2000,
         });
       });
   };
@@ -86,7 +87,7 @@ class MySkills extends Component {
   };
   render() {
     const { userSkills } = this.props;
-    const { openMenu, loading, openSnackbar, msgSnackbar } = this.state;
+    const { openMenu, loading } = this.state;
     return (
       <div>
         <div style={{ textAlign: 'right' }}>
@@ -228,15 +229,6 @@ class MySkills extends Component {
               </div>
             </div>
           )}
-
-        <Snackbar
-          open={openSnackbar}
-          message={msgSnackbar}
-          autoHideDuration={2000}
-          onRequestClose={() => {
-            this.setState({ openSnackbar: false });
-          }}
-        />
       </div>
     );
   }
@@ -249,7 +241,7 @@ MySkills.propTypes = {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(actions, dispatch),
+    actions: bindActionCreators({ ...appActions, ...uiActions }, dispatch),
   };
 }
 

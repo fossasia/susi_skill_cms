@@ -40,6 +40,7 @@ import ForgotPassword from './components/Auth/ForgotPassword/ForgotPassword';
 import SignUp from './components/Auth/SignUp/SignUp';
 import store from './store';
 import appActions from './redux/actions/app';
+import uiActions from './redux/actions/ui';
 
 setDefaults();
 
@@ -77,22 +78,8 @@ class App extends React.Component {
     getApiKeys: PropTypes.func,
     actions: PropTypes.object,
     accessToken: PropTypes.string,
+    snackBarProps: PropTypes.object,
   };
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      isUserOnline: navigator.onLine,
-      snackBarOpen: false,
-      snackBarMessage: '',
-      snackBarDuration: 4000,
-      snackBarAction: null,
-      snackBarActionHandler: null,
-      isLoginOpen: false,
-      isSignUpOpen: false,
-      isForgotPasswordOpen: false,
-    };
-  }
 
   componentDidMount = () => {
     const { actions, accessToken } = this.props;
@@ -108,120 +95,41 @@ class App extends React.Component {
   };
 
   onUserOffline = () => {
-    this.setState({
-      isUserOnline: false,
-    });
-    this.openSnackBar({
+    const { actions } = this.props;
+    actions.openSnackBar({
       snackBarMessage: 'It seems you are offline!',
+      snackBarDuration: 4000,
     });
   };
 
   onUserOnline = () => {
-    this.setState({
-      isUserOnline: true,
-    });
-    this.openSnackBar({
+    const { actions } = this.props;
+    actions.openSnackBar({
       snackBarMessage: 'Welcome back!',
-    });
-  };
-
-  openSnackBar = ({
-    snackBarMessage,
-    snackBarDuration = 4000,
-    snackBarActionHandler,
-    snackBarAction,
-  }) => {
-    this.setState({
-      snackBarOpen: true,
-      snackBarMessage,
-      snackBarDuration,
-      snackBarActionHandler,
-      snackBarAction,
-    });
-  };
-
-  closeSnackBar = () => {
-    this.setState({
-      snackBarOpen: false,
-      message: '',
-    });
-  };
-
-  onRequestOpenLogin = () => {
-    this.setState({
-      isLoginOpen: true,
-      isForgotPasswordOpen: false,
-      isSignUpOpen: false,
-    });
-  };
-
-  onRequestOpenSignUp = () => {
-    this.setState({
-      isLoginOpen: false,
-      isForgotPasswordOpen: false,
-      isSignUpOpen: true,
-    });
-  };
-
-  onRequestOpenForgotPassword = () => {
-    this.setState({
-      isLoginOpen: false,
-      isForgotPasswordOpen: true,
-      isSignUpOpen: false,
-    });
-  };
-
-  onRequestCloseDialog = () => {
-    this.setState({
-      isLoginOpen: false,
-      isForgotPasswordOpen: false,
-      isSignUpOpen: false,
+      snackBarDuration: 4000,
     });
   };
 
   render() {
     const {
-      isUserOnline,
-      snackBarOpen,
-      snackBarMessage,
-      snackBarDuration,
-      snackBarAction,
-      snackBarActionHandler,
-      isLoginOpen,
-      isSignUpOpen,
-      isForgotPasswordOpen,
-    } = this.state;
-
+      actions,
+      snackBarProps: { snackBarMessage },
+      snackBarProps: { isSnackBarOpen },
+      snackBarProps: { snackBarDuration },
+    } = this.props;
     return (
       <Router>
         <MuiThemeProvider muiTheme={muiTheme}>
           <div>
             <Snackbar
-              autoHideDuration={snackBarDuration}
-              action={snackBarAction}
-              onActionTouchTap={snackBarActionHandler}
-              open={snackBarOpen}
+              open={isSnackBarOpen}
               message={snackBarMessage}
-              onRequestClose={this.closeSnackBar}
+              autoHideDuration={snackBarDuration}
+              onRequestClose={actions.closeSnackBar}
             />
-            <Login
-              isLoginOpen={isLoginOpen}
-              onRequestCloseDialog={this.onRequestCloseDialog}
-              onRequestOpenSignUp={this.onRequestOpenSignUp}
-              onRequestOpenForgotPassword={this.onRequestOpenForgotPassword}
-              openSnackBar={this.openSnackBar}
-            />
-            <SignUp
-              isSignUpOpen={isSignUpOpen}
-              onRequestCloseDialog={this.onRequestCloseDialog}
-              onRequestOpenLogin={this.onRequestOpenLogin}
-              openSnackBar={this.openSnackBar}
-            />
-            <ForgotPassword
-              isForgotPasswordOpen={isForgotPasswordOpen}
-              onRequestCloseDialog={this.onRequestCloseDialog}
-              openSnackBar={this.openSnackBar}
-            />
+            <Login />
+            <SignUp />
+            <ForgotPassword />
             <Switch>
               <Route
                 exact
@@ -280,14 +188,7 @@ class App extends React.Component {
               <Route
                 exact
                 path="/"
-                render={routeProps => (
-                  <BrowseSkill
-                    {...routeProps}
-                    isUserOnline={isUserOnline}
-                    openSnackBar={this.openSnackBar}
-                    onRequestOpenLogin={this.onRequestOpenLogin}
-                  />
-                )}
+                render={routeProps => <BrowseSkill {...routeProps} />}
               />
               <Route exact path="*" component={NotFound} />
             </Switch>
@@ -300,14 +201,14 @@ class App extends React.Component {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(appActions, dispatch),
+    actions: bindActionCreators({ ...appActions, ...uiActions }, dispatch),
   };
 }
 
-function mapStateToProps(state) {
-  const { app } = state;
+function mapStateToProps(store) {
   return {
-    ...app,
+    ...store.ui,
+    ...store.app,
   };
 }
 

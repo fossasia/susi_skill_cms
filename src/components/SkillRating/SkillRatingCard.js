@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import skillActions from '../../redux/actions/skill';
+import uiActions from '../../redux/actions/ui';
 
 // Components
 import {
@@ -47,7 +48,6 @@ class SkillRatingCard extends Component {
       chartWidth: 0,
       ratingsOverTimeWidth: 0,
       offset: 0,
-      openSnack: false,
     };
   }
 
@@ -64,7 +64,8 @@ class SkillRatingCard extends Component {
       .setUserRating({ userRating: userRating })
       .then(payload => {
         actions.openSnackBar({
-          snackMessage: 'The skill was successfully rated!',
+          snackBarMessage: 'The skill was successfully rated!',
+          snackBarDuration: 4000,
         });
         actions
           .getSkillRating(skillData)
@@ -297,7 +298,7 @@ function mapStateToProps(store) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(skillActions, dispatch),
+    actions: bindActionCreators({ ...uiActions, ...skillActions }, dispatch),
   };
 }
 

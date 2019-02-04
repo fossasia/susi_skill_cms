@@ -3,7 +3,9 @@ import Table from 'antd/lib/table';
 import Button from 'antd/lib/button';
 import Form from 'antd/lib/form';
 import TextField from 'material-ui/TextField';
-import Snackbar from 'material-ui/Snackbar';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import uiActions from '../../../../redux/actions/ui';
 import Checkbox from 'material-ui/Checkbox';
 import PropTypes from 'prop-types';
 
@@ -53,8 +55,6 @@ class UIView extends Component {
       publicDevices: false, // allow chatbot to be used in other people's devices
       includeSusiSkills: true,
       limitSites: false,
-      openSnackbar: false,
-      msgSnackbar: '',
     };
     this.dataSource = [];
   }
@@ -68,6 +68,7 @@ class UIView extends Component {
   };
 
   handleAdd = () => {
+    const { actions } = this.props;
     const { count, dataSource } = this.state;
     let date = new Date();
     let name = this.state.websiteName;
@@ -86,9 +87,9 @@ class UIView extends Component {
         () => this.generateCode(),
       );
     } else {
-      this.setState({
-        openSnackbar: true,
-        msgSnackbar: 'Please enter valid domain name of the website.',
+      actions.openSnackBar({
+        snackBarMessage: 'Please enter valid domain name of the website.',
+        snackBarDuration: 2000,
       });
     }
   };
@@ -418,14 +419,6 @@ class UIView extends Component {
             code of your chatbot.
           </div>
         </div>
-        <Snackbar
-          open={this.state.openSnackbar}
-          message={this.state.msgSnackbar}
-          autoHideDuration={2000}
-          onRequestClose={() => {
-            this.setState({ openSnackbar: false });
-          }}
-        />
       </div>
     );
   }
@@ -457,6 +450,16 @@ const styles = {
 
 UIView.propTypes = {
   configure: PropTypes.object,
+  actions: PropTypes.object,
 };
 
-export default UIView;
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(uiActions, dispatch),
+  };
+}
+
+export default connect(
+  null,
+  mapDispatchToProps,
+)(UIView);

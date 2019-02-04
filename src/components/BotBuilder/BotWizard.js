@@ -9,10 +9,12 @@ import Design from './BotBuilderPages/Design';
 import Preview from './Preview/Preview';
 import CircularProgress from 'material-ui/CircularProgress';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import uiActions from '../../redux/actions/ui';
 import Configure from './BotBuilderPages/Configure';
 import notification from 'antd/lib/notification';
 import Deploy from './BotBuilderPages/Deploy';
-import Snackbar from 'material-ui/Snackbar';
 import { Paper, TextField } from 'material-ui';
 import ChevronLeft from 'material-ui/svg-icons/navigation/chevron-left';
 import ChevronRight from 'material-ui/svg-icons/navigation/chevron-right';
@@ -74,8 +76,6 @@ class BotWizard extends React.Component {
       finished: false,
       stepIndex: 0,
       themeSettingsString: '{}',
-      openSnackbar: false,
-      msgSnackbar: '',
       slideState: 1, // 1 means in middle, 2 means preview collapsed
       colBuild: 8,
       colPreview: 4,
@@ -108,6 +108,7 @@ class BotWizard extends React.Component {
   }
 
   saveDraft = () => {
+    const { actions } = this.props;
     let designCode = this.state.designCode.replace(/#/g, '');
     let image = this.state.imageUrl;
     if (image.search('images/') === -1) {
@@ -131,27 +132,28 @@ class BotWizard extends React.Component {
         dataType: 'jsonp',
         crossDomain: true,
         success: function(data) {
-          this.setState({
-            openSnackbar: true,
-            msgSnackbar: 'Successfully saved draft of your chatbot.',
+          actions.openSnackBar({
+            snackBarMessage: 'Successfully saved draft of your chatbot.',
+            snackBarDuration: 2000,
           });
-        }.bind(this),
+        },
         error: function(error) {
-          this.setState({
-            openSnackbar: true,
-            msgSnackbar: "Couldn't save the draft. Please try again.",
+          actions.openSnackBar({
+            snackBarMessage: "Couldn't save the draft. Please try again.",
+            snackBarDuration: 2000,
           });
-        }.bind(this),
+        },
       });
     } else {
-      this.setState({
-        openSnackbar: true,
-        msgSnackbar: "Couldn't save the draft. Please select the Category",
+      actions.openSnackBar({
+        snackBarMessage: "Couldn't save the draft. Please select the Category",
+        snackBarDuration: 2000,
       });
     }
   };
 
   getDraftBotDetails = id => {
+    const { actions } = this.props;
     let url = urls.API_URL + '/cms/readDraft.json?id=' + id;
     $.ajax({
       url: url,
@@ -230,23 +232,24 @@ class BotWizard extends React.Component {
             () => this.generateDesignData(),
           );
         } else {
-          this.setState({
-            openSnackbar: true,
-            msgSnackbar:
+          actions.openSnackBar({
+            snackBarMessage:
               "Couldn't get your draft details. Please reload the page.",
+            snackBarDuration: 2000,
           });
         }
       }.bind(this),
       error: function(error) {
-        this.setState({
-          openSnackbar: true,
-          msgSnackbar: "Couldn't get your drafts. Please reload the page.",
+        actions.openSnackBar({
+          snackBarMessage: "Couldn't get your drafts. Please reload the page.",
+          snackBarDuration: 2000,
         });
-      }.bind(this),
+      },
     });
   };
 
   getBotDetails = (name, group, language) => {
+    const { actions } = this.props;
     let url;
     url =
       urls.API_URL +
@@ -319,8 +322,10 @@ class BotWizard extends React.Component {
         console.log(err);
         this.setState({
           loaded: true,
-          msgSnackbar: "Error! Couldn't fetch skill",
-          openSnackbar: true,
+        });
+        actions.openSnackBar({
+          snackBarMessage: "Error! Couldn't fetch skill",
+          snackBarDuration: 2000,
         });
       }.bind(this),
     });
@@ -650,13 +655,14 @@ class BotWizard extends React.Component {
   };
 
   check = () => {
+    const { actions } = this.props;
     if (this.state.updateSkillNow) {
       this.setStep(3);
     } else {
-      this.setState({
-        openSnackbar: true,
-        msgSnackbar:
+      actions.openSnackBar({
+        snackBarMessage:
           'Please save the chatbot in Configure tab before deploying.',
+        snackBarDuration: 2000,
       });
     }
   };
@@ -883,14 +889,6 @@ class BotWizard extends React.Component {
             </Row>
           </Grid>
         </div>
-        <Snackbar
-          open={this.state.openSnackbar}
-          message={this.state.msgSnackbar}
-          autoHideDuration={2000}
-          onRequestClose={() => {
-            this.setState({ openSnackbar: false });
-          }}
-        />
       </div>
     );
   }
@@ -947,6 +945,16 @@ const styles = {
 };
 BotWizard.propTypes = {
   templates: PropTypes.array,
+  actions: PropTypes.object,
 };
 
-export default BotWizard;
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(uiActions, dispatch),
+  };
+}
+
+export default connect(
+  null,
+  mapDispatchToProps,
+)(BotWizard);

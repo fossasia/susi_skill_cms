@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import uiActions from '../../redux/actions/ui';
 import CircularProgress from 'material-ui/CircularProgress';
-import Snackbar from 'material-ui/Snackbar';
 import { fetchSkillsByAuthor } from '../../api';
 import {
   Legend,
@@ -19,8 +20,6 @@ class MyAnalytics extends Component {
     this.state = {
       skillUsage: [],
       loading: true,
-      openSnackbar: false,
-      msgSnackbar: '',
       activePieIndex: 0,
     };
   }
@@ -29,7 +28,7 @@ class MyAnalytics extends Component {
   }
 
   loadSkillsUsage = () => {
-    const { email } = this.props;
+    const { email, actions } = this.props;
     fetchSkillsByAuthor({ author_email: email })
       .then(payload => {
         this.saveUsageData(payload.authorSkills || []);
@@ -40,8 +39,10 @@ class MyAnalytics extends Component {
       .catch(error => {
         this.setState({
           loading: false,
-          openSnackbar: false,
-          msgSnackbar: "Error. Couldn't fetch skill usage.",
+        });
+        actions.openSnackBar({
+          snackBarMessage: "Error. Couldn't fetch skill usage.",
+          snackBarDuration: 2000,
         });
       });
   };
@@ -63,13 +64,7 @@ class MyAnalytics extends Component {
   };
 
   render() {
-    let {
-      skillUsage,
-      activePieIndex,
-      loading,
-      openSnackbar,
-      msgSnackbar,
-    } = this.state;
+    let { skillUsage, activePieIndex, loading } = this.state;
     return (
       <div>
         {loading ? (
@@ -134,15 +129,6 @@ class MyAnalytics extends Component {
               </div>
             </div>
           )}
-
-        <Snackbar
-          open={openSnackbar}
-          message={msgSnackbar}
-          autoHideDuration={2000}
-          onRequestClose={() => {
-            this.setState({ openSnackbar: false });
-          }}
-        />
       </div>
     );
   }
@@ -150,6 +136,7 @@ class MyAnalytics extends Component {
 
 MyAnalytics.propTypes = {
   email: PropTypes.string,
+  actions: PropTypes.object,
 };
 
 function mapStateToProps(store) {
@@ -158,9 +145,15 @@ function mapStateToProps(store) {
   };
 }
 
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(uiActions, dispatch),
+  };
+}
+
 export default connect(
   mapStateToProps,
-  null,
+  mapDispatchToProps,
 )(MyAnalytics);
 
 const renderActiveShape = props => {

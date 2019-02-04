@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import {
   Table,
   TableBody,
@@ -8,8 +9,10 @@ import {
   TableRowColumn,
 } from 'material-ui/Table';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import uiActions from '../../redux/actions/ui';
 import CircularProgress from 'material-ui/CircularProgress';
-import Snackbar from 'material-ui/Snackbar';
 import { fetchUserRatings } from '../../api';
 import { parseDate } from '../../utils';
 
@@ -19,9 +22,7 @@ class MyRatings extends Component {
     this.state = {
       ratingsData: [],
       loading: true,
-      openSnackbar: false,
       showMySkills: true,
-      msgSnackbar: '',
     };
   }
   componentDidMount() {
@@ -29,6 +30,7 @@ class MyRatings extends Component {
   }
 
   loadSkills = () => {
+    const { actions } = this.props;
     let ratingsData = [];
     fetchUserRatings()
       .then(payload => {
@@ -54,14 +56,16 @@ class MyRatings extends Component {
       .catch(err => {
         this.setState({
           loading: false,
-          openSnackbar: true,
-          msgSnackbar: "Error. Couldn't rating data.",
+        });
+        actions.openSnackBar({
+          snackBarMessage: "Error. Couldn't rating data.",
+          snackBarDuration: 2000,
         });
       });
   };
 
   render() {
-    let { ratingsData, loading, openSnackbar, msgSnackbar } = this.state;
+    let { ratingsData, loading } = this.state;
     return (
       <div>
         {loading ? (
@@ -127,18 +131,22 @@ class MyRatings extends Component {
               </div>
             </div>
           )}
-
-        <Snackbar
-          open={openSnackbar}
-          message={msgSnackbar}
-          autoHideDuration={2000}
-          onRequestClose={() => {
-            this.setState({ openSnackbar: false });
-          }}
-        />
       </div>
     );
   }
 }
 
-export default MyRatings;
+MyRatings.propTypes = {
+  actions: PropTypes.object,
+};
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(uiActions, dispatch),
+  };
+}
+
+export default connect(
+  null,
+  mapDispatchToProps,
+)(MyRatings);

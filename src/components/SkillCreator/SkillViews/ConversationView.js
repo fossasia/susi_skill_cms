@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { Paper } from 'material-ui';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import uiActions from '../../../redux/actions/ui';
 import PropTypes from 'prop-types';
-import Snackbar from 'material-ui/Snackbar';
 import Person from 'material-ui/svg-icons/social/person';
 import CircularProgress from 'material-ui/CircularProgress';
 import { urls } from '../../../utils';
@@ -12,8 +14,6 @@ class ConversationView extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      openSnackbar: false,
-      msgSnackbar: '',
       code: this.props.skillCode,
       userInputs: [],
       conversationsData: [],
@@ -71,6 +71,7 @@ class ConversationView extends Component {
   };
 
   getResponses = responseNumber => {
+    const { actions } = this.props;
     let userInputs = this.state.userInputs;
     let userQuery = userInputs[responseNumber];
     let conversationsData = this.state.conversationsData;
@@ -110,11 +111,12 @@ class ConversationView extends Component {
         }.bind(this),
         error: function(err) {
           console.log(err);
-          this.setState({
-            openSnackbar: true,
-            msgSnackbar: 'Unable to load conversation view. Please try again.',
+          actions.openSnackBar({
+            snackBarMessage:
+              'Unable to load conversation view. Please try again.',
+            snackBarDuration: 2000,
           });
-        }.bind(this),
+        },
       });
     }
   };
@@ -170,14 +172,6 @@ class ConversationView extends Component {
             })
           )}
         </Paper>
-        <Snackbar
-          open={this.state.openSnackbar}
-          message={this.state.msgSnackbar}
-          autoHideDuration={2000}
-          onRequestClose={() => {
-            this.setState({ openSnackbar: false });
-          }}
-        />
       </div>
     );
   }
@@ -197,5 +191,16 @@ const styles = {
 };
 ConversationView.propTypes = {
   skillCode: PropTypes.string,
+  actions: PropTypes.object,
 };
-export default ConversationView;
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(uiActions, dispatch),
+  };
+}
+
+export default connect(
+  null,
+  mapDispatchToProps,
+)(ConversationView);

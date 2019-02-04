@@ -18,6 +18,7 @@ import { addUrlProps, UrlQueryParamTypes } from 'react-url-query';
 import isEmail from '../../../utils/isEmail';
 import appActions from '../../../redux/actions/app';
 import skillActions from '../../../redux/actions/skills';
+import uiActions from '../../../redux/actions/ui';
 
 // Static assets
 import './Login.css';
@@ -80,13 +81,10 @@ class Login extends Component {
   static propTypes = {
     history: PropTypes.object,
     actions: PropTypes.object,
-    isLoginOpen: PropTypes.bool,
-    onRequestCloseDialog: PropTypes.func,
-    onRequestOpenSignUp: PropTypes.func,
-    onRequestOpenForgotPassword: PropTypes.func,
     openSnackBar: PropTypes.func,
     location: PropTypes.object,
     languageValue: PropTypes.array,
+    modalProps: PropTypes.object,
   };
 
   constructor(props) {
@@ -102,32 +100,22 @@ class Login extends Component {
   }
 
   closeDialog = () => {
-    const { onRequestCloseDialog } = this.props;
-    this.setState(
-      {
-        email: '',
-        emailErrorMessage: '',
-        password: '',
-        passwordErrorMessage: '',
-        success: false,
-        loading: false,
-      },
-      () => {
-        onRequestCloseDialog();
-      },
-    );
+    const { actions } = this.props;
+    this.setState({
+      email: '',
+      emailErrorMessage: '',
+      password: '',
+      passwordErrorMessage: '',
+      success: false,
+      loading: false,
+    });
+    actions.closeModal();
   };
 
   handleSubmit = e => {
     e.preventDefault();
     let { email, password } = this.state;
-    const {
-      openSnackBar,
-      location,
-      history,
-      actions,
-      languageValue,
-    } = this.props;
+    const { location, history, actions, languageValue } = this.props;
 
     if (!email || !password) {
       return;
@@ -172,12 +160,12 @@ class Login extends Component {
               loading: false,
             });
           }
-          openSnackBar({ snackBarMessage });
+          actions.openSnackBar({ snackBarMessage });
         })
         .catch(error => {
           console.log(error);
           const message = 'Login Failed. Try Again';
-          openSnackBar({ snackBarMessage: message });
+          actions.openSnackBar({ snackBarMessage: message });
           this.setState({
             password: '',
             loading: false,
@@ -215,7 +203,6 @@ class Login extends Component {
   };
 
   setCookies = ({ email, accessToken, uuid, validSeconds }) => {
-    console.log(email, accessToken, uuid, validSeconds);
     cookies.set('loggedIn', accessToken, {
       path: '/',
       maxAge: validSeconds,
@@ -250,11 +237,7 @@ class Login extends Component {
       passwordErrorMessage,
       loading,
     } = this.state;
-    const {
-      isLoginOpen,
-      onRequestOpenForgotPassword,
-      onRequestOpenSignUp,
-    } = this.props;
+    const { modalProps, actions } = this.props;
 
     const isValid =
       email && !emailErrorMessage && password && !passwordErrorMessage;
@@ -262,8 +245,8 @@ class Login extends Component {
     return (
       <Dialog
         modal={false}
-        open={isLoginOpen}
-        onRequestClose={this.closeDialog}
+        open={modalProps && modalProps.modalType === 'login'}
+        onRequestClose={actions.closeModal}
         autoScrollBodyContent={true}
         bodyStyle={bodyStyle}
         contentStyle={{ width: '35%', minWidth: '300px' }}
@@ -318,11 +301,16 @@ class Login extends Component {
             <div className="loginLinksSection" id="loginLinks">
               <span
                 className="forgotPassword"
-                onClick={onRequestOpenForgotPassword}
+                onClick={() =>
+                  actions.openModal({ modalType: 'forgotPassword' })
+                }
               >
                 Forgot Password?
               </span>
-              <span className="signup" onClick={onRequestOpenSignUp}>
+              <span
+                className="signup"
+                onClick={() => actions.openModal({ modalType: 'signUp' })}
+              >
                 Sign up for SUSI
               </span>
             </div>
@@ -336,13 +324,17 @@ class Login extends Component {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({ ...appActions, ...skillActions }, dispatch),
+    actions: bindActionCreators(
+      { ...appActions, ...skillActions, ...uiActions },
+      dispatch,
+    ),
   };
 }
 
 function mapStateToProps(store) {
   return {
     ...store.skills,
+    ...store.ui,
   };
 }
 

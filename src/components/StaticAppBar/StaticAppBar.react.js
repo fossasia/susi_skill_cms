@@ -24,6 +24,8 @@ import susiWhite from '../../images/SUSIAI-white.png';
 // import Auth from '../Auth/';
 import { urls, colors, isProduction } from '../../utils';
 import './StaticAppBar.css';
+import { bindActionCreators } from 'redux';
+import uiActions from '../../redux/actions/ui';
 
 const cookieDomain = isProduction() ? '.susi.ai' : '';
 
@@ -67,11 +69,11 @@ class StaticAppBar extends Component {
   static propTypes = {
     location: PropTypes.object,
     history: PropTypes.object,
-    onRequestOpenLogin: PropTypes.func,
     accessToken: PropTypes.string,
     isAdmin: PropTypes.bool,
     userName: PropTypes.string,
     email: PropTypes.string,
+    actions: PropTypes.object,
   };
 
   constructor(props) {
@@ -216,13 +218,7 @@ class StaticAppBar extends Component {
 
   render() {
     const { timestamp, showOptions, anchorEl, scroll } = this.state;
-    const {
-      onRequestOpenLogin,
-      accessToken,
-      isAdmin,
-      userName,
-      email,
-    } = this.props;
+    const { accessToken, isAdmin, userName, email } = this.props;
 
     const TopRightMenuItems = props => {
       const avatarProps = accessToken && {
@@ -320,13 +316,13 @@ class StaticAppBar extends Component {
             ) : (
               <MenuItem
                 primaryText="Login"
-                onClick={() => {
-                  this.setState({
-                    showOptions: false,
-                  });
-                  onRequestOpenLogin();
-                }}
+                onClick={() =>
+                  this.props.actions.openModal({ modalType: 'login' })
+                }
                 rightIcon={<LoginIcon />}
+                onTouchTap={() =>
+                  this.props.actions.openModal({ modalType: 'login' })
+                }
               />
             )}
           </Popover>
@@ -367,7 +363,13 @@ const mapStateToProps = ({ app }) => {
   };
 };
 
+const mapDispatchToProps = dispatch => {
+  return {
+    actions: bindActionCreators(uiActions, dispatch),
+  };
+};
+
 export default connect(
   mapStateToProps,
-  null,
+  mapDispatchToProps,
 )(StaticAppBar);
