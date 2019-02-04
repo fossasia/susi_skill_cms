@@ -258,8 +258,15 @@ class SignUp extends Component {
             password: '',
             loading: false,
           });
+          let snackBarMessage;
+          if (error.statusCode === 422) {
+            snackBarMessage =
+              'Already registered. Please signup with a different email account';
+          } else {
+            snackBarMessage = 'Signup Failed. Try Again';
+          }
           openSnackBar({
-            snackBarMessage: 'Signup Failed. Try Again',
+            snackBarMessage,
           });
         });
     }
