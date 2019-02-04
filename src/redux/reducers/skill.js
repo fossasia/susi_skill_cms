@@ -261,20 +261,6 @@ export default handleActions(
         loadingSkill: true,
       };
     },
-    [actionTypes.SKILL_OPEN_SNACKBAR](state, { payload }) {
-      const { snackMessage } = payload;
-      return {
-        ...state,
-        openSnack: true,
-        snackMessage,
-      };
-    },
-    [actionTypes.SKILL_CLOSE_SNACKBAR](state, { payload }) {
-      return {
-        ...state,
-        openSnack: false,
-      };
-    },
   },
   {
     ...defaultState,

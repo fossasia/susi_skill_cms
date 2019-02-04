@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 
 // Components
 import skillActions from '../../redux/actions/skill';
+import uiActions from '../../redux/actions/ui';
 import AuthorSkills from '../AuthorSkills/AuthorSkills';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import SkillUsageCard from '../SkillUsageCard/SkillUsageCard';
@@ -18,7 +19,6 @@ import Footer from '../Footer/Footer.react';
 import { FloatingActionButton, Paper } from 'material-ui';
 import CircularProgress from 'material-ui/CircularProgress';
 import Dialog from 'material-ui/Dialog';
-import Snackbar from 'material-ui/Snackbar';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
 import Ratings from 'react-ratings-declarative';
@@ -136,13 +136,15 @@ class SkillListing extends Component {
       .then(payload => {
         this.handleReportToggle();
         actions.openSnackBar({
-          snackMessage: 'Skill has been reported successfully.',
+          snackBarMessage: 'Skill has been reported successfully.',
+          snackBarDuration: 3000,
         });
       })
       .catch(error => {
         this.handleReportToggle();
         actions.openSnackBar({
-          snackMessage: 'Failed to report the skill.',
+          snackBarMessage: 'Failed to report the skill.',
+          snackBarDuration: 3000,
         });
       });
   };
@@ -211,7 +213,7 @@ class SkillListing extends Component {
       skillRatings,
     } = this.props.metaData;
 
-    const { loadingSkill, actions, openSnack, snackMessage } = this.props;
+    const { loadingSkill } = this.props;
 
     const imgUrl = !image
       ? '/favicon-512x512.jpg'
@@ -577,12 +579,6 @@ class SkillListing extends Component {
             requestClose={this.closeAuthorSkills}
           />
         </div>
-        <Snackbar
-          open={openSnack}
-          message={snackMessage}
-          autoHideDuration={3000}
-          onRequestClose={actions.closeSnackBar}
-        />
         <Footer />
       </div>
     );
@@ -607,7 +603,7 @@ function mapStateToProps(store) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(skillActions, dispatch),
+    actions: bindActionCreators({ ...skillActions, ...uiActions }, dispatch),
   };
 }
 

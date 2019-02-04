@@ -5,7 +5,9 @@ import Cookies from 'universal-cookie';
 import { Grid, Col, Row } from 'react-flexbox-grid';
 import CircularProgress from 'material-ui/CircularProgress';
 import RaisedButton from 'material-ui/RaisedButton';
-import Snackbar from 'material-ui/Snackbar';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import uiActions from '../../../../redux/actions/ui';
 import Close from 'material-ui/svg-icons/navigation/close';
 import Add from 'material-ui/svg-icons/content/add';
 import Toggle from 'material-ui/Toggle';
@@ -33,8 +35,6 @@ class UIView extends Component {
       botbuilderBotMessageTextColor: '#455a64',
       botbuilderIconColor: '#000000',
       botbuilderIconImg: '',
-      openSnackbar: false,
-      msgSnackbar: '',
       loadedSettings: false,
       uploadingBodyBackgroundImg: false,
       botbuilderBodyBackgroundImgName: '',
@@ -148,6 +148,7 @@ class UIView extends Component {
   };
 
   uploadImageBodyBackground = file => {
+    const { actions } = this.props;
     let form = new FormData();
     form.append('image', file);
     form.append('access_token', cookies.get('loggedIn'));
@@ -187,13 +188,16 @@ class UIView extends Component {
       .fail(function(jqXHR, textStatus) {
         self.setState({
           uploadingBodyBackgroundImg: false,
-          openSnackbar: true,
-          msgSnackbar: "Error! Couldn't upload image",
+        });
+        actions.openSnackBar({
+          snackBarMessage: "Error! Couldn't upload image",
+          snackBarDuration: 2000,
         });
       });
   };
 
   uploadImageIcon = file => {
+    const { actions } = this.props;
     let form = new FormData();
     form.append('access_token', cookies.get('loggedIn'));
     form.append('image_name', file.name);
@@ -240,8 +244,10 @@ class UIView extends Component {
       .fail(function(jqXHR, textStatus) {
         self.setState({
           uploadingBotbuilderIconImg: false,
-          openSnackbar: true,
-          msgSnackbar: "Error! Couldn't upload image",
+        });
+        actions.openSnackBar({
+          snackBarMessage: "Error! Couldn't upload image",
+          snackBarDuration: 2000,
         });
       });
   };
@@ -737,14 +743,6 @@ class UIView extends Component {
             />
           </div>
         )}
-        <Snackbar
-          open={this.state.openSnackbar}
-          message={this.state.msgSnackbar}
-          autoHideDuration={2000}
-          onRequestClose={() => {
-            this.setState({ openSnackbar: false });
-          }}
-        />
       </div>
     );
   }
@@ -752,6 +750,16 @@ class UIView extends Component {
 
 UIView.propTypes = {
   design: PropTypes.object,
+  actions: PropTypes.object,
 };
 
-export default UIView;
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(uiActions, dispatch),
+  };
+}
+
+export default connect(
+  null,
+  mapDispatchToProps,
+)(UIView);

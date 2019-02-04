@@ -1,19 +1,15 @@
 import React, { Component } from 'react';
-import Snackbar from 'material-ui/Snackbar';
 import PropTypes from 'prop-types';
 import Cookies from 'universal-cookie';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import uiActions from '../../../redux/actions/ui';
 const cookies = new Cookies();
 const api = window.location.protocol + '//' + window.location.host;
 class Deploy extends Component {
-  constructor() {
-    super();
-    this.state = {
-      copied: false,
-    };
-  }
   render() {
-    let { group, language, skill } = this.props;
+    let { group, language, skill, actions } = this.props;
     let part = ` data-skill=&quot;${skill}&quot; src=&quot;${api}/susi-chatbot.js&quot;`;
     let code = `
     &lt;script type=&quot;text/javascript&quot;
@@ -54,7 +50,12 @@ class Deploy extends Component {
                         api +
                         "/susi-chatbot.js'></script>"
                       }
-                      onCopy={() => this.setState({ copied: true })}
+                      onCopy={() =>
+                        actions.openSnackBar({
+                          snackBarMessage: 'Copied to clipboard!',
+                          snackBarDuration: 2000,
+                        })
+                      }
                     >
                       <span className="copy-button">copy</span>
                     </CopyToClipboard>
@@ -69,15 +70,6 @@ class Deploy extends Component {
             </ol>
           </div>
         </div>
-
-        <Snackbar
-          open={this.state.copied}
-          message="Copied to clipboard!"
-          autoHideDuration={2000}
-          onRequestClose={() => {
-            this.setState({ copied: false });
-          }}
-        />
       </div>
     );
   }
@@ -87,5 +79,16 @@ Deploy.propTypes = {
   group: PropTypes.string,
   language: PropTypes.string,
   skill: PropTypes.string,
+  actions: PropTypes.object,
 };
-export default Deploy;
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(uiActions, dispatch),
+  };
+}
+
+export default connect(
+  null,
+  mapDispatchToProps,
+)(Deploy);

@@ -3,7 +3,6 @@ import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import RaisedButton from 'material-ui/RaisedButton';
 import PropTypes from 'prop-types';
 import { Card, CardText } from 'material-ui/Card';
-import Snackbar from 'material-ui/Snackbar';
 import Add from 'material-ui/svg-icons/content/add';
 import Delete from 'material-ui/svg-icons/action/delete';
 import Dialog from 'material-ui/Dialog';
@@ -12,6 +11,9 @@ import { FloatingActionButton, Paper } from 'material-ui';
 import './BotBuilder.css';
 import { urls, colors } from '../../utils';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import uiActions from '../../redux/actions/ui';
 import Cookies from 'universal-cookie';
 import * as $ from 'jquery';
 
@@ -24,8 +26,6 @@ class BotBuilder extends React.Component {
     this.state = {
       chatbots: [],
       drafts: [],
-      openSnackbar: false,
-      msgSnackbar: '',
       deleteAlert: null,
     };
     this.getChatbots();
@@ -33,6 +33,7 @@ class BotBuilder extends React.Component {
   }
 
   getChatbots = () => {
+    const { actions } = this.props;
     if (cookies.get('loggedIn')) {
       let url =
         BASE_URL +
@@ -51,18 +52,19 @@ class BotBuilder extends React.Component {
         }.bind(this),
         error: function(error) {
           if (error.status !== 404) {
-            this.setState({
-              openSnackbar: true,
-              msgSnackbar:
+            actions.openSnackBar({
+              snackBarMessage:
                 "Couldn't get your chatbots. Please reload the page.",
+              snackBarDuration: 2000,
             });
           }
-        }.bind(this),
+        },
       });
     }
   };
 
   getBotImages = () => {
+    const { actions } = this.props;
     let bots = this.state.chatbots;
     if (bots) {
       bots.forEach((bot, index) => {
@@ -93,13 +95,13 @@ class BotBuilder extends React.Component {
           }.bind(this),
           error: function(error) {
             if (error.status !== 404) {
-              this.setState({
-                openSnackbar: true,
-                msgSnackbar:
+              actions.openSnackBar({
+                snackBarMessage:
                   "Couldn't get your chatbot image. Please reload the page.",
+                snackBarDuration: 2000,
               });
             }
-          }.bind(this),
+          },
         });
       });
     }
@@ -177,6 +179,7 @@ class BotBuilder extends React.Component {
   };
 
   deleteBot = (name, language, group) => {
+    const { actions } = this.props;
     let url =
       BASE_URL +
       '/cms/deleteSkill.json?access_token=' +
@@ -194,28 +197,30 @@ class BotBuilder extends React.Component {
       jsonp: 'callback',
       crossDomain: true,
       success: function(data) {
-        this.setState(
-          {
-            openSnackbar: true,
-            msgSnackbar: 'Successfully ' + data.message,
-          },
-          () => {
+        actions
+          .openSnackBar({
+            snackBarMessage: 'Unable to delete your chatbot. Please try again.',
+            snackBarDuration: 2000,
+          })
+          .then(() => {
             this.closeDeleteAlert();
             this.getChatbots();
-          },
-        );
+          });
       }.bind(this),
       error: function(error) {
         this.setState({
-          openSnackbar: true,
-          msgSnackbar: 'Unable to delete your chatbot. Please try again.',
           deleteAlert: null,
+        });
+        actions.openSnackBar({
+          snackBarMessage: 'Unable to delete your chatbot. Please try again.',
+          snackBarDuration: 2000,
         });
       }.bind(this),
     });
   };
 
   getDrafts = () => {
+    const { actions } = this.props;
     let url = BASE_URL + '/cms/readDraft.json';
     $.ajax({
       url: url,
@@ -225,11 +230,11 @@ class BotBuilder extends React.Component {
         this.showDrafts(data.drafts);
       }.bind(this),
       error: function(error) {
-        this.setState({
-          openSnackbar: true,
-          msgSnackbar: "Couldn't get your drafts. Please reload the page.",
+        actions.openSnackBar({
+          snackBarMessage: "Couldn't get your drafts. Please reload the page.",
+          snackBarDuration: 2000,
         });
-      }.bind(this),
+      },
     });
   };
 
@@ -291,27 +296,29 @@ class BotBuilder extends React.Component {
   };
 
   deleteDrafts = id => {
+    const { actions } = this.props;
     let url = BASE_URL + '/cms/deleteDraft.json?id=' + id;
     $.ajax({
       url: url,
       dataType: 'jsonp',
       crossDomain: true,
       success: function(data) {
-        this.setState(
-          {
-            openSnackbar: true,
-            msgSnackbar: 'Draft successfully deleted.',
-          },
-          () => {
+        actions
+          .openSnackBar({
+            snackBarMessage: 'Draft successfully deleted.',
+            snackBarDuration: 2000,
+          })
+          .then(() => {
             this.closeDeleteAlert();
             this.getDrafts();
-          },
-        );
+          });
       }.bind(this),
       error: function(error) {
+        actions.openSnackBar({
+          snackBarMessage: 'Unable to delete your draft. Please try again.',
+          snackBarDuration: 2000,
+        });
         this.setState({
-          openSnackbar: true,
-          msgSnackbar: 'Unable to delete your draft. Please try again.',
           deleteAlert: null,
         });
       }.bind(this),
@@ -424,14 +431,6 @@ class BotBuilder extends React.Component {
             <div className="bot-template-wrap">{this.state.drafts}</div>
           </Paper>
         </div>
-        <Snackbar
-          open={this.state.openSnackbar}
-          message={this.state.msgSnackbar}
-          autoHideDuration={2000}
-          onRequestClose={() => {
-            this.setState({ openSnackbar: false });
-          }}
-        />
         <Dialog
           actions={[
             <FlatButton
@@ -506,6 +505,16 @@ const styles = {
 
 BotBuilder.propTypes = {
   templates: PropTypes.array,
+  actions: PropTypes.object,
 };
 
-export default BotBuilder;
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(uiActions, dispatch),
+  };
+}
+
+export default connect(
+  null,
+  mapDispatchToProps,
+)(BotBuilder);

@@ -3,8 +3,10 @@ import OrgChart from 'react-orgchart';
 import PropTypes from 'prop-types';
 import CircularProgress from 'material-ui/CircularProgress';
 import Person from 'material-ui/svg-icons/social/person';
-import Snackbar from 'material-ui/Snackbar';
 import ReactTooltip from 'react-tooltip';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import uiActions from '../../../redux/actions/ui';
 import { urls } from '../../../utils';
 import 'react-orgchart/index.css';
 import $ from 'jquery';
@@ -20,8 +22,6 @@ class TreeView extends Component {
       },
       userInputs: [],
       loaded: false,
-      openSnackbar: false,
-      msgSnackbar: '',
     };
   }
 
@@ -76,7 +76,8 @@ class TreeView extends Component {
   };
 
   getResponses = responseNumber => {
-    let userInputs = this.state.userInputs;
+    const { actions } = this.props;
+    const { userInputs } = this.state;
     let userQuery = userInputs[responseNumber];
     let skillData = {
       name: 'Welcome!',
@@ -129,11 +130,11 @@ class TreeView extends Component {
         }.bind(this),
         error: function(err) {
           console.log(err);
-          this.setState({
-            openSnackbar: true,
-            msgSnackbar: 'Unable to load tree view. Please try again.',
+          actions.openSnackBar({
+            snackBarMessage: 'Unable to load tree view. Please try again.',
+            snackBarDuration: 2000,
           });
-        }.bind(this),
+        },
       });
     }
   };
@@ -184,14 +185,6 @@ class TreeView extends Component {
             </div>
           </div>
         )}
-        <Snackbar
-          open={this.state.openSnackbar}
-          message={this.state.msgSnackbar}
-          autoHideDuration={2000}
-          onRequestClose={() => {
-            this.setState({ openSnackbar: false });
-          }}
-        />
       </div>
     );
   }
@@ -214,5 +207,16 @@ const styles = {
 TreeView.propTypes = {
   skillCode: PropTypes.string,
   botbuilder: PropTypes.bool,
+  actions: PropTypes.object,
 };
-export default TreeView;
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(uiActions, dispatch),
+  };
+}
+
+export default connect(
+  null,
+  mapDispatchToProps,
+)(TreeView);

@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { isProduction } from '../../utils';
-import actions from '../../redux/actions/app';
+import appActions from '../../redux/actions/app';
+import uiActions from '../../redux/actions/ui';
 
 const cookieDomain = isProduction() ? '.susi.ai' : '';
 
@@ -29,7 +30,12 @@ class Logout extends Component {
 
   componentDidMount() {
     const { actions, history } = this.props;
-    actions.logout();
+    actions.logout().then(() => {
+      actions.openSnackBar({
+        snackBarMessage: 'You have logged out successfully',
+        snackBarDuration: 4000,
+      });
+    });
     deleteCookie('loggedIn', { domain: cookieDomain, path: '/' });
     deleteCookie('serverUrl', { domain: cookieDomain, path: '/' });
     deleteCookie('emailId', { domain: cookieDomain, path: '/' });
@@ -48,7 +54,7 @@ Logout.propTypes = {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({ ...actions }, dispatch),
+    actions: bindActionCreators({ ...appActions, ...uiActions }, dispatch),
   };
 }
 

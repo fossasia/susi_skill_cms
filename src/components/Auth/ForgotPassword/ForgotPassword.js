@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import actions from '../../../redux/actions/app';
+import appActions from '../../../redux/actions/app';
+import uiActions from '../../../redux/actions/ui';
 
 /* Material-UI*/
 import Close from 'material-ui/svg-icons/navigation/close';
@@ -47,9 +48,8 @@ class ForgotPassword extends Component {
   static propTypes = {
     history: PropTypes.object,
     openSnackBar: PropTypes.func,
-    onRequestCloseDialog: PropTypes.func,
-    isForgotPasswordOpen: PropTypes.bool,
     actions: PropTypes.object,
+    modalProps: PropTypes.object,
   };
 
   constructor(props) {
@@ -68,22 +68,18 @@ class ForgotPassword extends Component {
   }
 
   closeDialog = () => {
-    const { onRequestCloseDialog } = this.props;
-    this.setState(
-      {
-        email: '',
-        success: false,
-        checked: false,
-        emailError: true,
-        validEmail: true,
-        validForm: false,
-        loading: false,
-        emailErrorMessage: '',
-      },
-      () => {
-        onRequestCloseDialog();
-      },
-    );
+    const { actions } = this.props;
+    this.setState({
+      email: '',
+      success: false,
+      checked: false,
+      emailError: true,
+      validEmail: true,
+      validForm: false,
+      loading: false,
+      emailErrorMessage: '',
+    });
+    actions.closeModal();
   };
 
   handleTextFieldChange = event => {
@@ -160,6 +156,7 @@ class ForgotPassword extends Component {
           );
           openSnackBar({
             snackBarMessage,
+            snackBarDuration: 4000,
           });
         })
         .catch(error => {
@@ -171,10 +168,12 @@ class ForgotPassword extends Component {
           if (error.statusCode === 422) {
             openSnackBar({
               snackBarMessage: 'Email does not exist.',
+              snackBarDuration: 4000,
             });
           } else {
             openSnackBar({
               snackBarMessage: 'Failed. Try Again',
+              snackBarDuration: 4000,
             });
           }
         });
@@ -183,7 +182,7 @@ class ForgotPassword extends Component {
 
   render() {
     const { email, emailErrorMessage, validForm, loading } = this.state;
-    const { isForgotPasswordOpen } = this.props;
+    const { modalProps, actions } = this.props;
     const {
       containerStyle,
       underlineFocusStyle,
@@ -194,8 +193,12 @@ class ForgotPassword extends Component {
     return (
       <Dialog
         modal={false}
-        open={isForgotPasswordOpen}
-        onRequestClose={this.closeDialog}
+        open={
+          modalProps &&
+          modalProps.isModalOpen &&
+          modalProps.modalType === 'forgotPassword'
+        }
+        onRequestClose={actions.closeModal}
         autoScrollBodyContent={true}
         bodyStyle={bodyStyle}
         contentStyle={{ width: '35%', minWidth: '300px' }}
@@ -235,13 +238,19 @@ class ForgotPassword extends Component {
   }
 }
 
+function mapStateToProps(store) {
+  return {
+    ...store.ui,
+  };
+}
+
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(actions, dispatch),
+    actions: bindActionCreators({ ...appActions, ...uiActions }, dispatch),
   };
 }
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps,
 )(ForgotPassword);

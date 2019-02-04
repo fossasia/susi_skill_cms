@@ -1,12 +1,13 @@
 /* Packages */
 import React from 'react';
 import Table from 'antd/lib/table';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 /* Material UI */
 import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'material-ui/Dialog';
 import Checkbox from 'material-ui/Checkbox';
-import Snackbar from 'material-ui/Snackbar';
 import Paper from 'material-ui/Paper';
 
 /* Ant Design */
@@ -15,6 +16,7 @@ import Tabs from 'antd/lib/tabs';
 import enUS from 'antd/lib/locale-provider/en_US';
 
 /* Utils */
+import uiActions from '../../../redux/actions/ui';
 import { urls } from '../../../utils';
 import * as $ from 'jquery';
 import Cookies from 'universal-cookie';
@@ -28,7 +30,7 @@ import './ListSkills.css';
 const cookies = new Cookies();
 const TabPane = Tabs.TabPane;
 
-export default class ListSkills extends React.Component {
+class ListSkills extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -36,8 +38,6 @@ export default class ListSkills extends React.Component {
       groups: [],
       deletedSkills: [],
       loading: true,
-      openSnackbar: false,
-      msgSnackbar: '',
       isAction: false,
       showDialog: false,
       skillName: '',
@@ -239,6 +239,7 @@ export default class ListSkills extends React.Component {
   };
 
   loadSkills = () => {
+    const { actions } = this.props;
     let url =
       `${urls.API_URL}/cms/getSkillList.json?` +
       'applyFilter=true&filter_name=ascending&filter_type=lexicographical';
@@ -280,8 +281,10 @@ export default class ListSkills extends React.Component {
       error: function(err) {
         self.setState({
           loading: false,
-          openSnackbar: true,
-          msgSnackbar: "Error. Couldn't fetch skills.",
+        });
+        actions.openSnackBar({
+          snackBarMessage: "Error. Couldn't fetch skills.",
+          snackBarDuration: 2000,
         });
       },
     });
@@ -865,14 +868,6 @@ export default class ListSkills extends React.Component {
                           </TabPane>
                         </Tabs>
                       </div>
-                      <Snackbar
-                        open={this.state.openSnackbar}
-                        message={this.state.msgSnackbar}
-                        autoHideDuration={2000}
-                        onRequestClose={() => {
-                          this.setState({ openSnackbar: false });
-                        }}
-                      />
                     </div>
                   </TabPane>
                   <TabPane tab="System Settings" key="4" />
@@ -891,4 +886,16 @@ export default class ListSkills extends React.Component {
 
 ListSkills.propTypes = {
   history: PropTypes.object,
+  actions: PropTypes.object,
 };
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(uiActions, dispatch),
+  };
+}
+
+export default connect(
+  null,
+  mapDispatchToProps,
+)(ListSkills);
