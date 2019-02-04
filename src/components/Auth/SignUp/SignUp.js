@@ -297,7 +297,7 @@ class SignUp extends Component {
       !passwordErrorMessage &&
       confirmPassword &&
       !passwordConfirmErrorMessage &&
-      isCaptchaVerified;
+      (isCaptchaVerified || !captchaKey);
 
     return (
       <Dialog
