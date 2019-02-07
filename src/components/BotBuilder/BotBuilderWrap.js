@@ -1,12 +1,22 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { Route } from 'react-router-dom';
-import Cookies from 'universal-cookie';
+import PropTypes from 'prop-types';
 import BotBuilder from './BotBuilder';
 import BotWizard from './BotWizard';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import './BotBuilder.css';
 
-const cookies = new Cookies();
+const styles = {
+  loggedInError: {
+    textAlign: 'center',
+    textTransform: 'uppercase',
+    fontWeight: 'bold',
+    marginBottom: '100px',
+    fontSize: '50px',
+    marginTop: '300px',
+  },
+};
 
 const templates = [
   {
@@ -36,13 +46,15 @@ const templates = [
 ];
 
 const BotBuilderWrap = props => {
+  const { accessToken } = props;
+  const { loggedInError } = styles;
   document.title = 'SUSI.AI - Botbuilder';
-  if (!cookies.get('loggedIn')) {
+  if (!accessToken) {
     return (
       <div>
         <StaticAppBar {...props} />
         <div>
-          <p style={styles.loggedInError}>Please login to create a chatbot.</p>
+          <p style={loggedInError}>Please login to create a chatbot.</p>
         </div>
       </div>
     );
@@ -63,14 +75,17 @@ const BotBuilderWrap = props => {
   );
 };
 
-const styles = {
-  loggedInError: {
-    textAlign: 'center',
-    textTransform: 'uppercase',
-    fontWeight: 'bold',
-    marginBottom: '100px',
-    fontSize: '50px',
-    marginTop: '300px',
-  },
+BotBuilderWrap.propTypes = {
+  accessToken: PropTypes.string,
 };
-export default BotBuilderWrap;
+
+function mapStateToProps(store) {
+  return {
+    accessToken: store.app.accessToken,
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  null,
+)(BotBuilderWrap);

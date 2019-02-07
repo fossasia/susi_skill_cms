@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import * as $ from 'jquery';
-import Cookies from 'universal-cookie';
 import { Grid, Col, Row } from 'react-flexbox-grid';
 import CircularProgress from 'material-ui/CircularProgress';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -14,7 +13,6 @@ import Toggle from 'material-ui/Toggle';
 import ColorPicker from 'material-ui-color-picker';
 import { urls, colors, avatars } from '../../../../utils';
 import TiTick from 'react-icons/lib/ti/tick';
-const cookies = new Cookies();
 let BASE_URL = urls.API_URL;
 let IMAGE_GET_URL = `${BASE_URL}/cms/getImage.png?image=`;
 
@@ -148,10 +146,10 @@ class UIView extends Component {
   };
 
   uploadImageBodyBackground = file => {
-    const { actions } = this.props;
+    const { actions, accessToken } = this.props;
     let form = new FormData();
     form.append('image', file);
-    form.append('access_token', cookies.get('loggedIn'));
+    form.append('access_token', accessToken);
     form.append('image_name', file.name);
     let settings = {
       async: true,
@@ -197,9 +195,9 @@ class UIView extends Component {
   };
 
   uploadImageIcon = file => {
-    const { actions } = this.props;
+    const { actions, accessToken } = this.props;
     let form = new FormData();
-    form.append('access_token', cookies.get('loggedIn'));
+    form.append('access_token', accessToken);
     form.append('image_name', file.name);
     form.append('image', file);
     let settings = {
@@ -751,7 +749,14 @@ class UIView extends Component {
 UIView.propTypes = {
   design: PropTypes.object,
   actions: PropTypes.object,
+  accessToken: PropTypes.string,
 };
+
+function mapStateToProps(store) {
+  return {
+    accessToken: store.app.accessToken,
+  };
+}
 
 function mapDispatchToProps(dispatch) {
   return {
@@ -760,6 +765,6 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps,
 )(UIView);

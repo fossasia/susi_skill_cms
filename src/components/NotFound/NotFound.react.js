@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import RaisedButton from 'material-ui/RaisedButton';
 import './NotFound.css';
 import LogoImg from '../../images/susi-logo.svg';
@@ -7,14 +9,37 @@ import SignUp from '../Auth/SignUp/SignUp';
 import Dialog from 'material-ui/Dialog';
 import ForgotPassword from '../Auth/ForgotPassword/ForgotPassword';
 import Close from 'material-ui/svg-icons/navigation/close';
-import Cookies from 'universal-cookie';
 
-const cookies = new Cookies();
+const styles = {
+  closingStyle: {
+    position: 'absolute',
+    zIndex: 1200,
+    fill: '#444',
+    width: '26px',
+    height: '26px',
+    right: '10px',
+    top: '10px',
+    cursor: 'pointer',
+  },
+  closingStyleLogin: {
+    position: 'absolute',
+    zIndex: 1200,
+    fill: '#444',
+    width: '26px',
+    height: '26px',
+    right: '10px',
+    top: '10px',
+    cursor: 'pointer',
+  },
+  bodyStyle: {
+    padding: 0,
+    textAlign: 'center',
+  },
+};
 
-export default class NotFound extends Component {
+class NotFound extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       open: false,
       loginOpen: false,
@@ -35,7 +60,8 @@ export default class NotFound extends Component {
   };
   // Open Login Dialog
   handleLoginOpen = () => {
-    if (cookies.get('loggedIn')) {
+    const { accessToken } = this.props;
+    if (accessToken) {
       window.location = '/';
     } else {
       this.setState({
@@ -59,30 +85,7 @@ export default class NotFound extends Component {
     });
   };
   render() {
-    const closingStyle = {
-      position: 'absolute',
-      zIndex: 1200,
-      fill: '#444',
-      width: '26px',
-      height: '26px',
-      right: '10px',
-      top: '10px',
-      cursor: 'pointer',
-    };
-    const closingStyleLogin = {
-      position: 'absolute',
-      zIndex: 1200,
-      fill: '#444',
-      width: '26px',
-      height: '26px',
-      right: '10px',
-      top: '10px',
-      cursor: 'pointer',
-    };
-    const bodyStyle = {
-      padding: 0,
-      textAlign: 'center',
-    };
+    const { closingStyle, closingStyleLogin, bodyStyle } = styles;
     return (
       <div>
         <div className="container-fluid not-found-banner">
@@ -172,3 +175,18 @@ export default class NotFound extends Component {
     );
   }
 }
+
+NotFound.propTypes = {
+  accessToken: PropTypes.string,
+};
+
+function mapStateToProps(store) {
+  return {
+    accessToken: store.app.accessToken,
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  null,
+)(NotFound);

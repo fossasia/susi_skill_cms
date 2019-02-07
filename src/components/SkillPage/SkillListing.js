@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import Cookies from 'universal-cookie';
 import ISO6391 from 'iso-639-1';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -35,8 +34,6 @@ import { urls, colors, parseDate, testExample } from '../../utils';
 import { reportSkill } from '../../api';
 
 import './SkillListing.css';
-
-const cookies = new Cookies();
 
 const styles = {
   home: {
@@ -100,9 +97,9 @@ class SkillListing extends Component {
   }
 
   fetchSkillData = () => {
-    const { actions } = this.props;
+    const { actions, accessToken } = this.props;
     actions.getSkillMetaData(this.skillData);
-    if (cookies.get('loggedIn')) {
+    if (accessToken) {
       actions.getUserRating(this.skillData);
     }
     actions.getDateWiseSkillUsage(this.skillData);
@@ -191,7 +188,6 @@ class SkillListing extends Component {
   };
 
   render() {
-    const showAdmin = cookies.get('showAdmin');
     const {
       showDeleteDialog,
       skillExampleCount,
@@ -213,7 +209,7 @@ class SkillListing extends Component {
       skillRatings,
     } = this.props.metaData;
 
-    const { loadingSkill } = this.props;
+    const { loadingSkill, isAdmin, accessToken } = this.props;
 
     const imgUrl = !image
       ? '/favicon-512x512.jpg'
@@ -304,7 +300,7 @@ class SkillListing extends Component {
               )}
             </div>
             <div className="linkButtons">
-              {showAdmin === 'true' && (
+              {isAdmin === 'true' && (
                 <div className="skillDeleteBtn">
                   <FloatingActionButton
                     onClick={this.handleDeleteToggle}
@@ -512,7 +508,7 @@ class SkillListing extends Component {
                           })}
                         </td>
                       </tr>
-                      {cookies.get('loggedIn') && (
+                      {accessToken && (
                         <tr>
                           <td>Report: </td>
                           <td>
@@ -593,11 +589,15 @@ SkillListing.propTypes = {
   loadingSkill: PropTypes.bool,
   openSnack: PropTypes.bool,
   snackMessage: PropTypes.string,
+  accessToken: PropTypes.string,
+  isAdmin: PropTypes.bool,
 };
 
 function mapStateToProps(store) {
   return {
     ...store.skill,
+    isAdmin: store.app.isAdmin,
+    accessToken: store.app.accessToken,
   };
 }
 

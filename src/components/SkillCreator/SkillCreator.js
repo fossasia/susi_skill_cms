@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import CodeView from './SkillViews/CodeView';
 import ConversationView from './SkillViews/ConversationView';
@@ -11,7 +12,6 @@ import ISO6391 from 'iso-639-1';
 import ReactTooltip from 'react-tooltip';
 import { Grid, Col, Row } from 'react-flexbox-grid';
 import PropTypes from 'prop-types';
-import Cookies from 'universal-cookie';
 import * as $ from 'jquery';
 import './SkillCreator.css';
 import './Animation.min.css';
@@ -34,10 +34,9 @@ import ChevronRight from 'material-ui/svg-icons/navigation/chevron-right';
 // Ant Design Components
 import notification from 'antd/lib/notification';
 import Icon from 'antd/lib/icon';
-const cookies = new Cookies();
 let languages = [];
 
-export default class SkillCreator extends Component {
+class SkillCreator extends Component {
   constructor(props) {
     super(props);
 
@@ -186,6 +185,7 @@ export default class SkillCreator extends Component {
   }
 
   componentDidMount = () => {
+    const { isAdmin } = this.props;
     if (this.state.mode === 'create') {
       document.title = 'SUSI.AI - Create Skill';
       this.loadgroups();
@@ -236,7 +236,7 @@ export default class SkillCreator extends Component {
       // Check if admin is logged in or not
       document.title = 'SUSI.AI - Edit Skill';
 
-      if (cookies.get('showAdmin') === 'true') {
+      if (isAdmin) {
         this.setState({
           showAdmin: true,
         });
@@ -392,10 +392,11 @@ export default class SkillCreator extends Component {
   };
 
   prefillCode = () => {
-    if (cookies.get('username')) {
+    const { userName, email } = this.props;
+    if (userName) {
       const code = this.state.code.replace(
         /^::author\s(.*)$/m,
-        '::author ' + cookies.get('username'),
+        '::author ' + userName,
       );
 
       this.setState(
@@ -406,9 +407,9 @@ export default class SkillCreator extends Component {
       );
     }
 
-    if (cookies.get('emailId')) {
+    if (email) {
       $.ajax({
-        url: 'https://api.github.com/search/users?q=' + cookies.get('emailId'),
+        url: 'https://api.github.com/search/users?q=' + email,
         dataType: 'jsonp',
         jsonp: 'callback',
         crossDomain: true,
@@ -601,8 +602,9 @@ export default class SkillCreator extends Component {
   };
 
   saveClick = () => {
+    const { email, accessToken } = this.props;
     let { mode, groups, code } = this.state;
-    code = '::author_email ' + cookies.get('emailId') + '\n' + code;
+    code = '::author_email ' + email + '\n' + code;
     if (this.props.botBuilder) {
       code = '::protected Yes\n' + code;
     } else {
@@ -618,7 +620,7 @@ export default class SkillCreator extends Component {
       return 0;
     }
 
-    if (!cookies.get('loggedIn')) {
+    if (!accessToken) {
       notification.open({
         message: 'Not logged In',
         description: 'Please login and then try to create/edit a skill',
@@ -697,7 +699,7 @@ export default class SkillCreator extends Component {
       form.append('image', this.state.file);
       form.append('content', code);
       form.append('image_name', this.state.imageUrl.replace('images/', ''));
-      form.append('access_token', cookies.get('loggedIn'));
+      form.append('access_token', accessToken);
       if (this.props.botBuilder) {
         form.append('private', '1');
       }
@@ -733,7 +735,7 @@ export default class SkillCreator extends Component {
       );
       form.append('new_image_name', this.state.imageUrl.replace('images/', ''));
       form.append('image_name_changed', this.state.image_name_changed);
-      form.append('access_token', cookies.get('loggedIn'));
+      form.append('access_token', accessToken);
 
       if (this.state.image_name_changed) {
         file = this.state.file; // append file to image
@@ -990,6 +992,7 @@ export default class SkillCreator extends Component {
   };
 
   render() {
+    const { accessToken } = this.props;
     const style = {
       width: '100%',
       padding: '10px',
@@ -1003,7 +1006,7 @@ export default class SkillCreator extends Component {
       showTopBar = this.props.showTopBar;
     }
 
-    if (this.state.mode === 'create' && !cookies.get('loggedIn')) {
+    if (this.state.mode === 'create' && !accessToken) {
       if (this.state.mode === 'create') {
         return (
           <div>
@@ -1036,7 +1039,7 @@ export default class SkillCreator extends Component {
                 }}
               >
                 {this.state.mode === 'edit' &&
-                  cookies.get('loggedIn') &&
+                  accessToken &&
                   !this.props.revertingCommit &&
                   this.state.commitId &&
                   showTopBar && (
@@ -1061,7 +1064,7 @@ export default class SkillCreator extends Component {
                       </div>
                     </Paper>
                   )}
-                {!cookies.get('loggedIn') && (
+                {!accessToken && (
                   <div>
                     <StaticAppBar {...this.props} />
                     <div style={styles.home}>
@@ -1075,7 +1078,7 @@ export default class SkillCreator extends Component {
                     </div>
                   </div>
                 )}
-                {cookies.get('loggedIn') &&
+                {accessToken &&
                   this.state.mode === 'edit' &&
                   !this.state.editable &&
                   !this.state.showAdmin && (
@@ -1186,7 +1189,7 @@ export default class SkillCreator extends Component {
                   delayHide={500}
                   html={true}
                 />
-                {cookies.get('loggedIn') &&
+                {accessToken &&
                   this.state.editable && (
                     <Paper style={styles.paperStyle} zDepth={1}>
                       <Info
@@ -1315,7 +1318,7 @@ export default class SkillCreator extends Component {
                   <CodeView
                     skillCode={this.state.code}
                     sendInfoToProps={this.sendInfoToProps}
-                    editable={this.state.editable && !!cookies.get('loggedIn')}
+                    editable={this.state.editable && accessToken}
                   />
                 ) : null}
                 {this.state.conversationView && this.state.loadViews ? (
@@ -1325,7 +1328,7 @@ export default class SkillCreator extends Component {
                   <TreeView skillCode={this.state.code} botbuilder={false} />
                 ) : null}
                 {!this.props.botBuilder &&
-                  cookies.get('loggedIn') &&
+                  accessToken &&
                   this.state.editable && (
                     <div
                       style={{
@@ -1651,4 +1654,22 @@ SkillCreator.propTypes = {
   showTopBar: PropTypes.bool,
   revertingCommit: PropTypes.string,
   botBuilder: PropTypes.object,
+  accessToken: PropTypes.string,
+  email: PropTypes.string,
+  userName: PropTypes.string,
+  isAdmin: PropTypes.bool,
 };
+
+function mapStateToProps(store) {
+  return {
+    userName: store.app.userName,
+    accessToken: store.app.accessToken,
+    isAdmin: store.app.isAdmin,
+    email: store.app.email,
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  null,
+)(SkillCreator);

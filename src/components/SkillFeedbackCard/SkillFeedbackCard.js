@@ -1,7 +1,6 @@
 // Packages
 import React, { Component } from 'react';
 import { Paper } from 'material-ui';
-import Cookies from 'universal-cookie';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
@@ -29,8 +28,6 @@ import EditBtn from 'material-ui/svg-icons/editor/mode-edit';
 import './SkillFeedbackCard.css';
 
 import { parseDate, formatDate } from '../../utils';
-
-const cookies = new Cookies();
 
 const iconButtonElement = (
   <IconButton touch={true} tooltip="More" tooltipPosition="bottom-left">
@@ -120,7 +117,13 @@ class SkillFeedbackCard extends Component {
   };
 
   render() {
-    const { skillFeedbacks, skillTag, language } = this.props;
+    const {
+      skillFeedbacks,
+      skillTag,
+      language,
+      email,
+      accessToken,
+    } = this.props;
     const { errorText, openEditDialog, openDeleteDialog } = this.state;
     const editActions = [
       <FlatButton
@@ -164,8 +167,6 @@ class SkillFeedbackCard extends Component {
     let userAvatarLink = '';
     let userEmail = '';
     let userFeedbackCard = null;
-    let emailId = cookies.get('emailId');
-    let loggedIn = cookies.get('loggedIn');
     let feedbackCards;
     if (skillFeedbacks) {
       feedbackCards = skillFeedbacks.map((data, index) => {
@@ -177,7 +178,7 @@ class SkillFeedbackCard extends Component {
           src: userAvatarLink,
           name: userName === '' ? userEmail : userName,
         };
-        if (loggedIn && emailId && userEmail === emailId) {
+        if (accessToken && email && userEmail === email) {
           userFeedbackCard = (
             <div key={index}>
               <ListItem
@@ -252,7 +253,7 @@ class SkillFeedbackCard extends Component {
         <div className="top-section">
           <h1 className="title">Feedback</h1>
         </div>
-        {loggedIn && !userFeedbackCard ? (
+        {accessToken && !userFeedbackCard ? (
           <div>
             <div className="subTitle">
               {' '}
@@ -337,6 +338,8 @@ SkillFeedbackCard.propTypes = {
   group: PropTypes.string,
   feedback: PropTypes.string,
   actions: PropTypes.object,
+  accessToken: PropTypes.string,
+  email: PropTypes.string,
 };
 
 function mapStateToProps(store) {
@@ -346,6 +349,8 @@ function mapStateToProps(store) {
     skillTag: store.skill.metaData.skillTag,
     feedback: store.skill.feedback,
     skillFeedbacks: store.skill.skillFeedbacks,
+    email: store.app.email,
+    accessToken: store.app.accessToken,
   };
 }
 

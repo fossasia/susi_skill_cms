@@ -21,15 +21,12 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import Ratings from 'react-ratings-declarative';
-import Cookies from 'universal-cookie';
 
 // Material-UI
 import { Paper } from 'material-ui';
 
 // CSS
 import './SkillRatingCard.css';
-
-const cookies = new Cookies();
 
 class SkillRatingCard extends Component {
   static propTypes = {
@@ -40,6 +37,7 @@ class SkillRatingCard extends Component {
     ratingsOverTime: PropTypes.array,
     userRating: PropTypes.number,
     actions: PropTypes.object,
+    accessToken: PropTypes.string,
   };
 
   constructor(props) {
@@ -133,7 +131,13 @@ class SkillRatingCard extends Component {
 
   render() {
     const { chartWidth, ratingsOverTimeWidth, offset } = this.state;
-    const { skillTag, userRating, skillRatings, ratingsOverTime } = this.props;
+    const {
+      skillTag,
+      userRating,
+      skillRatings,
+      ratingsOverTime,
+      accessToken,
+    } = this.props;
     const ratings_data = [
       { name: '5.0 ⭐', value: parseInt(skillRatings.fiveStar, 10) || 0 },
       { name: '4.0 ⭐', value: parseInt(skillRatings.fourStar, 10) || 0 },
@@ -147,7 +151,7 @@ class SkillRatingCard extends Component {
           <h1 className="title" id="rating">
             Ratings
           </h1>
-          {cookies.get('loggedIn') && (
+          {accessToken && (
             <div>
               <div className="subTitle">
                 {' '}
@@ -293,6 +297,7 @@ function mapStateToProps(store) {
     skillRatings: store.skill.metaData.skillRatings,
     ratingsOverTime: store.skill.ratingsOverTime,
     userRating: store.skill.userRating,
+    accessToken: store.app.accessToken,
   };
 }
 

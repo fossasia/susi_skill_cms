@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import $ from 'jquery';
-import Cookies from 'universal-cookie';
 import Paper from 'material-ui/Paper';
 import Table from 'antd/lib/table';
 import Tabs from 'antd/lib/tabs';
@@ -10,8 +10,6 @@ import enUS from 'antd/lib/locale-provider/en_US';
 import NotFound from '../../NotFound/NotFound.react';
 import StaticAppBar from '../../StaticAppBar/StaticAppBar.react';
 import { urls } from '../../../utils';
-
-const cookies = new Cookies();
 
 const TabPane = Tabs.TabPane;
 
@@ -101,9 +99,10 @@ class SystemSettings extends Component {
 
   render() {
     const { tabStyle } = styles;
+    const { isAdmin } = this.props;
     return (
       <div>
-        {cookies.get('showAdmin') === 'true' ? (
+        {isAdmin ? (
           <div>
             <div className="heading">
               <StaticAppBar {...this.props} />
@@ -156,6 +155,16 @@ class SystemSettings extends Component {
 
 SystemSettings.propTypes = {
   history: PropTypes.object,
+  isAdmin: PropTypes.bool,
 };
 
-export default SystemSettings;
+function mapStateToProps(store) {
+  return {
+    isAdmin: store.app.isAdmin,
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  null,
+)(SystemSettings);
