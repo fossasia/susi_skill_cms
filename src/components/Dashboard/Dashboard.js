@@ -1,13 +1,12 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import { Paper } from 'material-ui';
-import Cookies from 'universal-cookie';
 import MySkills from './MySkills';
 import MyRatings from './MyRatings';
 import MyAnalytics from './MyAnalytics';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import './Dashboard.css';
-
-const cookies = new Cookies();
 
 const styles = {
   paperStyle: {
@@ -30,9 +29,9 @@ const styles = {
 const { paperStyle, subHeadingStyle, loggedInErrorStyle } = styles;
 
 const Dashboard = props => {
+  const { accessToken } = props;
   document.title = 'SUSI.AI - Dashboard';
-
-  if (!cookies.get('loggedIn')) {
+  if (!accessToken) {
     return (
       <div>
         <StaticAppBar {...props} />
@@ -69,4 +68,17 @@ const Dashboard = props => {
   );
 };
 
-export default Dashboard;
+Dashboard.propTypes = {
+  accessToken: PropTypes.string,
+};
+
+function mapStateToProps(store) {
+  return {
+    accessToken: store.app.accessToken,
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  null,
+)(Dashboard);

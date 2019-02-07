@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './ListUser.css';
+import { connect } from 'react-redux';
 import $ from 'jquery';
 import PropTypes from 'prop-types';
 import Paper from 'material-ui/Paper';
@@ -18,6 +18,7 @@ import { urls } from '../../../utils';
 import { LocaleProvider } from 'antd';
 import enUS from 'antd/lib/locale-provider/en_US';
 import 'antd/lib/table/style/index.css';
+import './ListUser.css';
 
 const cookies = new Cookies();
 
@@ -25,7 +26,7 @@ const TabPane = Tabs.TabPane;
 
 const Search = Input.Search;
 
-export default class ListUser extends Component {
+class ListUser extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -531,6 +532,7 @@ export default class ListUser extends Component {
   };
 
   render() {
+    const { isAdmin } = this.props;
     const actions = [
       <FlatButton
         key={1}
@@ -588,7 +590,7 @@ export default class ListUser extends Component {
 
     return (
       <div>
-        {cookies.get('showAdmin') === 'true' ? (
+        {isAdmin ? (
           <div>
             <div className="heading">
               <StaticAppBar {...this.props} />
@@ -931,4 +933,16 @@ export default class ListUser extends Component {
 
 ListUser.propTypes = {
   history: PropTypes.object,
+  isAdmin: PropTypes.bool,
 };
+
+function mapStateToProps(store) {
+  return {
+    isAdmin: store.app.isAdmin,
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  null,
+)(ListUser);

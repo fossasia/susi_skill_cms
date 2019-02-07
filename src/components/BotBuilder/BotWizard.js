@@ -21,10 +21,57 @@ import ChevronRight from 'material-ui/svg-icons/navigation/chevron-right';
 import { urls, colors, avatars } from '../../utils';
 import Icon from 'antd/lib/icon';
 import * as $ from 'jquery';
-import Cookies from 'universal-cookie';
 import './BotBuilder.css';
 
-const cookies = new Cookies();
+const styles = {
+  home: {
+    width: '100%',
+  },
+  mainPage: {
+    paddingTop: '25px',
+    paddingRight: '15px',
+  },
+  bg: {
+    textAlign: 'center',
+    padding: '30px',
+  },
+  paperStyle: {
+    width: '100%',
+    marginTop: '20px',
+    position: 'relative',
+  },
+  tabStyle: {
+    color: 'rgb(91, 91, 91)',
+  },
+  loggedInError: {
+    textAlign: 'center',
+    textTransform: 'uppercase',
+    fontWeight: 'bold',
+    marginBottom: '100px',
+    fontSize: '50px',
+    marginTop: '300px',
+  },
+  chevron: {
+    position: 'absolute',
+    left: '0',
+    top: '0',
+    width: '35px',
+    height: '35px',
+    color: 'rgb(158, 158, 158)',
+    cursor: 'pointer',
+    display: window.innerWidth < 769 ? 'none' : 'inherit',
+  },
+  chevronButton: {
+    position: 'absolute',
+    left: '4px',
+    top: '4px',
+    width: '35px',
+    height: '35px',
+    color: 'white',
+    cursor: 'pointer',
+    display: window.innerWidth < 769 ? 'none' : 'inherit',
+  },
+};
 
 class BotWizard extends React.Component {
   componentDidMount() {
@@ -153,7 +200,7 @@ class BotWizard extends React.Component {
   };
 
   getDraftBotDetails = id => {
-    const { actions } = this.props;
+    const { actions, accessToken } = this.props;
     let url = urls.API_URL + '/cms/readDraft.json?id=' + id;
     $.ajax({
       url: url,
@@ -176,11 +223,9 @@ class BotWizard extends React.Component {
             'images/<image_name_contact>',
           ];
           if (!localImages.includes(imageNameMatch[1])) {
-            imagePreviewUrl = `${
-              urls.API_URL
-            }/cms/getImage.png?access_token=${cookies.get(
-              'loggedIn',
-            )}&language=${skillLanguage}&group=${skillGroup}&image=${
+            imagePreviewUrl = `${urls.API_URL}/cms/getImage.png?access_token=
+            ${accessToken}
+            &language=${skillLanguage}&group=${skillGroup}&image=${
               imageNameMatch[1]
             }`;
           } else if (imageNameMatch[1] === 'images/<image_name_event>') {
@@ -249,13 +294,13 @@ class BotWizard extends React.Component {
   };
 
   getBotDetails = (name, group, language) => {
-    const { actions } = this.props;
+    const { actions, accessToken } = this.props;
     let url;
     url =
       urls.API_URL +
       // eslint-disable-next-line
       `/cms/getSkill.json?group=${group}&language=${language}&skill=${name}&private=1&access_token=` +
-      cookies.get('loggedIn');
+      accessToken;
     $.ajax({
       url: url,
       dataType: 'jsonp',
@@ -281,11 +326,16 @@ class BotWizard extends React.Component {
           'images/<image_name_contact>',
         ];
         if (!localImages.includes(imageNameMatch[1])) {
-          imagePreviewUrl = `${
-            urls.API_URL
-          }/cms/getImage.png?access_token=${cookies.get(
-            'loggedIn',
-          )}&language=${language}&group=${group}&image=${imageNameMatch[1]}`;
+          imagePreviewUrl =
+            urls.API_URL +
+            '/cms/getImage.png?access_token=' +
+            accessToken +
+            '&language=' +
+            language +
+            '&group=' +
+            group +
+            '&image=' +
+            imageNameMatch[1];
         } else if (imageNameMatch[1] === 'images/<image_name_event>') {
           imagePreviewUrl = '/botTemplates/event-registration.jpg';
         } else if (imageNameMatch[1] === 'images/<image_name_job>') {
@@ -515,12 +565,13 @@ class BotWizard extends React.Component {
 
   saveClick = () => {
     // save the skill on the server
+    const { email, accessToken } = this.props;
     let self = this;
     let code = this.state.buildCode;
     code = self.state.configCode + '\n' + self.state.designCode + '\n' + code;
-    code = '::author_email ' + cookies.get('emailId') + '\n' + code;
+    code = '::author_email ' + email + '\n' + code;
     code = '::protected Yes\n' + code;
-    if (!cookies.get('loggedIn')) {
+    if (!accessToken) {
       notification.open({
         message: 'Not logged In',
         description: 'Please login and then try to create/edit a skill',
@@ -587,7 +638,7 @@ class BotWizard extends React.Component {
       form.append('image', '');
     }
     form.append('content', code);
-    form.append('access_token', cookies.get('loggedIn'));
+    form.append('access_token', accessToken);
     form.append('private', '1');
 
     let settings = {
@@ -668,7 +719,8 @@ class BotWizard extends React.Component {
   };
 
   render() {
-    if (!cookies.get('loggedIn')) {
+    const { accessToken } = this.props;
+    if (!accessToken) {
       return (
         <div>
           <StaticAppBar {...this.props} />
@@ -894,59 +946,19 @@ class BotWizard extends React.Component {
   }
 }
 
-const styles = {
-  home: {
-    width: '100%',
-  },
-  mainPage: {
-    paddingTop: '25px',
-    paddingRight: '15px',
-  },
-  bg: {
-    textAlign: 'center',
-    padding: '30px',
-  },
-  paperStyle: {
-    width: '100%',
-    marginTop: '20px',
-    position: 'relative',
-  },
-  tabStyle: {
-    color: 'rgb(91, 91, 91)',
-  },
-  loggedInError: {
-    textAlign: 'center',
-    textTransform: 'uppercase',
-    fontWeight: 'bold',
-    marginBottom: '100px',
-    fontSize: '50px',
-    marginTop: '300px',
-  },
-  chevron: {
-    position: 'absolute',
-    left: '0',
-    top: '0',
-    width: '35px',
-    height: '35px',
-    color: 'rgb(158, 158, 158)',
-    cursor: 'pointer',
-    display: window.innerWidth < 769 ? 'none' : 'inherit',
-  },
-  chevronButton: {
-    position: 'absolute',
-    left: '4px',
-    top: '4px',
-    width: '35px',
-    height: '35px',
-    color: 'white',
-    cursor: 'pointer',
-    display: window.innerWidth < 769 ? 'none' : 'inherit',
-  },
-};
 BotWizard.propTypes = {
   templates: PropTypes.array,
   actions: PropTypes.object,
+  accessToken: PropTypes.string,
+  email: PropTypes.string,
 };
+
+function mapStateToProps(store) {
+  return {
+    email: store.app.email,
+    accessToken: store.app.accessToken,
+  };
+}
 
 function mapDispatchToProps(dispatch) {
   return {
@@ -955,6 +967,6 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps,
 )(BotWizard);

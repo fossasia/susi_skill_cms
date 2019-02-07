@@ -417,6 +417,7 @@ class ListSkills extends React.Component {
   };
 
   render() {
+    const { isAdmin } = this.props;
     const { groups, loading, skillName } = this.state;
 
     const editButtons = [
@@ -654,7 +655,7 @@ class ListSkills extends React.Component {
 
     return (
       <div>
-        {cookies.get('showAdmin') === 'true' ? (
+        {isAdmin ? (
           <div>
             <div className="heading">
               <StaticAppBar {...this.props} />
@@ -887,7 +888,14 @@ class ListSkills extends React.Component {
 ListSkills.propTypes = {
   history: PropTypes.object,
   actions: PropTypes.object,
+  isAdmin: PropTypes.bool,
 };
+
+function mapStateToProps(store) {
+  return {
+    isAdmin: store.app.isAdmin,
+  };
+}
 
 function mapDispatchToProps(dispatch) {
   return {
@@ -896,6 +904,6 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps,
 )(ListSkills);

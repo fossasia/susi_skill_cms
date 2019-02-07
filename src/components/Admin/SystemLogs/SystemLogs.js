@@ -1,17 +1,15 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import MenuItem from 'material-ui/MenuItem';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import Paper from 'material-ui/Paper';
 import Tabs from 'antd/lib/tabs';
 import { Spin, Alert } from 'antd';
-import Cookies from 'universal-cookie';
 import * as $ from 'jquery';
 import StaticAppBar from '../../StaticAppBar/StaticAppBar.react';
 import NotFound from '../../NotFound/NotFound.react';
 import { urls } from '../../../utils';
-
-const cookies = new Cookies();
 
 const TabPane = Tabs.TabPane;
 
@@ -95,9 +93,10 @@ class SystemLogs extends React.Component {
       themeForegroundColor,
       themeBackgroundColor,
     } = styles;
+    const { isAdmin } = this.props;
     return (
       <div>
-        {cookies.get('showAdmin') === 'true' ? (
+        {isAdmin ? (
           <div>
             <div className="heading">
               <StaticAppBar {...this.props} />
@@ -214,6 +213,16 @@ class SystemLogs extends React.Component {
 
 SystemLogs.propTypes = {
   history: PropTypes.object,
+  isAdmin: PropTypes.bool,
 };
 
-export default SystemLogs;
+function mapStateToProps(store) {
+  return {
+    isAdmin: store.app.isAdmin,
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  null,
+)(SystemLogs);
