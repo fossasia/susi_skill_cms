@@ -3,16 +3,16 @@ import NotFound from '../NotFound/NotFound.react';
 import './Admin.css';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import CircularProgress from 'material-ui/CircularProgress';
-import $ from 'jquery';
 import { Card } from 'antd';
-import Cookies from 'universal-cookie';
 import PropTypes from 'prop-types';
 import Paper from 'material-ui/Paper';
 import Tabs from 'antd/lib/tabs';
 import { Avatar } from 'antd';
-import { urls } from '../../utils';
-
-const cookies = new Cookies();
+import {
+  getAdmin,
+  fetchAdminUserStats,
+  fetchAdminUserSkill,
+} from '../../api/index';
 
 const TabPane = Tabs.TabPane;
 
@@ -32,18 +32,10 @@ class Admin extends Component {
 
   componentDidMount() {
     document.title = 'SUSI.AI - Admin';
-    let url;
-    url =
-      urls.API_URL +
-      '/aaa/showAdminService.json?access_token=' +
-      cookies.get('loggedIn');
-    $.ajax({
-      url: url,
-      dataType: 'jsonp',
-      jsonp: 'callback',
-      crossDomain: true,
-      success: function(response) {
-        if (response.showAdmin) {
+    getAdmin()
+      .then(payload => {
+        const { showAdmin } = payload;
+        if (showAdmin) {
           this.setState({
             loading: false,
             isAdmin: true,
@@ -54,55 +46,38 @@ class Admin extends Component {
             isAdmin: false,
           });
         }
-      }.bind(this),
-      error: function(errorThrown) {
+      })
+      .catch(error => {
         this.setState({
           loading: false,
           isAdmin: false,
         });
-        console.log(errorThrown);
-      }.bind(this),
-    });
+        console.log(error);
+      });
 
-    url =
-      urls.API_URL +
-      '/aaa/getUsers.json?getUserStats=true&access_token=' +
-      cookies.get('loggedIn');
-    $.ajax({
-      url: url,
-      dataType: 'jsonp',
-      jsonpCallback: 'pyfw',
-      jsonp: 'callback',
-      crossDomain: true,
-      success: function(response) {
+    fetchAdminUserStats({ getUserStats: 'true' })
+      .then(payload => {
+        const { userStats } = payload;
         this.setState({
-          userStats: response.userStats,
+          userStats,
           loadingUsers: false,
         });
-      }.bind(this),
-      error: function(errorThrown) {
-        console.log(errorThrown);
-      },
-    });
+      })
+      .catch(error => {
+        console.log(error);
+      });
 
-    url = `${urls.API_URL}/cms/getSkillList.json?access_token=${cookies.get(
-      'loggedIn',
-    )}`;
-    $.ajax({
-      url: url,
-      dataType: 'jsonp',
-      jsonp: 'callback',
-      crossDomain: true,
-      success: function(response) {
+    fetchAdminUserSkill()
+      .then(payload => {
+        const { skillStats } = payload;
         this.setState({
-          skillStats: response.skillStats,
+          skillStats,
           loadingSkills: false,
         });
-      }.bind(this),
-      error: function(errorThrown) {
-        console.log(errorThrown);
-      },
-    });
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }
 
   handleClose = () => {

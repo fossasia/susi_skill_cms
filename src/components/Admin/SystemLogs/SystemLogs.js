@@ -6,10 +6,9 @@ import DropDownMenu from 'material-ui/DropDownMenu';
 import Paper from 'material-ui/Paper';
 import Tabs from 'antd/lib/tabs';
 import { Spin, Alert } from 'antd';
-import * as $ from 'jquery';
 import StaticAppBar from '../../StaticAppBar/StaticAppBar.react';
 import NotFound from '../../NotFound/NotFound.react';
-import { urls } from '../../../utils';
+import { fetchSystemLogs } from '../../../api/index';
 
 const TabPane = Tabs.TabPane;
 
@@ -41,26 +40,21 @@ class SystemLogs extends React.Component {
   }
 
   loadSystemLogs = count => {
-    const url = `${urls.API_URL}/log.txt?count=${count}`;
-    $.ajax({
-      url: url,
-      dataType: 'text',
-      crossDomain: true,
-      success: function(response) {
+    fetchSystemLogs({ count })
+      .then(payload => {
         let error = false;
-        if (response.indexOf('WARN root') !== -1) {
+        if (payload.indexOf('WARN root') !== -1) {
           error = true;
         }
         this.setState({
           error: error,
-          logs: response,
+          logs: payload,
           loading: false,
         });
-      }.bind(this),
-      error: function(errorThrown) {
-        console.log(errorThrown);
-      },
-    });
+      })
+      .catch(error => {
+        console.log(error);
+      });
   };
 
   handleTabChange = activeKey => {

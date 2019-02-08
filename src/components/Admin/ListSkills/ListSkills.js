@@ -17,9 +17,14 @@ import enUS from 'antd/lib/locale-provider/en_US';
 
 /* Utils */
 import uiActions from '../../../redux/actions/ui';
-import { urls } from '../../../utils';
-import * as $ from 'jquery';
-import Cookies from 'universal-cookie';
+import {
+  changeSkillStatus,
+  undoDeleteSkill,
+  skillsToBeDeleted,
+  fetchGroupOptions,
+  deleteSkill,
+  fetchUserSkill,
+} from '../../../api/index';
 import StaticAppBar from '../../StaticAppBar/StaticAppBar.react';
 import NotFound from '../../NotFound/NotFound.react';
 import PropTypes from 'prop-types';
@@ -27,7 +32,6 @@ import PropTypes from 'prop-types';
 /* CSS */
 import './ListSkills.css';
 
-const cookies = new Cookies();
 const TabPane = Tabs.TabPane;
 
 class ListSkills extends React.Component {
@@ -69,122 +73,77 @@ class ListSkills extends React.Component {
 
   changeStatus = () => {
     const {
-      skillModel,
-      skillGroup,
-      skillLanguage,
-      skillTag,
-      skillReviewStatus,
-      skillEditStatus,
-      skillStaffPickStatus,
-      systemSkillStatus,
+      skillModel: model,
+      skillGroup: group,
+      skillLanguage: language,
+      skillTag: skill,
+      skillReviewStatus: reviewed,
+      skillEditStatus: editable,
+      skillStaffPickStatus: staffPick,
+      systemSkillStatus: systemSkill,
     } = this.state;
-    let url =
-      `${urls.API_URL}/cms/changeSkillStatus.json?` +
-      'model=' +
-      skillModel +
-      '&group=' +
-      skillGroup +
-      '&language=' +
-      skillLanguage +
-      '&skill=' +
-      skillTag +
-      '&reviewed=' +
-      skillReviewStatus +
-      '&editable=' +
-      skillEditStatus +
-      '&staffPick=' +
-      skillStaffPickStatus +
-      '&systemSkill=' +
-      systemSkillStatus +
-      '&access_token=' +
-      cookies.get('loggedIn');
-    $.ajax({
-      url,
-      dataType: 'jsonp',
-      jsonp: 'callback',
-      crossDomain: true,
-      success: function(data) {
+
+    changeSkillStatus({
+      model,
+      group,
+      language,
+      skill,
+      reviewed,
+      editable,
+      staffPick,
+      systemSkill,
+    })
+      .then(payload => {
         this.setState({ changeStatusSuccessDialog: true });
-      }.bind(this),
-      error: function(err) {
-        console.log(err);
+      })
+      .catch(error => {
+        console.log(error);
         this.setState({ changeStatusFailureDialog: true });
-      }.bind(this),
-    });
+      });
   };
 
   deleteSkill = () => {
     this.setState({ loading: true });
-    const { skillModel, skillGroup, skillLanguage, skillName } = this.state;
-    let url =
-      `${urls.API_URL}/cms/deleteSkill.json?` +
-      'model=' +
-      skillModel +
-      '&group=' +
-      skillGroup +
-      '&language=' +
-      skillLanguage +
-      '&skill=' +
-      skillName +
-      '&access_token=' +
-      cookies.get('loggedIn');
-    $.ajax({
-      url,
-      dataType: 'jsonp',
-      jsonp: 'callback',
-      crossDomain: true,
-      success: function(data) {
-        this.setState({ loading: false, deleteSuccessDialog: true });
-      }.bind(this),
-      error: function(err) {
-        console.log(err);
+    const {
+      skillModel: model,
+      skillGroup: group,
+      skillLanguage: language,
+      skillName: skill,
+    } = this.state;
+    deleteSkill({ model, group, language, skill })
+      .then(payload =>
+        this.setState({ loading: false, deleteSuccessDialog: true }),
+      )
+      .catch(error => {
+        console.log(error);
         this.setState({ loading: false, deleteFailureDialog: true });
-      }.bind(this),
-    });
+      });
   };
 
   restoreSkill = () => {
     this.setState({ loading: true });
-    const { skillModel, skillGroup, skillLanguage, skillName } = this.state;
-    let url =
-      `${urls.API_URL}/cms/undoDeleteSkill.json?` +
-      'model=' +
-      skillModel +
-      '&group=' +
-      skillGroup +
-      '&language=' +
-      skillLanguage +
-      '&skill=' +
-      skillName +
-      '&access_token=' +
-      cookies.get('loggedIn');
-    $.ajax({
-      url,
-      dataType: 'jsonp',
-      jsonp: 'callback',
-      crossDomain: true,
-      success: function(data) {
+    const {
+      skillModel: model,
+      skillGroup: group,
+      skillLanguage: language,
+      skillName: skill,
+    } = this.state;
+    undoDeleteSkill({ model, group, language, skill })
+      .then(payload => {
         this.setState({ loading: false, restoreSuccessDialog: true });
-      }.bind(this),
-      error: function(err) {
-        console.log(err);
+      })
+      .catch(error => {
+        console.log(error);
         this.setState({ loading: false, restoreFailureDialog: true });
-      }.bind(this),
-    });
+      });
   };
 
   loadDeletedSkills = () => {
     let deletedSkills = [];
-    let url = `${
-      urls.API_URL
-    }/cms/skillsToBeDeleted.json?access_token=${cookies.get('loggedIn')}`;
-    $.ajax({
-      url,
-      dataType: 'jsonp',
-      jsonp: 'callback',
-      crossDomain: true,
-      success: response => {
-        for (let deletedSkillPath of response.skills) {
+    skillsToBeDeleted()
+      .then(payload => {
+        const { skills } = payload;
+        for (let deletedSkillPath of skills) {
           const current = deletedSkillPath.slice(
             deletedSkillPath.indexOf('/models/') + 8,
             deletedSkillPath.length - 4,
@@ -201,25 +160,18 @@ class ListSkills extends React.Component {
         this.setState({
           deletedSkills,
         });
-      },
-      error: function(err) {
-        console.log(err);
-      },
-    });
+      })
+      .catch(error => {
+        console.log(error);
+      });
   };
 
   loadGroups = () => {
-    let url = `${urls.API_URL}/cms/getGroups.json`;
-    $.ajax({
-      url,
-      jsonpCallback: 'pxcd',
-      dataType: 'jsonp',
-      jsonp: 'callback',
-      crossDomain: true,
-      success: data => {
+    fetchGroupOptions()
+      .then(payload => {
         let groups = [];
-        if (data) {
-          for (let i of data.groups) {
+        if (payload) {
+          for (let i of payload.groups) {
             let group = {
               text: i,
               value: i,
@@ -231,29 +183,20 @@ class ListSkills extends React.Component {
           groups,
           loading: false,
         });
-      },
-      error: function(err) {
-        console.log(err);
-      },
-    });
+      })
+      .catch(error => {
+        console.log(error);
+      });
   };
 
   loadSkills = () => {
     const { actions } = this.props;
-    let url =
-      `${urls.API_URL}/cms/getSkillList.json?` +
-      'applyFilter=true&filter_name=ascending&filter_type=lexicographical';
-    let self = this;
-    $.ajax({
-      url,
-      jsonpCallback: 'pxcd',
-      dataType: 'jsonp',
-      jsonp: 'callback',
-      crossDomain: true,
-      success: function(data) {
+    fetchUserSkill({ filterName: 'ascending', filterType: 'lexicographical' })
+      .then(payload => {
         let skills = [];
-        if (data) {
-          for (let skillMetadata of data.filteredData) {
+        if (payload) {
+          const { filteredData } = payload;
+          for (let skillMetadata of filteredData) {
             let skill = {
               skillName: skillMetadata.skill_name,
               model: skillMetadata.model,
@@ -273,21 +216,20 @@ class ListSkills extends React.Component {
           }
         }
 
-        self.setState({
+        this.setState({
           skillsData: skills,
           loading: false,
         });
-      },
-      error: function(err) {
-        self.setState({
+      })
+      .catch(error => {
+        this.setState({
           loading: false,
         });
         actions.openSnackBar({
           snackBarMessage: "Error. Couldn't fetch skills.",
           snackBarDuration: 2000,
         });
-      },
-    });
+      });
   };
 
   handleChange = () => {

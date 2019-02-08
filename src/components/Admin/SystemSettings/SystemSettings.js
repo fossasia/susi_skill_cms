@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import $ from 'jquery';
 import Paper from 'material-ui/Paper';
 import Table from 'antd/lib/table';
 import Tabs from 'antd/lib/tabs';
@@ -9,7 +8,7 @@ import { LocaleProvider } from 'antd';
 import enUS from 'antd/lib/locale-provider/en_US';
 import NotFound from '../../NotFound/NotFound.react';
 import StaticAppBar from '../../StaticAppBar/StaticAppBar.react';
-import { urls } from '../../../utils';
+import { fetchApiKeys } from '../../../api/index';
 
 const TabPane = Tabs.TabPane;
 
@@ -51,22 +50,16 @@ class SystemSettings extends Component {
   }
 
   componentDidMount() {
-    const url = `${urls.API_URL}/aaa/getApiKeys.json`;
-    $.ajax({
-      url: url,
-      dataType: 'jsonp',
-      jsonpCallback: 'pyfw',
-      jsonp: 'callback',
-      crossDomain: true,
-      success: function(response) {
+    fetchApiKeys()
+      .then(payload => {
         let apiKeys = [];
         let i = 1;
-        let keys = Object.keys(response.keys);
+        let keys = Object.keys(payload.keys);
         keys.forEach(j => {
           const apiKey = {
             serialNum: i,
             keyName: j,
-            value: response.keys[j],
+            value: payload.keys[j],
           };
           ++i;
           apiKeys.push(apiKey);
@@ -75,11 +68,10 @@ class SystemSettings extends Component {
           apiKeys: apiKeys,
           loading: false,
         });
-      }.bind(this),
-      error: function(errorThrown) {
-        console.log(errorThrown);
-      },
-    });
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }
 
   handleTabChange = activeKey => {
