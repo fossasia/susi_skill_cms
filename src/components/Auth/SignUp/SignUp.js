@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import zxcvbn from 'zxcvbn';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { debounce } from 'lodash';
 
 /* Material-UI */
 import PasswordField from 'material-ui-password-field';
@@ -17,6 +18,7 @@ import { colors, isEmail } from '../../../utils';
 import Recaptcha from 'react-recaptcha';
 import appActions from '../../../redux/actions/app';
 import uiActions from '../../../redux/actions/ui';
+import { getEmailExists } from '../../../api';
 
 /* CSS */
 import './SignUp.css';
@@ -94,6 +96,8 @@ class SignUp extends Component {
       captchaVerifyErrorMessage: '',
       loading: false,
     };
+
+    this.debouncedIsEmailAvailable = debounce(this.isEmailAvailable, 700);
   }
 
   closeDialog = () => {
@@ -131,16 +135,35 @@ class SignUp extends Component {
     }
   };
 
+  isEmailAvailable = () => {
+    const { email, emailErrorMessage } = this.state;
+    if (!emailErrorMessage) {
+      getEmailExists({
+        email,
+      }).then(payload => {
+        const { exists } = payload;
+        this.setState({
+          emailErrorMessage: exists
+            ? 'Email ID already taken, please use another account'
+            : '',
+        });
+      });
+    }
+  };
+
   handleTextFieldChange = event => {
     switch (event.target.name) {
       case 'email': {
         const email = event.target.value.trim();
-        this.setState({
-          email,
-          emailErrorMessage: !isEmail(email)
-            ? 'Enter a valid Email Address'
-            : '',
-        });
+        this.setState(
+          {
+            email,
+            emailErrorMessage: !isEmail(email)
+              ? 'Enter a valid Email Address'
+              : '',
+          },
+          this.debouncedIsEmailAvailable,
+        );
         break;
       }
       case 'password': {

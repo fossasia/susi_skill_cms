@@ -341,3 +341,11 @@ export function fetchUserSkill(payload) {
     applyFilter: 'true',
   });
 }
+
+export function getEmailExists(payload) {
+  const { email } = payload;
+  const url = `${API_URL}/${AUTH_API_PREFIX}/checkRegistration.json`;
+  return ajax.get(url, {
+    check_email: email,
+  });
+}
