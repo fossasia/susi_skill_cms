@@ -20,6 +20,35 @@ import * as $ from 'jquery';
 const cookies = new Cookies();
 let BASE_URL = urls.API_URL;
 
+const styles = {
+  home: {
+    width: '100%',
+  },
+  paperStyle: {
+    width: '100%',
+    marginTop: '20px',
+    overflow: 'overlay',
+  },
+  loggedInError: {
+    textAlign: 'center',
+    textTransform: 'uppercase',
+    fontWeight: 'bold',
+    marginBottom: '100px',
+    fontSize: '50px',
+    marginTop: '300px',
+  },
+  newBotBtn: {
+    color: 'white',
+    fontFamily: 'Helvetica',
+    fontSize: '16px',
+    paddingTop: '20px',
+  },
+  heading: {
+    color: 'rgba(0,0,0,.65)',
+    paddingLeft: '20px',
+  },
+};
+
 class BotBuilder extends React.Component {
   constructor(props) {
     super(props);
@@ -343,14 +372,14 @@ class BotBuilder extends React.Component {
   };
 
   render() {
+    const { home, paperStyle, heading, loggedInError, newBotBtn } = styles;
+    const { drafts, deleteAlert } = this.state;
     if (!cookies.get('loggedIn')) {
       return (
         <div>
           <StaticAppBar {...this.props} />
           <div>
-            <p style={styles.loggedInError}>
-              Please login to create a skill bot.
-            </p>
+            <p style={loggedInError}>Please login to create a skill bot.</p>
           </div>
         </div>
       );
@@ -359,13 +388,9 @@ class BotBuilder extends React.Component {
     return (
       <div>
         <StaticAppBar {...this.props} />
-        <div style={styles.home} className="botbuilder-page-wrapper">
-          <Paper
-            style={styles.paperStyle}
-            className="botBuilder-page-card"
-            zDepth={1}
-          >
-            <h1 style={styles.heading}>Pick a template</h1>
+        <div style={home} className="botbuilder-page-wrapper">
+          <Paper style={paperStyle} className="botBuilder-page-card" zDepth={1}>
+            <h1 style={heading}>Pick a template</h1>
             <div className="bot-template-wrap">
               {this.props.templates.map(template => {
                 return (
@@ -391,14 +416,10 @@ class BotBuilder extends React.Component {
               })}
             </div>
           </Paper>
-          <Paper
-            style={styles.paperStyle}
-            className="botBuilder-page-card"
-            zDepth={1}
-          >
-            <h1 style={styles.heading}>My bots</h1>
+          <Paper style={paperStyle} className="botBuilder-page-card" zDepth={1}>
+            <h1 style={heading}>My bots</h1>
             <br />
-            <h2 style={styles.heading}>Saved Bots</h2>
+            <h2 style={heading}>Saved Bots</h2>
             <div className="bot-template-wrap">
               <Link to="/botbuilder/botwizard">
                 <Card
@@ -422,13 +443,13 @@ class BotBuilder extends React.Component {
                       }}
                     />
                   </FloatingActionButton>
-                  <CardText style={styles.newBotBtn}>Create a new bot</CardText>
+                  <CardText style={newBotBtn}>Create a new bot</CardText>
                 </Card>
               </Link>
               {this.showChatbots()}
             </div>
-            <h2 style={styles.heading}>Drafts</h2>
-            <div className="bot-template-wrap">{this.state.drafts}</div>
+            <h2 style={heading}>Drafts</h2>
+            <div className="bot-template-wrap">{drafts}</div>
           </Paper>
         </div>
         <Dialog
@@ -451,57 +472,17 @@ class BotBuilder extends React.Component {
             />,
           ]}
           modal={false}
-          open={this.state.deleteAlert !== null}
+          open={deleteAlert !== null}
           onRequestClose={this.closeDeleteAlert}
         >
           {`Are you sure you want to delete this ${
-            this.state.deleteAlert !== null ? this.state.deleteAlert.type : ''
+            deleteAlert !== null ? deleteAlert.type : ''
           }?`}
         </Dialog>
       </div>
     );
   }
 }
-
-const styles = {
-  home: {
-    width: '100%',
-  },
-  bg: {
-    textAlign: 'center',
-    padding: '30px',
-  },
-  paperStyle: {
-    width: '100%',
-    marginTop: '20px',
-    overflow: 'overlay',
-  },
-  tabStyle: {
-    color: 'rgb(91, 91, 91)',
-  },
-  previewButtonStyle: {
-    width: '100px',
-    marginTop: '50px',
-  },
-  loggedInError: {
-    textAlign: 'center',
-    textTransform: 'uppercase',
-    fontWeight: 'bold',
-    marginBottom: '100px',
-    fontSize: '50px',
-    marginTop: '300px',
-  },
-  newBotBtn: {
-    color: 'white',
-    fontFamily: 'Helvetica',
-    fontSize: '16px',
-    paddingTop: '20px',
-  },
-  heading: {
-    color: 'rgba(0,0,0,.65)',
-    paddingLeft: '20px',
-  },
-};
 
 BotBuilder.propTypes = {
   templates: PropTypes.array,
