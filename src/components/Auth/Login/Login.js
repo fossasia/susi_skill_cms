@@ -160,12 +160,15 @@ class Login extends Component {
               loading: false,
             });
           }
-          actions.openSnackBar({ snackBarMessage });
+          actions.openSnackBar({ snackBarMessage, snackBarDuration: 4000 });
         })
         .catch(error => {
           console.log(error);
           const message = 'Login Failed. Try Again';
-          actions.openSnackBar({ snackBarMessage: message });
+          actions.openSnackBar({
+            snackBarMessage: message,
+            snackBarDuration: 4000,
+          });
           this.setState({
             password: '',
             loading: false,
