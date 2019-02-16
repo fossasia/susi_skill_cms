@@ -70,7 +70,7 @@
 }
 
 .susi-logo{
-    height: 10px;
+    height: 30px;
     vertical-align: middle;
     max-width: 100px;
     margin: 10px 48px 10px 0px;
@@ -87,6 +87,7 @@
     flex-flow: row wrap;
     -webkit-box-pack: justify;
     justify-content: space-between;
+    width: 100%;
 }
 
 @media only screen and (max-width: 707px){
@@ -109,5 +110,10 @@
         height:10px;
         max-width: 100px;
         margin: 10px;
+    }
+    .footer-elements{
+        display: flex;
+        width: 100%;
+        justify-content: center;
     }
 }
