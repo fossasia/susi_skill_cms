@@ -31,17 +31,10 @@ const styles = {
     paddingTop: '25px',
     paddingRight: '15px',
   },
-  bg: {
-    textAlign: 'center',
-    padding: '30px',
-  },
   paperStyle: {
     width: '100%',
     marginTop: '20px',
     position: 'relative',
-  },
-  tabStyle: {
-    color: 'rgb(91, 91, 91)',
   },
   loggedInError: {
     textAlign: 'center',
@@ -720,14 +713,20 @@ class BotWizard extends React.Component {
 
   render() {
     const { accessToken } = this.props;
+    const {
+      home,
+      mainPage,
+      paperStyle,
+      loggedInError,
+      chevron,
+      chevronButton,
+    } = styles;
     if (!accessToken) {
       return (
         <div>
           <StaticAppBar {...this.props} />
           <div>
-            <p style={styles.loggedInError}>
-              Please login to create the Web Bot.
-            </p>
+            <p style={loggedInError}>Please login to create the Web Bot.</p>
           </div>
         </div>
       );
@@ -737,7 +736,7 @@ class BotWizard extends React.Component {
     return (
       <div>
         <StaticAppBar {...this.props} />
-        <div style={styles.home} className="botbuilder-page-wrapper">
+        <div style={home} className="botbuilder-page-wrapper">
           <Grid fluid>
             <Row>
               <Col
@@ -747,7 +746,7 @@ class BotWizard extends React.Component {
                   display: this.state.colBuild === 0 ? 'none' : 'block',
                 }}
               >
-                <div style={styles.mainPage}>
+                <div style={mainPage}>
                   {!this.state.loaded ? (
                     <div className="center">
                       <CircularProgress size={62} color="#4285f5" />
@@ -883,7 +882,7 @@ class BotWizard extends React.Component {
                     <ChevronLeft
                       className="botbuilder-chevron"
                       onClick={this.handlePreviewToggle}
-                      style={styles.chevronButton}
+                      style={chevronButton}
                     />
                   </span>
                 </div>
@@ -902,7 +901,7 @@ class BotWizard extends React.Component {
               >
                 <Paper
                   style={
-                    (styles.paperStyle,
+                    (paperStyle,
                     {
                       height: '99.9%',
                       marginTop: '20px',
@@ -917,7 +916,7 @@ class BotWizard extends React.Component {
                     <ChevronRight
                       className="botbuilder-chevron"
                       onClick={this.handlePreviewToggle}
-                      style={styles.chevron}
+                      style={chevron}
                     />
                   </span>
                   <br className="display-mobile-only" />
