@@ -3,6 +3,7 @@ import susi from '../../images/susi-logo.svg';
 import './Footer.css';
 import { Link } from 'react-router-dom';
 import { urls } from '../../utils';
+import moment from 'moment';
 
 const Footer = () => {
   // Footer Component
@@ -28,10 +29,6 @@ const Footer = () => {
                 <li>
                   <a href={urls.CMS_GITHUB_URL}>Code</a>
                 </li>
-              </ul>
-            </div>
-            <div className="footer-elements">
-              <ul>
                 <li>
                   <a href={urls.CHAT_URL + '/privacy'}>Privacy</a>
                 </li>
@@ -42,6 +39,9 @@ const Footer = () => {
                   <a href={urls.CHAT_URL + '/contact'}>Contact</a>
                 </li>
               </ul>
+            </div>
+            <div className="footer-copyright">
+              Copyright &copy; {moment().year()}
             </div>
           </div>
         </div>

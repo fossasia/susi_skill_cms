@@ -17,6 +17,15 @@
     margin: 0 auto;
 }
 
+.footer-copyright{
+    font-size: 16px;
+    font-weight: 300;
+    font-family: 'Roboto', sans-serif;
+    width: 20%;
+    padding: 8px;
+    margin: 8px;
+    text-align: right;
+}
 
 .footer{
     background: #f6f6f6;
@@ -111,9 +120,17 @@
         max-width: 100px;
         margin: 10px;
     }
+
     .footer-elements{
         display: flex;
         width: 100%;
         justify-content: center;
     }
+
+    .footer-copyright{
+        display: flex;
+        width: 100%;
+        justify-content: center;
+    }
+    
 }
