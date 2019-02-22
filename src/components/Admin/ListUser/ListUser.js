@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import $ from 'jquery';
 import PropTypes from 'prop-types';
 import Paper from 'material-ui/Paper';
 import Tabs from 'antd/lib/tabs';
 import StaticAppBar from '../../StaticAppBar/StaticAppBar.react';
 import NotFound from '../../NotFound/NotFound.react';
-import Cookies from 'universal-cookie';
 import Table from 'antd/lib/table';
 import { Input } from 'antd';
 import FlatButton from 'material-ui/FlatButton';
@@ -14,13 +12,17 @@ import Dialog from 'material-ui/Dialog';
 import MenuItem from 'material-ui/MenuItem';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import TextField from 'material-ui/TextField';
-import { urls } from '../../../utils';
+import {
+  changeUserRole,
+  deleteUserAccount,
+  modifyUserDevices,
+  fetchAdminUserStats,
+  getAdmin,
+} from '../../../api/index';
 import { LocaleProvider } from 'antd';
 import enUS from 'antd/lib/locale-provider/en_US';
 import 'antd/lib/table/style/index.css';
 import './ListUser.css';
-
-const cookies = new Cookies();
 
 const TabPane = Tabs.TabPane;
 
@@ -162,64 +164,40 @@ class ListUser extends Component {
   }
 
   apiCall = () => {
-    let url =
-      `${urls.API_URL}/aaa/changeRoles.json?user=` +
-      this.state.userEmail +
-      '&role=' +
-      this.state.userRole +
-      '&access_token=' +
-      cookies.get('loggedIn');
-
-    let self = this;
-    $.ajax({
-      url: url,
-      dataType: 'jsonp',
-      statusCode: {
-        401: function(xhr) {
+    const { userEmail: user, userRole: role } = this.state;
+    changeUserRole({ user, role })
+      .then(payload => {
+        this.setState({ changeRoleDialog: true });
+      })
+      .catch(error => {
+        const { statusCode } = error;
+        if (statusCode === 401) {
           if (window.console) {
-            console.log(xhr.responseText);
+            console.log(error.responseText);
             console.log('Error 401: Permission Denied!');
           }
-        },
-        503: function(xhr) {
+        } else if (statusCode === 503) {
           if (window.console) {
-            console.log(xhr.responseText);
+            console.log(error.responseText);
           }
           console.log('Error 503: Server not responding!');
           document.location.reload();
-        },
-      },
-      crossDomain: true,
-      timeout: 3000,
-      async: false,
-      success: function(response) {
-        console.log(response);
-        self.setState({ changeRoleDialog: true });
-      },
-      error: function(errorThrown) {
-        console.log(errorThrown);
-      },
-    });
+        } else {
+          console.log(error);
+        }
+      });
   };
 
   deleteUser = () => {
-    let url = `${urls.API_URL}/aaa/deleteUserAccount.json?email=${
-      this.state.userEmail
-    }&access_token=${cookies.get('loggedIn')}`;
-    $.ajax({
-      url: url,
-      dataType: 'jsonp',
-      crossDomain: true,
-      timeout: 3000,
-      async: false,
-      success: response => {
+    const { userEmail: email } = this.state;
+    deleteUserAccount({ email })
+      .then(payload => {
         this.setState({ deleteSuccessDialog: true });
-      },
-      error: function(errorThrown) {
-        console.log(errorThrown);
+      })
+      .catch(error => {
+        console.log(error);
         this.setState({ deleteFailedDialog: true });
-      },
-    });
+      });
   };
 
   handleDelete = email => {
@@ -261,48 +239,25 @@ class ListUser extends Component {
   };
 
   handleDevice = () => {
+    const { userEmail: email, macid, room } = this.state;
     this.setState({ showEditDeviceDialog: false });
-    let url =
-      `${urls.API_URL}/aaa/modifyUserDevices.json?access_token=${cookies.get(
-        'loggedIn',
-      )}&email=${this.state.userEmail}&macid=` +
-      this.state.macid +
-      '&name=' +
-      this.state.deviceName +
-      '&room=' +
-      this.state.room;
-    $.ajax({
-      url: url,
-      dataType: 'jsonp',
-      crossDomain: true,
-      timeout: 3000,
-      async: false,
-      success: response => {
+    modifyUserDevices({ email, macid, room })
+      .then(payload => {
         this.setState({ editDeviceSuccessDialog: true });
-      },
-      error: function(errorThrown) {
-        console.log(errorThrown);
+      })
+      .catch(error => {
+        console.log(error);
         this.setState({ editDeviceFailedDialog: true });
-      },
-    });
+      });
   };
 
   handleSearch = value => {
     this.setState({
       search: true,
     });
-    let url;
-    url = `${urls.API_URL}/aaa/getUsers.json?access_token=${cookies.get(
-      'loggedIn',
-    )}&search=${value}`;
-    $.ajax({
-      url: url,
-      dataType: 'jsonp',
-      jsonpCallback: 'pvsdu',
-      jsonp: 'callback',
-      crossDomain: true,
-      success: function(response) {
-        let userList = response.users;
+    fetchAdminUserStats({ search: value })
+      .then(payload => {
+        let userList = payload.users;
         let users = [];
         userList.map((data, dataIndex) => {
           let devices = [];
@@ -340,59 +295,39 @@ class ListUser extends Component {
           data: users,
           loading: false,
         });
-      }.bind(this),
-      error: function(errorThrown) {
-        console.log(errorThrown);
-      },
-    });
+      })
+      .catch(error => {
+        console.log(error);
+      });
   };
 
   componentDidMount() {
     document.title = 'SUSI.AI - User Detail List';
     const pagination = { ...this.state.pagination };
-    let url;
-    url =
-      `${urls.API_URL}/aaa/showAdminService.json?access_token=` +
-      cookies.get('loggedIn');
-    $.ajax({
-      url: url,
-      dataType: 'jsonp',
-      jsonp: 'callback',
-      crossDomain: true,
-      success: function(response) {
-        // console.log(response.showAdmin);
-        if (response.showAdmin) {
-          let getPagesUrl =
-            `${urls.API_URL}/aaa/getUsers.json?access_token=` +
-            cookies.get('loggedIn') +
-            '&getUserCount=true';
-          $.ajax({
-            url: getPagesUrl,
-            dataType: 'jsonp',
-            jsonp: 'callback',
-            crossDomain: true,
-            success: function(data) {
-              pagination.total = data.userCount;
+    getAdmin()
+      .then(payload => {
+        const { showAdmin } = payload;
+        if (showAdmin) {
+          fetchAdminUserStats()
+            .then(payload => {
+              const { userCount } = payload;
+              pagination.total = userCount;
               pagination.pageSize = 50;
               pagination.showQuickJumper = true;
               this.setState({
                 pagination,
               });
               this.fetch();
-            }.bind(this),
-            error: function(errorThrown) {
-              console.log(errorThrown);
-            },
-          });
+            })
+            .catch(error => console.log(error));
         } else {
           console.log('Not allowed to access this page!');
         }
-      }.bind(this),
-      error: function(errorThrown) {
+      })
+      .catch(error => {
         console.log('Not allowed to access this page!');
-        console.log(errorThrown);
-      },
-    });
+        console.log(error);
+      });
   }
 
   editUserRole = (email, userRole) => {
@@ -461,7 +396,6 @@ class ListUser extends Component {
   };
 
   fetch = (params = {}) => {
-    let url;
     let page;
     if (params.page !== undefined) {
       // console.log(params.page);
@@ -469,19 +403,9 @@ class ListUser extends Component {
     } else {
       page = 1;
     }
-    url =
-      `${urls.API_URL}/aaa/getUsers.json?access_token=` +
-      cookies.get('loggedIn') +
-      '&page=' +
-      page;
-    $.ajax({
-      url: url,
-      dataType: 'jsonp',
-      jsonp: 'callback',
-      crossDomain: true,
-      success: function(response) {
-        // console.log(response.users);
-        let userList = response.users;
+    fetchAdminUserStats({ page })
+      .then(payload => {
+        let userList = payload.users;
         let users = [];
         userList.map((data, dataIndex) => {
           let devices = [];
@@ -517,16 +441,14 @@ class ListUser extends Component {
           users.push(user);
           return 1;
         });
-        // console.log(users);
         this.setState({
           data: users,
           loading: false,
         });
-      }.bind(this),
-      error: function(errorThrown) {
-        console.log(errorThrown);
-      },
-    });
+      })
+      .catch(error => {
+        console.log(error);
+      });
     // Read total count from server
     // pagination.total = data.totalCount;
   };

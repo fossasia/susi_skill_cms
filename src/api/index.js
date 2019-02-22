@@ -359,3 +359,83 @@ export function fetchCommitHistory(payload) {
   const url = `${API_URL}/${CMS_API_PREFIX}/getSkillHistory.json`;
   return ajax.get(url, { ...payload });
 }
+
+// Admin components
+
+// Admin.js
+export function fetchAdminUserStats(payload) {
+  const url = `${API_URL}/${AUTH_API_PREFIX}/getUsers.json`;
+  return ajax.get(url, payload);
+}
+
+export function fetchAdminUserSkill() {
+  const url = `${API_URL}/${CMS_API_PREFIX}/getSkillList.json`;
+  return ajax.get(url, {});
+}
+
+// ListSkills
+export function changeSkillStatus(payload) {
+  const {
+    model,
+    group,
+    language,
+    skill,
+    reviewed,
+    editable,
+    staffPick,
+    systemSkill,
+  } = payload;
+  const url = `${API_URL}/${CMS_API_PREFIX}/changeSkillStatus.json`;
+  return ajax.get(url, {
+    model,
+    group,
+    language,
+    skill,
+    reviewed,
+    editable,
+    staffPick,
+    systemSkill,
+  });
+}
+
+export function undoDeleteSkill(payload) {
+  const { model, group, language, skill } = payload;
+  const url = `${API_URL}/${CMS_API_PREFIX}/undoDeleteSkill.json`;
+  return ajax.get(url, {
+    model,
+    group,
+    language,
+    skill,
+  });
+}
+
+export function skillsToBeDeleted() {
+  const url = `${API_URL}/${CMS_API_PREFIX}/skillsToBeDeleted.json`;
+  return ajax.get(url, {});
+}
+
+// ListUser
+export function changeUserRole(payload) {
+  const { user, role } = payload;
+  const url = `${API_URL}/${AUTH_API_PREFIX}/changeRoles.json`;
+  return ajax.get(url, { user, role });
+}
+
+export function deleteUserAccount(payload) {
+  const { email } = payload;
+  const url = `${API_URL}/${AUTH_API_PREFIX}/deleteUserAccount`;
+  return ajax.get(url, { email });
+}
+
+export function modifyUserDevices(payload) {
+  const { email, macid, name, room } = payload;
+  const url = `${API_URL}/${AUTH_API_PREFIX}/modifyUserDevices.json`;
+  return ajax.get(url, { email, macid, name, room });
+}
+
+// SystemLogs
+export function fetchSystemLogs(payload) {
+  const { count } = payload;
+  const url = `${urls.API_URL}/log.txt`;
+  return ajax.get(url, { count });
+}
