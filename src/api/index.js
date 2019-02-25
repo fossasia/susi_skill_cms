@@ -439,3 +439,13 @@ export function fetchSystemLogs(payload) {
   const url = `${urls.API_URL}/log.txt`;
   return ajax.get(url, { count });
 }
+
+export function fetchLatestCommitInformation(payload) {
+  const { url } = payload;
+  return ajax.get(url, {});
+}
+
+export function fetchRevertingCommitInformation(payload) {
+  const { url } = payload;
+  return ajax.get(url, {});
+}

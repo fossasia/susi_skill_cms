@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { getSusiPreviewReply } from '../../../api/index';
+import { getSusiPreviewReply } from '../../../api';
 import Send from 'material-ui/svg-icons/content/send';
 import loadingGIF from '../../../images/loading.gif';
 import './Chatbot.css';
