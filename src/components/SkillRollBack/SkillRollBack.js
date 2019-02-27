@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import AceEditor from 'react-ace';
-import * as $ from 'jquery';
 import { Paper } from 'material-ui';
 import Diff from 'react-diff';
 import Icon from 'antd/lib/icon';
@@ -12,6 +11,11 @@ import { connect } from 'react-redux';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import SkillCreator from '../SkillCreator/SkillCreator';
 import { urls } from '../../utils';
+import {
+  fetchLatestCommitInformation,
+  fetchRevertingCommitInformation,
+  modifySkill,
+} from '../../api';
 
 import 'brace/mode/markdown';
 import 'brace/theme/github';
@@ -86,54 +90,39 @@ class SkillRollBack extends Component {
   componentDidMount() {
     document.title = 'SUSI.AI - Skill RollBack';
     const baseUrl = this.getSkillAtCommitIDUrl();
-    const url1 = baseUrl + this.latestCommit;
-    $.ajax({
-      url: url1,
-      dataType: 'jsonp',
-      jsonp: 'callback',
-      crossDomain: true,
-      success: data1 => {
-        const url2 = baseUrl + this.revertingCommit;
-        $.ajax({
-          url: url2,
-          dataType: 'jsonp',
-          jsonp: 'callback',
-          crossDomain: true,
-          success: data2 => {
-            this.updateData([
-              {
-                code: data1.file,
-                commitID: this.latestCommit,
-                author: data1.author,
-                date: data1.commitDate,
-              },
-              {
-                code: data2.file,
-                commitID: this.revertingCommit,
-                author: data2.author,
-                date: data2.commitDate,
-              },
-            ]);
-          },
-          error: (xhr, status, error) => {
-            notification.open({
-              message: 'Error Processing your Request',
-              description: 'Failed to fetch data. Please Try Again',
-              icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
-            });
-            return 0;
-          },
+    const latestCommitUrl = baseUrl + this.latestCommit;
+    const revertingCommitUrl = baseUrl + this.revertingCommit;
+
+    fetchLatestCommitInformation({
+      url: latestCommitUrl,
+    })
+      .then(latestCommitResponse => {
+        fetchRevertingCommitInformation({
+          url: revertingCommitUrl,
+        }).then(revertingCommitResponse => {
+          this.updateData([
+            {
+              code: latestCommitResponse.file,
+              commitID: this.latestCommit,
+              author: latestCommitResponse.author,
+              date: latestCommitResponse.commitDate,
+            },
+            {
+              code: revertingCommitResponse.file,
+              commitID: this.revertingCommit,
+              author: revertingCommitResponse.author,
+              date: revertingCommitResponse.commitDate,
+            },
+          ]);
         });
-      },
-      error: (xhr, status, error) => {
+      })
+      .catch(error => {
         notification.open({
           message: 'Error Processing your Request',
           description: 'Failed to fetch data. Please Try Again',
           icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
         });
-        return 0;
-      },
-    });
+      });
   }
 
   updateData = commitData => {
@@ -212,19 +201,8 @@ class SkillRollBack extends Component {
     form.append('new_image_name', newImageName);
     form.append('access_token', accessToken);
 
-    const settings = {
-      async: true,
-      crossDomain: true,
-      url: urls.API_URL + '/cms/modifySkill.json',
-      method: 'POST',
-      processData: false,
-      contentType: false,
-      mimeType: 'multipart/form-data',
-      data: form,
-    };
-
-    $.ajax(settings)
-      .done(response => {
+    modifySkill(form)
+      .then(response => {
         const data = JSON.parse(response);
         if (data.accepted === true) {
           notification.open({
@@ -251,7 +229,7 @@ class SkillRollBack extends Component {
           });
         }
       })
-      .fail((jqXHR, textStatus) => {
+      .catch(error => {
         notification.open({
           message: 'Error Processing your Request',
           description:

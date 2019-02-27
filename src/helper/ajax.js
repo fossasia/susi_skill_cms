@@ -28,9 +28,9 @@ const obj = {};
     return new Promise(function(resolve, reject) {
       let methodArgs = [];
       /*
-                If ajax.post is used, by default sending form data
-                use postJSON instead for json data
-            */
+          If ajax.post is used, by default sending form data
+          use postJSON instead for json data
+      */
       if (method === 'post') {
         if (payload && payload instanceof FormData !== true) {
           payload = toFormData(payload);
@@ -67,8 +67,8 @@ const obj = {};
         function(data = {}, ...restSuccessArgs) {
           const statusCode = _.get(data, 'status');
           /*
-                        Send only api resonse
-                    */
+              Send only api resonse
+          */
           let responseData = { statusCode, ..._.get(data, 'data') };
 
           if (method === 'all') {

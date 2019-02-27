@@ -1,7 +1,7 @@
 // Packages
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { fetchCommitHistory } from '../../api/index';
+import { fetchCommitHistory } from '../../api';
 import { Link } from 'react-router-dom';
 
 // Material-UI
