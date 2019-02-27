@@ -78,10 +78,15 @@ class BrowseSkill extends React.Component {
   componentDidMount() {
     document.title = 'SUSI.AI - Browse Skills';
     const { actions, routeType } = this.props;
-    actions.initializeSkillData().then(() => {
-      this.loadLanguages('All');
-      this.loadGroups();
-    });
+    actions
+      .initializeSkillData()
+      .then(() => {
+        this.loadLanguages('All');
+        this.loadGroups();
+      })
+      .catch(error => {
+        actions.initializeSkillData();
+      });
 
     if (
       routeType ||
@@ -178,12 +183,18 @@ class BrowseSkill extends React.Component {
   loadGroups = () => {
     const { groups } = this.props;
     if (groups.length === 0) {
-      this.props.actions.getGroupOptions();
+      this.props.actions.getGroupOptions().catch(error => {
+        throw new Error('load groups action failed');
+      });
     }
   };
 
   loadLanguages = value => {
-    this.props.actions.getLanguageOptions({ groupValue: value });
+    this.props.actions
+      .getLanguageOptions({ groupValue: value })
+      .catch(error => {
+        throw new Error('load languages action failed');
+      });
   };
 
   loadCards = () => {
