@@ -14,10 +14,11 @@ const obj = {};
       timeout: 30000,
       dataType: 'json',
       crossDomain: true,
+      isTokenRequired: true,
       ...settings,
     };
 
-    if (cookies.get('loggedIn')) {
+    if (cookies.get('loggedIn') && settings.isTokenRequired) {
       payload = {
         // eslint-disable-next-line camelcase
         access_token: cookies.get('loggedIn'),
