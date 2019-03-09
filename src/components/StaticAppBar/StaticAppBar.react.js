@@ -84,6 +84,7 @@ class StaticAppBar extends Component {
       anchorEl: null,
       timestamp: new Date().getTime(),
     };
+    this.mounted = false;
   }
 
   handleScroll = event => {
@@ -146,7 +147,12 @@ class StaticAppBar extends Component {
     });
   };
 
+  componentWillUnmount() {
+    this.mounted = false;
+  }
+
   componentDidMount() {
+    this.mounted = true;
     const { accessToken } = this.props;
     window.addEventListener('scroll', this.handleScroll);
     if (accessToken) {
@@ -169,7 +175,9 @@ class StaticAppBar extends Component {
 
     window.addEventListener('scroll', () => {
       didScroll = true;
-      this.setState({ showOptions: false });
+      if (this.mounted) {
+        this.setState({ showOptions: false });
+      }
     });
 
     const hasScrolled = () => {
@@ -178,16 +186,17 @@ class StaticAppBar extends Component {
       if (Math.abs(lastScrollTop - st) <= delta) {
         return;
       }
-
       // If they scrolled down and are past the navbar, add class .nav-up.
       // This is necessary so you never see what is 'behind' the navbar.
-      if (st > lastScrollTop && st > navbarHeight + 400) {
+      if (st > lastScrollTop && st > navbarHeight + 400 && this.mounted) {
         this.setState({ scroll: 'nav-up' });
-      } else if (st + windowHeight < document.body.scrollHeight) {
+      } else if (
+        st + windowHeight < document.body.scrollHeight &&
+        this.mounted
+      ) {
         // Scroll Down
         this.setState({ scroll: 'nav-down' });
       }
-
       lastScrollTop = st;
     };
 
