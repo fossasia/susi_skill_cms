@@ -1,8 +1,5 @@
 import { handleActions } from 'redux-actions';
 import actionTypes from '../actionTypes';
-import Cookies from 'universal-cookie';
-
-const cookies = new Cookies();
 
 const defaultState = {
   viewType: 'list',
@@ -23,7 +20,7 @@ const defaultState = {
   languages: [],
   // Filter
   groupValue: 'All',
-  languageValue: cookies.get('languages') || ['en'],
+  languageValue: localStorage.getItem('languages') || ['en'],
   orderBy: 'ascending',
   filterType: '',
   searchQuery: '',
