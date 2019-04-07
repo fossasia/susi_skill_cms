@@ -28,22 +28,9 @@ class SkillCard extends Component {
   componentDidMount = () => {
     this.loadSkillCards();
     this.updateWindowDimensions();
-    window.addEventListener('resize', this.updateWindowDimensions);
-
-    let width = window.innerWidth - 317;
-
-    let element = document.getElementsByClassName('scrolling-wrapper')[0];
-
-    if (window.innerWidth >= 430) {
-      element.style = { width };
-    } else {
-      element.style.width = window.innerWidth;
-      element.style.margin = '10px 0px 10px 0px';
-    }
-  };
-
-  componentWillUnmount = () => {
-    window.removeEventListener('resize', this.updateWindowDimensions);
+    window.addEventListener('resize', () => {
+      this.updateWindowDimensions();
+    });
   };
 
   updateWindowDimensions = () => {
@@ -60,29 +47,25 @@ class SkillCard extends Component {
         break;
       default:
         scrollCards = 1;
+        this.setState({ rightBtnDisplay: 'inline' });
     }
-    let width = window.innerWidth - 317;
+
     this.setState({
       scrollCards: scrollCards,
     });
-
-    let element = document.getElementsByClassName('scrolling-wrapper')[0];
-
-    if (window.innerWidth >= 430) {
-      element.style = { width };
-    } else {
-      element.style.width = window.innerWidth;
-      element.style.margin = '10px 0px 10px 0px';
-    }
   };
 
   changeBtnDisplay = (scrollValue, maxScrollValue) => {
-    scrollValue >= maxScrollValue
-      ? this.setState({ rightBtnDisplay: 'none' })
-      : this.setState({ rightBtnDisplay: 'inline' });
-    scrollValue <= 0
-      ? this.setState({ leftBtnDisplay: 'none' })
-      : this.setState({ leftBtnDisplay: 'inline' });
+    if (maxScrollValue === 0) {
+      this.setState({ rightBtnDisplay: 'none', leftBtnDisplay: 'none' });
+    } else {
+      scrollValue >= maxScrollValue
+        ? this.setState({ rightBtnDisplay: 'none' })
+        : this.setState({ rightBtnDisplay: 'inline' });
+      scrollValue <= 0
+        ? this.setState({ leftBtnDisplay: 'none' })
+        : this.setState({ leftBtnDisplay: 'inline' });
+    }
   };
 
   scrollLeft = () => {
@@ -237,12 +220,11 @@ class SkillCard extends Component {
   };
 
   render() {
-    let leftFabStyle = styles.leftFab;
-    let rightFabStyle = styles.rightFab;
-    if (window.innerWidth < 430) {
-      leftFabStyle.display = 'none';
-      rightFabStyle.display = 'none';
-    }
+    let {
+      leftFab: leftFabStyle,
+      rightFab: rightFabStyle,
+      gridList: gridlist,
+    } = styles;
 
     return (
       <div
@@ -254,37 +236,36 @@ class SkillCard extends Component {
           width: '100%',
         }}
       >
-        <div>
-          <div
-            id={this.props.scrollSkills}
-            className="scrolling-wrapper"
-            style={styles.gridList}
+        <div
+          id={this.props.scrollSkills}
+          className="scrolling-wrapper"
+          style={gridlist}
+        >
+          <FloatingActionButton
+            mini={true}
+            className="leftFab"
+            backgroundColor={'#4285f4'}
+            style={{
+              ...leftFabStyle,
+              display: this.state.leftBtnDisplay,
+            }}
+            onClick={this.scrollLeft}
           >
-            <FloatingActionButton
-              mini={true}
-              className="leftFab"
-              backgroundColor={'#4285f4'}
-              style={{
-                ...leftFabStyle,
-                display: this.state.leftBtnDisplay,
-              }}
-              onClick={this.scrollLeft}
-            >
-              <NavigationChevronLeft />
-            </FloatingActionButton>
-            {this.state.cards}
-            <FloatingActionButton
-              mini={true}
-              backgroundColor={'#4285f4'}
-              style={{
-                ...rightFabStyle,
-                display: this.state.rightBtnDisplay,
-              }}
-              onClick={this.scrollRight}
-            >
-              <NavigationChevronRight />
-            </FloatingActionButton>
-          </div>
+            <NavigationChevronLeft />
+          </FloatingActionButton>
+          {this.state.cards}
+          <FloatingActionButton
+            className="rightFab"
+            mini={true}
+            backgroundColor={'#4285f4'}
+            style={{
+              ...rightFabStyle,
+              display: this.state.rightBtnDisplay,
+            }}
+            onClick={this.scrollRight}
+          >
+            <NavigationChevronRight />
+          </FloatingActionButton>
         </div>
       </div>
     );
