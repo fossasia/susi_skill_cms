@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styles from './SkillStyle';
 import ISO6391 from 'iso-639-1';
-import Cookies from 'universal-cookie';
 import _ from 'lodash';
 import { Link } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
@@ -39,8 +38,6 @@ import SkillRating from '../SkillRating/SkillRating.js';
 import { colors } from '../../utils';
 import Footer from '../Footer/Footer.react';
 import './custom.css';
-
-const cookies = new Cookies();
 
 class BrowseSkill extends React.Component {
   static propTypes = {
@@ -118,7 +115,7 @@ class BrowseSkill extends React.Component {
   };
 
   handleLanguageChange = (event, index, values) => {
-    cookies.set('languages', values);
+    localStorage.setItem('languages', values);
     this.props.actions.setLanguageFilter({ languageValue: values }).then(() => {
       if (
         this.props.routeType ||
