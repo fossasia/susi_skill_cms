@@ -46,7 +46,7 @@ h1.name {
 }
 
 .skill_listing_container {
-  min-height: 81vh;
+    min-height: 81vh;
     width: 100%;
     max-width: 1000px;
     font-size: 14px;
