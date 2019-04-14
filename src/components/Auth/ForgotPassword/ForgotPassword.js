@@ -64,7 +64,11 @@ class ForgotPassword extends Component {
       validForm: false,
       loading: false,
       emailErrorMessage: '',
+      timeoutValue: 60 * 2, // Set timeout value to 2 minutes
+      timer: null,
     };
+
+    this.changeTime = this.changeTime.bind(this);
   }
 
   closeDialog = () => {
@@ -148,6 +152,7 @@ class ForgotPassword extends Component {
             },
             () => {
               if (success) {
+                this.coolDown();
                 this.closeDialog();
                 actions.openSnackBar({
                   snackBarMessage,
@@ -175,6 +180,36 @@ class ForgotPassword extends Component {
             });
           }
         });
+    }
+  };
+
+  coolDown = () => {
+    this.setState({
+      validForm: false,
+      timer: setInterval(() => this.changeTime(), 1000),
+    });
+  };
+
+  changeTime = () => {
+    let timer = this.state.timeoutValue;
+
+    let minutes = parseInt(timer / 60, 10);
+    let seconds = parseInt(timer % 60, 10);
+
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+    seconds = seconds < 10 ? '0' + seconds : seconds;
+
+    if (--timer < 0) {
+      clearInterval(this.state.timer);
+      this.setState({
+        validForm: true,
+        emailErrorMessage: '',
+      });
+    } else {
+      this.setState({
+        emailErrorMessage: `Please try again after ${minutes}:${seconds} minute(s)`,
+        timeoutValue: timer,
+      });
     }
   };
 
