@@ -121,7 +121,7 @@ class ForgotPassword extends Component {
   handleSubmit = event => {
     event.preventDefault();
 
-    const { openSnackBar, actions } = this.props;
+    const { actions } = this.props;
     let { email } = this.state;
     email = email.trim();
     let validEmail = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
@@ -148,16 +148,14 @@ class ForgotPassword extends Component {
             },
             () => {
               if (success) {
-                setTimeout(() => {
-                  this.closeDialog();
-                }, 2000);
+                this.closeDialog();
+                actions.openSnackBar({
+                  snackBarMessage,
+                  snackBarDuration: 4000,
+                });
               }
             },
           );
-          openSnackBar({
-            snackBarMessage,
-            snackBarDuration: 4000,
-          });
         })
         .catch(error => {
           debugger;
@@ -166,12 +164,12 @@ class ForgotPassword extends Component {
             success: false,
           });
           if (error.statusCode === 422) {
-            openSnackBar({
+            actions.openSnackBar({
               snackBarMessage: 'Email does not exist.',
               snackBarDuration: 4000,
             });
           } else {
-            openSnackBar({
+            actions.openSnackBar({
               snackBarMessage: 'Failed. Try Again',
               snackBarDuration: 4000,
             });
