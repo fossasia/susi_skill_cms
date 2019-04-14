@@ -28,9 +28,6 @@ class SkillCard extends Component {
   componentDidMount = () => {
     this.loadSkillCards();
     this.updateWindowDimensions();
-    window.addEventListener('resize', () => {
-      this.updateWindowDimensions();
-    });
   };
 
   updateWindowDimensions = () => {
