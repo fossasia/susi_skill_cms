@@ -37,7 +37,6 @@ import './SkillListing.css';
 
 const styles = {
   home: {
-    width: '500%',
     fontSize: '14px',
   },
   right: {
@@ -299,116 +298,118 @@ class SkillListing extends Component {
                 <img className="avatar-img" alt="Thumbnail" src={imgUrl} />
               )}
             </div>
-            <div className="linkButtons">
-              {isAdmin === 'true' && (
-                <div className="skillDeleteBtn">
-                  <FloatingActionButton
-                    onClick={this.handleDeleteToggle}
-                    data-tip="Delete Skill"
-                    backgroundColor={colors.warningColor}
-                  >
-                    <DeleteBtn />
-                  </FloatingActionButton>
-                  <ReactTooltip effect="solid" place="bottom" />
-                  <Dialog
-                    title="Delete Skill"
-                    actions={deleteDialogActions}
-                    modal={false}
-                    open={showDeleteDialog}
-                    onRequestClose={this.handleDeleteToggle}
-                  >
-                    <div>
-                      Are you sure about deleting{' '}
-                      <span style={{ fontWeight: 'bold' }}>{skillName}</span>?
-                    </div>
-                  </Dialog>
-                </div>
-              )}
+            <div className="skillHeaderContainer">
               <div>
-                <Link
-                  to={{
-                    pathname: `/${this.groupValue}/${this.skillTag}/edit/${
-                      this.languageValue
-                    }`,
-                  }}
-                >
-                  <FloatingActionButton
-                    data-tip="Edit Skill"
-                    backgroundColor={colors.header}
+                <h1 className="name">{this.skillName}</h1>
+                <h4>
+                  by{' '}
+                  <span
+                    style={styles.authorStyle}
+                    onClick={this.openAuthorSkills}
                   >
-                    <EditBtn />
-                  </FloatingActionButton>
-                  <ReactTooltip effect="solid" place="bottom" />
-                </Link>
+                    {author}
+                  </span>
+                </h4>
+                <a className="singleRating" href="#rating">
+                  <Ratings
+                    rating={skillRatings.avgStar}
+                    widgetRatedColors="#ffbb28"
+                    widgetDimensions="20px"
+                    widgetSpacings="0px"
+                  >
+                    <Ratings.Widget />
+                    <Ratings.Widget />
+                    <Ratings.Widget />
+                    <Ratings.Widget />
+                    <Ratings.Widget />
+                  </Ratings>
+                  <div className="ratingLabel">{skillRatings.totalStar}</div>
+                </a>
               </div>
-              <div>
-                <Link
-                  to={{
-                    pathname: `/${this.groupValue}/${this.skillTag}/versions/${
-                      this.languageValue
-                    }`,
-                  }}
-                >
-                  <div className="skillVersionBtn">
+              <div className="linkButtons">
+                {isAdmin === 'true' && (
+                  <div className="skillDeleteBtn">
                     <FloatingActionButton
-                      data-tip="Skill Versions"
-                      backgroundColor={colors.header}
+                      onClick={this.handleDeleteToggle}
+                      data-tip="Delete Skill"
+                      backgroundColor={colors.warningColor}
                     >
-                      <VersionBtn />
+                      <DeleteBtn />
                     </FloatingActionButton>
                     <ReactTooltip effect="solid" place="bottom" />
+                    <Dialog
+                      title="Delete Skill"
+                      actions={deleteDialogActions}
+                      modal={false}
+                      open={showDeleteDialog}
+                      onRequestClose={this.handleDeleteToggle}
+                    >
+                      <div>
+                        Are you sure about deleting{' '}
+                        <span style={{ fontWeight: 'bold' }}>{skillName}</span>?
+                      </div>
+                    </Dialog>
                   </div>
-                </Link>
+                )}
+                <div>
+                  <Link
+                    to={{
+                      pathname: `/${this.groupValue}/${this.skillTag}/edit/${
+                        this.languageValue
+                      }`,
+                    }}
+                  >
+                    <FloatingActionButton
+                      data-tip="Edit Skill"
+                      backgroundColor={colors.header}
+                    >
+                      <EditBtn />
+                    </FloatingActionButton>
+                    <ReactTooltip effect="solid" place="bottom" />
+                  </Link>
+                </div>
+                <div>
+                  <Link
+                    to={{
+                      pathname: `/${this.groupValue}/${
+                        this.skillTag
+                      }/versions/${this.languageValue}`,
+                    }}
+                  >
+                    <div className="skillVersionBtn">
+                      <FloatingActionButton
+                        data-tip="Skill Versions"
+                        backgroundColor={colors.header}
+                      >
+                        <VersionBtn />
+                      </FloatingActionButton>
+                      <ReactTooltip effect="solid" place="bottom" />
+                    </div>
+                  </Link>
+                </div>
               </div>
             </div>
-            <div className="meta">
-              <h1 className="name">{this.skillName}</h1>
-              <h4>
-                by{' '}
-                <span
-                  style={styles.authorStyle}
-                  onClick={this.openAuthorSkills}
-                >
-                  {author}
-                </span>
-              </h4>
-              <a className="singleRating" href="#rating">
-                <Ratings
-                  rating={skillRatings.avgStar}
-                  widgetRatedColors="#ffbb28"
-                  widgetDimensions="20px"
-                  widgetSpacings="0px"
-                >
-                  <Ratings.Widget />
-                  <Ratings.Widget />
-                  <Ratings.Widget />
-                  <Ratings.Widget />
-                  <Ratings.Widget />
-                </Ratings>
-                <div className="ratingLabel">{skillRatings.totalStar}</div>
-              </a>
-              <div className="avatar-meta margin-b-md">
-                <div className="example-container">
-                  {examples &&
-                    examples[Object.keys(examples)[0]] &&
-                    examples.slice(0, skillExampleCount).map((data, index) => {
-                      return (
-                        <div
-                          key={index}
-                          className="example-comment"
-                          onClick={event => testExample(event, data)}
-                        >
-                          <q>{data}</q>
-                        </div>
-                      );
-                    })}
-                </div>
-                <div
-                  className="skill-example-see-more"
-                  onClick={this.toggleSkillExamples}
-                >
-                  {seeMoreSkillExamples}
-                </div>
+            <div className="avatar-meta margin-b-md">
+              <div className="example-container">
+                {examples &&
+                  examples[Object.keys(examples)[0]] &&
+                  examples.slice(0, skillExampleCount).map((data, index) => {
+                    return (
+                      <div
+                        key={index}
+                        className="example-comment"
+                        onClick={event => testExample(event, data)}
+                      >
+                        <q>{data}</q>
+                      </div>
+                    );
+                  })}
+              </div>
+              <div
+                className="skill-example-see-more"
+                onClick={this.toggleSkillExamples}
+              >
+                {seeMoreSkillExamples}
               </div>
             </div>
             <Paper className="margin-b-md margin-t-md">
@@ -575,7 +576,9 @@ class SkillListing extends Component {
             requestClose={this.closeAuthorSkills}
           />
         </div>
-        <Footer />
+        <div style={{ minWidth: '640px' }}>
+          <Footer />
+        </div>
       </div>
     );
   }
