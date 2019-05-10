@@ -74,7 +74,7 @@ class MyRatings extends Component {
             <h4>Loading</h4>
           </div>
         ) : (
-          <div className="table-wrap">
+          <div className="table-wrap" style={{ padding: '0px 20px' }}>
             <Table className="table-root" selectable={false}>
               <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
                 <TableRow>
