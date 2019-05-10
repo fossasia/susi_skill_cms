@@ -12,9 +12,11 @@ const styles = {
   paperStyle: {
     width: '100%',
     marginTop: '20px',
+    minWidth: '640px',
   },
   subHeadingStyle: {
     color: 'rgba(0,0,0,.65)',
+    paddingLeft: '20px',
   },
   loggedInErrorStyle: {
     textAlign: 'center',
@@ -24,9 +26,18 @@ const styles = {
     fontSize: '50px',
     marginTop: '300px',
   },
+  headingStyle: {
+    color: 'black',
+    marginTop: '10px',
+  },
 };
 
-const { paperStyle, subHeadingStyle, loggedInErrorStyle } = styles;
+const {
+  paperStyle,
+  subHeadingStyle,
+  loggedInErrorStyle,
+  headingStyle,
+} = styles;
 
 const Dashboard = props => {
   const { accessToken } = props;
@@ -47,7 +58,7 @@ const Dashboard = props => {
       <div className="botbuilder-page-wrapper">
         <br />
         <br />
-        <h1 className="center" style={{ color: 'black' }}>
+        <h1 className="center" style={{ ...headingStyle, ...paperStyle }}>
           My Dashboard
         </h1>
         <br />

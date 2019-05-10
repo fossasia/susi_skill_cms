@@ -90,7 +90,7 @@ class MySkills extends Component {
     const { openMenu, loading } = this.state;
     return (
       <div>
-        <div style={{ textAlign: 'right' }}>
+        <div style={{ textAlign: 'right', marginRight: '20px' }}>
           <IconMenu
             anchorOrigin={{ vertical: 'bottom', horizontal: 'middle' }}
             label="Add new skill"
@@ -128,7 +128,7 @@ class MySkills extends Component {
             <h4>Loading</h4>
           </div>
         ) : (
-          <div className="table-wrap">
+          <div className="table-wrap" style={{ padding: '0px 20px' }}>
             <Table className="table-root" selectable={false}>
               <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
                 <TableRow>
