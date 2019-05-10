@@ -22,7 +22,7 @@ let BASE_URL = urls.API_URL;
 
 const styles = {
   home: {
-    width: '100%',
+    margin: '0px 10px',
   },
   paperStyle: {
     width: '100%',
@@ -45,7 +45,7 @@ const styles = {
   },
   heading: {
     color: 'rgba(0,0,0,.65)',
-    paddingLeft: '20px',
+    padding: '20px 0px 0px 20px',
   },
 };
 
@@ -449,7 +449,15 @@ class BotBuilder extends React.Component {
               {this.showChatbots()}
             </div>
             <h2 style={heading}>Drafts</h2>
-            <div className="bot-template-wrap">{drafts}</div>
+            <div className="bot-template-wrap">
+              {drafts.length > 0 ? (
+                drafts
+              ) : (
+                <p style={{ fontSize: '18px', paddingLeft: '10px' }}>
+                  No drafts to display.
+                </p>
+              )}
+            </div>
           </Paper>
         </div>
         <Dialog
