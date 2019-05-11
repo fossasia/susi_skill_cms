@@ -16,6 +16,7 @@ import { bindActionCreators } from 'redux';
 import uiActions from '../../redux/actions/ui';
 import Cookies from 'universal-cookie';
 import * as $ from 'jquery';
+import { fetchChatBots, fetchBotImages, deleteBot } from '../../api/index';
 
 const cookies = new Cookies();
 let BASE_URL = urls.API_URL;
@@ -62,24 +63,14 @@ class BotBuilder extends React.Component {
   }
 
   getChatbots = () => {
-    const { actions } = this.props;
-    if (cookies.get('loggedIn')) {
-      let url =
-        BASE_URL +
-        '/cms/getSkillList.json?' +
-        'private=1&access_token=' +
-        cookies.get('loggedIn');
-      $.ajax({
-        url: url,
-        jsonpCallback: 'p',
-        dataType: 'jsonp',
-        jsonp: 'callback',
-        crossDomain: true,
-        success: function(data) {
-          this.setState({ chatbots: data.chatbots });
+    const { actions, accessToken } = this.props;
+    if (accessToken) {
+      fetchChatBots()
+        .then(payload => {
+          this.setState({ chatbots: payload.chatbots });
           this.getBotImages();
-        }.bind(this),
-        error: function(error) {
+        })
+        .catch(error => {
           if (error.status !== 404) {
             actions.openSnackBar({
               snackBarMessage:
@@ -87,8 +78,7 @@ class BotBuilder extends React.Component {
               snackBarDuration: 2000,
             });
           }
-        },
-      });
+        });
     }
   };
 
@@ -100,29 +90,16 @@ class BotBuilder extends React.Component {
         let name = bot.name;
         let language = bot.language;
         let group = bot.group;
-        let url =
-          BASE_URL +
-          '/cms/getSkill.json?group=' +
-          group +
-          '&language=' +
-          language +
-          '&skill=' +
-          name +
-          '&private=1&access_token=' +
-          cookies.get('loggedIn');
-        $.ajax({
-          url: url,
-          dataType: 'jsonp',
-          crossDomain: true,
-          success: function(data) {
-            let image_match = data.text.match(/^::image\s(.*)$/m);
+        fetchBotImages({ name, group, language })
+          .then(payload => {
+            let image_match = payload.text.match(/^::image\s(.*)$/m);
             if (image_match) {
               bot.image = image_match[1];
             }
             bots[index] = bot;
             this.setState({ chatbots: bots });
-          }.bind(this),
-          error: function(error) {
+          })
+          .catch(error => {
             if (error.status !== 404) {
               actions.openSnackBar({
                 snackBarMessage:
@@ -130,8 +107,7 @@ class BotBuilder extends React.Component {
                 snackBarDuration: 2000,
               });
             }
-          },
-        });
+          });
       });
     }
   };
@@ -209,34 +185,19 @@ class BotBuilder extends React.Component {
 
   deleteBot = (name, language, group) => {
     const { actions } = this.props;
-    let url =
-      BASE_URL +
-      '/cms/deleteSkill.json?access_token=' +
-      cookies.get('loggedIn') +
-      '&private=1&group=' +
-      group +
-      '&language=' +
-      language +
-      '&skill=' +
-      name;
-    $.ajax({
-      url: url,
-      jsonpCallback: 'p',
-      dataType: 'jsonp',
-      jsonp: 'callback',
-      crossDomain: true,
-      success: function(data) {
+    deleteBot({ name, language, group })
+      .then(() => {
         actions
           .openSnackBar({
-            snackBarMessage: 'Unable to delete your chatbot. Please try again.',
+            snackBarMessage: 'ChatBot Deleted',
             snackBarDuration: 2000,
           })
           .then(() => {
             this.closeDeleteAlert();
             this.getChatbots();
           });
-      }.bind(this),
-      error: function(error) {
+      })
+      .catch(error => {
         this.setState({
           deleteAlert: null,
         });
@@ -244,8 +205,7 @@ class BotBuilder extends React.Component {
           snackBarMessage: 'Unable to delete your chatbot. Please try again.',
           snackBarDuration: 2000,
         });
-      }.bind(this),
-    });
+      });
   };
 
   getDrafts = () => {
@@ -487,7 +447,14 @@ class BotBuilder extends React.Component {
 BotBuilder.propTypes = {
   templates: PropTypes.array,
   actions: PropTypes.object,
+  accessToken: PropTypes.string,
 };
+
+function mapStateToProps(store) {
+  return {
+    accessToken: store.app.accessToken,
+  };
+}
 
 function mapDispatchToProps(dispatch) {
   return {
@@ -496,6 +463,6 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps,
 )(BotBuilder);
