@@ -277,7 +277,7 @@ export function fetchConverstionResponse(payload) {
 
 // Botbuilder API
 
-export function fetchChatBots(payload) {
+export function fetchChatBots() {
   const url = `${API_URL}/${CMS_API_PREFIX}/getSkillList.json`;
   return ajax.get(url, {
     private: 1,
@@ -285,12 +285,13 @@ export function fetchChatBots(payload) {
 }
 
 export function fetchBotImages(payload) {
-  const { skill, group, language } = payload;
-  const url = `${API_URL}/${CMS_API_PREFIX}/getSkillList.json`;
+  const { name: skill, language, group } = payload;
+  const url = `${API_URL}/${CMS_API_PREFIX}/getSkill.json`;
   return ajax.get(url, {
-    skill,
     group,
     language,
+    skill,
+    private: 1,
   });
 }
 
@@ -358,6 +359,17 @@ export function getSusiPreviewReply(message) {
 export function fetchCommitHistory(payload) {
   const url = `${API_URL}/${CMS_API_PREFIX}/getSkillHistory.json`;
   return ajax.get(url, { ...payload });
+}
+
+export function deleteBot(payload) {
+  const { name: skill, language, group } = payload;
+  const url = `${API_URL}/${CMS_API_PREFIX}/deleteSkill.json`;
+  return ajax.get(url, {
+    private: 1,
+    group,
+    language,
+    skill,
+  });
 }
 
 // Admin components
