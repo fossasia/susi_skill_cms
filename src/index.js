@@ -8,6 +8,7 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 import { Provider } from 'react-redux';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import Cookies from 'universal-cookie';
 // DO not register a SW for now
 // import registerServiceWorker from './registerServiceWorker';
 
@@ -34,17 +35,21 @@ import BotBuilderWrap from './components/BotBuilder/BotBuilderWrap';
 import setDefaults from './DefaultSettings';
 import BrowseSkillByCategory from './components/BrowseSkill/BrowseSkillByCategory';
 import BrowseSkillByLanguage from './components/BrowseSkill/BrowseSkillByLanguage';
-import { colors } from './utils';
+import { colors, isProduction } from './utils';
 import Login from './components/Auth/Login/Login';
 import ForgotPassword from './components/Auth/ForgotPassword/ForgotPassword';
 import SignUp from './components/Auth/SignUp/SignUp';
 import store from './store';
 import appActions from './redux/actions/app';
 import uiActions from './redux/actions/ui';
+import { listUserSettings } from './api/index';
 
 setDefaults();
 
 injectTapEventPlugin();
+
+const cookies = new Cookies();
+const cookieDomain = isProduction() ? '.susi.ai' : '';
 
 const muiTheme = getMuiTheme({
   appBar: {
@@ -85,6 +90,19 @@ class App extends React.Component {
     const { actions, accessToken } = this.props;
     actions.getApiKeys();
     accessToken && actions.getAdmin();
+    accessToken &&
+      listUserSettings()
+        .then(payload => {
+          let userName = '';
+          if (payload.settings && payload.settings.userName) {
+            userName = payload.settings.userName;
+          }
+          cookies.set('username', userName, {
+            path: '/',
+            domain: cookieDomain,
+          });
+        })
+        .catch(error => {});
     window.addEventListener('offline', this.onUserOffline);
     window.addEventListener('online', this.onUserOnline);
   };
