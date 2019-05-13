@@ -275,6 +275,11 @@ export function fetchConverstionResponse(payload) {
   });
 }
 
+export function listUserSettings() {
+  const url = `${API_URL}/${AUTH_API_PREFIX}/listUserSettings.json`;
+  return ajax.get(url, {});
+}
+
 // Botbuilder API
 
 export function fetchChatBots() {
