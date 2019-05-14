@@ -1,41 +1,27 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import createActions from '../../../../redux/actions/create';
 import PropTypes from 'prop-types';
 import AceEditor from 'react-ace';
 
 class CodeView extends Component {
-  constructor(props) {
-    super(props);
-    let code = '';
-    if (this.props.configure) {
-      code = this.props.configure.code;
-    }
-    this.state = {
-      editorTheme: 'github',
-      fontSizeCode: 14,
-      code,
-    };
-  }
-
   handleChangeCode = event => {
-    this.setState({ code: event }, () => this.sendInfoToProps());
-  };
-
-  sendInfoToProps = () => {
-    this.props.configure.sendInfoToProps({
-      code: this.state.code,
-    });
+    const { actions } = this.props;
+    actions.setConfigureData({ configCode: event });
   };
 
   render() {
+    const { configCode } = this.props;
     return (
       <div>
         <AceEditor
           mode="java"
-          theme={this.state.editorTheme}
+          theme="github"
           width="100%"
-          fontSize={this.state.fontSizeCode}
+          fontSize={14}
           height="300px"
-          value={this.state.code}
+          value={configCode}
           onChange={this.handleChangeCode}
           showPrintMargin={false}
           name="skill_code_editor"
@@ -54,7 +40,23 @@ class CodeView extends Component {
 }
 
 CodeView.propTypes = {
-  configure: PropTypes.object,
+  actions: PropTypes.object,
+  configCode: PropTypes.string,
 };
 
-export default CodeView;
+function mapStateToProps(store) {
+  return {
+    configCode: store.create.configCode,
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(createActions, dispatch),
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(CodeView);

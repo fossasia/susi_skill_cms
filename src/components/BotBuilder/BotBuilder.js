@@ -15,8 +15,13 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import uiActions from '../../redux/actions/ui';
 import Cookies from 'universal-cookie';
-import * as $ from 'jquery';
-import { fetchChatBots, fetchBotImages, deleteBot } from '../../api/index';
+import {
+  fetchChatBots,
+  fetchBotImages,
+  deleteChatBot,
+  readDraft,
+  deleteDraft,
+} from '../../api/index.js';
 
 const cookies = new Cookies();
 let BASE_URL = urls.API_URL;
@@ -84,9 +89,9 @@ class BotBuilder extends React.Component {
 
   getBotImages = () => {
     const { actions } = this.props;
-    let bots = this.state.chatbots;
-    if (bots) {
-      bots.forEach((bot, index) => {
+    let { chatbots } = this.state;
+    if (chatbots) {
+      chatbots.forEach((bot, index) => {
         let name = bot.name;
         let language = bot.language;
         let group = bot.group;
@@ -96,8 +101,8 @@ class BotBuilder extends React.Component {
             if (image_match) {
               bot.image = image_match[1];
             }
-            bots[index] = bot;
-            this.setState({ chatbots: bots });
+            chatbots[index] = bot;
+            this.setState({ chatbots });
           })
           .catch(error => {
             if (error.status !== 404) {
@@ -185,11 +190,11 @@ class BotBuilder extends React.Component {
 
   deleteBot = (name, language, group) => {
     const { actions } = this.props;
-    deleteBot({ name, language, group })
-      .then(() => {
+    deleteChatBot({ group, language, skill: name })
+      .then(payload => {
         actions
           .openSnackBar({
-            snackBarMessage: 'ChatBot Deleted',
+            snackBarMessage: `Successfully ${payload.message}`,
             snackBarDuration: 2000,
           })
           .then(() => {
@@ -210,21 +215,17 @@ class BotBuilder extends React.Component {
 
   getDrafts = () => {
     const { actions } = this.props;
-    let url = BASE_URL + '/cms/readDraft.json';
-    $.ajax({
-      url: url,
-      dataType: 'jsonp',
-      crossDomain: true,
-      success: function(data) {
-        this.showDrafts(data.drafts);
-      }.bind(this),
-      error: function(error) {
+    readDraft()
+      .then(payload => {
+        const { drafts } = payload;
+        this.showDrafts(drafts);
+      })
+      .catch(error => {
         actions.openSnackBar({
           snackBarMessage: "Couldn't get your drafts. Please reload the page.",
           snackBarDuration: 2000,
         });
-      },
-    });
+      });
   };
 
   showDrafts = drafts => {
@@ -286,12 +287,8 @@ class BotBuilder extends React.Component {
 
   deleteDrafts = id => {
     const { actions } = this.props;
-    let url = BASE_URL + '/cms/deleteDraft.json?id=' + id;
-    $.ajax({
-      url: url,
-      dataType: 'jsonp',
-      crossDomain: true,
-      success: function(data) {
+    deleteDraft({ id })
+      .then(payload => {
         actions
           .openSnackBar({
             snackBarMessage: 'Draft successfully deleted.',
@@ -301,8 +298,8 @@ class BotBuilder extends React.Component {
             this.closeDeleteAlert();
             this.getDrafts();
           });
-      }.bind(this),
-      error: function(error) {
+      })
+      .catch(error => {
         actions.openSnackBar({
           snackBarMessage: 'Unable to delete your draft. Please try again.',
           snackBarDuration: 2000,
@@ -310,8 +307,7 @@ class BotBuilder extends React.Component {
         this.setState({
           deleteAlert: null,
         });
-      }.bind(this),
-    });
+      });
   };
 
   openDeleteAlert = (type, params) => {
