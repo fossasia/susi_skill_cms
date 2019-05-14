@@ -266,7 +266,7 @@ export function fetchAuthorUrl(payload) {
   });
 }
 
-export function fetchConverstionResponse(payload) {
+export function fetchConversationResponse(payload) {
   const { query: q, instant } = payload;
   const url = `${API_URL}/${SUSI_API_PREFIX}/chat.json`;
   return ajax.get(url, {
