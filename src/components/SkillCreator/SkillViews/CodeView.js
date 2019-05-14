@@ -1,4 +1,6 @@
 import React from 'react';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 import Icon from 'antd/lib/icon';
 import MenuItem from 'material-ui/MenuItem';
 import PropTypes from 'prop-types';
@@ -19,44 +21,45 @@ import 'brace/theme/terminal';
 import 'brace/ext/searchbox';
 import LinearProgress from 'material-ui/LinearProgress';
 import { colors } from '../../../utils';
+import createActions from '../../../redux/actions/create';
 
 const fontsizes = [];
 const codeEditorThemes = [];
-let self;
 
-export default class CodeView extends React.Component {
-  componentDidMount() {
-    self = this;
-    if (this.props.skillCode) {
-      this.setState({
-        code: this.props.skillCode,
-      });
-    }
-  }
+const styles = {
+  codeEditor: {
+    width: '100%',
+    marginTop: '20px',
+  },
+  toolbar: {
+    width: '100%',
+    height: '50px',
+    background: '#fff',
+    borderBottom: '2px solid #eee',
+    display: 'none',
+    alignItems: 'stretch',
+    padding: '0 25px',
+    fontSize: '14px',
+  },
+  button: {
+    display: 'flex',
+    marginRight: '30px',
+    alignItems: 'center',
+    cursor: 'pointer',
+  },
+  icon: {
+    marginRight: '5px',
+  },
+};
 
+class CodeView extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      groupSelect: true,
-      languageSelect: true,
-      expertSelect: true,
-      showImage: false,
       loading: false,
-      file: null,
-      imageUrl: '<image_url>',
       commitMessage: '',
-      modelValue: null,
-      groupValue: null,
-      languageValue: null,
-      expertValue: '',
-      code: this.props.skillCode,
       fontSizeCode: 14,
       editorTheme: 'github',
-      groups: [],
-      anchorOrigin: {
-        horizontal: 'left',
-        vertical: 'bottom',
-      },
     };
     let fonts = [14, 16, 18, 20, 24, 28, 32, 40];
     let themes = [
@@ -92,30 +95,26 @@ export default class CodeView extends React.Component {
   }
 
   onChange = newValue => {
+    const { actions } = this.props;
     const match = newValue.match(/^::image\s(.*)$/m);
     const nameMatch = newValue.match(/^::name\s(.*)$/m);
     const categoryMatch = newValue.match(/^::category\s(.*)$/m);
     const languageMatch = newValue.match(/^::language\s(.*)$/m);
 
-    this.setState(
-      {
-        expertValue: nameMatch ? nameMatch[1] : '',
-        groupValue: categoryMatch ? categoryMatch[1] : '',
-        languageValue: languageMatch ? languageMatch[1] : '',
-        imageUrl: match ? match[1] : '',
-        code: newValue,
-      },
-      () => this.sendInfoToProps(),
-    );
+    const payload = {
+      name: nameMatch ? nameMatch[1] : '',
+      category: categoryMatch ? categoryMatch[1] : '',
+      language: languageMatch ? languageMatch[1] : '',
+      imageUrl: match ? match[1] : '',
+      code: newValue,
+    };
+    actions.setSkillData(payload);
   };
 
   handleCommitMessageChange = event => {
-    this.setState(
-      {
-        commitMessage: event.target.value,
-      },
-      () => self.sendInfoToProps(),
-    );
+    this.setState({
+      commitMessage: event.target.value,
+    });
   };
 
   handleFontChange = (event, index, value) => {
@@ -130,19 +129,9 @@ export default class CodeView extends React.Component {
     });
   };
 
-  sendInfoToProps = () => {
-    if (this.props.sendInfoToProps) {
-      this.props.sendInfoToProps({
-        code: this.state.code,
-        expertValue: this.state.expertValue,
-        groupValue: this.state.groupValue,
-        languageValue: this.state.languageValue,
-        imageUrl: this.state.imageUrl,
-      });
-    }
-  };
-
   render() {
+    const { codeEditor, toolbar, button, icon } = styles;
+    const { code } = this.props;
     return (
       <div>
         <div
@@ -151,16 +140,15 @@ export default class CodeView extends React.Component {
             padding: '0px',
           }}
         >
-          <div style={styles.codeEditor}>
+          <div style={codeEditor}>
             {this.state.loading && (
               <LinearProgress mode="indeterminate" color={colors.header} />
             )}
-            <div style={styles.toolbar}>
-              <span style={styles.button}>
-                <Icon type="cloud-download" style={styles.icon} />Download as
-                text
+            <div style={toolbar}>
+              <span style={button}>
+                <Icon type="cloud-download" style={icon} />Download as text
               </span>
-              <span style={styles.button}>
+              <span style={button}>
                 Size{' '}
                 <SelectField
                   style={{ width: '60px' }}
@@ -170,7 +158,7 @@ export default class CodeView extends React.Component {
                 </SelectField>
               </span>
 
-              <span style={styles.button}>
+              <span style={button}>
                 Theme{' '}
                 <SelectField
                   style={{ width: '150px' }}
@@ -186,7 +174,7 @@ export default class CodeView extends React.Component {
               width="100%"
               fontSize={this.state.fontSizeCode}
               height="400px"
-              value={this.state.code}
+              value={code}
               showPrintMargin={false}
               name="skill_code_editor"
               onChange={this.onChange}
@@ -207,54 +195,25 @@ export default class CodeView extends React.Component {
   }
 }
 
-const styles = {
-  codeEditor: {
-    width: '100%',
-    marginTop: '20px',
-  },
-  toolbar: {
-    width: '100%',
-    height: '50px',
-    background: '#fff',
-    borderBottom: '2px solid #eee',
-    display: 'none',
-    alignItems: 'stretch',
-    padding: '0 25px',
-    fontSize: '14px',
-  },
-  loggedInError: {
-    textAlign: 'center',
-    textTransform: 'uppercase',
-    fontWeight: 'bold',
-    marginBottom: '100px',
-    fontSize: '50px',
-    marginTop: '300px',
-  },
-  button: {
-    display: 'flex',
-    marginRight: '30px',
-    alignItems: 'center',
-    cursor: 'pointer',
-  },
-  icon: {
-    marginRight: '5px',
-  },
-  customWidth: {
-    width: 50,
-  },
-  exampleImageInput: {
-    cursor: 'pointer',
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
-    right: 0,
-    left: 0,
-    width: '100%',
-    opacity: 0,
-  },
-};
 CodeView.propTypes = {
   editable: PropTypes.bool,
-  skillCode: PropTypes.string,
-  sendInfoToProps: PropTypes.func,
+  actions: PropTypes.object,
+  code: PropTypes.string,
 };
+
+function mapStateToProps(store) {
+  return {
+    code: store.create.skill.code,
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(createActions, dispatch),
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(CodeView);

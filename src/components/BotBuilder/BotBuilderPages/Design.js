@@ -1,4 +1,6 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
 import IconButton from 'material-ui/IconButton';
 import Code from 'material-ui/svg-icons/action/code';
@@ -6,40 +8,11 @@ import Table from 'material-ui/svg-icons/av/web';
 import CodeView from './DesignViews/CodeView';
 import UIView from './DesignViews/UIView';
 import './Animation.min.css';
+import createActions from '../../../redux/actions/create';
 
 class Design extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      codeView: true,
-      uiView: false,
-      code: this.props.code,
-    };
-  }
-
-  componentDidMount() {
-    if (this.props.preferUiView === 'code') {
-      this.setState({
-        codeView: true,
-        uiView: false,
-      });
-    } else {
-      this.setState({
-        codeView: false,
-        uiView: true,
-      });
-    }
-  }
-
-  sendInfoToProps = values => {
-    this.setState({ ...values });
-  };
-
-  updateSettings = value => {
-    this.props.updateSettings(value);
-  };
-
   render() {
+    const { actions, view } = this.props;
     return (
       <div className="center menu-page">
         <div style={{ display: 'flex', flexDirection: 'row' }}>
@@ -49,19 +22,13 @@ class Design extends React.Component {
               className="iconbutton"
               tooltip="Code View"
               onClick={() => {
-                this.setState({
-                  codeView: true,
-                  uiView: false,
-                });
-                this.props.onChangePreferUiView('code');
+                actions.setView({ view: 'code' });
               }}
               disableTouchRipple={true}
             >
               <Code
                 color={
-                  this.state.codeView
-                    ? 'rgb(66, 133, 244)'
-                    : 'rgb(158, 158, 158)'
+                  view === 'code' ? 'rgb(66, 133, 244)' : 'rgb(158, 158, 158)'
                 }
               />
             </IconButton>
@@ -69,17 +36,13 @@ class Design extends React.Component {
               className="iconbutton"
               tooltip="UI View"
               onClick={() => {
-                this.setState({
-                  codeView: false,
-                  uiView: true,
-                });
-                this.props.onChangePreferUiView('ui');
+                actions.setView({ view: 'ui' });
               }}
               disableTouchRipple={true}
             >
               <Table
                 color={
-                  this.state.uiView ? 'rgb(66, 133, 244)' : 'rgb(158, 158, 158)'
+                  view === 'ui' ? 'rgb(66, 133, 244)' : 'rgb(158, 158, 158)'
                 }
               />
             </IconButton>
@@ -87,29 +50,11 @@ class Design extends React.Component {
         </div>
         <div
           style={{
-            padding: this.state.codeView
-              ? '30px 10px 0 10px'
-              : '0px 10px 0 10px',
+            padding: view === 'code' ? '30px 10px 0 10px' : '0px 10px 0 10px',
           }}
         >
-          {this.state.codeView && (
-            <CodeView
-              design={{
-                sendInfoToProps: this.sendInfoToProps,
-                updateSettings: this.updateSettings,
-                code: this.state.code,
-              }}
-            />
-          )}
-          {this.state.uiView && (
-            <UIView
-              design={{
-                sendInfoToProps: this.sendInfoToProps,
-                updateSettings: this.updateSettings,
-                code: this.state.code,
-              }}
-            />
-          )}
+          {view === 'code' && <CodeView />}
+          {view === 'ui' && <UIView />}
         </div>
       </div>
     );
@@ -117,10 +62,23 @@ class Design extends React.Component {
 }
 
 Design.propTypes = {
-  updateSettings: PropTypes.func,
-  code: PropTypes.string,
-  preferUiView: PropTypes.string,
-  onChangePreferUiView: PropTypes.func,
+  view: PropTypes.string,
+  actions: PropTypes.object,
 };
 
-export default Design;
+function mapStateToProps(store) {
+  return {
+    view: store.create.view,
+  };
+}
+
+function mapDispatchToActions(dispatch) {
+  return {
+    actions: bindActionCreators(createActions, dispatch),
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToActions,
+)(Design);

@@ -234,7 +234,7 @@ class SkillHistory extends Component {
                     readOnly={true}
                     theme="github"
                     width="100%"
-                    fontSize="14"
+                    fontSize={14}
                     height="400px"
                     value={commitData[0].code}
                     showPrintMargin={false}

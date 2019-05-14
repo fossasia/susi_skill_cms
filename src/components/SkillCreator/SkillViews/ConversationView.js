@@ -4,16 +4,28 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import uiActions from '../../../redux/actions/ui';
 import PropTypes from 'prop-types';
+import { fetchConversationResponse } from '../../../api/index';
 import Person from 'material-ui/svg-icons/social/person';
 import CircularProgress from 'material-ui/CircularProgress';
 import './ConversationView.css';
-import { fetchConversationResponse } from '../../../api/index';
+
+const styles = {
+  paperStyle: {
+    width: '100%',
+    padding: '20px 20px 20px 20px',
+  },
+  botIcon: {
+    height: '33px',
+    paddingTop: '9px',
+    width: '21px',
+    color: 'rgba(0, 0, 0, 0.87)',
+  },
+};
 
 class ConversationView extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      code: this.props.skillCode,
       userInputs: [],
       conversationsData: [],
       loaded: false,
@@ -25,7 +37,7 @@ class ConversationView extends Component {
   };
 
   fetchUserInputs = () => {
-    let code = this.state.code;
+    let { code } = this.props;
     let userInputs = [];
     let userQueries = [];
     const lines = code.split('\n');
@@ -70,19 +82,19 @@ class ConversationView extends Component {
   };
 
   getResponses = responseNumber => {
-    const { actions } = this.props;
-    let userInputs = this.state.userInputs;
+    const { actions, code } = this.props;
+    let { userInputs, conversationsData } = this.state;
     let userQuery = userInputs[responseNumber];
-    let conversationsData = this.state.conversationsData;
     if (userQuery) {
       conversationsData.push({
         type: 'user',
         name: userQuery,
         id: 'u' + responseNumber,
       });
-      const query = encodeURIComponent(userQuery);
-      const instant = encodeURIComponent(this.state.code);
-      fetchConversationResponse({ query, instant })
+      fetchConversationResponse({
+        q: encodeURIComponent(userQuery),
+        instant: encodeURIComponent(code),
+      })
         .then(payload => {
           let answer;
           if (payload.answers[0]) {
@@ -108,8 +120,7 @@ class ConversationView extends Component {
         })
         .catch(error => {
           actions.openSnackBar({
-            snackBarMessage:
-              'Unable to load conversation view. Please try again.',
+            snackBarMessage: 'Unable to load tree view. Please try again.',
             snackBarDuration: 2000,
           });
         });
@@ -117,15 +128,16 @@ class ConversationView extends Component {
   };
 
   render() {
-    let conversationsData = this.state.conversationsData;
+    const { paperStyle, botIcon } = styles;
+    let { conversationsData, loaded } = this.state;
     return (
       <div
         style={{
           paddingTop: '20px',
         }}
       >
-        <Paper id="message-container" style={styles.paperStyle} zDepth={1}>
-          {!this.state.loaded ? (
+        <Paper id="message-container" style={paperStyle} zDepth={1}>
+          {!loaded ? (
             <div className="center">
               <CircularProgress size={62} color="#4285f5" />
               <h4>Loading</h4>
@@ -159,7 +171,7 @@ class ConversationView extends Component {
                   <img
                     src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAIISURBVFhH7di/S5VRHMfxa0RG0A+kKCGkIkhHazEKatAGB0EhCIeQhgajbBBqqSmJgiASKxpqkNZwcBBdRHELyoZESpD8A5QITNT0/TG/8CXO/eG9Hp8LPR94Dc+X5+F8eTj3nPPczP+U43iHGxtXZZinWMMyKlUot7yEGpSDKpRDDuAORvAL1uAUXuEcEksH5mFNZfMBR7FjqcALhJrJ5gfOYEfyAKEm8lGTVYgazakVhBooxHtEzQBssFk046GreZNoQq+rraIOUXII/u31wPITVje3oOyHrz9ClLTAD/Qdl9Dtat5HnMcTV5MJREkn/EDFmkOU3EdoQHmDWpzapLm5gNC9qkdJA+5lEVo+WhG69y7SlEVOQyeUL5iJ4BuGcB27sKVcxW+EJnkMw9iHgnIWS7CHtWNk+0WWYhqL7rofBUXHI3uoCzq9jLvadrmIk1Cjuv4DLVV5YwdPv+LHalDxO9RtFXLF75uvVdhMzAZPwGp+fw9G3xJ2s37BlpgN1sBqj1XIlbRBp6gG98DWPz8fYjaol6KDrGraq/OmDc9xeOPqb8bw7wClugBLO56h6O/pPoQGKZY2Av8CSs4xfEZosK1Sczex7dmNejSW4DKOII1lL+yYH6KpkWi0VITmmRlEotH/LaHGjP7QTDQ6CX9CqDm5gsRTjbf4CjvOj+Ia0qTJnUxmHfGs+A6k/UOLAAAAAElFTkSuQmCC"
                     alt="bot icon"
-                    style={styles.botIcon}
+                    style={botIcon}
                   />
                   <div className="bot-text-box">{message}</div>
                 </div>
@@ -172,22 +184,17 @@ class ConversationView extends Component {
   }
 }
 
-const styles = {
-  paperStyle: {
-    width: '100%',
-    padding: '20px 20px 20px 20px',
-  },
-  botIcon: {
-    height: '33px',
-    paddingTop: '9px',
-    width: '21px',
-    color: 'rgba(0, 0, 0, 0.87)',
-  },
-};
 ConversationView.propTypes = {
   skillCode: PropTypes.string,
   actions: PropTypes.object,
+  code: PropTypes.string,
 };
+
+function mapStateToProps(store) {
+  return {
+    code: store.create.skill.code,
+  };
+}
 
 function mapDispatchToProps(dispatch) {
   return {
@@ -196,6 +203,6 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps,
 )(ConversationView);
