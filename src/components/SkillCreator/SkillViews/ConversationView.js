@@ -6,9 +6,8 @@ import uiActions from '../../../redux/actions/ui';
 import PropTypes from 'prop-types';
 import Person from 'material-ui/svg-icons/social/person';
 import CircularProgress from 'material-ui/CircularProgress';
-import { urls } from '../../../utils';
 import './ConversationView.css';
-import $ from 'jquery';
+import { fetchConversationResponse } from '../../../api/index';
 
 class ConversationView extends Component {
   constructor(props) {
@@ -76,24 +75,18 @@ class ConversationView extends Component {
     let userQuery = userInputs[responseNumber];
     let conversationsData = this.state.conversationsData;
     if (userQuery) {
-      let url = urls.API_URL + '/susi/chat.json?q=';
       conversationsData.push({
         type: 'user',
         name: userQuery,
         id: 'u' + responseNumber,
       });
-      url += `${encodeURIComponent(userQuery)}&instant=${encodeURIComponent(
-        this.state.code,
-      )}`;
-      $.ajax({
-        type: 'GET',
-        url: url,
-        contentType: 'application/json',
-        dataType: 'json',
-        success: function(data) {
+      const query = encodeURIComponent(userQuery);
+      const instant = encodeURIComponent(this.state.code);
+      fetchConversationResponse({ query, instant })
+        .then(payload => {
           let answer;
-          if (data.answers[0]) {
-            answer = data.answers[0].actions[0].expression;
+          if (payload.answers[0]) {
+            answer = payload.answers[0].actions[0].expression;
           } else {
             answer = 'Sorry, I could not understand what you just said.';
           }
@@ -102,22 +95,24 @@ class ConversationView extends Component {
             name: answer,
             id: 'b' + responseNumber,
           });
-          if (responseNumber + 1 === userInputs.length) {
-            this.setState({ loaded: true });
-          }
-          this.setState({ conversationsData }, () =>
-            this.getResponses(++responseNumber),
+          this.setState(
+            prevState => ({
+              loaded:
+                responseNumber + 1 === userInputs.length
+                  ? true
+                  : prevState.loaded,
+              conversationsData,
+            }),
+            () => this.getResponses(++responseNumber),
           );
-        }.bind(this),
-        error: function(err) {
-          console.log(err);
+        })
+        .catch(error => {
           actions.openSnackBar({
             snackBarMessage:
               'Unable to load conversation view. Please try again.',
             snackBarDuration: 2000,
           });
-        },
-      });
+        });
     }
   };
 

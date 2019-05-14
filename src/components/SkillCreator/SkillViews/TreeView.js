@@ -7,9 +7,8 @@ import ReactTooltip from 'react-tooltip';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import uiActions from '../../../redux/actions/ui';
-import { urls } from '../../../utils';
 import 'react-orgchart/index.css';
-import $ from 'jquery';
+import { fetchConversationResponse } from '../../../api/index';
 
 class TreeView extends Component {
   constructor(props) {
@@ -85,24 +84,18 @@ class TreeView extends Component {
     };
     let nodeData = this.state.skillData.children; // nodes of tree
     if (userQuery) {
-      let url = urls.API_URL + '/susi/chat.json?q=';
       nodeData.push({
         type: 'user',
         name: userQuery,
         id: 'u' + responseNumber,
       });
-      url += `${encodeURIComponent(userQuery)}&instant=${encodeURIComponent(
-        this.state.code,
-      )}`;
-      $.ajax({
-        type: 'GET',
-        url: url,
-        contentType: 'application/json',
-        dataType: 'json',
-        success: function(data) {
+      const query = encodeURIComponent(userQuery);
+      const instant = encodeURIComponent(this.state.code);
+      fetchConversationResponse({ query, instant })
+        .then(payload => {
           let answer;
-          if (data.answers[0]) {
-            answer = data.answers[0].actions[0].expression;
+          if (payload.answers[0]) {
+            answer = payload.answers[0].actions[0].expression;
           } else {
             answer = 'Sorry, I could not understand what you just said.';
           }
@@ -121,21 +114,23 @@ class TreeView extends Component {
             });
           }
           skillData.children = nodeData;
-          this.setState({ skillData }, () =>
-            this.getResponses(++responseNumber),
+          this.setState(
+            prevState => ({
+              loaded:
+                responseNumber + 1 === userInputs.length
+                  ? true
+                  : prevState.loaded,
+              skillData,
+            }),
+            () => this.getResponses(++responseNumber),
           );
-          if (responseNumber + 1 === userInputs.length) {
-            this.setState({ loaded: true });
-          }
-        }.bind(this),
-        error: function(err) {
-          console.log(err);
+        })
+        .catch(error => {
           actions.openSnackBar({
             snackBarMessage: 'Unable to load tree view. Please try again.',
             snackBarDuration: 2000,
           });
-        },
-      });
+        });
     }
   };
 
