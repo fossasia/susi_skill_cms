@@ -367,13 +367,13 @@ class ListSkills extends React.Component {
         key={1}
         label="Change"
         labelStyle={{ color: '#4285f4' }}
-        onTouchTap={this.handleChange}
+        onClick={this.handleChange}
       />,
       <FlatButton
         key={2}
         label="Cancel"
         primary={false}
-        onTouchTap={this.handleClose}
+        onClick={this.handleClose}
       />,
     ];
 
@@ -382,13 +382,13 @@ class ListSkills extends React.Component {
         key={1}
         label="Delete"
         labelStyle={{ color: '#4285f4' }}
-        onTouchTap={this.confirmDelete}
+        onClick={this.confirmDelete}
       />,
       <FlatButton
         key={2}
         label="Cancel"
         primary={false}
-        onTouchTap={this.handleClose}
+        onClick={this.handleClose}
       />,
     ];
 
@@ -397,13 +397,13 @@ class ListSkills extends React.Component {
         key={1}
         label="Restore"
         labelStyle={{ color: '#4285f4' }}
-        onTouchTap={this.confirmRestore}
+        onClick={this.confirmRestore}
       />,
       <FlatButton
         key={2}
         label="Cancel"
         primary={false}
-        onTouchTap={this.handleClose}
+        onClick={this.handleClose}
       />,
     ];
 
@@ -412,7 +412,7 @@ class ListSkills extends React.Component {
         key={1}
         label="Ok"
         labelStyle={{ color: '#4285f4' }}
-        onTouchTap={this.handleFinish}
+        onClick={this.handleFinish}
       />,
     ];
 

@@ -48,7 +48,7 @@ class Design extends React.Component {
             <IconButton
               className="iconbutton"
               tooltip="Code View"
-              onTouchTap={() => {
+              onClick={() => {
                 this.setState({
                   codeView: true,
                   uiView: false,
@@ -68,7 +68,7 @@ class Design extends React.Component {
             <IconButton
               className="iconbutton"
               tooltip="UI View"
-              onTouchTap={() => {
+              onClick={() => {
                 this.setState({
                   codeView: false,
                   uiView: true,

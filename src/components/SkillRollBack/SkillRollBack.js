@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import AceEditor from 'react-ace';
 import { Paper } from 'material-ui';
-import Diff from 'react-diff';
+import Diff from 'react-diff-viewer';
 import Icon from 'antd/lib/icon';
 import notification from 'antd/lib/notification';
 import CircularProgress from 'material-ui/CircularProgress';

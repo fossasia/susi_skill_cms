@@ -37,6 +37,7 @@ import SkillCardScrollList from '../SkillCardScrollList/SkillCardScrollList';
 import SkillRating from '../SkillRating/SkillRating.js';
 import { colors } from '../../utils';
 import Footer from '../Footer/Footer.react';
+import isMobileView from '../../utils/isMobileView';
 import './custom.css';
 
 class BrowseSkill extends React.Component {
@@ -311,14 +312,20 @@ class BrowseSkill extends React.Component {
     } = this.props;
     const { routeType, routeValue } = this.props;
 
+    let isMobile = isMobileView();
+
     let sidebarStyle = styles.sidebar;
     let topBarStyle = styles.topBar;
+    sidebarStyle = isMobile
+      ? { ...sidebarStyle, display: 'none' }
+      : { ...sidebarStyle, display: 'block' };
+    topBarStyle = isMobile
+      ? { ...topBarStyle, flexDirection: 'column' }
+      : { ...topBarStyle, flexDirection: 'row' };
     let backToHome = null;
     let renderMenu = null;
     let renderMobileMenu = null;
-    if (window.innerWidth < 430) {
-      sidebarStyle.display = 'none';
-      topBarStyle.flexDirection = 'column';
+    if (isMobile) {
       backToHome = (
         <MenuItem
           value="Back to SUSI Skills"
@@ -342,9 +349,7 @@ class BrowseSkill extends React.Component {
         );
       });
     }
-    if (innerWidth >= 430) {
-      sidebarStyle.display = 'block';
-      topBarStyle.flexDirection = 'row';
+    if (!isMobile) {
       renderMenu = this.props.groups.map(categoryName => {
         const linkValue = '/category/' + categoryName;
         return (
@@ -461,7 +466,7 @@ class BrowseSkill extends React.Component {
           toggleDrawer={this.handleDrawerToggle}
         />
         <div style={styles.main}>
-          <div style={styles.sidebar}>
+          <div style={sidebarStyle}>
             <div style={styles.newSkillBtn}>
               <IconMenu
                 style={{ width: '60%' }}
@@ -664,7 +669,7 @@ class BrowseSkill extends React.Component {
             </Menu>
           </div>
           <div style={styles.home}>
-            <div style={styles.topBar} className="top-bar">
+            <div style={topBarStyle} className="top-bar">
               <div style={styles.searchBar} className="search-bar">
                 <SearchBar
                   onChange={_.debounce(this.handleSearch, 500)}

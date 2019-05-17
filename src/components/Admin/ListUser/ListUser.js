@@ -460,13 +460,13 @@ class ListUser extends Component {
         key={1}
         label="Change"
         labelStyle={{ color: '#4285f4' }}
-        onTouchTap={this.handleChange}
+        onClick={this.handleChange}
       />,
       <FlatButton
         key={2}
         label="Cancel"
         primary={false}
-        onTouchTap={this.handleClose}
+        onClick={this.handleClose}
       />,
     ];
     const deleteActions = [
@@ -474,13 +474,13 @@ class ListUser extends Component {
         key={1}
         label="Delete"
         labelStyle={{ color: '#4285f4' }}
-        onTouchTap={this.deleteUser}
+        onClick={this.deleteUser}
       />,
       <FlatButton
         key={2}
         label="Cancel"
         primary={false}
-        onTouchTap={this.handleClose}
+        onClick={this.handleClose}
       />,
     ];
 
@@ -489,13 +489,13 @@ class ListUser extends Component {
         key={1}
         label="Save"
         labelStyle={{ color: '#4285f4' }}
-        onTouchTap={this.handleDevice}
+        onClick={this.handleDevice}
       />,
       <FlatButton
         key={2}
         label="Cancel"
         primary={false}
-        onTouchTap={this.handleClose}
+        onClick={this.handleClose}
       />,
     ];
 
@@ -636,7 +636,7 @@ class ListUser extends Component {
                               key={1}
                               label="Ok"
                               labelStyle={{ color: '#4285f4' }}
-                              onTouchTap={this.handleSuccess}
+                              onClick={this.handleSuccess}
                             />
                           }
                           modal={true}
@@ -661,7 +661,7 @@ class ListUser extends Component {
                               key={1}
                               label="Ok"
                               labelStyle={{ color: '#4285f4' }}
-                              onTouchTap={this.handleClose}
+                              onClick={this.handleClose}
                             />
                           }
                           modal={true}
@@ -702,7 +702,7 @@ class ListUser extends Component {
                               key={1}
                               label="Ok"
                               labelStyle={{ color: '#4285f4' }}
-                              onTouchTap={this.handleSuccess}
+                              onClick={this.handleSuccess}
                             />
                           }
                           modal={true}
@@ -725,7 +725,7 @@ class ListUser extends Component {
                               key={1}
                               label="Ok"
                               labelStyle={{ color: '#4285f4' }}
-                              onTouchTap={this.handleClose}
+                              onClick={this.handleClose}
                             />
                           }
                           modal={true}
@@ -748,7 +748,7 @@ class ListUser extends Component {
                               key={1}
                               label="Ok"
                               labelStyle={{ color: '#4285f4' }}
-                              onTouchTap={this.handleSuccess}
+                              onClick={this.handleSuccess}
                             />
                           }
                           modal={true}

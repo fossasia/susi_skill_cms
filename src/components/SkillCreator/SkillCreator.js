@@ -1123,7 +1123,7 @@ class SkillCreator extends Component {
                     <IconButton
                       className="iconbutton"
                       tooltip="Code View"
-                      onTouchTap={() => {
+                      onClick={() => {
                         this.setState({
                           codeView: true,
                           conversationView: false,
@@ -1143,7 +1143,7 @@ class SkillCreator extends Component {
                     <IconButton
                       className="iconbutton"
                       tooltip="Conversation View"
-                      onTouchTap={() => {
+                      onClick={() => {
                         this.setState({
                           codeView: false,
                           conversationView: true,
@@ -1163,7 +1163,7 @@ class SkillCreator extends Component {
                     <IconButton
                       className="iconbutton"
                       tooltip="Tree View"
-                      onTouchTap={() => {
+                      onClick={() => {
                         this.setState({
                           codeView: false,
                           conversationView: false,
@@ -1368,7 +1368,7 @@ class SkillCreator extends Component {
                           backgroundColor={colors.header}
                           labelColor="#fff"
                           style={{ marginLeft: 10 }}
-                          onTouchTap={this.saveClick}
+                          onClick={this.saveClick}
                         />
                         <Link
                           to={
@@ -1430,7 +1430,7 @@ class SkillCreator extends Component {
                         backgroundColor={colors.warningColor}
                         labelColor="#fff"
                         style={{ marginLeft: 10 }}
-                        onTouchTap={this.openDelete}
+                        onClick={this.openDelete}
                       />
                     </Paper>
                   )}
@@ -1501,7 +1501,7 @@ class SkillCreator extends Component {
                   backgroundColor={colors.warningColor}
                   labelColor="#fff"
                   style={{ marginLeft: 10 }}
-                  onTouchTap={this.deleteSkill}
+                  onClick={this.deleteSkill}
                 />
               </div>
             </Dialog>

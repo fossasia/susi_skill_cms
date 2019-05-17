@@ -191,7 +191,7 @@ class StaticAppBar extends Component {
             }
             targetOrigin={{ horizontal: 'right', vertical: 'top' }}
             anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
-            onTouchTap={this.showOptions}
+            onClick={this.showOptions}
           />
           <Popover
             animated={false}
@@ -265,9 +265,6 @@ class StaticAppBar extends Component {
                   this.props.actions.openModal({ modalType: 'login' })
                 }
                 rightIcon={<LoginIcon />}
-                onTouchTap={() =>
-                  this.props.actions.openModal({ modalType: 'login' })
-                }
               />
             )}
           </Popover>

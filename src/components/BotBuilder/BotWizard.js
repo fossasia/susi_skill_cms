@@ -805,7 +805,7 @@ class BotWizard extends React.Component {
                         label="Save Draft"
                         backgroundColor={colors.header}
                         labelColor="#fff"
-                        onTouchTap={this.saveDraft}
+                        onClick={this.saveDraft}
                       />
                     </div>
                   ) : null}
@@ -821,7 +821,7 @@ class BotWizard extends React.Component {
                         label={'Next'}
                         backgroundColor={colors.header}
                         labelColor="#fff"
-                        onTouchTap={this.handleNext}
+                        onClick={this.handleNext}
                       />
                     ) : null}
                     {stepIndex === 2 ? (
@@ -838,7 +838,7 @@ class BotWizard extends React.Component {
                         }
                         backgroundColor={colors.header}
                         labelColor="#fff"
-                        onTouchTap={this.saveClick}
+                        onClick={this.saveClick}
                       />
                     ) : null}
                   </div>
@@ -847,7 +847,7 @@ class BotWizard extends React.Component {
                       label="Save Draft"
                       backgroundColor={colors.header}
                       labelColor="#fff"
-                      onTouchTap={this.saveDraft}
+                      onClick={this.saveDraft}
                     />
                   ) : null}
                   <div
@@ -861,7 +861,7 @@ class BotWizard extends React.Component {
                         label="Back"
                         backgroundColor={colors.header}
                         labelColor="#fff"
-                        onTouchTap={this.handlePrev}
+                        onClick={this.handlePrev}
                       />
                     ) : null}
                     {stepIndex === 0 ? (

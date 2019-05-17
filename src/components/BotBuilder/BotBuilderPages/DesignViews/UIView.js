@@ -648,7 +648,7 @@ class UIView extends Component {
                         <span title="Remove image">
                           <Close
                             className="remove-icon"
-                            onTouchTap={this.handleRemoveUrlBody}
+                            onClick={this.handleRemoveUrlBody}
                           />
                         </span>
                       </div>
@@ -737,7 +737,7 @@ class UIView extends Component {
                   'Reset Changes'
                 )
               }
-              onTouchTap={this.handleReset}
+              onClick={this.handleReset}
             />
           </div>
         )}
