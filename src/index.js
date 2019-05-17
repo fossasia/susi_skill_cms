@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import Switch from 'react-router-dom/es/Switch';
-import injectTapEventPlugin from 'react-tap-event-plugin';
 import { Provider } from 'react-redux';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -45,8 +44,6 @@ import uiActions from './redux/actions/ui';
 import { listUserSettings } from './api/index';
 
 setDefaults();
-
-injectTapEventPlugin();
 
 const cookies = new Cookies();
 const cookieDomain = isProduction() ? '.susi.ai' : '';

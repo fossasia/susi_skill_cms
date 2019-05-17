@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import notification from 'antd/lib/notification';
 import Icon from 'antd/lib/icon';
 import AceEditor from 'react-ace';
-import Diff from 'react-diff';
+import Diff from 'react-diff-viewer';
 import { RaisedButton } from 'material-ui';
 import CircularProgress from 'material-ui/CircularProgress';
 import { Paper } from 'material-ui';
