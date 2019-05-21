@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import CircleImage from '../CircleImage/CircleImage';
 import SkillRatingPopover from '../SkillRating/SkillRatingPopover.js';
-import NavigationArrowDropDown from 'material-ui/svg-icons/navigation/arrow-drop-down';
+import NavigationArrowDropDown from '@material-ui/icons/ArrowDropDown';
 import styles from './SkillCardStyle';
 import StaffPick from '../../images/staff_pick.png';
 import { urls, testExample } from '../../utils';

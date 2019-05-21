@@ -6,23 +6,19 @@ import { Link } from 'react-router-dom';
 
 // Material-UI
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
-import {
-  Table,
-  TableBody,
-  TableHeader,
-  TableHeaderColumn,
-  TableRow,
-  TableRowColumn,
-} from 'material-ui/Table';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import { RaisedButton } from 'material-ui';
-import CircularProgress from 'material-ui/CircularProgress';
-import { RadioButton } from 'material-ui/RadioButton';
+import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Radio from '@material-ui/core/Radio';
 
 // Other Utils
 import notification from 'antd/lib/notification';
 import Icon from 'antd/lib/icon';
-import { colors } from '../../utils';
 
 const styles = {
   home: {
@@ -175,12 +171,12 @@ class SkillVersion extends Component {
 
     let commitHistoryTableHeader = (
       <TableRow>
-        <TableHeaderColumn style={{ width: '20px' }} />
-        <TableHeaderColumn style={{ width: '20px' }} />
-        <TableHeaderColumn>Commit Date</TableHeaderColumn>
-        <TableHeaderColumn>Commit ID</TableHeaderColumn>
-        <TableHeaderColumn>Commit Author</TableHeaderColumn>
-        <TableHeaderColumn>Commit Message</TableHeaderColumn>
+        <TableCell padding="checkbox" />
+        <TableCell padding="checkbox" />
+        <TableCell padding="dense">Commit Date</TableCell>
+        <TableCell padding="dense">Commit ID</TableCell>
+        <TableCell padding="dense">Commit Author</TableCell>
+        <TableCell padding="dense">Commit Message</TableCell>
       </TableRow>
     );
 
@@ -190,32 +186,36 @@ class SkillVersion extends Component {
       let rightRadioBtn = null;
       if (leftChecks && rightChecks) {
         leftRadioBtn = (
-          <RadioButton
+          <Radio
             name={index.toString() + '-left'}
             checked={leftChecks[index]}
-            onCheck={this.onCheck}
+            onChange={this.onCheck}
+            color="primary"
           />
         );
         rightRadioBtn = (
-          <RadioButton
+          <Radio
             name={index.toString() + '-right'}
             checked={rightChecks[index]}
-            onCheck={this.onCheck}
+            onChange={this.onCheck}
+            color="primary"
           />
         );
       } else {
         leftRadioBtn = (
-          <RadioButton
+          <Radio
             name={index.toString() + '-left'}
             checked={index === 1}
-            onCheck={this.onCheck}
+            onChange={this.onCheck}
+            color="primary"
           />
         );
         rightRadioBtn = (
-          <RadioButton
+          <Radio
             name={index.toString() + '-right'}
             checked={index === 0}
-            onCheck={this.onCheck}
+            onChange={this.onCheck}
+            color="primary"
           />
         );
       }
@@ -230,13 +230,9 @@ class SkillVersion extends Component {
 
       return (
         <TableRow key={index}>
-          <TableRowColumn style={{ width: '20px' }}>
-            {leftRadioBtn}
-          </TableRowColumn>
-          <TableRowColumn style={{ width: '20px' }}>
-            {rightRadioBtn}
-          </TableRowColumn>
-          <TableRowColumn>
+          <TableCell padding="checkbox">{leftRadioBtn}</TableCell>
+          <TableCell padding="checkbox">{rightRadioBtn}</TableCell>
+          <TableCell padding="dense">
             <Link
               to={{
                 pathname: `/${skillMeta.groupValue}/${
@@ -246,16 +242,16 @@ class SkillVersion extends Component {
             >
               <abbr title={commitDate}>{commitDate}</abbr>
             </Link>
-          </TableRowColumn>
-          <TableRowColumn>
+          </TableCell>
+          <TableCell padding="dense">
             <abbr title={commitId}>{commitId}</abbr>
-          </TableRowColumn>
-          <TableRowColumn>
+          </TableCell>
+          <TableCell padding="dense">
             <abbr title={author}>{author}</abbr>
-          </TableRowColumn>
-          <TableRowColumn>
+          </TableCell>
+          <TableCell padding="dense">
             <abbr title={commitMessage}>{commitMessage}</abbr>
-          </TableRowColumn>
+          </TableCell>
         </TableRow>
       );
     });
@@ -263,9 +259,9 @@ class SkillVersion extends Component {
     const commitHistoryTable = (
       <MuiThemeProvider>
         <Table selectable={false}>
-          <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
+          <TableHead displaySelectAll={false} adjustForCheckbox={false}>
             {commitHistoryTableHeader}
-          </TableHeader>
+          </TableHead>
           <TableBody displayRowCheckbox={false}>
             {commitHistoryTableRows}
           </TableBody>
@@ -281,7 +277,7 @@ class SkillVersion extends Component {
         {!dataReceived ? (
           <h1 className="skill_loading_container">
             <div className="center">
-              <CircularProgress size={62} color="#4285f5" />
+              <CircularProgress size={62} color="primary" />
               <h4>Loading</h4>
             </div>
           </h1>
@@ -311,12 +307,13 @@ class SkillVersion extends Component {
                       }/${checkedCommits[1].commitId}`,
                     }}
                   >
-                    <RaisedButton
-                      label="Compare Selected Versions"
-                      backgroundColor={colors.header}
-                      labelColor="#fff"
+                    <Button
+                      variant="contained"
+                      color="primary"
                       style={styles.compareBtnStyle}
-                    />
+                    >
+                      Compare Selected Versions
+                    </Button>
                   </Link>
                 )}
                 <Link
@@ -326,12 +323,13 @@ class SkillVersion extends Component {
                     }/${skillMeta.languageValue}`,
                   }}
                 >
-                  <RaisedButton
-                    label="Back"
-                    backgroundColor={colors.header}
-                    labelColor="#fff"
+                  <Button
+                    variant="contained"
+                    color="primary"
                     style={styles.compareBtnStyle}
-                  />
+                  >
+                    Back
+                  </Button>
                 </Link>
               </div>
             </div>

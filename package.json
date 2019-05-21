@@ -5,6 +5,8 @@
   "homepage": "http://skills.susi.ai/",
   "repository": "https://github.com/fossasia/susi_skill_cms",
   "dependencies": {
+    "@material-ui/core": "^3.9.3",
+    "@material-ui/icons": "^3.0.2",
     "add-px": "1.0.0",
     "antd": "^3.18.1",
     "axios": "^0.18.0",

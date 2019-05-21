@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import AceEditor from 'react-ace';
-import { Paper } from 'material-ui';
+import Paper from '@material-ui/core/Paper';
 import Diff from 'react-diff-viewer';
 import Icon from 'antd/lib/icon';
 import notification from 'antd/lib/notification';
-import CircularProgress from 'material-ui/CircularProgress';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { connect } from 'react-redux';
 
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
@@ -254,7 +254,7 @@ class SkillRollBack extends Component {
         {commitData.length === 0 && (
           <h1 className="skill_loading_container">
             <div className="center">
-              <CircularProgress size={62} color="#4285f5" />
+              <CircularProgress size={62} color="primary" />
               <h4>Loading</h4>
             </div>
           </h1>

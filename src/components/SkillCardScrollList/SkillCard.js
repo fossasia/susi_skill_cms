@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 import Ratings from 'react-ratings-declarative';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Card } from 'material-ui/Card';
+import Card from '@material-ui/core/Card';
 import PropTypes from 'prop-types';
 import CircleImage from '../CircleImage/CircleImage';
 import { scrollAnimation } from '../../utils';
-import FloatingActionButton from 'material-ui/FloatingActionButton';
-import NavigationChevronLeft from 'material-ui/svg-icons/navigation/chevron-left';
-import NavigationChevronRight from 'material-ui/svg-icons/navigation/chevron-right';
+import Fab from '@material-ui/core/Fab';
+import NavigationChevronLeft from '@material-ui/icons/ChevronLeft';
+import NavigationChevronRight from '@material-ui/icons/ChevronRight';
 import StaffPick from '../../images/staff_pick.png';
 import { urls } from '../../utils';
 import './SkillCardScrollList.min.css';
@@ -260,10 +260,10 @@ class SkillCard extends Component {
             className="scrolling-wrapper"
             style={styles.gridList}
           >
-            <FloatingActionButton
-              mini={true}
+            <Fab
+              size="small"
               className="leftFab"
-              backgroundColor={'#4285f4'}
+              color="primary"
               style={{
                 ...leftFabStyle,
                 display: this.state.leftBtnDisplay,
@@ -271,11 +271,11 @@ class SkillCard extends Component {
               onClick={this.scrollLeft}
             >
               <NavigationChevronLeft />
-            </FloatingActionButton>
+            </Fab>
             {this.state.cards}
-            <FloatingActionButton
-              mini={true}
-              backgroundColor={'#4285f4'}
+            <Fab
+              size="small"
+              color="primary"
               style={{
                 ...rightFabStyle,
                 display: this.state.rightBtnDisplay,
@@ -283,7 +283,7 @@ class SkillCard extends Component {
               onClick={this.scrollRight}
             >
               <NavigationChevronRight />
-            </FloatingActionButton>
+            </Fab>
           </div>
         </div>
       </div>

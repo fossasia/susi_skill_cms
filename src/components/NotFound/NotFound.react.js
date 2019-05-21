@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import RaisedButton from 'material-ui/RaisedButton';
+import Button from '@material-ui/core/Button';
 import './NotFound.css';
 import LogoImg from '../../images/susi-logo.svg';
 import Login from '../Auth/Login/Login';
 import SignUp from '../Auth/SignUp/SignUp';
-import Dialog from 'material-ui/Dialog';
+import Dialog from '@material-ui/core/Dialog';
 import ForgotPassword from '../Auth/ForgotPassword/ForgotPassword';
-import Close from 'material-ui/svg-icons/navigation/close';
+import Close from '@material-ui/icons/Close';
 
 const styles = {
   closingStyle: {
@@ -31,9 +31,9 @@ const styles = {
     top: '10px',
     cursor: 'pointer',
   },
-  bodyStyle: {
-    padding: 0,
-    textAlign: 'center',
+  buttonStyle: {
+    margin: '10px',
+    width: '300px',
   },
 };
 
@@ -85,7 +85,7 @@ class NotFound extends Component {
     });
   };
   render() {
-    const { closingStyle, closingStyleLogin, bodyStyle } = styles;
+    const { closingStyle, closingStyleLogin, buttonStyle } = styles;
     return (
       <div>
         <div className="container-fluid not-found-banner">
@@ -98,41 +98,37 @@ class NotFound extends Component {
           <h2>Page not found</h2>
           <div className="button-wrapper">
             <a href="https://chat.susi.ai/" className="actionButton">
-              <RaisedButton
-                className="notfound-button"
-                label="Chat With SUSI"
-                backgroundColor="#4285f4"
-                labelColor="#fff"
-              />
+              <Button style={buttonStyle} variant="contained" color="primary">
+                Chat With SUSI
+              </Button>
             </a>
             <br />
-            <RaisedButton
+            <Button
               onClick={this.handleOpen}
-              className="notfound-button"
-              label="SignUp to SUSI"
-              backgroundColor="#4285f4"
-              labelColor="#fff"
-            />
+              style={buttonStyle}
+              variant="contained"
+              color="primary"
+            >
+              SignUp to SUSI
+            </Button>
             <br />
-            <RaisedButton
+            <Button
               onClick={this.handleLoginOpen}
-              className="notfound-button"
-              label="LogIn to SUSI"
-              backgroundColor="#4285f4"
-              labelColor="#fff"
-            />
+              style={buttonStyle}
+              variant="contained"
+              color="primary"
+            >
+              LogIn to SUSI
+            </Button>
             <br />
           </div>
         </div>
         {/* Login */}
         <Dialog
           className="dialogStyle"
-          modal={true}
           open={this.state.loginOpen}
-          autoScrollBodyContent={true}
-          bodyStyle={bodyStyle}
-          contentStyle={{ width: '35%', minWidth: '300px' }}
-          onRequestClose={this.handleClose}
+          onClose={this.handleClose}
+          aria-labelledby="log-in-dialog"
         >
           <Login
             {...this.props}
@@ -143,12 +139,9 @@ class NotFound extends Component {
         {/* SignUp */}
         <Dialog
           className="dialogStyle"
-          modal={true}
           open={this.state.open}
-          autoScrollBodyContent={true}
-          bodyStyle={bodyStyle}
-          contentStyle={{ width: '35%', minWidth: '300px' }}
-          onRequestClose={this.handleClose}
+          onClose={this.handleClose}
+          aria-labelledby="sign-up-dialog"
         >
           <SignUp
             {...this.props}
@@ -159,11 +152,9 @@ class NotFound extends Component {
         </Dialog>
         <Dialog
           className="dialogStyle"
-          modal={false}
           open={this.state.openForgotPassword}
-          autoScrollBodyContent={true}
-          contentStyle={{ width: '35%', minWidth: '300px' }}
-          onRequestClose={this.handleClose}
+          onClose={this.handleClose}
+          aria-labelledby="forgot-password-dialog"
         >
           <ForgotPassword
             {...this.props}

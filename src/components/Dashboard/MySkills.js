@@ -1,29 +1,29 @@
 import React, { Component } from 'react';
-import {
-  Table,
-  TableBody,
-  TableHeader,
-  TableHeaderColumn,
-  TableRow,
-  TableRowColumn,
-} from 'material-ui/Table';
-import SelectField from 'material-ui/SelectField';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import appActions from '../../redux/actions/app';
 import uiActions from '../../redux/actions/ui';
 import PropTypes from 'prop-types';
-import Person from 'material-ui/svg-icons/social/person';
-import IconMenu from 'material-ui/IconMenu';
-import IconButton from 'material-ui/IconButton';
-import RaisedButton from 'material-ui/RaisedButton';
-import CircularProgress from 'material-ui/CircularProgress';
+import Person from '@material-ui/icons/Person';
+import Menu from '@material-ui/core/Menu';
+import MenuList from '@material-ui/core/MenuList';
+import MenuItem from '@material-ui/core/MenuItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
 import CircleImage from '../CircleImage/CircleImage';
-import MenuItem from 'material-ui/MenuItem';
 import Img from 'react-image';
-import Add from 'material-ui/svg-icons/content/add';
-import { urls, colors } from '../../utils';
+import Add from '@material-ui/icons/Add';
+import { urls } from '../../utils';
 
 const styles = {
   imageStyle: {
@@ -33,6 +33,9 @@ const styles = {
     width: '40px',
     verticalAlign: 'middle',
     borderRadius: '50%',
+  },
+  tableCellStyle: {
+    padding: '10px 24px',
   },
 };
 
@@ -44,6 +47,7 @@ class MySkills extends Component {
       loading: true,
       openMenu: false,
       openMenuBottom: false,
+      anchorEl: null,
     };
   }
   componentDidMount() {
@@ -85,64 +89,83 @@ class MySkills extends Component {
       openMenu: value,
     });
   };
+
+  handleMenuClose = () => {
+    this.setState({
+      anchorEl: null,
+    });
+  };
+
+  handleMenuClick = event => {
+    this.setState({
+      anchorEl: event.currentTarget,
+    });
+  };
+
   render() {
     const { userSkills } = this.props;
-    const { openMenu, loading } = this.state;
+    const { anchorEl, loading } = this.state;
+    const open = Boolean(anchorEl);
+    const { tableCellStyle } = styles;
     return (
       <div>
         <div style={{ textAlign: 'right', marginRight: '20px' }}>
-          <IconMenu
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'middle' }}
-            label="Add new skill"
-            animated={false}
-            open={openMenu}
-            onRequestChange={this.handleOnRequestChange}
-            iconButtonElement={
-              <IconButton className="add-button" iconStyle={{ color: '#fff' }}>
-                <Add />
-              </IconButton>
-            }
+          <Menu
+            anchorEl={anchorEl}
+            open={open}
+            onClose={this.handleMenuClose}
+            getContentAnchorEl={null}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
           >
-            <Link to="/skillCreator">
-              <MenuItem leftIcon={<Add />} primaryText="Create a Skill" />
-            </Link>
-            <Link to="/botbuilder">
-              <MenuItem leftIcon={<Person />} primaryText="Create Skill bot" />
-            </Link>
-          </IconMenu>
-          <RaisedButton
-            backgroundColor={colors.header}
-            onClick={() => {
-              this.setState({ openMenu: true });
-            }}
-            label="Create Skill"
-            labelStyle={{ verticalAlign: 'middle' }}
-            labelColor="#fff"
-            icon={<Add />}
-          />
+            <MenuList disableListWrap={true}>
+              <Link to="/skillCreator">
+                <MenuItem onClose={this.handleMenuClose}>
+                  <ListItemIcon>
+                    <Add />
+                  </ListItemIcon>
+                  <ListItemText>Create a Skill</ListItemText>
+                </MenuItem>
+              </Link>
+              <Link to="/botbuilder">
+                <MenuItem onClose={this.handleMenuClose}>
+                  <ListItemIcon>
+                    <Person />
+                  </ListItemIcon>
+                  <ListItemText>Create Skill bot</ListItemText>
+                </MenuItem>
+              </Link>
+            </MenuList>
+          </Menu>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={this.handleMenuClick}
+          >
+            <Add /> Create Skill
+          </Button>
         </div>
 
         {loading ? (
           <div className="center">
-            <CircularProgress size={62} color="#4285f5" />
+            <CircularProgress size={62} color="primary" />
             <h4>Loading</h4>
           </div>
         ) : (
           <div className="table-wrap" style={{ padding: '0px 20px' }}>
-            <Table className="table-root" selectable={false}>
-              <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
+            <Table className="table-root">
+              <TableHead>
                 <TableRow>
-                  <TableHeaderColumn>Image</TableHeaderColumn>
-                  <TableHeaderColumn>Name</TableHeaderColumn>
-                  <TableHeaderColumn>Type</TableHeaderColumn>
-                  <TableHeaderColumn>Status</TableHeaderColumn>
+                  <TableCell>Image</TableCell>
+                  <TableCell>Name</TableCell>
+                  <TableCell>Type</TableCell>
+                  <TableCell>Status</TableCell>
                 </TableRow>
-              </TableHeader>
-              <TableBody displayRowCheckbox={false}>
+              </TableHead>
+              <TableBody>
                 {userSkills.map((skill, index) => {
                   return (
                     <TableRow key={index}>
-                      <TableRowColumn>
+                      <TableCell style={tableCellStyle}>
                         <Link
                           to={{
                             pathname:
@@ -166,8 +189,10 @@ class MySkills extends Component {
                             }
                           />
                         </Link>
-                      </TableRowColumn>
-                      <TableRowColumn style={{ fontSize: '16px' }}>
+                      </TableCell>
+                      <TableCell
+                        style={{ ...tableCellStyle, fontSize: '16px' }}
+                      >
                         {skill.skillName ? (
                           <Link
                             to={{
@@ -187,19 +212,19 @@ class MySkills extends Component {
                         ) : (
                           'NA'
                         )}
-                      </TableRowColumn>
-                      <TableRowColumn style={{ fontSize: '16px' }}>
+                      </TableCell>
+                      <TableCell
+                        style={{ ...tableCellStyle, fontSize: '16px' }}
+                      >
                         {skill.type}
-                      </TableRowColumn>
-                      <TableRowColumn>
-                        <SelectField
-                          floatingLabelText="Status"
-                          fullWidth={true}
-                          value={1}
-                        >
-                          <MenuItem value={1} primaryText="Enable" />
-                        </SelectField>
-                      </TableRowColumn>
+                      </TableCell>
+                      <TableCell style={{ ...tableCellStyle, width: '280px' }}>
+                        <FormControl>
+                          <Select value={1} style={{ width: '280px' }}>
+                            <MenuItem value={1}>Enable</MenuItem>
+                          </Select>
+                        </FormControl>
+                      </TableCell>
                     </TableRow>
                   );
                 })}

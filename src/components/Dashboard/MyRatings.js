@@ -1,20 +1,23 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {
-  Table,
-  TableBody,
-  TableHeader,
-  TableHeaderColumn,
-  TableRow,
-  TableRowColumn,
-} from 'material-ui/Table';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import uiActions from '../../redux/actions/ui';
-import CircularProgress from 'material-ui/CircularProgress';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { fetchUserRatings } from '../../api';
 import { parseDate } from '../../utils';
+
+const styles = {
+  tableCellStyle: {
+    padding: '10px 24px',
+  },
+};
 
 class MyRatings extends Component {
   constructor(props) {
@@ -66,28 +69,31 @@ class MyRatings extends Component {
 
   render() {
     let { ratingsData, loading } = this.state;
+    const { tableCellStyle } = styles;
     return (
       <div>
         {loading ? (
           <div className="center">
-            <CircularProgress size={62} color="#4285f5" />
+            <CircularProgress size={62} color="primary" />
             <h4>Loading</h4>
           </div>
         ) : (
           <div className="table-wrap" style={{ padding: '0px 20px' }}>
-            <Table className="table-root" selectable={false}>
-              <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
+            <Table className="table-root">
+              <TableHead>
                 <TableRow>
-                  <TableHeaderColumn>Skill Name</TableHeaderColumn>
-                  <TableHeaderColumn>Rating</TableHeaderColumn>
-                  <TableHeaderColumn>Timestamp</TableHeaderColumn>
+                  <TableCell>Skill Name</TableCell>
+                  <TableCell>Rating</TableCell>
+                  <TableCell>Timestamp</TableCell>
                 </TableRow>
-              </TableHeader>
-              <TableBody displayRowCheckbox={false}>
+              </TableHead>
+              <TableBody>
                 {ratingsData.map((skill, index) => {
                   return (
                     <TableRow key={index}>
-                      <TableRowColumn style={{ fontSize: '16px' }}>
+                      <TableCell
+                        style={{ ...tableCellStyle, fontSize: '16px' }}
+                      >
                         <Link
                           to={{
                             pathname:
@@ -104,13 +110,15 @@ class MyRatings extends Component {
                             skill.skillName.slice(1)
                           ).replace(/[_-]/g, ' ')}
                         </Link>
-                      </TableRowColumn>
-                      <TableRowColumn style={{ fontSize: '16px' }}>
+                      </TableCell>
+                      <TableCell
+                        style={{ ...tableCellStyle, fontSize: '16px' }}
+                      >
                         {skill.skillStar}
-                      </TableRowColumn>
-                      <TableRowColumn>
+                      </TableCell>
+                      <TableCell style={tableCellStyle}>
                         {parseDate(skill.ratingTimestamp)}
-                      </TableRowColumn>
+                      </TableCell>
                     </TableRow>
                   );
                 })}
