@@ -7,33 +7,35 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import skillActions from '../../redux/actions/skill';
 // Components
-import { List, ListItem } from 'material-ui/List';
-import Divider from 'material-ui/Divider';
-import IconButton from 'material-ui/IconButton';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import Divider from '@material-ui/core/Divider';
 import CircleImage from '../CircleImage/CircleImage';
-import Dialog from 'material-ui/Dialog';
-import FlatButton from 'material-ui/FlatButton';
-import RaisedButton from 'material-ui/RaisedButton';
-import TextField from 'material-ui/TextField';
-import IconMenu from 'material-ui/IconMenu';
-import MenuItem from 'material-ui/MenuItem';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import Button from '@material-ui/core/Button';
+import FormControl from '@material-ui/core/FormControl';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import Input from '@material-ui/core/Input';
+import IconButton from '@material-ui/core/IconButton';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
 import Emoji from 'react-emoji-render';
 
 // Icons
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-import Delete from 'material-ui/svg-icons/action/delete';
-import EditBtn from 'material-ui/svg-icons/editor/mode-edit';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import Delete from '@material-ui/icons/Delete';
+import EditBtn from '@material-ui/icons/BorderColor';
 
 // CSS
 import './SkillFeedbackCard.css';
 
 import { parseDate, formatDate } from '../../utils';
-
-const iconButtonElement = (
-  <IconButton touch={true} tooltip="More" tooltipPosition="bottom-left">
-    <MoreVertIcon />
-  </IconButton>
-);
 
 class SkillFeedbackCard extends Component {
   constructor(props) {
@@ -43,15 +45,34 @@ class SkillFeedbackCard extends Component {
       openEditDialog: false,
       openDeleteDialog: false,
       errorText: '',
+      anchorEl: null,
     };
   }
 
+  handleMenuOpen = event => {
+    this.setState({
+      anchorEl: event.currentTarget,
+    });
+  };
+
+  handleMenuClose = () => {
+    this.setState({
+      anchorEl: null,
+    });
+  };
+
   handleEditOpen = () => {
-    this.setState({ openEditDialog: true });
+    this.setState({
+      openEditDialog: true,
+      anchorEl: null,
+    });
   };
 
   handleDeleteOpen = () => {
-    this.setState({ openDeleteDialog: true });
+    this.setState({
+      openDeleteDialog: true,
+      anchorEl: null,
+    });
   };
 
   handleEditClose = () => {
@@ -86,7 +107,7 @@ class SkillFeedbackCard extends Component {
       skill,
       feedback: feedbackValue,
     };
-    if (feedbackValue.trim()) {
+    if (feedbackValue !== undefined && feedbackValue.trim()) {
       actions
         .setSkillFeedback(skillData)
         .then(payload => {
@@ -124,42 +145,39 @@ class SkillFeedbackCard extends Component {
       email,
       accessToken,
     } = this.props;
-    const { errorText, openEditDialog, openDeleteDialog } = this.state;
+    const {
+      errorText,
+      openEditDialog,
+      openDeleteDialog,
+      anchorEl,
+    } = this.state;
+    const open = Boolean(anchorEl);
     const editActions = [
-      <FlatButton
-        key={0}
-        label="Cancel"
-        labelStyle={{ color: '#4285f4' }}
-        onClick={this.handleEditClose}
-      />,
-      <FlatButton
-        key={1}
-        label="Edit"
-        primary={true}
-        keyboardFocused={true}
-        labelStyle={{ color: '#4285f4' }}
-        onClick={this.postFeedback}
-      />,
+      <Button key={0} color="primary" onClick={this.handleEditClose}>
+        Cancel
+      </Button>,
+      <Button key={1} color="primary" onClick={this.postFeedback}>
+        Edit
+      </Button>,
     ];
 
     const deleteActions = [
-      <FlatButton
+      <Button
         key={0}
-        label="Cancel"
-        primary={true}
         style={{ marginRight: '10px' }}
+        color="primary"
         onClick={this.handleDeleteClose}
-      />,
-      <FlatButton
+      >
+        Cancel
+      </Button>,
+      <Button
         key={1}
-        label="Delete"
-        primary={true}
-        keyboardFocused={true}
-        labelStyle={{ color: '#fff' }}
-        backgroundColor={'#ff0000'}
-        hoverColor={'rgba(255,0,0,0.7)'}
+        variant="contained"
+        color="secondary"
         onClick={this.deleteFeedback}
-      />,
+      >
+        Delete
+      </Button>,
     ];
 
     let userFeedback = null;
@@ -181,35 +199,46 @@ class SkillFeedbackCard extends Component {
         if (accessToken && email && userEmail === email) {
           userFeedbackCard = (
             <div key={index}>
-              <ListItem
-                key={index}
-                leftAvatar={<CircleImage {...avatarProps} size="40" />}
-                primaryText={
-                  <div>
-                    <div>{userName === '' ? userEmail : userName}</div>
-                    <div className="feedback-timestamp">
-                      {formatDate(parseDate(data.timestamp))}
-                    </div>
+              <ListItem key={index} button>
+                <CircleImage {...avatarProps} size="40" />
+                <div style={{ width: '90%' }}>
+                  <div>{userName === '' ? userEmail : userName}</div>
+                  <div className="feedback-timestamp">
+                    {formatDate(parseDate(data.timestamp))}
                   </div>
-                }
-                rightIconButton={
-                  <IconMenu iconButtonElement={iconButtonElement}>
-                    <MenuItem
-                      onClick={this.handleEditOpen}
-                      leftIcon={<EditBtn />}
-                    >
-                      Edit
+                  <div>
+                    <Emoji text={data.feedback} />
+                  </div>
+                </div>
+                <div>
+                  <IconButton
+                    aria-owns={open ? 'options' : undefined}
+                    aria-haspopup="true"
+                    onClick={this.handleMenuOpen}
+                  >
+                    <MoreVertIcon />
+                  </IconButton>
+                  <Menu
+                    id="options"
+                    anchorEl={anchorEl}
+                    open={open}
+                    onClose={this.handleMenuClose}
+                  >
+                    <MenuItem onClick={this.handleEditOpen}>
+                      <ListItemIcon>
+                        <EditBtn />
+                      </ListItemIcon>
+                      <ListItemText> Edit</ListItemText>
                     </MenuItem>
-                    <MenuItem
-                      onClick={this.handleDeleteOpen}
-                      leftIcon={<Delete />}
-                    >
-                      Delete
+                    <MenuItem onClick={this.handleDeleteOpen}>
+                      <ListItemIcon>
+                        <Delete />
+                      </ListItemIcon>
+                      <ListItemText>Delete</ListItemText>
                     </MenuItem>
-                  </IconMenu>
-                }
-                secondaryText={<Emoji text={data.feedback} />}
-              />
+                  </Menu>
+                </div>
+              </ListItem>
               <Divider inset={true} />
             </div>
           );
@@ -218,23 +247,22 @@ class SkillFeedbackCard extends Component {
         // eslint-disable-next-line
         else {
           return (
-            <ListItem
-              key={index}
-              leftAvatar={<CircleImage {...avatarProps} size="40" />}
-              primaryText={
+            <ListItem key={index} button>
+              <CircleImage {...avatarProps} size="40" />
+              <div>
                 <div>
-                  <div>
-                    {userName !== ''
-                      ? userName
-                      : `${userEmail.slice(0, userEmail.indexOf('@') + 1)}...`}
-                  </div>
-                  <div className="feedback-timestamp">
-                    {formatDate(parseDate(data.timestamp))}
-                  </div>
+                  {userName !== ''
+                    ? userName
+                    : `${userEmail.slice(0, userEmail.indexOf('@') + 1)}...`}
                 </div>
-              }
-              secondaryText={<Emoji text={data.feedback} />}
-            />
+                <div className="feedback-timestamp">
+                  {formatDate(parseDate(data.timestamp))}
+                </div>
+                <div>
+                  <Emoji text={data.feedback} />
+                </div>
+              </div>
+            </ListItem>
           );
         }
       });
@@ -261,22 +289,29 @@ class SkillFeedbackCard extends Component {
             </div>
             <div>
               <div className="feedback-textbox">
-                <TextField
-                  id="post-feedback"
-                  hintText="Skill Feedback"
-                  defaultValue=""
-                  errorText={errorText}
-                  multiLine={true}
-                  fullWidth={true}
-                  onChange={this.setFeedback}
-                />
-                <RaisedButton
+                <FormControl fullWidth={true}>
+                  <Input
+                    id="post-feedback"
+                    placeholder="Skill Feedback"
+                    defaultValue=""
+                    multiLine={true}
+                    fullWidth={true}
+                    onChange={this.setFeedback}
+                    aria-describedby="post-feedback-helper-text"
+                  />
+                  <FormHelperText id="post-feedback-helper-text" error>
+                    {errorText}
+                  </FormHelperText>
+                </FormControl>
+                <Button
                   label="Post"
-                  labelStyle={{ color: 'white' }}
-                  backgroundColor={'#4285f4'}
+                  color="primary"
+                  variant="contained"
                   style={{ margin: 10 }}
                   onClick={this.postFeedback}
-                />
+                >
+                  Post
+                </Button>
               </div>
             </div>
           </div>
@@ -288,11 +323,12 @@ class SkillFeedbackCard extends Component {
               {feedbackCards}
               {(userFeedbackCard && skillFeedbacks.length >= 4) ||
               skillFeedbacks.length >= 5 ? (
-                <Link to={`${language}/feedbacks`}>
-                  <ListItem
-                    className="display-all"
-                    primaryText={'Show all reviews'}
-                  />
+                <Link to={`${language}/feedbacks`} style={{ display: 'block' }}>
+                  <ListItem button>
+                    <ListItemText style={{ textAlign: 'center' }}>
+                      Show all reviews
+                    </ListItemText>
+                  </ListItem>
                 </Link>
               ) : null}
             </List>
@@ -302,29 +338,42 @@ class SkillFeedbackCard extends Component {
             </div>
           ))}
         <Dialog
-          title="Edit Feedback"
-          actions={editActions}
-          modal={false}
           open={openEditDialog}
-          onRequestClose={this.handleEditClose}
+          onClose={this.handleEditClose}
+          maxWidth={'sm'}
+          fullWidth={true}
         >
-          <TextField
-            id="edit-feedback"
-            hintText="Skill Feedback"
-            defaultValue={userFeedback}
-            errorText={errorText}
-            multiLine={true}
-            fullWidth={true}
-            onChange={this.editFeedback}
-          />
+          <DialogTitle>Edit Feedback</DialogTitle>
+          <DialogContent>
+            <FormControl fullWidth={true}>
+              <Input
+                id="edit-feedback"
+                placeholder="Skill Feedback"
+                defaultValue={userFeedback}
+                multiLine={true}
+                fullWidth={true}
+                onChange={this.editFeedback}
+                aria-describedby="edit-feedback-helper-text"
+              />
+              <FormHelperText id="edit-feedback-helper-text" error>
+                {errorText}
+              </FormHelperText>
+            </FormControl>
+          </DialogContent>
+          <DialogActions>{editActions}</DialogActions>
         </Dialog>
         <Dialog
-          actions={deleteActions}
-          modal={true}
           open={openDeleteDialog}
-          onRequestClose={this.handleEditClose}
+          onClose={this.handleEditClose}
+          maxWidth={'sm'}
+          fullWidth={true}
         >
-          Are you sure, you want to delete your feedback?
+          <DialogContent>
+            <DialogContentText>
+              Are you sure, you want to delete your feedback?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>{deleteActions}</DialogActions>
         </Dialog>
       </Paper>
     );

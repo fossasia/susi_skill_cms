@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import uiActions from '../../redux/actions/ui';
-import CircularProgress from 'material-ui/CircularProgress';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { fetchSkillsByAuthor } from '../../api';
 import {
   Legend,
@@ -69,7 +69,7 @@ class MyAnalytics extends Component {
       <div>
         {loading ? (
           <div className="center">
-            <CircularProgress size={62} color="#4285f5" />
+            <CircularProgress size={62} color="primary" />
             <h4>Loading</h4>
           </div>
         ) : (

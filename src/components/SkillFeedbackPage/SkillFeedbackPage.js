@@ -8,22 +8,29 @@ import PropTypes from 'prop-types';
 
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import Footer from '../Footer/Footer.react';
-import { ListItem } from 'material-ui/List';
-import Divider from 'material-ui/Divider';
-import IconButton from 'material-ui/IconButton';
+import ListItem from '@material-ui/core/ListItem';
+import IconButton from '@material-ui/core/IconButton';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import Divider from '@material-ui/core/Divider';
 import CircleImage from '../CircleImage/CircleImage';
-import Dialog from 'material-ui/Dialog';
-import FlatButton from 'material-ui/FlatButton';
-import RaisedButton from 'material-ui/RaisedButton';
-import TextField from 'material-ui/TextField';
-import IconMenu from 'material-ui/IconMenu';
-import MenuItem from 'material-ui/MenuItem';
-import CircularProgress from 'material-ui/CircularProgress';
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import FormControl from '@material-ui/core/FormControl';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import Input from '@material-ui/core/Input';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import AuthorSkills from '../AuthorSkills/AuthorSkills';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-import Delete from 'material-ui/svg-icons/action/delete';
-import EditBtn from 'material-ui/svg-icons/editor/mode-edit';
-import NavigationChevronRight from 'material-ui/svg-icons/navigation/chevron-right';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import Delete from '@material-ui/icons/Delete';
+import EditBtn from '@material-ui/icons/BorderColor';
+import NavigationChevronRight from '@material-ui/icons/ChevronRight';
 import Emoji from 'react-emoji-render';
 
 import '../SkillFeedbackCard/SkillFeedbackCard.css';
@@ -37,12 +44,6 @@ const styles = {
     fontSize: '14px',
   },
 };
-
-const iconButtonElement = (
-  <IconButton touch={true} tooltip="More" tooltipPosition="bottom-left">
-    <MoreVertIcon />
-  </IconButton>
-);
 
 const LEFT_PAGE = 'LEFT';
 const RIGHT_PAGE = 'RIGHT';
@@ -72,6 +73,7 @@ class SkillFeedbackPage extends Component {
       showAuthorSkills: false,
       currentPage: 1,
       currentRecords: [],
+      anchorEl: null,
     };
     this.totalPages = 1;
     this.pageNeighbours =
@@ -204,12 +206,16 @@ class SkillFeedbackPage extends Component {
   };
 
   handleEditOpen = () => {
-    this.setState({ openEditDialog: true });
+    this.setState({
+      openEditDialog: true,
+      anchorEl: null,
+    });
   };
 
   toggleDeleteModal = () => {
     this.setState(prevState => ({
       openDeleteModal: !prevState.openDeleteModal,
+      anchorEl: null,
     }));
   };
 
@@ -218,10 +224,6 @@ class SkillFeedbackPage extends Component {
       openEditDialog: false,
       errorText: '',
     });
-  };
-
-  handleEditOpen = () => {
-    this.setState({ openEditDialog: true });
   };
 
   editFeedback = () => {
@@ -275,6 +277,18 @@ class SkillFeedbackPage extends Component {
     }
   };
 
+  handleMenuOpen = event => {
+    this.setState({
+      anchorEl: event.currentTarget,
+    });
+  };
+
+  handleMenuClose = () => {
+    this.setState({
+      anchorEl: null,
+    });
+  };
+
   render() {
     const {
       currentPage,
@@ -283,6 +297,7 @@ class SkillFeedbackPage extends Component {
       openEditDialog,
       openDeleteModal,
       loading,
+      anchorEl,
     } = this.state;
     const {
       image,
@@ -294,7 +309,7 @@ class SkillFeedbackPage extends Component {
     } = this.props;
 
     const { containerStyle } = styles;
-
+    const open = Boolean(anchorEl);
     const imgUrl = !image
       ? '/favicon-512x512.jpg'
       : `${urls.API_URL}/cms/getImage.png?model=general&language=${
@@ -306,37 +321,31 @@ class SkillFeedbackPage extends Component {
     const pages = this.fetchPageNumbers();
 
     const editActions = [
-      <FlatButton
-        key={0}
-        label="Cancel"
-        labelStyle={{ color: '#4285f4' }}
-        onClick={this.handleEditClose}
-      />,
-      <FlatButton
-        key={1}
-        label="Edit"
-        primary={true}
-        keyboardFocused={true}
-        labelStyle={{ color: '#4285f4' }}
-        onClick={this.postFeedback}
-      />,
+      <Button key={0} color="primary" onClick={this.handleEditClose}>
+        Cancel
+      </Button>,
+      <Button key={1} color="primary" onClick={this.postFeedback}>
+        Edit
+      </Button>,
     ];
 
     const deleteActions = [
-      <FlatButton
-        key={1}
-        label="Yes"
-        primary={true}
-        keyboardFocused={true}
-        labelStyle={{ color: '#4285f4' }}
-        onClick={this.deleteFeedback}
-      />,
-      <FlatButton
+      <Button
         key={0}
-        label="No"
-        labelStyle={{ color: '#4285f4' }}
+        style={{ marginRight: '10px' }}
+        color="primary"
         onClick={this.toggleDeleteModal}
-      />,
+      >
+        Cancel
+      </Button>,
+      <Button
+        key={1}
+        variant="contained"
+        color="secondary"
+        onClick={this.deleteFeedback}
+      >
+        Delete
+      </Button>,
     ];
 
     let feedbackCards = [];
@@ -359,34 +368,46 @@ class SkillFeedbackPage extends Component {
         };
         userFeedbackCard = (
           <div>
-            <ListItem
-              leftAvatar={<CircleImage {...avatarProps} size="40" />}
-              primaryText={
-                <div>
-                  <div>{userName === '' ? userEmail : userName}</div>
-                  <div className="feedback-timestamp">
-                    {formatDate(parseDate(userFeedback.timestamp))}
-                  </div>
+            <ListItem button>
+              <CircleImage {...avatarProps} size="40" />
+              <div style={{ width: '90%' }}>
+                <div>{userName === '' ? userEmail : userName}</div>
+                <div className="feedback-timestamp">
+                  {formatDate(parseDate(userFeedback.timestamp))}
                 </div>
-              }
-              rightIconButton={
-                <IconMenu iconButtonElement={iconButtonElement}>
-                  <MenuItem
-                    onClick={this.handleEditOpen}
-                    leftIcon={<EditBtn />}
-                  >
-                    Edit
+                <div>
+                  <Emoji text={userFeedback.feedback} />
+                </div>
+              </div>
+              <div>
+                <IconButton
+                  aria-owns={open ? 'options' : undefined}
+                  aria-haspopup="true"
+                  onClick={this.handleMenuOpen}
+                >
+                  <MoreVertIcon />
+                </IconButton>
+                <Menu
+                  id="options"
+                  anchorEl={anchorEl}
+                  open={open}
+                  onClose={this.handleMenuClose}
+                >
+                  <MenuItem onClick={this.handleEditOpen}>
+                    <ListItemIcon>
+                      <EditBtn />
+                    </ListItemIcon>
+                    <ListItemText> Edit</ListItemText>
                   </MenuItem>
-                  <MenuItem
-                    onClick={this.toggleDeleteModal}
-                    leftIcon={<Delete />}
-                  >
-                    Delete
+                  <MenuItem onClick={this.toggleDeleteModal}>
+                    <ListItemIcon>
+                      <Delete />
+                    </ListItemIcon>
+                    <ListItemText>Delete</ListItemText>
                   </MenuItem>
-                </IconMenu>
-              }
-              secondaryText={<Emoji text={userFeedback.feedback} />}
-            />
+                </Menu>
+              </div>
+            </ListItem>
             <Divider inset={true} />
           </div>
         );
@@ -405,26 +426,22 @@ class SkillFeedbackPage extends Component {
           };
           if (userEmail !== email) {
             return (
-              <ListItem
-                key={index}
-                leftAvatar={<CircleImage {...avatarProps} size="40" />}
-                primaryText={
+              <ListItem key={index} button>
+                <CircleImage {...avatarProps} size="40" />
+                <div>
                   <div>
-                    <div>
-                      {userName !== ''
-                        ? userName
-                        : `${userEmail.slice(
-                            0,
-                            userEmail.indexOf('@') + 1,
-                          )}...`}
-                    </div>
-                    <div className="feedback-timestamp">
-                      {formatDate(parseDate(data.timestamp))}
-                    </div>
+                    {userName !== ''
+                      ? userName
+                      : `${userEmail.slice(0, userEmail.indexOf('@') + 1)}...`}
                   </div>
-                }
-                secondaryText={<Emoji text={data.feedback} />}
-              />
+                  <div className="feedback-timestamp">
+                    {formatDate(parseDate(data.timestamp))}
+                  </div>
+                  <div>
+                    <Emoji text={data.feedback} />
+                  </div>
+                </div>
+              </ListItem>
             );
           }
           return null;
@@ -441,22 +458,29 @@ class SkillFeedbackPage extends Component {
             </div>
             <div>
               <div className="feedback-textbox">
-                <TextField
-                  id="post-feedback"
-                  hintText="Skill Feedback"
-                  defaultValue=""
-                  errorText={errorText}
-                  multiLine={true}
-                  fullWidth={true}
-                  onChange={this.setFeedback}
-                />
-                <RaisedButton
+                <FormControl fullWidth={true}>
+                  <Input
+                    id="post-feedback"
+                    placeholder="Skill Feedback"
+                    defaultValue=""
+                    multiLine={true}
+                    fullWidth={true}
+                    onChange={this.setFeedback}
+                    aria-describedby="post-feedback-helper-text"
+                  />
+                  <FormHelperText id="post-feedback-helper-text" error>
+                    {errorText}
+                  </FormHelperText>
+                </FormControl>
+                <Button
                   label="Post"
-                  labelStyle={{ color: 'white' }}
-                  backgroundColor={'#4285f4'}
+                  color="primary"
+                  variant="contained"
                   style={{ margin: 10 }}
                   onClick={this.postFeedback}
-                />
+                >
+                  Post
+                </Button>
               </div>
             </div>
           </div>
@@ -637,7 +661,7 @@ class SkillFeedbackPage extends Component {
           <StaticAppBar {...this.props} />
           <h1 className="skill_loading_container">
             <div className="center">
-              <CircularProgress size={62} color="#4285f5" />
+              <CircularProgress size={62} color="primary" />
               <h4>Loading</h4>
             </div>
           </h1>
@@ -648,30 +672,42 @@ class SkillFeedbackPage extends Component {
       <div>
         {renderElement}
         <Dialog
-          title="Edit Feedback"
-          actions={editActions}
-          modal={false}
           open={openEditDialog}
-          onRequestClose={this.handleEditClose}
+          onClose={this.handleEditClose}
+          maxWidth={'sm'}
+          fullWidth={true}
         >
-          <TextField
-            id="edit-feedback"
-            hintText="Skill Feedback"
-            defaultValue={userFeedback ? userFeedback.feedback : ''}
-            errorText={errorText}
-            multiLine={true}
-            fullWidth={true}
-            onChange={this.editFeedback}
-          />
+          <DialogTitle>Edit Feedback</DialogTitle>
+          <DialogContent>
+            <FormControl fullWidth={true}>
+              <Input
+                id="edit-feedback"
+                placeholder="Skill Feedback"
+                defaultValue={userFeedback ? userFeedback.feedback : ''}
+                multiLine={true}
+                fullWidth={true}
+                onChange={this.editFeedback}
+                aria-describedby="edit-feedback-helper-text"
+              />
+              <FormHelperText id="edit-feedback-helper-text" error>
+                {errorText}
+              </FormHelperText>
+            </FormControl>
+          </DialogContent>
+          <DialogActions>{editActions}</DialogActions>
         </Dialog>
         <Dialog
-          title="Delete Feedback"
-          actions={deleteActions}
-          modal={true}
           open={openDeleteModal}
-          onRequestClose={this.handleEditClose}
+          onClose={this.handleEditClose}
+          maxWidth={'sm'}
+          fullWidth={true}
         >
-          Are you sure, you want to delete your feedback?
+          <DialogContent>
+            <DialogContentText>
+              Are you sure, you want to delete your feedback?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>{deleteActions}</DialogActions>
         </Dialog>
         <div>
           <AuthorSkills

@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import Ratings from 'react-ratings-declarative';
 import { Link } from 'react-router-dom';
-import { Card } from 'material-ui/Card';
+import Card from '@material-ui/core/Card';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import ReactTooltip from 'react-tooltip';
 import SkillRatingPopover from '../SkillRating/SkillRatingPopover.js';
-import NavigationArrowDropDown from 'material-ui/svg-icons/navigation/arrow-drop-down';
+import NavigationArrowDropDown from '@material-ui/icons/ArrowDropDown';
 import CircleImage from '../CircleImage/CircleImage';
 import StaffPick from '../../images/staff_pick.png';
 import '../SkillRating/ReviewPopoverStyle.css';

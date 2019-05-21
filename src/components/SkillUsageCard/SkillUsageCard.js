@@ -20,7 +20,7 @@ import {
 import CountryWiseSkillUsageCard from '../CountryWiseSkillUsageCard/CountryWiseSkillUsageCard';
 
 // Material UI
-import { Paper } from 'material-ui';
+import Paper from '@material-ui/core/Paper';
 
 // Static assets
 import './SkillUsage.css';
