@@ -42,8 +42,8 @@ import ChevronLeft from 'material-ui/svg-icons/navigation/chevron-left';
 import ChevronRight from 'material-ui/svg-icons/navigation/chevron-right';
 
 // Ant Design Components
-import notification from 'antd/lib/notification';
-import Icon from 'antd/lib/icon';
+import { notification, Icon } from 'antd';
+import 'antd/dist/antd.css';
 import { bindActionCreators } from 'redux';
 let languages = [];
 
