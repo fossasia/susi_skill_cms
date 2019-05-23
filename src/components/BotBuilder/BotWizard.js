@@ -12,17 +12,17 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import uiActions from '../../redux/actions/ui';
 import Configure from './BotBuilderPages/Configure';
-import notification from 'antd/lib/notification';
 import Deploy from './BotBuilderPages/Deploy';
 import { Paper, TextField } from 'material-ui';
 import ChevronLeft from 'material-ui/svg-icons/navigation/chevron-left';
 import ChevronRight from 'material-ui/svg-icons/navigation/chevron-right';
 import { colors, avatars, getQueryStringValue } from '../../utils';
 import { storeDraft, updateSkill } from '../../api/index';
-import Icon from 'antd/lib/icon';
 import './BotBuilder.css';
 import createActions from '../../redux/actions/create';
 import SkillCreator from '../SkillCreator/SkillCreator';
+import { notification, Icon } from 'antd';
+import 'antd/dist/antd.css';
 
 const styles = {
   home: {

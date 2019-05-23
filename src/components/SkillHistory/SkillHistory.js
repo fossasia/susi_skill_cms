@@ -2,14 +2,14 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { fetchCommitHistory, fetchSkillByCommitId } from '../../api/index';
 import { Link } from 'react-router-dom';
-import notification from 'antd/lib/notification';
-import Icon from 'antd/lib/icon';
 import AceEditor from 'react-ace';
 import Diff from 'react-diff-viewer';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Paper from '@material-ui/core/Paper';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
+import { notification, Icon } from 'antd';
+import 'antd/dist/antd.css';
 
 import 'brace/mode/markdown';
 import 'brace/theme/github';

@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import AceEditor from 'react-ace';
 import Paper from '@material-ui/core/Paper';
 import Diff from 'react-diff-viewer';
-import Icon from 'antd/lib/icon';
-import notification from 'antd/lib/notification';
+import { notification, Icon } from 'antd';
+import 'antd/dist/antd.css';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { connect } from 'react-redux';
 
