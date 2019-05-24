@@ -20,55 +20,11 @@ import appActions from '../../../redux/actions/app';
 import uiActions from '../../../redux/actions/ui';
 import { getEmailExists } from '../../../api';
 
+/* Styled Components */
+import authStyles from '../../../styledComponents/authStyles';
+
 /* CSS */
 import './SignUp.css';
-
-const styles = {
-  emailStyle: {
-    height: '35px',
-    borderRadius: 4,
-    border: '1px solid #ced4da',
-    fontSize: 16,
-    padding: '0px 10px',
-    width: '272px',
-    marginTop: '10px',
-  },
-  fieldStyle: {
-    height: '35px',
-    borderRadius: 4,
-    border: '1px solid #ced4da',
-    fontSize: 16,
-    padding: '0px 10px',
-    width: '250px',
-    marginTop: '10px',
-  },
-  inputStyle: {
-    height: '35px',
-    marginBottom: '10px',
-    webkitTextFillColor: 'unset',
-  },
-  inputpassStyle: {
-    height: '35px',
-    marginBottom: '10px',
-    marginRight: '50px',
-    width: '90%',
-    webkitTextFillColor: 'unset',
-  },
-  bodyStyle: {
-    padding: 0,
-    textAlign: 'center',
-  },
-  closingStyle: {
-    position: 'absolute',
-    zIndex: 1200,
-    fill: '#444',
-    width: '26px',
-    height: '26px',
-    right: '10px',
-    top: '10px',
-    cursor: 'pointer',
-  },
-};
 
 class SignUp extends Component {
   static propTypes = {
@@ -312,9 +268,9 @@ class SignUp extends Component {
       emailStyle,
       inputStyle,
       fieldStyle,
-      inputpassStyle,
+      inputPasswordStyle,
       closingStyle,
-    } = styles;
+    } = authStyles;
 
     const isValid =
       email &&
@@ -358,7 +314,7 @@ class SignUp extends Component {
               <PasswordField
                 name="password"
                 style={fieldStyle}
-                inputStyle={inputpassStyle}
+                inputStyle={inputPasswordStyle}
                 value={password}
                 placeholder="Password"
                 underlineStyle={{ display: 'none' }}
@@ -381,7 +337,7 @@ class SignUp extends Component {
               <PasswordField
                 name="confirmPassword"
                 style={fieldStyle}
-                inputStyle={inputpassStyle}
+                inputStyle={inputPasswordStyle}
                 value={confirmPassword}
                 placeholder="Confirm Password"
                 underlineStyle={{ display: 'none' }}

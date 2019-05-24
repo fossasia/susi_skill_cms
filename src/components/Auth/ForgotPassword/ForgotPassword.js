@@ -16,33 +16,11 @@ import TextField from 'material-ui/TextField';
 /* Utils*/
 import { colors } from '../../../utils';
 
+/* Styled Component*/
+import authStyles from '../../../styledComponents/authStyles';
+
 /* CSS*/
 import './ForgotPassword.css';
-
-const styles = {
-  containerStyle: {
-    width: '100%',
-    textAlign: 'center',
-    padding: '10px',
-  },
-  underlineFocusStyle: {
-    color: colors.header,
-  },
-  closingStyle: {
-    position: 'absolute',
-    zIndex: 1200,
-    fill: '#444',
-    width: '26px',
-    height: '26px',
-    right: '10px',
-    top: '10px',
-    cursor: 'pointer',
-  },
-  bodyStyle: {
-    padding: 0,
-    textAlign: 'center',
-  },
-};
 
 class ForgotPassword extends Component {
   static propTypes = {
@@ -186,7 +164,7 @@ class ForgotPassword extends Component {
       underlineFocusStyle,
       closingStyle,
       bodyStyle,
-    } = styles;
+    } = authStyles;
 
     return (
       <Dialog
