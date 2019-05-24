@@ -20,10 +20,6 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import Snackbar from 'material-ui/Snackbar';
 import NotFound from './components/NotFound/NotFound.react';
 import Admin from './components/Admin/Admin';
-import Users from './components/Admin/ListUser/ListUser.js';
-import Skills from './components/Admin/ListSkills/ListSkills.js';
-import SystemSettings from './components/Admin/SystemSettings/SystemSettings';
-import SystemLogs from './components/Admin/SystemLogs/SystemLogs.js';
 import Dashboard from './components/Dashboard/Dashboard';
 import BrowseSkill from './components/BrowseSkill/BrowseSkill';
 import SkillListing from './components/SkillPage/SkillListing';
@@ -159,15 +155,7 @@ class App extends React.Component {
                   path="/:category/:skill/edit/:lang/:commit"
                   component={SkillCreator}
                 />
-                <Route exact path="/admin" component={Admin} />
-                <Route exact path="/admin/users" component={Users} />
-                <Route exact path="/admin/skills" component={Skills} />
-                <Route
-                  exact
-                  path="/admin/settings"
-                  component={SystemSettings}
-                />
-                <Route exact path="/admin/logs" component={SystemLogs} />
+                <Route path="/admin" component={Admin} />
                 <Route
                   exact
                   path="/:category/:skill/:lang"

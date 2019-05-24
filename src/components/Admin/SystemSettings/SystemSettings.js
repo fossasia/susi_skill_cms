@@ -1,25 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import Paper from 'material-ui/Paper';
-import Table from 'antd/lib/table';
-import Tabs from 'antd/lib/tabs';
-import { LocaleProvider } from 'antd';
-import enUS from 'antd/lib/locale-provider/en_US';
-import NotFound from '../../NotFound/NotFound.react';
-import StaticAppBar from '../../StaticAppBar/StaticAppBar.react';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
 import { fetchApiKeys } from '../../../api/index';
-
-const TabPane = Tabs.TabPane;
-
-const styles = {
-  tabStyle: {
-    width: '100%',
-    animated: false,
-    textAlign: 'left',
-    display: 'inline-block',
-  },
-};
 
 class SystemSettings extends Component {
   constructor(props) {
@@ -29,24 +15,6 @@ class SystemSettings extends Component {
       apiKeys: [],
       loading: true,
     };
-
-    this.keysColumns = [
-      {
-        title: 'S.No.',
-        dataIndex: 'serialNum',
-        width: '10%',
-      },
-      {
-        title: 'Key Name',
-        dataIndex: 'keyName',
-        width: '30%',
-      },
-      {
-        title: 'Value',
-        dataIndex: 'value',
-        width: '60%',
-      },
-    ];
   }
 
   componentDidMount() {
@@ -74,72 +42,30 @@ class SystemSettings extends Component {
       });
   }
 
-  handleTabChange = activeKey => {
-    if (activeKey === '1') {
-      this.props.history.push('/admin');
-    }
-    if (activeKey === '2') {
-      this.props.history.push('/admin/users');
-    }
-    if (activeKey === '3') {
-      this.props.history.push('/admin/skills');
-    }
-    if (activeKey === '5') {
-      this.props.history.push('/admin/logs');
-    }
-  };
-
   render() {
-    const { tabStyle } = styles;
-    const { isAdmin } = this.props;
     return (
-      <div>
-        {isAdmin ? (
-          <div>
-            <div className="heading">
-              <StaticAppBar {...this.props} />
-              <h2 className="h2">System Settings</h2>
-            </div>
-            <div className="tabs">
-              <Paper style={tabStyle} zDepth={0}>
-                <Tabs
-                  defaultActiveKey="4"
-                  onTabClick={this.handleTabChange}
-                  tabPosition="top"
-                  animated={false}
-                  type="card"
-                  style={{ minHeight: '500px' }}
-                >
-                  <TabPane tab="Admin" key="1" />
-                  <TabPane tab="Users" key="2" />
-                  <TabPane tab="Skills" key="3" />
-                  <TabPane tab="System Settings" key="4">
-                    <div className="table">
-                      <h3 className="h3">Config Keys</h3>
-                      <LocaleProvider locale={enUS}>
-                        <Table
-                          bordered
-                          columns={this.keysColumns}
-                          locale={{ emptyText: 'No config keys found!' }}
-                          rowKey={record => record.serialNum}
-                          dataSource={this.state.apiKeys}
-                          loading={this.state.loading}
-                          pagination={false}
-                          style={{
-                            width: '50%',
-                          }}
-                        />
-                      </LocaleProvider>
-                    </div>
-                  </TabPane>
-                  <TabPane tab="System Logs" key="5" />
-                </Tabs>
-              </Paper>
-            </div>
-          </div>
-        ) : (
-          <NotFound />
-        )}
+      <div className="tabs">
+        <h3 className="h3">Config Keys</h3>
+        <Table style={{ maxWidth: '40rem' }}>
+          <TableHead>
+            <TableRow>
+              <TableCell>S.No.</TableCell>
+              <TableCell align="right">Key Name</TableCell>
+              <TableCell align="right">Value</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {this.state.apiKeys.map(row => (
+              <TableRow key={row.id}>
+                <TableCell component="th" scope="row">
+                  {row.serialNum}
+                </TableCell>
+                <TableCell align="right">{row.keyName}</TableCell>
+                <TableCell align="right">{row.value}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       </div>
     );
   }
@@ -147,16 +73,6 @@ class SystemSettings extends Component {
 
 SystemSettings.propTypes = {
   history: PropTypes.object,
-  isAdmin: PropTypes.bool,
 };
 
-function mapStateToProps(store) {
-  return {
-    isAdmin: store.app.isAdmin,
-  };
-}
-
-export default connect(
-  mapStateToProps,
-  null,
-)(SystemSettings);
+export default SystemSettings;

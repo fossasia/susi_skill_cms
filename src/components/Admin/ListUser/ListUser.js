@@ -1,10 +1,5 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import Paper from 'material-ui/Paper';
-import Tabs from 'antd/lib/tabs';
-import StaticAppBar from '../../StaticAppBar/StaticAppBar.react';
-import NotFound from '../../NotFound/NotFound.react';
 import Table from 'antd/lib/table';
 import { Input } from 'antd';
 import FlatButton from 'material-ui/FlatButton';
@@ -17,14 +12,11 @@ import {
   deleteUserAccount,
   modifyUserDevices,
   fetchAdminUserStats,
-  getAdmin,
 } from '../../../api/index';
 import { LocaleProvider } from 'antd';
 import enUS from 'antd/lib/locale-provider/en_US';
 import 'antd/lib/table/style/index.css';
 import './ListUser.css';
-
-const TabPane = Tabs.TabPane;
 
 const Search = Input.Search;
 
@@ -304,30 +296,18 @@ class ListUser extends Component {
   componentDidMount() {
     document.title = 'SUSI.AI - User Detail List';
     const pagination = { ...this.state.pagination };
-    getAdmin()
+    fetchAdminUserStats()
       .then(payload => {
-        const { showAdmin } = payload;
-        if (showAdmin) {
-          fetchAdminUserStats()
-            .then(payload => {
-              const { userCount } = payload;
-              pagination.total = userCount;
-              pagination.pageSize = 50;
-              pagination.showQuickJumper = true;
-              this.setState({
-                pagination,
-              });
-              this.fetch();
-            })
-            .catch(error => console.log(error));
-        } else {
-          console.log('Not allowed to access this page!');
-        }
+        const { userCount } = payload;
+        pagination.total = userCount;
+        pagination.pageSize = 50;
+        pagination.showQuickJumper = true;
+        this.setState({
+          pagination,
+        });
+        this.fetch();
       })
-      .catch(error => {
-        console.log('Not allowed to access this page!');
-        console.log(error);
-      });
+      .catch(error => console.log(error));
   }
 
   editUserRole = (email, userRole) => {
@@ -372,21 +352,6 @@ class ListUser extends Component {
     this.setState({
       room: value,
     });
-  };
-
-  handleTabChange = activeKey => {
-    if (activeKey === '1') {
-      this.props.history.push('/admin');
-    }
-    if (activeKey === '3') {
-      this.props.history.push('/admin/skills');
-    }
-    if (activeKey === '4') {
-      this.props.history.push('/admin/settings');
-    }
-    if (activeKey === '5') {
-      this.props.history.push('/admin/logs');
-    }
   };
 
   handleUserRoleChange = (event, index, value) => {
@@ -454,7 +419,6 @@ class ListUser extends Component {
   };
 
   render() {
-    const { isAdmin } = this.props;
     const actions = [
       <FlatButton
         key={1}
@@ -503,351 +467,270 @@ class ListUser extends Component {
     const themeForegroundColor = '#272727';
     const themeBackgroundColor = '#fff';
 
-    const tabStyle = {
-      width: '100%',
-      animated: false,
-      textAlign: 'left',
-      display: 'inline-block',
-    };
-
     return (
-      <div>
-        {isAdmin ? (
-          <div>
-            <div className="heading">
-              <StaticAppBar {...this.props} />
-              <h2 className="h2">Users Panel</h2>
+      <div className="table">
+        <div>
+          <Dialog
+            title="Change User Role"
+            actions={actions}
+            modal={true}
+            open={this.state.showEditDialog}
+          >
+            <div>
+              Select new User Role for
+              <span style={{ fontWeight: 'bold', marginLeft: '5px' }}>
+                {this.state.userEmail}
+              </span>
             </div>
-            <div className="tabs">
-              <Paper style={tabStyle} zDepth={0}>
-                <Tabs
-                  defaultActiveKey="2"
-                  onTabClick={this.handleTabChange}
-                  tabPosition={this.state.tabPosition}
-                  animated={false}
-                  type="card"
-                  style={{ minHeight: '500px' }}
-                >
-                  <TabPane tab="Admin" key="1" />
-                  <TabPane tab="Users" key="2">
-                    <div className="table">
-                      <div>
-                        <Dialog
-                          title="Change User Role"
-                          actions={actions}
-                          modal={true}
-                          open={this.state.showEditDialog}
-                        >
-                          <div>
-                            Select new User Role for
-                            <span
-                              style={{ fontWeight: 'bold', marginLeft: '5px' }}
-                            >
-                              {this.state.userEmail}
-                            </span>
-                          </div>
-                          <div>
-                            <DropDownMenu
-                              selectedMenuItemStyle={blueThemeColor}
-                              onChange={this.handleUserRoleChange}
-                              value={this.state.userRole}
-                              labelStyle={{ color: themeForegroundColor }}
-                              menuStyle={{
-                                backgroundColor: themeBackgroundColor,
-                              }}
-                              menuItemStyle={{ color: themeForegroundColor }}
-                              style={{
-                                width: '250px',
-                                marginLeft: '-20px',
-                              }}
-                              autoWidth={false}
-                            >
-                              <MenuItem
-                                primaryText="USER"
-                                value="user"
-                                className="setting-item"
-                              />
-                              <MenuItem
-                                primaryText="REVIEWER"
-                                value="reviewer"
-                                className="setting-item"
-                              />
-                              <MenuItem
-                                primaryText="OPERATOR"
-                                value="operator"
-                                className="setting-item"
-                              />
-                              <MenuItem
-                                primaryText="ADMIN"
-                                value="admin"
-                                className="setting-item"
-                              />
-                              <MenuItem
-                                primaryText="SUPERADMIN"
-                                value="superadmin"
-                                className="setting-item"
-                              />
-                            </DropDownMenu>
-                          </div>
-                        </Dialog>
-
-                        <Dialog
-                          title="Edit device config"
-                          actions={editDeviceActions}
-                          modal={true}
-                          open={this.state.showEditDeviceDialog}
-                        >
-                          <div>
-                            <span
-                              style={{ fontWeight: 'bold', color: 'black' }}
-                            >
-                              {' '}
-                              Mac Id:
-                            </span>
-                            <span
-                              style={{ fontWeight: 'bold', marginLeft: '5px' }}
-                            >
-                              {this.state.macid}
-                            </span>
-                          </div>
-                          <div style={{ width: '50%', marginTop: '35px' }}>
-                            <div className="label">Device Name</div>
-                            <TextField
-                              name="deviceName"
-                              style={{ marginBottom: '10px' }}
-                              value={this.state.deviceName}
-                              onChange={this.handleDeviceName}
-                              placeholder="Enter device name"
-                            />{' '}
-                            <div className="label">Room</div>
-                            <TextField
-                              name="room"
-                              value={this.state.room}
-                              onChange={this.handleRoom}
-                              placeholder="Enter room name"
-                            />
-                          </div>
-                        </Dialog>
-
-                        <Dialog
-                          title="Success"
-                          actions={
-                            <FlatButton
-                              key={1}
-                              label="Ok"
-                              labelStyle={{ color: '#4285f4' }}
-                              onClick={this.handleSuccess}
-                            />
-                          }
-                          modal={true}
-                          open={this.state.editDeviceSuccessDialog}
-                        >
-                          <div>
-                            Successfully changed the configuration of device
-                            with macid
-                            <span
-                              style={{ fontWeight: 'bold', margin: '0 5px' }}
-                            >
-                              {this.state.macid}
-                            </span>
-                            !
-                          </div>
-                        </Dialog>
-
-                        <Dialog
-                          title="Failed"
-                          actions={
-                            <FlatButton
-                              key={1}
-                              label="Ok"
-                              labelStyle={{ color: '#4285f4' }}
-                              onClick={this.handleClose}
-                            />
-                          }
-                          modal={true}
-                          open={this.state.editDeviceFailedDialog}
-                        >
-                          <div>
-                            Unable to change the configuration of device with
-                            macid
-                            <span
-                              style={{ fontWeight: 'bold', margin: '0 5px' }}
-                            >
-                              {this.state.macid}
-                            </span>
-                            !
-                          </div>
-                        </Dialog>
-                        <Dialog
-                          title="Delete User Account"
-                          actions={deleteActions}
-                          modal={true}
-                          open={this.state.showDeleteDialog}
-                        >
-                          <div>
-                            Are you sure you want to delete the account
-                            associated with
-                            <span
-                              style={{ fontWeight: 'bold', marginLeft: '5px' }}
-                            >
-                              {this.state.userEmail}
-                            </span>
-                            ?
-                          </div>
-                        </Dialog>
-                        <Dialog
-                          title="Success"
-                          actions={
-                            <FlatButton
-                              key={1}
-                              label="Ok"
-                              labelStyle={{ color: '#4285f4' }}
-                              onClick={this.handleSuccess}
-                            />
-                          }
-                          modal={true}
-                          open={this.state.deleteSuccessDialog}
-                        >
-                          <div>
-                            Account associated with
-                            <span
-                              style={{ fontWeight: 'bold', margin: '0 5px' }}
-                            >
-                              {this.state.userEmail}
-                            </span>
-                            is deleted successfully!
-                          </div>
-                        </Dialog>
-                        <Dialog
-                          title="Failed"
-                          actions={
-                            <FlatButton
-                              key={1}
-                              label="Ok"
-                              labelStyle={{ color: '#4285f4' }}
-                              onClick={this.handleClose}
-                            />
-                          }
-                          modal={true}
-                          open={this.state.deleteFailedDialog}
-                        >
-                          <div>
-                            Account associated with
-                            <span
-                              style={{ fontWeight: 'bold', margin: '0 5px' }}
-                            >
-                              {this.state.userEmail}
-                            </span>
-                            cannot be deleted!
-                          </div>
-                        </Dialog>
-                        <Dialog
-                          title="Success"
-                          actions={
-                            <FlatButton
-                              key={1}
-                              label="Ok"
-                              labelStyle={{ color: '#4285f4' }}
-                              onClick={this.handleSuccess}
-                            />
-                          }
-                          modal={true}
-                          open={this.state.changeRoleDialog}
-                        >
-                          <div>
-                            User role of
-                            <span
-                              style={{ fontWeight: 'bold', margin: '0 5px' }}
-                            >
-                              {this.state.userEmail}
-                            </span>
-                            is changed to
-                            <span
-                              style={{ fontWeight: 'bold', margin: '0 5px' }}
-                            >
-                              {this.state.userRole}
-                            </span>
-                            successfully!
-                          </div>
-                        </Dialog>
-                      </div>
-
-                      <Search
-                        placeholder="Search by email"
-                        style={{
-                          margin: '5px 25% 20px 25%',
-                          width: '50%',
-                          height: '38px',
-                        }}
-                        size="large"
-                        onSearch={value => this.handleSearch(value)}
-                      />
-                      <LocaleProvider locale={enUS}>
-                        {this.state.search ? (
-                          <Table
-                            columns={this.columns}
-                            rowKey={record => record.serialNum}
-                            onExpand={(expanded, record) =>
-                              this.handleExpand(expanded, record)
-                            }
-                            expandedRowRender={record => (
-                              <Table
-                                style={{
-                                  width: '80%',
-                                  backgroundColor: 'white',
-                                }}
-                                rowKey={deviceRecord => deviceRecord.macid}
-                                columns={this.devicesColumns}
-                                dataSource={record.devices}
-                                pagination={false}
-                                locale={{ emptyText: 'No devices found!' }}
-                                bordered
-                              />
-                            )}
-                            dataSource={this.state.data}
-                            loading={this.state.loading}
-                            pagination={false}
-                          />
-                        ) : (
-                          <Table
-                            columns={this.columns}
-                            rowKey={record => record.serialNum}
-                            onExpand={(expanded, record) =>
-                              this.handleExpand(expanded, record)
-                            }
-                            expandedRowRender={record => (
-                              <Table
-                                style={{
-                                  width: '80%',
-                                  backgroundColor: 'white',
-                                }}
-                                rowKey={deviceRecord => deviceRecord.macid}
-                                columns={this.devicesColumns}
-                                dataSource={record.devices}
-                                pagination={false}
-                                locale={{ emptyText: 'No devices found!' }}
-                                bordered
-                              />
-                            )}
-                            dataSource={this.state.data}
-                            pagination={this.state.pagination}
-                            loading={this.state.loading}
-                            onChange={this.handleTableChange}
-                          />
-                        )}
-                      </LocaleProvider>
-                    </div>
-                  </TabPane>
-                  <TabPane tab="Skills" key="3" />
-                  <TabPane tab="System Settings" key="4" />
-                  <TabPane tab="System Logs" key="5" />
-                </Tabs>
-              </Paper>
+            <div>
+              <DropDownMenu
+                selectedMenuItemStyle={blueThemeColor}
+                onChange={this.handleUserRoleChange}
+                value={this.state.userRole}
+                labelStyle={{ color: themeForegroundColor }}
+                menuStyle={{
+                  backgroundColor: themeBackgroundColor,
+                }}
+                menuItemStyle={{ color: themeForegroundColor }}
+                style={{
+                  width: '250px',
+                  marginLeft: '-20px',
+                }}
+                autoWidth={false}
+              >
+                <MenuItem primaryText="USER" value="user" />
+                <MenuItem primaryText="REVIEWER" value="reviewer" />
+                <MenuItem primaryText="OPERATOR" value="operator" />
+                <MenuItem primaryText="ADMIN" value="admin" />
+                <MenuItem primaryText="SUPERADMIN" value="superadmin" />
+              </DropDownMenu>
             </div>
-          </div>
-        ) : (
-          <NotFound />
-        )}
+          </Dialog>
+
+          <Dialog
+            title="Edit device config"
+            actions={editDeviceActions}
+            modal={true}
+            open={this.state.showEditDeviceDialog}
+          >
+            <div>
+              <span style={{ fontWeight: 'bold', color: 'black' }}>
+                {' '}
+                Mac Id:
+              </span>
+              <span style={{ fontWeight: 'bold', marginLeft: '5px' }}>
+                {this.state.macid}
+              </span>
+            </div>
+            <div style={{ width: '50%', marginTop: '35px' }}>
+              <div className="label">Device Name</div>
+              <TextField
+                name="deviceName"
+                style={{ marginBottom: '10px' }}
+                value={this.state.deviceName}
+                onChange={this.handleDeviceName}
+                placeholder="Enter device name"
+              />{' '}
+              <div className="label">Room</div>
+              <TextField
+                name="room"
+                value={this.state.room}
+                onChange={this.handleRoom}
+                placeholder="Enter room name"
+              />
+            </div>
+          </Dialog>
+
+          <Dialog
+            title="Success"
+            actions={
+              <FlatButton
+                key={1}
+                label="Ok"
+                labelStyle={{ color: '#4285f4' }}
+                onClick={this.handleSuccess}
+              />
+            }
+            modal={true}
+            open={this.state.editDeviceSuccessDialog}
+          >
+            <div>
+              Successfully changed the configuration of device with macid
+              <span style={{ fontWeight: 'bold', margin: '0 5px' }}>
+                {this.state.macid}
+              </span>
+              !
+            </div>
+          </Dialog>
+
+          <Dialog
+            title="Failed"
+            actions={
+              <FlatButton
+                key={1}
+                label="Ok"
+                labelStyle={{ color: '#4285f4' }}
+                onClick={this.handleClose}
+              />
+            }
+            modal={true}
+            open={this.state.editDeviceFailedDialog}
+          >
+            <div>
+              Unable to change the configuration of device with macid
+              <span style={{ fontWeight: 'bold', margin: '0 5px' }}>
+                {this.state.macid}
+              </span>
+              !
+            </div>
+          </Dialog>
+          <Dialog
+            title="Delete User Account"
+            actions={deleteActions}
+            modal={true}
+            open={this.state.showDeleteDialog}
+          >
+            <div>
+              Are you sure you want to delete the account associated with
+              <span style={{ fontWeight: 'bold', marginLeft: '5px' }}>
+                {this.state.userEmail}
+              </span>
+              ?
+            </div>
+          </Dialog>
+          <Dialog
+            title="Success"
+            actions={
+              <FlatButton
+                key={1}
+                label="Ok"
+                labelStyle={{ color: '#4285f4' }}
+                onClick={this.handleSuccess}
+              />
+            }
+            modal={true}
+            open={this.state.deleteSuccessDialog}
+          >
+            <div>
+              Account associated with
+              <span style={{ fontWeight: 'bold', margin: '0 5px' }}>
+                {this.state.userEmail}
+              </span>
+              is deleted successfully!
+            </div>
+          </Dialog>
+          <Dialog
+            title="Failed"
+            actions={
+              <FlatButton
+                key={1}
+                label="Ok"
+                labelStyle={{ color: '#4285f4' }}
+                onClick={this.handleClose}
+              />
+            }
+            modal={true}
+            open={this.state.deleteFailedDialog}
+          >
+            <div>
+              Account associated with
+              <span style={{ fontWeight: 'bold', margin: '0 5px' }}>
+                {this.state.userEmail}
+              </span>
+              cannot be deleted!
+            </div>
+          </Dialog>
+          <Dialog
+            title="Success"
+            actions={
+              <FlatButton
+                key={1}
+                label="Ok"
+                labelStyle={{ color: '#4285f4' }}
+                onClick={this.handleSuccess}
+              />
+            }
+            modal={true}
+            open={this.state.changeRoleDialog}
+          >
+            <div>
+              User role of
+              <span style={{ fontWeight: 'bold', margin: '0 5px' }}>
+                {this.state.userEmail}
+              </span>
+              is changed to
+              <span style={{ fontWeight: 'bold', margin: '0 5px' }}>
+                {this.state.userRole}
+              </span>
+              successfully!
+            </div>
+          </Dialog>
+        </div>
+
+        <Search
+          placeholder="Search by email"
+          style={{
+            margin: '5px 25% 20px 25%',
+            width: '50%',
+            height: '38px',
+          }}
+          size="large"
+          onSearch={value => this.handleSearch(value)}
+        />
+        <LocaleProvider locale={enUS}>
+          {this.state.search ? (
+            <Table
+              columns={this.columns}
+              rowKey={record => record.serialNum}
+              onExpand={(expanded, record) =>
+                this.handleExpand(expanded, record)
+              }
+              expandedRowRender={record => (
+                <Table
+                  style={{
+                    width: '80%',
+                    backgroundColor: 'white',
+                  }}
+                  rowKey={deviceRecord => deviceRecord.macid}
+                  columns={this.devicesColumns}
+                  dataSource={record.devices}
+                  pagination={false}
+                  locale={{ emptyText: 'No devices found!' }}
+                  bordered
+                />
+              )}
+              dataSource={this.state.data}
+              loading={this.state.loading}
+              pagination={false}
+            />
+          ) : (
+            <Table
+              columns={this.columns}
+              rowKey={record => record.serialNum}
+              onExpand={(expanded, record) =>
+                this.handleExpand(expanded, record)
+              }
+              expandedRowRender={record => (
+                <Table
+                  style={{
+                    width: '80%',
+                    backgroundColor: 'white',
+                  }}
+                  rowKey={deviceRecord => deviceRecord.macid}
+                  columns={this.devicesColumns}
+                  dataSource={record.devices}
+                  pagination={false}
+                  locale={{ emptyText: 'No devices found!' }}
+                  bordered
+                />
+              )}
+              dataSource={this.state.data}
+              pagination={this.state.pagination}
+              loading={this.state.loading}
+              onChange={this.handleTableChange}
+            />
+          )}
+        </LocaleProvider>
       </div>
     );
   }
@@ -855,16 +738,6 @@ class ListUser extends Component {
 
 ListUser.propTypes = {
   history: PropTypes.object,
-  isAdmin: PropTypes.bool,
 };
 
-function mapStateToProps(store) {
-  return {
-    isAdmin: store.app.isAdmin,
-  };
-}
-
-export default connect(
-  mapStateToProps,
-  null,
-)(ListUser);
+export default ListUser;
