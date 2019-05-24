@@ -1,12 +1,14 @@
 import React from 'react';
-import RaisedButton from 'material-ui/RaisedButton';
+import Button from '@material-ui/core/Button';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
-import { Step, Stepper, StepButton } from 'material-ui/Stepper';
+import Stepper from '@material-ui/core/Stepper';
+import Step from '@material-ui/core/Step';
+import StepButton from '@material-ui/core/StepButton';
 import { Grid, Col, Row } from 'react-flexbox-grid';
 import PropTypes from 'prop-types';
 import Design from './BotBuilderPages/Design';
 import Preview from './Preview/Preview';
-import CircularProgress from 'material-ui/CircularProgress';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -14,10 +16,11 @@ import uiActions from '../../redux/actions/ui';
 import Configure from './BotBuilderPages/Configure';
 import notification from 'antd/lib/notification';
 import Deploy from './BotBuilderPages/Deploy';
-import { Paper, TextField } from 'material-ui';
-import ChevronLeft from 'material-ui/svg-icons/navigation/chevron-left';
-import ChevronRight from 'material-ui/svg-icons/navigation/chevron-right';
-import { colors, avatars, getQueryStringValue } from '../../utils';
+import Paper from '@material-ui/core/Paper';
+import TextField from '@material-ui/core/TextField';
+import ChevronLeft from '@material-ui/icons/ChevronLeft';
+import ChevronRight from '@material-ui/icons/ChevronRight';
+import { avatars, getQueryStringValue } from '../../utils';
 import { storeDraft, updateSkill } from '../../api/index';
 import Icon from 'antd/lib/icon';
 import './BotBuilder.css';
@@ -495,12 +498,12 @@ class BotWizard extends React.Component {
                 <div style={mainPage}>
                   {!loaded ? (
                     <div className="center">
-                      <CircularProgress size={62} color="#4285f5" />
+                      <CircularProgress size={62} color="primary" />
                       <h4>Loading</h4>
                     </div>
                   ) : (
                     <div>
-                      <Stepper activeStep={stepIndex} linear={false}>
+                      <Stepper activeStep={stepIndex} nonLinear>
                         <Step>
                           <StepButton onClick={() => this.setStep(0)}>
                             Build
@@ -537,9 +540,9 @@ class BotWizard extends React.Component {
                 >
                   {stepIndex === 2 ? (
                     <TextField
-                      floatingLabelText="Commit message"
-                      floatingLabelFixed={true}
-                      hintText="Enter Commit Message"
+                      label="Commit message"
+                      placeholder="Enter Commit Message"
+                      margin="normal"
                       style={{ width: '100%' }}
                       value={commitMessage}
                       onChange={this.handleCommitMessageChange}
@@ -547,12 +550,13 @@ class BotWizard extends React.Component {
                   ) : null}
                   {stepIndex === 2 ? (
                     <div style={{ float: 'left', paddingTop: '20px' }}>
-                      <RaisedButton
-                        label="Save Draft"
-                        backgroundColor={colors.header}
-                        labelColor="#fff"
+                      <Button
+                        variant="contained"
+                        color="primary"
                         onClick={this.saveDraft}
-                      />
+                      >
+                        Save Draft
+                      </Button>
                     </div>
                   ) : null}
                   <div
@@ -563,38 +567,39 @@ class BotWizard extends React.Component {
                     }}
                   >
                     {stepIndex < 2 ? (
-                      <RaisedButton
-                        label={'Next'}
-                        backgroundColor={colors.header}
-                        labelColor="#fff"
+                      <Button
+                        variant="contained"
+                        color="primary"
                         onClick={this.handleNext}
-                      />
+                      >
+                        Next
+                      </Button>
                     ) : null}
                     {stepIndex === 2 ? (
-                      <RaisedButton
-                        label={
-                          // eslint-disable-next-line
-                          savingSkill ? (
-                            <CircularProgress color="#ffffff" size={32} />
-                          ) : updateSkillNow ? (
-                            'Update and Deploy'
-                          ) : (
-                            'Save and Deploy'
-                          )
-                        }
-                        backgroundColor={colors.header}
-                        labelColor="#fff"
+                      <Button
+                        variant="contained"
+                        color="primary"
                         onClick={this.saveClick}
-                      />
+                      >
+                        {// eslint-disable-next-line
+                        savingSkill ? (
+                          <CircularProgress color="#ffffff" size={32} />
+                        ) : updateSkillNow ? (
+                          'Update and Deploy'
+                        ) : (
+                          'Save and Deploy'
+                        )}
+                      </Button>
                     ) : null}
                   </div>
                   {stepIndex < 2 ? (
-                    <RaisedButton
-                      label="Save Draft"
-                      backgroundColor={colors.header}
-                      labelColor="#fff"
+                    <Button
+                      variant="contained"
+                      color="primary"
                       onClick={this.saveDraft}
-                    />
+                    >
+                      Save Draft
+                    </Button>
                   ) : null}
                   <div
                     style={{
@@ -603,20 +608,19 @@ class BotWizard extends React.Component {
                     }}
                   >
                     {stepIndex !== 0 && stepIndex !== 3 ? (
-                      <RaisedButton
-                        label="Back"
-                        backgroundColor={colors.header}
-                        labelColor="#fff"
+                      <Button
+                        variant="contained"
+                        color="primary"
                         onClick={this.handlePrev}
-                      />
+                      >
+                        Back
+                      </Button>
                     ) : null}
                     {stepIndex === 0 ? (
                       <Link to="/botbuilder">
-                        <RaisedButton
-                          label="Cancel"
-                          backgroundColor={colors.header}
-                          labelColor="#fff"
-                        />
+                        <Button variant="contained" color="primary">
+                          Cancel
+                        </Button>
                       </Link>
                     ) : null}
                   </div>

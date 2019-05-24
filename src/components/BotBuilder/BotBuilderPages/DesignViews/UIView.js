@@ -1,15 +1,16 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Grid, Col, Row } from 'react-flexbox-grid';
-import CircularProgress from 'material-ui/CircularProgress';
-import RaisedButton from 'material-ui/RaisedButton';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Button from '@material-ui/core/Button';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import uiActions from '../../../../redux/actions/ui';
 import createActions from '../../../../redux/actions/create';
-import Close from 'material-ui/svg-icons/navigation/close';
-import Add from 'material-ui/svg-icons/content/add';
-import Toggle from 'material-ui/Toggle';
+import Close from '@material-ui/icons/Close';
+import Add from '@material-ui/icons/Add';
+import Switch from '@material-ui/core/Switch';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import ColorPicker from 'material-ui-color-picker';
 import { urls, colors, avatars } from '../../../../utils';
 import TiTick from 'react-icons/lib/ti/tick';
@@ -315,28 +316,17 @@ class UIView extends Component {
                       >
                         Color
                       </span>
-                      <Toggle
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            checked={this.state.showBackgroundImageChange}
+                            onChange={
+                              this.handleShowBackgroundImageChangeToggle
+                            }
+                            color="primary"
+                          />
+                        }
                         label="Image"
-                        labelPosition="right"
-                        labelStyle={{
-                          width: 'auto',
-                          fontSize: '14px',
-                          fontWeight: '300',
-                        }}
-                        defaultToggled={this.state.showBackgroundImageChange}
-                        onToggle={this.handleShowBackgroundImageChangeToggle}
-                        style={{
-                          textAlign: 'right',
-                          marginTop: '10px',
-                          display: 'inline-block',
-                          width: 'auto',
-                        }}
-                        thumbSwitchedStyle={{
-                          backgroundColor: 'rgb(66, 133, 245)',
-                        }}
-                        trackSwitchedStyle={{
-                          backgroundColor: 'rgba(151, 184, 238, 0.85)',
-                        }}
                       />
                     </div>
                   )}
@@ -485,17 +475,17 @@ class UIView extends Component {
         ) : (
           <div className="design-box">
             {this.state.loadedSettings && <Grid>{customizeComponents}</Grid>}
-            <RaisedButton
-              backgroundColor={colors.header}
-              label={
-                this.state.resetting ? (
-                  <CircularProgress color={colors.header} size={32} />
-                ) : (
-                  'Reset Changes'
-                )
-              }
+            <Button
+              variant="contained"
+              color="primary"
               onClick={this.handleReset}
-            />
+            >
+              {this.state.resetting ? (
+                <CircularProgress color={colors.header} size={32} />
+              ) : (
+                'Reset Changes'
+              )}
+            </Button>
           </div>
         )}
       </div>

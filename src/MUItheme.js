@@ -5,7 +5,7 @@ const palette = {
     main: '#4285f4',
   },
   secondary: {
-    main: '#19314B',
+    main: '#FF0000',
   },
   contrastThreshold: 3,
   tonalOffset: 0.2,

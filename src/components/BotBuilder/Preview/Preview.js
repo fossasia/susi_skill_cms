@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { getSusiPreviewReply } from '../../../api';
-import Send from 'material-ui/svg-icons/content/send';
+import Send from '@material-ui/icons/Send';
 import loadingGIF from '../../../images/loading.gif';
 import './Chatbot.css';
 import './Preview.css';
