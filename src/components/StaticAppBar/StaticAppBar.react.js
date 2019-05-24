@@ -1,315 +1,255 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
-import Cookies from 'universal-cookie';
-import { connect } from 'react-redux';
-import List from 'material-ui/svg-icons/action/list';
-import AppBar from 'material-ui/AppBar';
-import IconButton from 'material-ui/IconButton';
-import IconMenu from 'material-ui/IconMenu';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-import Popover from 'material-ui/Popover';
-import Exit from 'material-ui/svg-icons/action/exit-to-app';
-import Extension from 'material-ui/svg-icons/action/extension';
-import Assessment from 'material-ui/svg-icons/action/assessment';
-import LoginIcon from 'material-ui/svg-icons/action/account-circle';
-import Info from 'material-ui/svg-icons/action/info';
-import Settings from 'material-ui/svg-icons/action/settings';
-import MenuItem from 'material-ui/MenuItem';
-import Chat from 'material-ui/svg-icons/communication/chat';
-import SkillIcon from 'material-ui/svg-icons/action/dashboard';
-import CircleImage from '../CircleImage/CircleImage';
-import susiWhite from '../../images/SUSIAI-white.png';
-// import Auth from '../Auth/';
-import { urls, colors } from '../../utils';
-import './StaticAppBar.css';
 import { bindActionCreators } from 'redux';
+import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import Toolbar from '@material-ui/core/Toolbar';
+import styled from 'styled-components';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import MenuItem from '@material-ui/core/MenuItem';
+import IconButton from '@material-ui/core/IconButton';
+import Settings from '@material-ui/icons/Settings';
+import Exit from '@material-ui/icons/ExitToApp';
+import SignUp from '@material-ui/icons/AccountCircle';
+import Info from '@material-ui/icons/Info';
+import List from '@material-ui/icons/List';
+import Chat from '@material-ui/icons/Chat';
+import Extension from '@material-ui/icons/Extension';
+import Assessment from '@material-ui/icons/Assessment';
+import Menu from '@material-ui/core/Menu';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import susiWhite from '../../images/SUSIAI-white.png';
+import CircleImage from '../CircleImage/CircleImage';
+import appActions from '../../redux/actions/app';
 import uiActions from '../../redux/actions/ui';
+import urls from '../../utils/urls';
+import { getAvatarProps } from '../../utils';
+import AppBar from '@material-ui/core/AppBar';
 
-const cookies = new Cookies();
+const SusiLogo = styled.img`
+  height: 1.5rem;
+  display: block;
+`;
 
-const styles = {
-  headerStyle: {
-    background: colors.header,
-  },
-  circleImageWrapperStyle: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  circleImageLabelStyle: {
-    color: 'white',
-    fontSize: '16px',
-    marginRight: '5px',
-  },
-  appbarTitleStyle: {
-    float: 'left',
-    marginTop: '-10px',
-    height: '25px',
-    width: '122px',
-  },
-  appbarStyle: {
-    backgroundColor: colors.header,
-    height: '46px',
-    boxShadow: 'none',
-    margin: '0 auto',
-  },
-  popoverStyle: {
-    float: 'right',
-    position: 'relative',
-    marginTop: '46px',
-    marginRight: '8px',
-  },
-};
+const StyledToolbar = styled(Toolbar)`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const UserDetail = styled.label`
+  font-size: 1rem;
+  color: white;
+  @media (max-width: 512px) {
+    display: None;
+  }
+`;
 
 class StaticAppBar extends Component {
   static propTypes = {
-    location: PropTypes.object,
-    history: PropTypes.object,
-    accessToken: PropTypes.string,
-    isAdmin: PropTypes.bool,
-    userName: PropTypes.string,
+    handleChangePassword: PropTypes.func,
+    handleOptions: PropTypes.func,
+    handleRequestClose: PropTypes.func,
+    handleToggle: PropTypes.func,
+    header: PropTypes.string,
     email: PropTypes.string,
+    accessToken: PropTypes.string,
+    userName: PropTypes.string,
+    isAdmin: PropTypes.bool,
     actions: PropTypes.object,
+  };
+
+  static defaultProps = {
+    email: '',
+    userName: '',
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      showOptions: false,
       anchorEl: null,
-      timestamp: new Date().getTime(),
     };
-    this.mounted = false;
   }
 
-  handleScroll = event => {
-    const scrollTop = event.pageY || event.target.body.scrollTop;
-    const itemTranslate = scrollTop > 60;
-    if (itemTranslate) {
-      this.closeOptions();
-    }
-  };
-
-  componentWillUnmount() {
-    this.mounted = false;
-  }
-
-  componentDidMount() {
-    this.mounted = true;
-    window.addEventListener('scroll', this.handleScroll);
-
-    let didScroll;
-    let lastScrollTop = 0;
-    let delta = 5;
-    let windowHeight =
-      window.innerHeight ||
-      document.documentElement.clientHeight ||
-      document.body.clientHeight;
-    let headerElement = document.getElementsByTagName('header')[0];
-    const navbarHeight = headerElement.offsetHeight;
-
-    window.addEventListener('scroll', () => {
-      didScroll = true;
-      if (this.mounted) {
-        this.setState({ showOptions: false });
-      }
-    });
-
-    const hasScrolled = () => {
-      let st = document.scrollingElement.scrollTop;
-      // Make sure they scroll more than delta
-      if (Math.abs(lastScrollTop - st) <= delta) {
-        return;
-      }
-      // If they scrolled down and are past the navbar, add class .nav-up.
-      // This is necessary so you never see what is 'behind' the navbar.
-      if (st > lastScrollTop && st > navbarHeight + 400 && this.mounted) {
-        this.setState({ scroll: 'nav-up' });
-      } else if (
-        st + windowHeight < document.body.scrollHeight &&
-        this.mounted
-      ) {
-        // Scroll Down
-        this.setState({ scroll: 'nav-down' });
-      }
-      lastScrollTop = st;
-    };
-
-    setInterval(() => {
-      if (didScroll) {
-        hasScrolled();
-        didScroll = false;
-      }
-    }, 500);
-  }
-
-  showOptions = event => {
-    event.preventDefault();
+  handleClick = event => {
     this.setState({
-      showOptions: true,
       anchorEl: event.currentTarget,
     });
   };
 
-  closeOptions = () => {
-    const { showOptions } = this.state;
-    if (showOptions) {
-      this.setState({
-        showOptions: false,
-      });
-    }
+  handleClose = () => {
+    this.setState({
+      anchorEl: null,
+    });
+  };
+
+  openModal = name => {
+    const { actions } = this.props;
+    this.handleClose();
+    actions.openModal({ modalType: name });
   };
 
   render() {
-    const { timestamp, showOptions, anchorEl, scroll } = this.state;
-    const { accessToken, isAdmin, userName, email } = this.props;
+    const { anchorEl } = this.state;
+    const open = Boolean(anchorEl);
+    const { email, accessToken, userName, isAdmin } = this.props;
 
-    const TopRightMenuItems = props => {
-      const avatarProps = accessToken && {
-        name: cookies.get('emailId'),
-        src: `${
-          urls.API_URL
-        }/getAvatar.png?access_token=${accessToken}&q=${timestamp}`,
-      };
-
-      return (
-        <div className="topRightMenu" onScroll={this.handleScroll}>
-          {accessToken && (
-            <div style={styles.circleImageWrapperStyle}>
-              <CircleImage {...avatarProps} size="32" />
-              <label className="useremail" style={styles.circleImageLabelStyle}>
-                {!userName ? email : userName}
-              </label>
-            </div>
-          )}
-          <IconMenu
-            iconButtonElement={
-              <IconButton iconStyle={{ fill: 'white' }}>
-                <MoreVertIcon />
-              </IconButton>
-            }
-            targetOrigin={{ horizontal: 'right', vertical: 'top' }}
-            anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
-            onClick={this.showOptions}
-          />
-          <Popover
-            animated={false}
-            style={styles.popoverStyle}
-            open={showOptions}
-            anchorEl={anchorEl}
-            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-            targetOrigin={{ horizontal: 'right', vertical: 'top' }}
-            onRequestClose={this.closeOptions}
-          >
-            {accessToken && (
-              <MenuItem
-                primaryText="Dashboard"
-                containerElement={<Link to="/dashboard" />}
-                rightIcon={<Assessment />}
-              />
-            )}
-            <div>
-              <MenuItem href={urls.CHAT_URL} rightIcon={<Chat />}>
-                Chat
-              </MenuItem>
-              <Link to="/">
-                <MenuItem rightIcon={<SkillIcon />}>Skills</MenuItem>
-              </Link>
-              {!accessToken && (
-                <MenuItem
-                  href={urls.CHAT_URL + '/overview'}
-                  rightIcon={<Info />}
-                >
-                  About
-                </MenuItem>
-              )}
-            </div>
-            {accessToken && (
-              <MenuItem
-                primaryText="Botbuilder"
-                containerElement={<Link to="/botbuilder" />}
-                rightIcon={<Extension />}
-              />
-            )}
-            {accessToken && (
-              <MenuItem
-                href={urls.ACC_URL + '/settings'}
-                rightIcon={<Settings />}
-              >
-                Settings
-              </MenuItem>
-            )}
-            {accessToken && (
-              <MenuItem href={urls.CHAT_URL + '/overview'} rightIcon={<Info />}>
-                About
-              </MenuItem>
-            )}
-            {isAdmin && (
-              <MenuItem
-                primaryText="Admin"
-                containerElement={<Link to="/admin" />}
-                rightIcon={<List />}
-              />
-            )}
-            {accessToken ? (
-              <MenuItem
-                primaryText="Logout"
-                containerElement={<Link to="/logout" />}
-                rightIcon={<Exit />}
-              />
-            ) : (
-              <MenuItem
-                primaryText="Login"
-                onClick={() =>
-                  this.props.actions.openModal({ modalType: 'login' })
-                }
-                rightIcon={<LoginIcon />}
-              />
-            )}
-          </Popover>
-        </div>
-      );
-    };
+    let avatarProps = null;
+    if (accessToken && email) {
+      avatarProps = getAvatarProps(email, accessToken);
+    }
 
     return (
-      <div>
-        <header
-          className={scroll}
-          style={styles.headerStyle}
-          id="headerSection"
-        >
-          <AppBar
-            className="topAppBar"
-            id="appBar"
-            title={
-              <div id="rightIconButton">
-                <Link to="/" style={styles.appbarTitleStyle}>
-                  <img src={susiWhite} alt="susi-logo" className="siteTitle" />
+      <AppBar position="static">
+        <StyledToolbar variant="dense">
+          <div style={{ outline: '0' }}>
+            <Link to="/" style={{ outline: '0' }}>
+              <SusiLogo src={susiWhite} alt="SUSI.AI Logo" />
+            </Link>
+          </div>
+
+          <div style={{ display: 'flex' }}>
+            <div>
+              {accessToken && (
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    marginTop: '0.5rem',
+                  }}
+                >
+                  <CircleImage {...avatarProps} size="32" />
+                  <UserDetail>{userName ? userName : email}</UserDetail>
+                </div>
+              )}
+            </div>
+            {/* Pop over menu */}
+            <IconButton
+              aria-owns={open ? 'menu-popper' : undefined}
+              aria-haspopup="true"
+              color="inherit"
+              onClick={this.handleClick}
+            >
+              <MoreVertIcon />
+            </IconButton>
+            <Menu
+              id="menu-popper"
+              anchorEl={anchorEl}
+              open={open}
+              onClose={this.handleClose}
+              anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+              transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+              getContentAnchorEl={null}
+            >
+              <MenuItem key="placeholder" style={{ display: 'none' }} />
+              {accessToken && (
+                <Link to="/dashboard" style={{ textDecoration: 'none' }}>
+                  <MenuItem onClick={this.handleClose}>
+                    <ListItemIcon>
+                      <Assessment />
+                    </ListItemIcon>
+                    <ListItemText>Dashboard</ListItemText>
+                  </MenuItem>
                 </Link>
-              </div>
-            }
-            style={styles.appbarStyle}
-            iconStyleRight={{ marginTop: '-2px' }}
-            iconElementRight={<TopRightMenuItems />}
-          />
-        </header>
-      </div>
+              )}
+              <a href={`${urls.CHAT_URL}`} style={{ textDecoration: 'none' }}>
+                <MenuItem onClick={this.handleClose}>
+                  <ListItemIcon>
+                    <Chat />
+                  </ListItemIcon>
+                  <ListItemText>Chat</ListItemText>
+                </MenuItem>
+              </a>
+              {accessToken && (
+                <Link to="/botbuilder" style={{ textDecoration: 'none' }}>
+                  <MenuItem onClick={this.handleClose}>
+                    <ListItemIcon>
+                      <Extension />
+                    </ListItemIcon>
+                    <ListItemText>Botbuilder</ListItemText>
+                  </MenuItem>
+                </Link>
+              )}
+              {accessToken && (
+                <a
+                  href={`${urls.ACC_URL}/settings`}
+                  style={{ textDecoration: 'none' }}
+                >
+                  <MenuItem onClick={this.handleClose}>
+                    <ListItemIcon>
+                      <Settings />
+                    </ListItemIcon>
+                    <ListItemText>Settings</ListItemText>
+                  </MenuItem>
+                </a>
+              )}
+              <a
+                href={`${urls.CHAT_URL}/overview`}
+                style={{ textDecoration: 'none' }}
+              >
+                <MenuItem onClick={this.handleClose}>
+                  <ListItemIcon>
+                    <Info />
+                  </ListItemIcon>
+                  <ListItemText>About</ListItemText>
+                </MenuItem>
+              </a>
+              {accessToken &&
+                isAdmin && (
+                  <a
+                    href={`${urls.ACCOUNT_URL}/admin`}
+                    style={{ textDecoration: 'none' }}
+                  >
+                    <MenuItem onClick={this.handleClose}>
+                      <ListItemIcon>
+                        <List />
+                      </ListItemIcon>
+                      <ListItemText>Admin</ListItemText>
+                    </MenuItem>
+                  </a>
+                )}
+              {accessToken ? (
+                <Link to="/logout" style={{ textDecoration: 'none' }}>
+                  <MenuItem onClick={this.handleClose}>
+                    <ListItemIcon>
+                      <Exit />
+                    </ListItemIcon>
+                    <ListItemText>Logout</ListItemText>
+                  </MenuItem>
+                </Link>
+              ) : (
+                <MenuItem onClick={() => this.openModal('login')}>
+                  <ListItemIcon>
+                    <SignUp />
+                  </ListItemIcon>
+                  <ListItemText>Login</ListItemText>
+                </MenuItem>
+              )}
+            </Menu>
+          </div>
+        </StyledToolbar>
+      </AppBar>
     );
   }
 }
 
-const mapStateToProps = ({ app }) => {
+function mapStateToProps(store) {
+  const { email, accessToken, userName, isAdmin } = store.app;
   return {
-    ...app,
+    email,
+    accessToken,
+    userName,
+    isAdmin,
   };
-};
+}
 
-const mapDispatchToProps = dispatch => {
+function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(uiActions, dispatch),
+    actions: bindActionCreators({ ...appActions, ...uiActions }, dispatch),
   };
-};
+}
 
 export default connect(
   mapStateToProps,
