@@ -476,13 +476,6 @@ export function modifyUserDevices(payload) {
   return ajax.get(url, { email, macid, name, room });
 }
 
-// SystemLogs
-export function fetchSystemLogs(payload) {
-  const { count } = payload;
-  const url = `${urls.API_URL}/log.txt`;
-  return ajax.get(url, { count });
-}
-
 export function fetchLatestCommitInformation(payload) {
   const { url } = payload;
   return ajax.get(url, {});

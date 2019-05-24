@@ -1,28 +1,22 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import MenuItem from 'material-ui/MenuItem';
-import DropDownMenu from 'material-ui/DropDownMenu';
-import Paper from 'material-ui/Paper';
-import Tabs from 'antd/lib/tabs';
-import { Spin, Alert } from 'antd';
-import StaticAppBar from '../../StaticAppBar/StaticAppBar.react';
-import NotFound from '../../NotFound/NotFound.react';
-import { fetchSystemLogs } from '../../../api/index';
+import { connect } from 'react-redux';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import axios from 'axios';
+import urls from '../../../utils/urls';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Alert from '../../Commons/Alert';
 
-const TabPane = Tabs.TabPane;
-
-const styles = {
-  tabStyle: {
-    width: '100%',
-    animated: false,
-    textAlign: 'left',
-    display: 'inline-block',
-  },
-  blueThemeColor: { color: 'rgb(66, 133, 244)' },
-  themeForegroundColor: '#272727',
-  themeBackgroundColor: '#fff',
-};
+const menuObj = [
+  { value: 10, text: 'Last 10 logs' },
+  { value: 20, text: 'Last 20 logs' },
+  { value: 50, text: 'Last 50 logs' },
+  { value: 100, text: 'Last 100 logs' },
+  { value: 200, text: 'Last 200 logs' },
+  { value: 500, text: 'Last 500 logs' },
+  { value: 1000, text: 'Last 1000 logs' },
+];
 
 class SystemLogs extends React.Component {
   constructor(props) {
@@ -40,15 +34,26 @@ class SystemLogs extends React.Component {
   }
 
   loadSystemLogs = count => {
-    fetchSystemLogs({ count })
-      .then(payload => {
+    const { accessToken } = this.props;
+    axios
+      .get(
+        `${urls.API_URL}/log.txt?access_token=${accessToken}&count=${count}`,
+        {
+          responseType: 'arraybuffer',
+        },
+      )
+      .then(response => {
+        let { data } = response;
+        //eslint-disable-next-line
+        var buffer = new Buffer(data, 'binary');
+        var textdata = buffer.toString(); // for string
         let error = false;
-        if (payload.indexOf('WARN root') !== -1) {
+        if (textdata.indexOf('WARN root') !== -1) {
           error = true;
         }
         this.setState({
           error: error,
-          logs: payload,
+          logs: textdata,
           loading: false,
         });
       })
@@ -57,22 +62,8 @@ class SystemLogs extends React.Component {
       });
   };
 
-  handleTabChange = activeKey => {
-    if (activeKey === '1') {
-      this.props.history.push('/admin');
-    }
-    if (activeKey === '2') {
-      this.props.history.push('/admin/users');
-    }
-    if (activeKey === '3') {
-      this.props.history.push('/admin/skills');
-    }
-    if (activeKey === '4') {
-      this.props.history.push('/admin/settings');
-    }
-  };
-
-  handleCountChange = (event, index, value) => {
+  handleCountChange = event => {
+    const { value } = event.target;
     this.setState({
       currentCount: value,
       loading: true,
@@ -81,125 +72,37 @@ class SystemLogs extends React.Component {
   };
 
   render() {
-    const {
-      tabStyle,
-      blueThemeColor,
-      themeForegroundColor,
-      themeBackgroundColor,
-    } = styles;
-    const { isAdmin } = this.props;
+    const { loading } = this.state;
+    let renderMenu = menuObj.map(menu => (
+      <MenuItem key={menu.value} value={menu.value}>
+        {menu.text}
+      </MenuItem>
+    ));
     return (
-      <div>
-        {isAdmin ? (
-          <div>
-            <div className="heading">
-              <StaticAppBar {...this.props} />
-              <h2 className="h2">System Logs</h2>
+      <div className="tabs">
+        <Select
+          onChange={this.handleCountChange}
+          value={this.state.currentCount}
+          style={{
+            width: '180px',
+            float: 'right',
+            margin: '1.5rem 0',
+          }}
+        >
+          {renderMenu}
+        </Select>
+        <div style={{ marginTop: '4rem' }}>
+          {loading ? (
+            <div className="center">
+              <CircularProgress size={62} color="primary" />
             </div>
-            <div className="tabs">
-              <Paper style={tabStyle} zDepth={0}>
-                <Tabs
-                  defaultActiveKey="5"
-                  onTabClick={this.handleTabChange}
-                  tabPosition="top"
-                  animated={false}
-                  type="card"
-                  style={{ minHeight: '500px' }}
-                >
-                  <TabPane tab="Admin" key="1" />
-                  <TabPane tab="Users" key="2" />
-                  <TabPane tab="Skills" key="3" />
-                  <TabPane tab="System Settings" key="4" />
-                  <TabPane tab="System Logs" key="5">
-                    <div>
-                      <div style={{ height: '50px', width: '100%' }}>
-                        <DropDownMenu
-                          selectedMenuItemStyle={blueThemeColor}
-                          labelStyle={{ color: themeForegroundColor }}
-                          menuStyle={{
-                            backgroundColor: themeBackgroundColor,
-                          }}
-                          menuItemStyle={{ color: themeForegroundColor }}
-                          onChange={this.handleCountChange}
-                          value={this.state.currentCount}
-                          style={{
-                            width: '180px',
-                            margin: '-20px -20px 0',
-                            float: 'right',
-                          }}
-                          autoWidth={false}
-                        >
-                          <MenuItem
-                            primaryText="Last 10 logs"
-                            value="10"
-                            className="setting-item"
-                          />
-                          <MenuItem
-                            primaryText="Last 20 logs"
-                            value="20"
-                            className="setting-item"
-                          />
-                          <MenuItem
-                            primaryText="Last 50 logs"
-                            value="50"
-                            className="setting-item"
-                          />
-                          <MenuItem
-                            primaryText="Last 100 logs"
-                            value="100"
-                            className="setting-item"
-                          />
-                          <MenuItem
-                            primaryText="Last 200 logs"
-                            value="200"
-                            className="setting-item"
-                          />
-                          <MenuItem
-                            primaryText="Last 500 logs"
-                            value="500"
-                            className="setting-item"
-                          />
-                          <MenuItem
-                            primaryText="Last 1000 logs"
-                            value="1000"
-                            className="setting-item"
-                          />
-                        </DropDownMenu>
-                      </div>
-                      <div>
-                        <Spin
-                          tip="Loading logs..."
-                          spinning={this.state.loading}
-                          size="large"
-                        >
-                          <Alert
-                            description={
-                              <p
-                                style={{
-                                  fontSize: '18px',
-                                  lineHeight: '2',
-                                  overflowWrap: 'break-word',
-                                }}
-                              >
-                                {this.state.logs}
-                              </p>
-                            }
-                            type={
-                              this.state.error === true ? 'error' : 'success'
-                            }
-                            showIcon
-                          />
-                        </Spin>
-                      </div>
-                    </div>
-                  </TabPane>
-                </Tabs>
-              </Paper>
-            </div>
-          </div>
-        ) : (
-          <NotFound />
-        )}
+          ) : (
+            <Alert
+              description={this.state.logs}
+              type={this.state.error === true ? 'error' : 'success'}
+            />
+          )}
+        </div>
       </div>
     );
   }
@@ -207,12 +110,12 @@ class SystemLogs extends React.Component {
 
 SystemLogs.propTypes = {
   history: PropTypes.object,
-  isAdmin: PropTypes.bool,
+  accessToken: PropTypes.string,
 };
 
 function mapStateToProps(store) {
   return {
-    isAdmin: store.app.isAdmin,
+    accessToken: store.app.accessToken,
   };
 }
 

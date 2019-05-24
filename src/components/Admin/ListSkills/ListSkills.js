@@ -5,17 +5,17 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 /* Material UI */
-import FlatButton from 'material-ui/FlatButton';
-import Dialog from 'material-ui/Dialog';
-import Checkbox from 'material-ui/Checkbox';
-import Paper from 'material-ui/Paper';
-
-/* Ant Design */
-import { LocaleProvider } from 'antd';
-import Tabs from 'antd/lib/tabs';
-import enUS from 'antd/lib/locale-provider/en_US';
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogActions from '@material-ui/core/DialogActions';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 
 /* Utils */
+import DialogContent from '@material-ui/core/DialogContent';
 import uiActions from '../../../redux/actions/ui';
 import {
   changeSkillStatus,
@@ -25,14 +25,10 @@ import {
   deleteSkill,
   fetchUserSkill,
 } from '../../../api/index';
-import StaticAppBar from '../../StaticAppBar/StaticAppBar.react';
-import NotFound from '../../NotFound/NotFound.react';
 import PropTypes from 'prop-types';
 
 /* CSS */
 import './ListSkills.css';
-
-const TabPane = Tabs.TabPane;
 
 class ListSkills extends React.Component {
   constructor(props) {
@@ -61,7 +57,7 @@ class ListSkills extends React.Component {
       deleteFailureDialog: false,
       restoreSuccessDialog: false,
       restoreFailureDialog: false,
-      zIndex: -1,
+      value: 0,
     };
   }
 
@@ -198,11 +194,11 @@ class ListSkills extends React.Component {
           const { filteredData } = payload;
           for (let skillMetadata of filteredData) {
             let skill = {
-              skillName: skillMetadata.skill_name,
+              skillName: skillMetadata.skillName,
               model: skillMetadata.model,
               group: skillMetadata.group,
               language: skillMetadata.language,
-              skillTag: skillMetadata.skill_tag,
+              skillTag: skillMetadata.skillTag,
               reviewStatus: skillMetadata.reviewed,
               editStatus: skillMetadata.editable,
               staffPickStatus: skillMetadata.staffPick,
@@ -234,10 +230,6 @@ class ListSkills extends React.Component {
 
   handleChange = () => {
     this.changeStatus();
-    this.handleClose();
-  };
-
-  handleClose = () => {
     this.handleClose();
   };
 
@@ -293,7 +285,6 @@ class ListSkills extends React.Component {
       skillStaffPickStatus: staffPickStatus,
       systemSkillStatus: systemSkillStatus,
       showDialog: true,
-      zIndex: 1500,
     });
   };
 
@@ -303,27 +294,6 @@ class ListSkills extends React.Component {
       showDeleteDialog: false,
       showRestoreDialog: false,
     });
-
-    setTimeout(() => {
-      this.setState({
-        zIndex: -1,
-      });
-    }, 200);
-  };
-
-  handleTabChange = activeKey => {
-    if (activeKey === '1') {
-      this.props.history.push('/admin');
-    }
-    if (activeKey === '2') {
-      this.props.history.push('/admin/users');
-    }
-    if (activeKey === '4') {
-      this.props.history.push('/admin/settings');
-    }
-    if (activeKey === '5') {
-      this.props.history.push('/admin/logs');
-    }
   };
 
   handleReviewStatusChange = () => {
@@ -358,70 +328,19 @@ class ListSkills extends React.Component {
     window.location.reload();
   };
 
+  handleTabChange = (event, value) => {
+    this.setState({ value });
+  };
+
   render() {
-    const { isAdmin } = this.props;
-    const { groups, loading, skillName } = this.state;
-
-    const editButtons = [
-      <FlatButton
-        key={1}
-        label="Change"
-        labelStyle={{ color: '#4285f4' }}
-        onClick={this.handleChange}
-      />,
-      <FlatButton
-        key={2}
-        label="Cancel"
-        primary={false}
-        onClick={this.handleClose}
-      />,
-    ];
-
-    const deleteButtons = [
-      <FlatButton
-        key={1}
-        label="Delete"
-        labelStyle={{ color: '#4285f4' }}
-        onClick={this.confirmDelete}
-      />,
-      <FlatButton
-        key={2}
-        label="Cancel"
-        primary={false}
-        onClick={this.handleClose}
-      />,
-    ];
-
-    const restoreButtons = [
-      <FlatButton
-        key={1}
-        label="Restore"
-        labelStyle={{ color: '#4285f4' }}
-        onClick={this.confirmRestore}
-      />,
-      <FlatButton
-        key={2}
-        label="Cancel"
-        primary={false}
-        onClick={this.handleClose}
-      />,
-    ];
-
-    const okButton = [
-      <FlatButton
-        key={1}
-        label="Ok"
-        labelStyle={{ color: '#4285f4' }}
-        onClick={this.handleFinish}
-      />,
-    ];
-
-    const tabStyle = {
-      width: '100%',
-      animated: false,
-      textAlign: 'left',
-      display: 'inline-block',
-    };
+    const { groups, loading, skillName, value } = this.state;
+    const OkButton = () => (
+      <DialogActions>
+        <Button key={1} onClick={this.handleFinish}>
+          Ok
+        </Button>
+      </DialogActions>
+    );
 
     let columns = [
       {
@@ -596,232 +515,211 @@ class ListSkills extends React.Component {
     ];
 
     return (
-      <div>
-        {isAdmin ? (
-          <div>
-            <div className="heading">
-              <StaticAppBar {...this.props} />
-              <h2 className="h2">Skills Panel</h2>
-            </div>
-            <div className="tabs">
-              <Paper style={tabStyle} zDepth={0}>
-                <Tabs
-                  defaultActiveKey="3"
-                  onTabClick={this.handleTabChange}
-                  tabPosition={this.state.tabPosition}
-                  animated={false}
-                  type="card"
-                  style={{ minHeight: '500px' }}
+      <div className="tabs">
+        <div>
+          <div className="table">
+            <Tabs onChange={this.handleTabChange} value={value}>
+              <Tab label="Active" />
+              <Tab label="Deleted" />
+            </Tabs>
+            {value === 1 && (
+              <Table
+                columns={delColumns}
+                pagination={{ showQuickJumper: true }}
+                rowKey={record => record.registered}
+                dataSource={this.state.deletedSkills}
+              />
+            )}
+            {value === 0 && (
+              <React.Fragment>
+                <Dialog
+                  maxWidth={'sm'}
+                  fullWidth={true}
+                  open={this.state.showDialog}
+                  onClose={this.handleClose}
                 >
-                  <TabPane tab="Admin" key="1" />
-                  <TabPane tab="Users" key="2" />
-                  <TabPane tab="Skills" key="3">
-                    <div>
-                      <div className="table">
-                        <Tabs
-                          tabPosition="top"
-                          animated={false}
-                          style={{ minHeight: '500px' }}
-                        >
-                          <TabPane tab="Active" key="1">
-                            <Dialog
-                              title={'Skill Settings for ' + skillName}
-                              actions={editButtons}
-                              model={true}
-                              open={this.state.showDialog}
-                              style={{
-                                width: '800px',
-                                left: '50%',
-                                marginLeft: '-400px',
-                                zIndex: this.state.zIndex,
-                              }}
-                            >
-                              <div>
-                                <Checkbox
-                                  label="Reviewed"
-                                  labelPosition="right"
-                                  className="select"
-                                  checked={this.state.skillReviewStatus}
-                                  labelStyle={{ fontSize: '14px' }}
-                                  iconStyle={{ left: '4px', fill: '#4285f4' }}
-                                  style={{
-                                    width: 'auto',
-                                    marginTop: '3px',
-                                  }}
-                                  onCheck={this.handleReviewStatusChange}
-                                />
-                                <Checkbox
-                                  label="Editable"
-                                  labelPosition="right"
-                                  className="select"
-                                  checked={this.state.skillEditStatus}
-                                  labelStyle={{ fontSize: '14px' }}
-                                  iconStyle={{ left: '4px', fill: '#4285f4' }}
-                                  style={{
-                                    width: 'auto',
-                                    marginTop: '3px',
-                                  }}
-                                  onCheck={this.handleEditStatusChange}
-                                />
-                                <Checkbox
-                                  label="Staff Pick"
-                                  labelPosition="right"
-                                  className="select"
-                                  checked={this.state.skillStaffPickStatus}
-                                  labelStyle={{ fontSize: '14px' }}
-                                  iconStyle={{ left: '4px', fill: '#4285f4' }}
-                                  style={{
-                                    width: 'auto',
-                                    marginTop: '3px',
-                                    whiteSpace: 'nowrap',
-                                  }}
-                                  onCheck={this.handleStaffPickStatusChange}
-                                />
-                                <Checkbox
-                                  label="System Skill"
-                                  labelPosition="right"
-                                  className="select"
-                                  checked={this.state.systemSkillStatus}
-                                  labelStyle={{ fontSize: '14px' }}
-                                  iconStyle={{ left: '4px', fill: '#4285f4' }}
-                                  style={{
-                                    width: 'auto',
-                                    marginTop: '3px',
-                                    whiteSpace: 'nowrap',
-                                  }}
-                                  onCheck={this.handleSystemSkillStatusChange}
-                                />
-                              </div>
-                            </Dialog>
+                  <DialogTitle>Skill Settings for {skillName}</DialogTitle>
+                  <DialogContent>
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={this.state.skillReviewStatus}
+                            onChange={this.handleReviewStatusChange}
+                            color="primary"
+                          />
+                        }
+                        label="Reviewed"
+                      />
 
-                            <Dialog
-                              title="Delete Skill"
-                              actions={deleteButtons}
-                              model={true}
-                              open={this.state.showDeleteDialog}
-                            >
-                              <div>
-                                Are you sure you want to delete{' '}
-                                <span className="skillName">{skillName}</span>?
-                              </div>
-                            </Dialog>
-                            <Dialog
-                              title="Restore Skill"
-                              actions={restoreButtons}
-                              model={true}
-                              open={this.state.showRestoreDialog}
-                            >
-                              <div>
-                                Are you sure you want to restore{' '}
-                                <span className="skillName">{skillName}</span>?
-                              </div>
-                            </Dialog>
-                            <Dialog
-                              title="Success"
-                              actions={okButton}
-                              modal={true}
-                              open={this.state.restoreSuccessDialog}
-                            >
-                              <div>
-                                You successfully restored{' '}
-                                <span className="skillName">{skillName}</span>
-                                !
-                              </div>
-                            </Dialog>
-                            <Dialog
-                              title="Failed!"
-                              actions={okButton}
-                              modal={true}
-                              open={this.state.restoreFailureDialog}
-                            >
-                              <div>
-                                Error!{' '}
-                                <span className="skillName">{skillName}</span>{' '}
-                                could not be restored!
-                              </div>
-                            </Dialog>
-                            <Dialog
-                              title="Success"
-                              actions={okButton}
-                              modal={true}
-                              open={this.state.deleteSuccessDialog}
-                            >
-                              <div>
-                                You successfully deleted{' '}
-                                <span className="skillName">{skillName}</span>
-                                !
-                              </div>
-                            </Dialog>
-                            <Dialog
-                              title="Failed!"
-                              actions={okButton}
-                              modal={true}
-                              open={this.state.deleteFailureDialog}
-                            >
-                              <div>
-                                Error!{' '}
-                                <span className="skillName">{skillName}</span>{' '}
-                                could not be deleted!
-                              </div>
-                            </Dialog>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={this.state.skillEditStatus}
+                            onChange={this.handleEditStatusChange}
+                            color="primary"
+                          />
+                        }
+                        label="Editable"
+                      />
 
-                            <Dialog
-                              title="Success"
-                              actions={okButton}
-                              modal={true}
-                              open={this.state.changeStatusSuccessDialog}
-                            >
-                              <div>
-                                Status of{' '}
-                                <span className="skillName">{skillName}</span>{' '}
-                                has been changed successfully!
-                              </div>
-                            </Dialog>
-                            <Dialog
-                              title="Failed!"
-                              actions={okButton}
-                              modal={true}
-                              open={this.state.changeStatusFailureDialog}
-                            >
-                              <div>
-                                Error! Status of{' '}
-                                <span className="skillName">{skillName}</span>{' '}
-                                could not be changed!
-                              </div>
-                            </Dialog>
-                            <LocaleProvider locale={enUS}>
-                              <Table
-                                columns={columns}
-                                pagination={{ showQuickJumper: true }}
-                                rowKey={record => record.registered}
-                                dataSource={this.state.skillsData}
-                                loading={loading}
-                              />
-                            </LocaleProvider>
-                          </TabPane>
-                          <TabPane tab="Deleted" key="2">
-                            <LocaleProvider locale={enUS}>
-                              <Table
-                                columns={delColumns}
-                                pagination={{ showQuickJumper: true }}
-                                rowKey={record => record.registered}
-                                dataSource={this.state.deletedSkills}
-                              />
-                            </LocaleProvider>
-                          </TabPane>
-                        </Tabs>
-                      </div>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={this.state.skillStaffPickStatus}
+                            onChange={this.handleStaffPickStatusChange}
+                            color="primary"
+                          />
+                        }
+                        label="Staff Pick"
+                      />
+
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={this.state.systemSkillStatus}
+                            onChange={this.handleSystemSkillStatusChange}
+                            color="primary"
+                          />
+                        }
+                        label="System Skill"
+                      />
                     </div>
-                  </TabPane>
-                  <TabPane tab="System Settings" key="4" />
-                  <TabPane tab="System Logs" key="5" />
-                </Tabs>
-              </Paper>
-            </div>
+                  </DialogContent>
+                  <DialogActions>
+                    <Button key={1} onClick={this.handleChange}>
+                      Change
+                    </Button>
+                    <Button key={2} onClick={this.handleClose}>
+                      Cancel
+                    </Button>
+                  </DialogActions>
+                </Dialog>
+
+                <Dialog
+                  title="Delete Skill"
+                  open={this.state.showDeleteDialog}
+                  maxWidth={'xs'}
+                  fullWidth={true}
+                >
+                  <DialogContent>
+                    Are you sure you want to delete{' '}
+                    <span className="skillName">{skillName}</span>?
+                  </DialogContent>
+                  <DialogActions>
+                    <Button key={1} onClick={this.confirmDelete}>
+                      Delete
+                    </Button>
+                    <Button key={2} onClick={this.handleClose}>
+                      Cancel
+                    </Button>
+                  </DialogActions>
+                </Dialog>
+                <Dialog
+                  open={this.state.showRestoreDialog}
+                  maxWidth={'xs'}
+                  fullWidth={true}
+                >
+                  <DialogContent>
+                    Restore Skill Are you sure you want to restore{' '}
+                    <span className="skillName">{skillName}</span>?
+                  </DialogContent>
+                  <DialogActions>
+                    <Button key={1} onClick={this.confirmRestore}>
+                      Restore
+                    </Button>
+                    <Button key={2} onClick={this.handleClose}>
+                      Cancel
+                    </Button>
+                  </DialogActions>
+                </Dialog>
+                <Dialog
+                  open={this.state.restoreSuccessDialog}
+                  maxWidth={'xs'}
+                  fullWidth={true}
+                >
+                  <DialogTitle>Success</DialogTitle>
+                  <DialogContent>
+                    You successfully restored{' '}
+                    <span className="skillName">{skillName}</span>
+                    !
+                  </DialogContent>
+                  <OkButton />
+                </Dialog>
+                <Dialog
+                  open={this.state.restoreFailureDialog}
+                  maxWidth={'xs'}
+                  fullWidth={true}
+                >
+                  <DialogTitle>Failed!</DialogTitle>
+                  <DialogContent>
+                    Error! <span className="skillName">{skillName}</span> could
+                    not be restored!
+                  </DialogContent>
+                  <OkButton />
+                </Dialog>
+                <Dialog
+                  open={this.state.deleteSuccessDialog}
+                  maxWidth={'xs'}
+                  fullWidth={true}
+                >
+                  <DialogTitle>Success</DialogTitle>
+                  <DialogContent>
+                    You successfully deleted{' '}
+                    <span className="skillName">{skillName}</span>
+                    !
+                  </DialogContent>
+                  <OkButton />
+                </Dialog>
+                <Dialog
+                  open={this.state.deleteFailureDialog}
+                  maxWidth={'xs'}
+                  fullWidth={true}
+                >
+                  <DialogTitle>Failed</DialogTitle>
+                  <DialogContent>
+                    Error! <span className="skillName">{skillName}</span> could
+                    not be deleted!
+                  </DialogContent>
+                  <OkButton />
+                </Dialog>
+
+                <Dialog
+                  open={this.state.changeStatusSuccessDialog}
+                  maxWidth={'xs'}
+                  fullWidth={true}
+                >
+                  <DialogTitle>Success</DialogTitle>
+                  <DialogContent>
+                    Status of <span className="skillName">{skillName}</span> has
+                    been changed successfully!
+                  </DialogContent>
+                  <OkButton />
+                </Dialog>
+                <Dialog
+                  open={this.state.changeStatusFailureDialog}
+                  maxWidth={'xs'}
+                  fullWidth={true}
+                >
+                  <DialogTitle>Failed</DialogTitle>
+                  <DialogContent>
+                    Error! Status of{' '}
+                    <span className="skillName">{skillName}</span> could not be
+                    changed!
+                  </DialogContent>
+                  <OkButton />
+                </Dialog>
+                <Table
+                  columns={columns}
+                  pagination={{ showQuickJumper: true }}
+                  rowKey={record => record.registered}
+                  dataSource={this.state.skillsData}
+                  loading={loading}
+                />
+              </React.Fragment>
+            )}
           </div>
-        ) : (
-          <NotFound />
-        )}
+        </div>
       </div>
     );
   }
@@ -830,14 +728,7 @@ class ListSkills extends React.Component {
 ListSkills.propTypes = {
   history: PropTypes.object,
   actions: PropTypes.object,
-  isAdmin: PropTypes.bool,
 };
-
-function mapStateToProps(store) {
-  return {
-    isAdmin: store.app.isAdmin,
-  };
-}
 
 function mapDispatchToProps(dispatch) {
   return {
@@ -846,6 +737,6 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default connect(
-  mapStateToProps,
+  null,
   mapDispatchToProps,
 )(ListSkills);
