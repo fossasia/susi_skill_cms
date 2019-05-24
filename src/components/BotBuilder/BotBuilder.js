@@ -1,15 +1,18 @@
 import React from 'react';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
-import RaisedButton from 'material-ui/RaisedButton';
 import PropTypes from 'prop-types';
-import { Card, CardText } from 'material-ui/Card';
-import Add from 'material-ui/svg-icons/content/add';
-import Delete from 'material-ui/svg-icons/action/delete';
-import Dialog from 'material-ui/Dialog';
-import FlatButton from 'material-ui/FlatButton';
-import { FloatingActionButton, Paper } from 'material-ui';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import Add from '@material-ui/icons/Add';
+import Delete from '@material-ui/icons/Delete';
+import Dialog from '@material-ui/core/Dialog';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogActions from '@material-ui/core/DialogActions';
+import Button from '@material-ui/core/Button';
+import Fab from '@material-ui/core/Fab';
+import Paper from '@material-ui/core/Paper';
 import './BotBuilder.css';
-import { urls, colors } from '../../utils';
+import { urls } from '../../utils';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -149,6 +152,8 @@ class BotBuilder extends React.Component {
             style={{
               backgroundImage: 'url(' + imageUrl + ')',
               backgroundSize: 'cover',
+              backgroundColor: '#000',
+              opacity: '0.5',
             }}
           >
             <Link
@@ -161,13 +166,9 @@ class BotBuilder extends React.Component {
                 bot.group
               }
             >
-              <RaisedButton
-                label={bot.name}
-                labelPosition="before"
-                labelStyle={{ verticalAlign: 'middle' }}
-                backgroundColor={colors.header}
-                labelColor="#fff"
-              />
+              <Button variant="contained" color="primary">
+                {bot.name}
+              </Button>
             </Link>
             <div className="bot-delete">
               <Delete
@@ -261,16 +262,14 @@ class BotBuilder extends React.Component {
             style={{
               backgroundImage: 'url(' + imageUrl + ')',
               backgroundSize: 'cover',
+              backgroundColor: '#000',
+              opacity: '0.9',
             }}
           >
             <Link to={'/botbuilder/botwizard?draftID=' + draft}>
-              <RaisedButton
-                label={drafts[draft].name === '' ? draft : drafts[draft].name}
-                labelPosition="before"
-                labelStyle={{ verticalAlign: 'middle' }}
-                backgroundColor={colors.header}
-                labelColor="#fff"
-              />
+              <Button variant="contained" color="primary">
+                {drafts[draft].name === '' ? draft : drafts[draft].name}
+              </Button>
             </Link>
             <div className="bot-delete">
               <Delete
@@ -359,13 +358,13 @@ class BotBuilder extends React.Component {
                       style={{
                         backgroundImage: 'url(' + template.image + ')',
                         backgroundSize: 'cover',
+                        backgroundColor: '#000',
+                        opacity: '0.9',
                       }}
                     >
-                      <RaisedButton
-                        label={template.name}
-                        backgroundColor={colors.header}
-                        labelColor="#fff"
-                      />
+                      <Button variant="contained" color="primary">
+                        {template.name}
+                      </Button>
                     </Card>
                   </Link>
                 );
@@ -383,11 +382,13 @@ class BotBuilder extends React.Component {
                   style={{
                     backgroundImage: 'url(/botTemplates/chat-bot.jpg)',
                     backgroundSize: 'cover',
+                    backgroundColor: '#000',
+                    opacity: '0.9',
                   }}
                 >
-                  <FloatingActionButton
-                    backgroundColor={colors.fabButton}
-                    mini={true}
+                  <Fab
+                    color="primary"
+                    size="small"
                     style={{
                       boxShadow:
                         'rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px',
@@ -398,8 +399,8 @@ class BotBuilder extends React.Component {
                         height: '40px',
                       }}
                     />
-                  </FloatingActionButton>
-                  <CardText style={newBotBtn}>Create a new bot</CardText>
+                  </Fab>
+                  <CardContent style={newBotBtn}>Create a new bot</CardContent>
                 </Card>
               </Link>
               {this.showChatbots()}
@@ -417,31 +418,36 @@ class BotBuilder extends React.Component {
           </Paper>
         </div>
         <Dialog
-          actions={[
-            <FlatButton
-              label="Cancel"
-              onClick={this.closeDeleteAlert}
-              key={'Cancel'}
-              primary={true}
-              style={{ marginRight: '10px' }}
-            />,
-            <FlatButton
-              label="Delete"
-              onClick={this.handleDelete}
-              key={'Delete'}
-              backgroundColor={'#ff0000'}
-              primary={true}
-              labelStyle={{ color: '#fff' }}
-              hoverColor={'rgba(255,0,0,0.7)'}
-            />,
-          ]}
-          modal={false}
           open={deleteAlert !== null}
-          onRequestClose={this.closeDeleteAlert}
+          onClick={this.closeDeleteAlert}
+          maxWidth={'sm'}
+          fullWidth={true}
         >
-          {`Are you sure you want to delete this ${
-            deleteAlert !== null ? deleteAlert.type : ''
-          }?`}
+          <DialogContent style={{ fontSize: '1rem' }}>
+            {`Are you sure you want to delete this ${
+              deleteAlert !== null ? deleteAlert.type : ''
+            }?`}
+          </DialogContent>
+          <DialogActions>
+            {[
+              <Button
+                key={1}
+                color="primary"
+                onClick={this.closeDeleteAlert}
+                style={{ marginRight: '10px' }}
+              >
+                Cancel
+              </Button>,
+              <Button
+                key={2}
+                variant="contained"
+                color="secondary"
+                onClick={this.handleDelete}
+              >
+                Delete
+              </Button>,
+            ]}
+          </DialogActions>
         </Dialog>
       </div>
     );

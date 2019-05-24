@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
-import Table from 'antd/lib/table';
-import Button from 'antd/lib/button';
-import Form from 'antd/lib/form';
-import TextField from 'material-ui/TextField';
+import { Table, Button, Form } from 'antd';
+import TextField from '@material-ui/core/TextField';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import uiActions from '../../../../redux/actions/ui';
 import createActions from '../../../../redux/actions/create';
-import Checkbox from 'material-ui/Checkbox';
+import Checkbox from '@material-ui/core/Checkbox';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import PropTypes from 'prop-types';
 
 const EditableContext = React.createElement();
@@ -22,16 +21,8 @@ const EditableFormRow = Form.create()(EditableRow);
 
 const styles = {
   nameField: {
-    height: '38px',
-    borderRadius: 4,
-    border: '1px solid #ced4da',
-    fontSize: 15,
-    padding: '0px 10px',
     width: '272px',
-  },
-  inputStyle: {
-    height: '35px',
-    marginBottom: '10px',
+    marginBottom: '16px',
   },
 };
 
@@ -296,7 +287,7 @@ class UIView extends Component {
   };
 
   render() {
-    const { nameField, inputStyle } = styles;
+    const { nameField } = styles;
     const {
       dataSource,
       limitSites,
@@ -328,13 +319,15 @@ class UIView extends Component {
     return (
       <div>
         <div className="table-wrap">
-          <Checkbox
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={limitSites}
+                onChange={this.handleChangeLimitSites}
+                color="primary"
+              />
+            }
             label="Allow bot only on own site"
-            labelPosition="right"
-            checked={limitSites}
-            labelStyle={{ fontSize: '16px' }}
-            iconStyle={{ fill: 'rgb(66, 133, 244)' }}
-            onCheck={this.handleChangeLimitSites}
           />
           <div style={{ fontSize: '14px', padding: '0px 0px 2px 40px' }}>
             Allow the chatbot to run only on specified websites.
@@ -346,14 +339,17 @@ class UIView extends Component {
                 value={websiteName}
                 onChange={this.handleChangeWebsiteName}
                 style={nameField}
-                inputStyle={inputStyle}
                 placeholder="Domain Name"
-                underlineStyle={{ display: 'none' }}
+                variant="outlined"
               />
               <Button
                 onClick={this.handleAdd}
                 type="primary"
-                style={{ marginBottom: 16, marginLeft: '15px', height: '36px' }}
+                style={{
+                  marginTop: '10px',
+                  marginLeft: '15px',
+                  height: '36px',
+                }}
               >
                 Add a website
               </Button>
@@ -370,37 +366,43 @@ class UIView extends Component {
           ) : null}
         </div>
         <div style={{ padding: '0px 0px 20px 0px' }}>
-          <Checkbox
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={includeSusiSkills}
+                onChange={this.handleChangeIncludeSusiSkills}
+                color="primary"
+              />
+            }
             label="Include SUSI default skills"
-            labelPosition="right"
-            checked={includeSusiSkills}
-            labelStyle={{ fontSize: '16px' }}
-            iconStyle={{ fill: 'rgb(66, 133, 244)' }}
-            onCheck={this.handleChangeIncludeSusiSkills}
           />
           <div style={{ fontSize: '14px', padding: '0px 0px 2px 40px' }}>
             Allow the users to use all skills of SUSI.AI on your chatbot.
             Don&apos;t worry, your bot skill will always have a higher priority
             than SUSI skills.
           </div>
-          <Checkbox
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={myDevices}
+                onChange={this.handleChangeIncludeInMyDevices}
+                color="primary"
+              />
+            }
             label="(Coming Soon) Enable bot in my devices"
-            labelPosition="right"
-            checked={myDevices}
-            labelStyle={{ fontSize: '16px' }}
-            iconStyle={{ fill: 'rgb(66, 133, 244)' }}
-            onCheck={this.handleChangeIncludeInMyDevices}
           />
           <div style={{ fontSize: '14px', padding: '0px 0px 2px 40px' }}>
             Allow the chatbot to run on your devices.
           </div>
-          <Checkbox
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={publicDevices}
+                onChange={this.handleChangeIncludeInPublicDevices}
+                color="primary"
+              />
+            }
             label="(Coming Soon) Enable bot for other users"
-            labelPosition="right"
-            checked={publicDevices}
-            labelStyle={{ fontSize: '16px' }}
-            iconStyle={{ fill: 'rgb(66, 133, 244)' }}
-            onCheck={this.handleChangeIncludeInPublicDevices}
           />
           <div style={{ fontSize: '14px', padding: '0px 0px 2px 40px' }}>
             List the chatbot publicly. Users won&apos;t be able to see/edit the

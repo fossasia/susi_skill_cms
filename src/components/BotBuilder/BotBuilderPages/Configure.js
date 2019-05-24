@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import IconButton from 'material-ui/IconButton';
-import Code from 'material-ui/svg-icons/action/code';
-import Table from 'material-ui/svg-icons/av/web';
+import IconButton from '@material-ui/core/IconButton';
+import Code from '@material-ui/icons/Code';
+import Table from '@material-ui/icons/Web';
 import PropTypes from 'prop-types';
 import CodeView from './ConfigureViews/CodeView';
 import UIView from './ConfigureViews/UIView';
@@ -19,27 +19,15 @@ class Configure extends Component {
           <div style={{ marginLeft: 'auto', marginRight: '0px' }}>
             <IconButton
               className="iconbutton"
-              tooltip="Code View"
               onClick={() => actions.setView({ view: 'code' })}
-              disableTouchRipple={true}
             >
-              <Code
-                color={
-                  view === 'code' ? 'rgb(66, 133, 244)' : 'rgb(158, 158, 158)'
-                }
-              />
+              <Code color={view === 'code' ? 'primary' : 'default'} />
             </IconButton>
             <IconButton
               className="iconbutton"
-              tooltip="UI View"
               onClick={() => actions.setView({ view: 'ui' })}
-              disableTouchRipple={true}
             >
-              <Table
-                color={
-                  view === 'ui' ? 'rgb(66, 133, 244)' : 'rgb(158, 158, 158)'
-                }
-              />
+              <Table color={view === 'ui' ? 'primary' : 'default'} />
             </IconButton>
           </div>
         </div>
