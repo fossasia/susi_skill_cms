@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import OrgChart from 'react-orgchart';
 import PropTypes from 'prop-types';
-import CircularProgress from 'material-ui/CircularProgress';
-import Person from 'material-ui/svg-icons/social/person';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Person from '@material-ui/icons/Person';
 import ReactTooltip from 'react-tooltip';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';

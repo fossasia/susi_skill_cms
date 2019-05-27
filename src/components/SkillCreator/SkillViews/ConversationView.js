@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { Paper } from 'material-ui';
+import Paper from '@material-ui/core/Paper';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import uiActions from '../../../redux/actions/ui';
 import PropTypes from 'prop-types';
 import { fetchConversationResponse } from '../../../api/index';
-import Person from 'material-ui/svg-icons/social/person';
-import CircularProgress from 'material-ui/CircularProgress';
+import Person from '@material-ui/icons/Person';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import './ConversationView.css';
 
 const styles = {
