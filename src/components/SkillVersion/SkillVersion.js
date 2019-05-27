@@ -14,11 +14,12 @@ import TableRow from '@material-ui/core/TableRow';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import Radio from '@material-ui/core/Radio';
+import Checkbox from '@material-ui/core/Checkbox';
 
 // Other Utils
-import notification from 'antd/lib/notification';
-import Icon from 'antd/lib/icon';
+import { notification, Icon } from 'antd';
+import 'antd/dist/antd.css';
+import './SkillVersion.css';
 
 const styles = {
   home: {
@@ -50,10 +51,7 @@ class SkillVersion extends Component {
         languageValue: this.props.location.pathname.split('/')[4],
         skillName: this.props.location.pathname.split('/')[2],
       },
-      leftChecks: [],
-      rightChecks: [],
-      currLeftChecked: null,
-      currRightChecked: null,
+      checks: [],
     };
   }
 
@@ -86,92 +84,44 @@ class SkillVersion extends Component {
   setCommitHistory = commitsData => {
     if (commitsData.accepted) {
       let commits = commitsData.commits ? commitsData.commits : [];
-      let currLeftChecked = null;
-      let currRightChecked = null;
-      let leftChecks = [];
-      let rightChecks = [];
-      commits.forEach((commit, index) => {
-        if (index === 0) {
-          commit.latest = true;
-          rightChecks.push(true);
-          leftChecks.push(false);
-          currRightChecked = 0;
-        } else if (index === 1) {
-          rightChecks.push(false);
-          leftChecks.push(true);
-          currLeftChecked = 1;
-        } else {
-          rightChecks.push(false);
-          leftChecks.push(false);
-        }
-      });
       this.setState({
         commits: commits,
         dataReceived: true,
-        leftChecks,
-        rightChecks,
-        currLeftChecked,
-        currRightChecked,
       });
     }
   };
 
-  onCheck = event => {
-    const side = event.target.name.split('-')[1];
-    const index = parseInt(event.target.name.split('-')[0], 10);
-    let {
-      currLeftChecked,
-      currRightChecked,
-      leftChecks,
-      rightChecks,
-    } = this.state;
-    if (side === 'right') {
-      if (!(index >= currLeftChecked)) {
-        rightChecks.fill(false);
-        rightChecks[index] = true;
-        currRightChecked = index;
-      }
-    } else if (side === 'left') {
-      if (!(index <= currRightChecked)) {
-        leftChecks.fill(false);
-        leftChecks[index] = true;
-        currLeftChecked = index;
-      }
-    }
-    this.setState({
-      currLeftChecked,
-      currRightChecked,
-      leftChecks,
-      rightChecks,
-    });
+  getCheckedCommits = () => {
+    const { commits, checks } = this.state;
+    let checkedCommits = checks.map(check => commits[check]);
+    return checkedCommits;
   };
 
-  getCheckedCommits = () => {
-    const { commits, currLeftChecked, currRightChecked } = this.state;
-    const commitOld = commits[currLeftChecked];
-    const commitRecent = commits[currRightChecked];
-    return [commitOld, commitRecent];
+  onCheck = e => {
+    const { checks } = this.state;
+    const { id, checked } = e.currentTarget;
+    let currentChecks = [...checks];
+    if (checked && currentChecks.length === 2) {
+      notification.open({
+        message: 'Error Processing your Request',
+        description: 'Cannot compare more than 2 version at a time',
+        icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
+      });
+    } else {
+      let checks = checked
+        ? [...currentChecks, id]
+        : currentChecks.filter(check => check !== id);
+      this.setState({
+        checks: [...checks],
+      });
+    }
   };
 
   render() {
-    const {
-      currLeftChecked,
-      currRightChecked,
-      commits,
-      leftChecks,
-      rightChecks,
-      skillMeta,
-      dataReceived,
-    } = this.state;
-
-    let showCompareBtn = false;
-    if (currLeftChecked != null && currRightChecked != null) {
-      showCompareBtn = true;
-    }
+    const { commits, skillMeta, dataReceived, checks } = this.state;
 
     let commitHistoryTableHeader = (
       <TableRow>
-        <TableCell padding="checkbox" />
         <TableCell padding="checkbox" />
         <TableCell padding="dense">Commit Date</TableCell>
         <TableCell padding="dense">Commit ID</TableCell>
@@ -182,56 +132,15 @@ class SkillVersion extends Component {
 
     let commitHistoryTableRows = commits.map((commit, index) => {
       const { commitId, commitDate, author, commitMessage } = commit;
-      let leftRadioBtn = null;
-      let rightRadioBtn = null;
-      if (leftChecks && rightChecks) {
-        leftRadioBtn = (
-          <Radio
-            name={index.toString() + '-left'}
-            checked={leftChecks[index]}
-            onChange={this.onCheck}
-            color="primary"
-          />
-        );
-        rightRadioBtn = (
-          <Radio
-            name={index.toString() + '-right'}
-            checked={rightChecks[index]}
-            onChange={this.onCheck}
-            color="primary"
-          />
-        );
-      } else {
-        leftRadioBtn = (
-          <Radio
-            name={index.toString() + '-left'}
-            checked={index === 1}
-            onChange={this.onCheck}
-            color="primary"
-          />
-        );
-        rightRadioBtn = (
-          <Radio
-            name={index.toString() + '-right'}
-            checked={index === 0}
-            onChange={this.onCheck}
-            color="primary"
-          />
-        );
-      }
-      if (showCompareBtn) {
-        if (index <= currRightChecked) {
-          leftRadioBtn = null;
-        }
-        if (index >= currLeftChecked) {
-          rightRadioBtn = null;
-        }
-      }
-
       return (
         <TableRow key={index}>
-          <TableCell padding="checkbox">{leftRadioBtn}</TableCell>
-          <TableCell padding="checkbox">{rightRadioBtn}</TableCell>
+          <TableCell padding="checkbox">
+            <Checkbox
+              id={index}
+              checked={checks.indexOf(index.toString()) > -1}
+              onChange={this.onCheck}
+            />
+          </TableCell>
           <TableCell padding="dense">
             <Link
               to={{
@@ -293,11 +202,12 @@ class SkillVersion extends Component {
               <p>
                 <span>
                   For any version listed below, click on its date to view it.
+                  You can compare only two versions at a time.
                 </span>
               </p>
               <div style={styles.compareBtnStyle}>{commitHistoryTable}</div>
               <div style={styles.actionButtons}>
-                {showCompareBtn && (
+                {checks.length === 2 && (
                   <Link
                     to={{
                       pathname: `/${skillMeta.groupValue}/${
