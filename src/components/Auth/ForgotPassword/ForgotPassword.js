@@ -158,7 +158,6 @@ class ForgotPassword extends Component {
           );
         })
         .catch(error => {
-          debugger;
           this.setState({
             loading: false,
             success: false,
