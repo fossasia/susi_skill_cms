@@ -99,12 +99,12 @@ const styles = {
   },
   selection: {
     margin: '0px 10px',
-    width: '200px',
+    width: '150px',
     overflowY: 'hidden',
     fontSize: '14px',
   },
   newSkillBtn: {
-    padding: '10px 0px 0px 16px',
+    padding: '10px 20px',
     marginRight: '24px',
   },
   example: {
@@ -148,12 +148,13 @@ const styles = {
     minHeight: '24px',
     lineHeight: '24px',
     fontSize: '14px',
+    padding: '0px 24px',
   },
   categorySidebarMenuItem: {
     minHeight: '24px',
     lineHeight: '24px',
     fontSize: '14px',
-    paddingLeft: '8px',
+    padding: '0px 24px',
   },
   mobileMenuItem: {
     minHeight: '24px',

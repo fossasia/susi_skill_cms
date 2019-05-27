@@ -15,20 +15,25 @@ import SkillUsageCard from '../SkillUsageCard/SkillUsageCard';
 import SkillRatingCard from '../SkillRating/SkillRatingCard';
 import SkillFeedbackCard from '../SkillFeedbackCard/SkillFeedbackCard';
 import Footer from '../Footer/Footer.react';
-import { FloatingActionButton, Paper } from 'material-ui';
-import CircularProgress from 'material-ui/CircularProgress';
-import Dialog from 'material-ui/Dialog';
-import FlatButton from 'material-ui/FlatButton';
-import TextField from 'material-ui/TextField';
+import Paper from '@material-ui/core/Paper';
+import Fab from '@material-ui/core/Fab';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
 import Ratings from 'react-ratings-declarative';
 
 // Static Assets
 import CircleImage from '../CircleImage/CircleImage';
-import EditBtn from 'material-ui/svg-icons/editor/mode-edit';
-import VersionBtn from 'material-ui/svg-icons/action/history';
-import DeleteBtn from 'material-ui/svg-icons/action/delete';
-import NavigateDown from 'material-ui/svg-icons/navigation/expand-more';
-import NavigateUp from 'material-ui/svg-icons/navigation/expand-less';
+import EditBtn from '@material-ui/icons/BorderColor';
+import VersionBtn from '@material-ui/icons/History';
+import DeleteBtn from '@material-ui/icons/Delete';
+import NavigateDown from '@material-ui/icons/ExpandMore';
+import NavigateUp from '@material-ui/icons/ExpandLess';
 import ReactTooltip from 'react-tooltip';
 import { urls, colors, parseDate, testExample } from '../../utils';
 import { reportSkill } from '../../api';
@@ -37,7 +42,6 @@ import './SkillListing.css';
 
 const styles = {
   home: {
-    width: '500%',
     fontSize: '14px',
   },
   right: {
@@ -225,34 +229,31 @@ class SkillListing extends Component {
     let { seeMoreSkillExamples } = this.state;
 
     const reportDialogActions = [
-      <FlatButton
-        label="Report"
-        key="submit"
-        style={{ color: colors.warningColor }}
+      <Button
+        key={0}
+        color="secondary"
         onClick={this.handleReportSubmit}
-        disabled={!this.state.feedbackMessage.trim()}
-      />,
-      <FlatButton
-        label="Cancel"
-        key="cancel"
-        style={{ color: 'rgb(66, 133, 244)' }}
-        onClick={this.handleReportToggle}
-      />,
+        disabled={
+          !(
+            this.state.feedbackMessage !== undefined &&
+            this.state.feedbackMessage.trim()
+          )
+        }
+      >
+        Report
+      </Button>,
+      <Button key={1} color="primary" onClick={this.handleReportToggle}>
+        Cancel
+      </Button>,
     ];
 
     const deleteDialogActions = [
-      <FlatButton
-        label="Delete"
-        key="delete"
-        style={{ color: colors.warningColor }}
-        onClick={this.deleteSkill}
-      />,
-      <FlatButton
-        label="Cancel"
-        key="cancel"
-        style={{ color: 'rgb(66, 133, 244)' }}
-        onClick={this.handleDeleteToggle}
-      />,
+      <Button key={0} color="secondary" onClick={this.deleteSkill}>
+        Delete
+      </Button>,
+      <Button key={1} color="primary" onClick={this.handleDeleteToggle}>
+        Cancel
+      </Button>,
     ];
 
     let renderElement = null;
@@ -281,7 +282,7 @@ class SkillListing extends Component {
           <StaticAppBar {...this.props} />
           <h1 className="skill_loading_container">
             <div className="center">
-              <CircularProgress size={62} color="#4285f5" />
+              <CircularProgress size={62} color="primary" />
               <h4>Loading</h4>
             </div>
           </h1>
@@ -299,116 +300,120 @@ class SkillListing extends Component {
                 <img className="avatar-img" alt="Thumbnail" src={imgUrl} />
               )}
             </div>
-            <div className="linkButtons">
-              {isAdmin === 'true' && (
-                <div className="skillDeleteBtn">
-                  <FloatingActionButton
-                    onClick={this.handleDeleteToggle}
-                    data-tip="Delete Skill"
-                    backgroundColor={colors.warningColor}
-                  >
-                    <DeleteBtn />
-                  </FloatingActionButton>
-                  <ReactTooltip effect="solid" place="bottom" />
-                  <Dialog
-                    title="Delete Skill"
-                    actions={deleteDialogActions}
-                    modal={false}
-                    open={showDeleteDialog}
-                    onRequestClose={this.handleDeleteToggle}
-                  >
-                    <div>
-                      Are you sure about deleting{' '}
-                      <span style={{ fontWeight: 'bold' }}>{skillName}</span>?
-                    </div>
-                  </Dialog>
-                </div>
-              )}
+            <div className="skillHeaderContainer">
               <div>
-                <Link
-                  to={{
-                    pathname: `/${this.groupValue}/${this.skillTag}/edit/${
-                      this.languageValue
-                    }`,
-                  }}
-                >
-                  <FloatingActionButton
-                    data-tip="Edit Skill"
-                    backgroundColor={colors.header}
+                <h1 className="name">{this.skillName}</h1>
+                <h4>
+                  by{' '}
+                  <span
+                    style={styles.authorStyle}
+                    onClick={this.openAuthorSkills}
                   >
-                    <EditBtn />
-                  </FloatingActionButton>
-                  <ReactTooltip effect="solid" place="bottom" />
-                </Link>
+                    {author}
+                  </span>
+                </h4>
+                <a className="singleRating" href="#rating">
+                  <Ratings
+                    rating={skillRatings.avgStar}
+                    widgetRatedColors="#ffbb28"
+                    widgetDimensions="20px"
+                    widgetSpacings="0px"
+                  >
+                    <Ratings.Widget />
+                    <Ratings.Widget />
+                    <Ratings.Widget />
+                    <Ratings.Widget />
+                    <Ratings.Widget />
+                  </Ratings>
+                  <div className="ratingLabel">{skillRatings.totalStar}</div>
+                </a>
               </div>
-              <div>
-                <Link
-                  to={{
-                    pathname: `/${this.groupValue}/${this.skillTag}/versions/${
-                      this.languageValue
-                    }`,
-                  }}
-                >
-                  <div className="skillVersionBtn">
-                    <FloatingActionButton
-                      data-tip="Skill Versions"
-                      backgroundColor={colors.header}
+              <div className="linkButtons">
+                {isAdmin === 'true' && (
+                  <div className="skillDeleteBtn">
+                    <Fab
+                      onClick={this.handleDeleteToggle}
+                      data-tip="Delete Skill"
+                      backgroundColor={colors.warningColor}
                     >
-                      <VersionBtn />
-                    </FloatingActionButton>
+                      <DeleteBtn />
+                    </Fab>
                     <ReactTooltip effect="solid" place="bottom" />
+                    <Dialog
+                      open={showDeleteDialog}
+                      onClose={this.handleDeleteToggle}
+                      maxWidth={'sm'}
+                      fullWidth={true}
+                    >
+                      <DialogContent>
+                        <DialogTitle>Delete Skill</DialogTitle>
+                        <DialogContentText>
+                          Are you sure about deleting{' '}
+                          <span style={{ fontWeight: 'bold' }}>
+                            {skillName}
+                          </span>?
+                        </DialogContentText>
+                      </DialogContent>
+                      <DialogActions>{deleteDialogActions}</DialogActions>
+                    </Dialog>
                   </div>
-                </Link>
+                )}
+                <div>
+                  <Link
+                    to={{
+                      pathname: `/${this.groupValue}/${this.skillTag}/edit/${
+                        this.languageValue
+                      }`,
+                    }}
+                  >
+                    <Fab data-tip="Edit Skill" backgroundColor={colors.header}>
+                      <EditBtn color="primary" />
+                    </Fab>
+                    <ReactTooltip effect="solid" place="bottom" />
+                  </Link>
+                </div>
+                <div>
+                  <Link
+                    to={{
+                      pathname: `/${this.groupValue}/${
+                        this.skillTag
+                      }/versions/${this.languageValue}`,
+                    }}
+                  >
+                    <div className="skillVersionBtn">
+                      <Fab
+                        data-tip="Skill Versions"
+                        backgroundColor={colors.header}
+                      >
+                        <VersionBtn color="primary" />
+                      </Fab>
+                      <ReactTooltip effect="solid" place="bottom" />
+                    </div>
+                  </Link>
+                </div>
               </div>
             </div>
-            <div className="meta">
-              <h1 className="name">{this.skillName}</h1>
-              <h4>
-                by{' '}
-                <span
-                  style={styles.authorStyle}
-                  onClick={this.openAuthorSkills}
-                >
-                  {author}
-                </span>
-              </h4>
-              <a className="singleRating" href="#rating">
-                <Ratings
-                  rating={skillRatings.avgStar}
-                  widgetRatedColors="#ffbb28"
-                  widgetDimensions="20px"
-                  widgetSpacings="0px"
-                >
-                  <Ratings.Widget />
-                  <Ratings.Widget />
-                  <Ratings.Widget />
-                  <Ratings.Widget />
-                  <Ratings.Widget />
-                </Ratings>
-                <div className="ratingLabel">{skillRatings.totalStar}</div>
-              </a>
-              <div className="avatar-meta margin-b-md">
-                <div className="example-container">
-                  {examples &&
-                    examples[Object.keys(examples)[0]] &&
-                    examples.slice(0, skillExampleCount).map((data, index) => {
-                      return (
-                        <div
-                          key={index}
-                          className="example-comment"
-                          onClick={event => testExample(event, data)}
-                        >
-                          <q>{data}</q>
-                        </div>
-                      );
-                    })}
-                </div>
-                <div
-                  className="skill-example-see-more"
-                  onClick={this.toggleSkillExamples}
-                >
-                  {seeMoreSkillExamples}
-                </div>
+            <div className="avatar-meta margin-b-md">
+              <div className="example-container">
+                {examples &&
+                  examples[Object.keys(examples)[0]] &&
+                  examples.slice(0, skillExampleCount).map((data, index) => {
+                    return (
+                      <div
+                        key={index}
+                        className="example-comment"
+                        onClick={event => testExample(event, data)}
+                      >
+                        <q>{data}</q>
+                      </div>
+                    );
+                  })}
+              </div>
+              <div
+                className="skill-example-see-more"
+                onClick={this.toggleSkillExamples}
+              >
+                {seeMoreSkillExamples}
               </div>
             </div>
             <Paper className="margin-b-md margin-t-md">
@@ -520,6 +525,26 @@ class SkillListing extends Component {
                             </div>
                           </td>
                           <Dialog
+                            open={showReportDialog}
+                            onClose={this.handleReportToggle}
+                            maxWidth={'sm'}
+                            fullWidth={true}
+                          >
+                            <DialogTitle>Flag as inappropriate</DialogTitle>
+                            <DialogContent>
+                              <TextField
+                                multiline={true}
+                                fullWidth={true}
+                                onChange={(event, val) =>
+                                  this.saveReportFeedback(event.target.value)
+                                }
+                                label="Feedback message"
+                                placeholder="Leave a feedback message"
+                              />
+                            </DialogContent>
+                            <DialogActions>{reportDialogActions}</DialogActions>
+                          </Dialog>
+                          {/* <Dialog
                             title="Flag as inappropriate"
                             actions={reportDialogActions}
                             modal={false}
@@ -541,7 +566,7 @@ class SkillListing extends Component {
                                 this.saveReportFeedback(val)
                               }
                             />
-                          </Dialog>
+                          </Dialog> */}
                         </tr>
                       )}
                       <tr>
@@ -575,7 +600,9 @@ class SkillListing extends Component {
             requestClose={this.closeAuthorSkills}
           />
         </div>
-        <Footer />
+        <div style={{ minWidth: '640px' }}>
+          <Footer />
+        </div>
       </div>
     );
   }

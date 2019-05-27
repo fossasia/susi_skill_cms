@@ -193,7 +193,7 @@ class AuthorSkills extends Component {
             </h3>
           </div>
           {renderElement}
-          <Close style={closingStyle} onTouchTap={requestClose} />
+          <Close style={closingStyle} onClick={requestClose} />
         </Dialog>
       </div>
     );

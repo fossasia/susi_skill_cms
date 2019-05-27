@@ -1,27 +1,31 @@
 import React from 'react';
-import RaisedButton from 'material-ui/RaisedButton';
+import Button from '@material-ui/core/Button';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
-import { Step, Stepper, StepButton } from 'material-ui/Stepper';
+import Stepper from '@material-ui/core/Stepper';
+import Step from '@material-ui/core/Step';
+import StepButton from '@material-ui/core/StepButton';
 import { Grid, Col, Row } from 'react-flexbox-grid';
-import Build from './BotBuilderPages/Build';
 import PropTypes from 'prop-types';
 import Design from './BotBuilderPages/Design';
 import Preview from './Preview/Preview';
-import CircularProgress from 'material-ui/CircularProgress';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import uiActions from '../../redux/actions/ui';
 import Configure from './BotBuilderPages/Configure';
-import notification from 'antd/lib/notification';
 import Deploy from './BotBuilderPages/Deploy';
-import { Paper, TextField } from 'material-ui';
-import ChevronLeft from 'material-ui/svg-icons/navigation/chevron-left';
-import ChevronRight from 'material-ui/svg-icons/navigation/chevron-right';
-import { urls, colors, avatars } from '../../utils';
-import Icon from 'antd/lib/icon';
-import * as $ from 'jquery';
+import Paper from '@material-ui/core/Paper';
+import TextField from '@material-ui/core/TextField';
+import ChevronLeft from '@material-ui/icons/ChevronLeft';
+import ChevronRight from '@material-ui/icons/ChevronRight';
+import { avatars, getQueryStringValue } from '../../utils';
+import { storeDraft, updateSkill } from '../../api/index';
 import './BotBuilder.css';
+import createActions from '../../redux/actions/create';
+import SkillCreator from '../SkillCreator/SkillCreator';
+import { notification, Icon } from 'antd';
+import 'antd/dist/antd.css';
 
 const styles = {
   home: {
@@ -64,41 +68,47 @@ const styles = {
     cursor: 'pointer',
     display: window.innerWidth < 769 ? 'none' : 'inherit',
   },
+  contentStyle: { margin: '0 16px' },
 };
 
 class BotWizard extends React.Component {
   componentDidMount() {
+    const { actions } = this.props;
     if (
-      this.getQueryStringValue('template') ||
-      this.getQueryStringValue('draftID') ||
-      (this.getQueryStringValue('name') &&
-        this.getQueryStringValue('group') &&
-        this.getQueryStringValue('language'))
+      getQueryStringValue('template') ||
+      getQueryStringValue('draftID') ||
+      (getQueryStringValue('name') &&
+        getQueryStringValue('group') &&
+        getQueryStringValue('language'))
     ) {
-      if (this.getQueryStringValue('template')) {
+      if (getQueryStringValue('template')) {
         for (let template of this.props.templates) {
-          if (template.id === this.getQueryStringValue('template')) {
-            let code = template.code;
-            this.setState({
-              buildCode: code,
-              loaded: true,
-            });
+          if (template.id === getQueryStringValue('template')) {
+            let { code } = template;
+            // Update code
+            actions
+              .setSkillCode({ code })
+              .then(() => {
+                this.setState({
+                  loaded: true,
+                });
+              })
+              .catch(error => {
+                console.log(error);
+              });
           }
         }
-      } else if (this.getQueryStringValue('draftID')) {
-        let draftID = this.getQueryStringValue('draftID');
+      } else if (getQueryStringValue('draftID')) {
+        let draftID = getQueryStringValue('draftID');
         this.getDraftBotDetails(draftID);
       } else {
         // editing a saved bot
-        let name = this.getQueryStringValue('name');
-        let group = this.getQueryStringValue('group');
-        let language = this.getQueryStringValue('language');
+        let name = getQueryStringValue('name');
+        let group = getQueryStringValue('group');
+        let language = getQueryStringValue('language');
         this.setState({
           commitMessage: `Updated Bot ${name}`,
           newBot: false,
-          skillName: name,
-          skillGroup: group,
-          skillLanguage: language,
         });
         this.getBotDetails(name, group, language);
       }
@@ -126,64 +136,54 @@ class BotWizard extends React.Component {
       imageChanged: false,
       loaded: false,
       commitMessage: '',
-      groupValue: null,
-      languageValue: '',
-      expertValue: '',
-      file: null,
-      imageUrl: '<image_name>',
       image: avatarsIcons[1].url,
-      designData: null,
-      preferUiView: 'code',
       newBot: true,
-      skillName: '',
-      skillGroup: '',
-      skillLanguage: '',
-      buildCode:
-        '::name <Bot_name>\n::category <Category>\n::language <Language>\n::author <author_name>\n::author_url <author_url>\n::description <description> \n::dynamic_content <Yes/No>\n::developer_privacy_policy <link>\n::image images/<image_name>\n::terms_of_use <link>\n\n\nUser query1|query2|quer3....\n!example:<The question that should be shown in public skill displays>\n!expect:<The answer expected for the above example>\nAnswer for the user query',
-      designCode:
-        '::bodyBackground #ffffff\n::bodyBackgroundImage \n::userMessageBoxBackground #0077e5\n::userMessageTextColor #ffffff\n::botMessageBoxBackground #f8f8f8\n::botMessageTextColor #455a64\n::botIconColor #000000\n::botIconImage ',
-      configCode:
-        "::allow_bot_only_on_own_sites no\n!Write all the domains below separated by commas on which you want to enable your chatbot\n::allowed_sites \n!Choose if you want to enable the default susi skills or not\n::enable_default_skills yes\n!Choose if you want to enable chatbot in your devices or not\n::enable_bot_in_my_devices no\n!Choose if you want to enable chatbot in other user's devices or not\n::enable_bot_for_other_users no",
     };
   }
 
-  saveDraft = () => {
+  componentWillUnmount() {
     const { actions } = this.props;
-    let designCode = this.state.designCode.replace(/#/g, '');
-    let image = this.state.imageUrl;
+    actions.resetCreateStore();
+  }
+
+  saveDraft = () => {
+    const {
+      actions,
+      category,
+      language,
+      name,
+      buildCode,
+      configCode,
+    } = this.props;
+    let { designCode, imageUrl: image } = this.props;
+    designCode = designCode.replace(/#/g, '');
     if (image.search('images/') === -1) {
       image = 'images/' + image;
     }
     let skillData = {
-      group: this.state.groupValue,
-      language: this.state.languageValue,
-      name: this.state.expertValue,
-      buildCode: this.state.buildCode,
-      designCode: designCode,
-      configCode: this.state.configCode,
-      image: image,
+      category,
+      language,
+      name,
+      buildCode,
+      designCode,
+      configCode,
+      image,
     };
     let object = JSON.stringify(skillData);
-    if (skillData.group !== null) {
-      let url;
-      url = urls.API_URL + '/cms/storeDraft.json?object=' + object;
-      $.ajax({
-        url: url,
-        dataType: 'jsonp',
-        crossDomain: true,
-        success: function(data) {
+    if (skillData.category !== null) {
+      storeDraft({ object })
+        .then(payload => {
           actions.openSnackBar({
             snackBarMessage: 'Successfully saved draft of your chatbot.',
             snackBarDuration: 2000,
           });
-        },
-        error: function(error) {
+        })
+        .catch(error => {
           actions.openSnackBar({
             snackBarMessage: "Couldn't save the draft. Please try again.",
             snackBarDuration: 2000,
           });
-        },
-      });
+        });
     } else {
       actions.openSnackBar({
         snackBarMessage: "Couldn't save the draft. Please select the Category",
@@ -193,176 +193,38 @@ class BotWizard extends React.Component {
   };
 
   getDraftBotDetails = id => {
-    const { actions, accessToken } = this.props;
-    let url = urls.API_URL + '/cms/readDraft.json?id=' + id;
-    $.ajax({
-      url: url,
-      dataType: 'jsonp',
-      crossDomain: true,
-      success: function(data) {
-        if (data.drafts[id]) {
-          let skillName = data.drafts[id].name;
-          let skillLanguage = data.drafts[id].language;
-          let skillGroup = data.drafts[id].group;
-          let buildCode = data.drafts[id].buildCode;
-          let designCode = data.drafts[id].designCode;
-          let configCode = data.drafts[id].configCode;
-          const imageNameMatch = buildCode.match(/^::image\s(.*)$/m);
-          let imagePreviewUrl;
-          let localImages = [
-            'images/<image_name>',
-            'images/<image_name_event>',
-            'images/<image_name_job>',
-            'images/<image_name_contact>',
-          ];
-          if (!localImages.includes(imageNameMatch[1])) {
-            imagePreviewUrl = `${urls.API_URL}/cms/getImage.png?access_token=
-            ${accessToken}
-            &language=${skillLanguage}&group=${skillGroup}&image=${
-              imageNameMatch[1]
-            }`;
-          } else if (imageNameMatch[1] === 'images/<image_name_event>') {
-            imagePreviewUrl = '/botTemplates/event-registration.jpg';
-          } else if (imageNameMatch[1] === 'images/<image_name_job>') {
-            imagePreviewUrl = '/botTemplates/job-application.jpg';
-          } else if (imageNameMatch[1] === 'images/<image_name_contact>') {
-            imagePreviewUrl = '/botTemplates/contact-us.png';
-          } else {
-            imagePreviewUrl = this.state.image;
-          }
-          designCode = designCode.replace(
-            'bodyBackgroundImage ',
-            'bodyBackgroundImage #',
-          );
-          designCode = designCode.replace(
-            'bodyBackground ',
-            'bodyBackground #',
-          );
-          designCode = designCode.replace(
-            'userMessageBoxBackground ',
-            'userMessageBoxBackground #',
-          );
-          designCode = designCode.replace(
-            'userMessageTextColor ',
-            'userMessageTextColor #',
-          );
-          designCode = designCode.replace(
-            'botMessageBoxBackground ',
-            'botMessageBoxBackground #',
-          );
-          designCode = designCode.replace(
-            'botMessageTextColor ',
-            'botMessageTextColor #',
-          );
-          designCode = designCode.replace('botIconColor ', 'botIconColor #');
-          this.setState(
-            {
-              groupValue: skillGroup,
-              languageValue: skillLanguage,
-              expertValue: skillName,
-              buildCode,
-              designCode,
-              configCode,
-              image: imagePreviewUrl,
-              imageUrl: imageNameMatch[1],
-              loaded: true,
-            },
-            () => this.generateDesignData(),
-          );
-        } else {
-          actions.openSnackBar({
-            snackBarMessage:
-              "Couldn't get your draft details. Please reload the page.",
-            snackBarDuration: 2000,
-          });
-        }
-      }.bind(this),
-      error: function(error) {
+    const { actions } = this.props;
+    actions
+      .readDraft({ id })
+      .then(payload => {
+        console.log('Read draft');
+      })
+      .catch(error => {
         actions.openSnackBar({
           snackBarMessage: "Couldn't get your drafts. Please reload the page.",
           snackBarDuration: 2000,
         });
-      },
-    });
+      });
   };
 
   getBotDetails = (name, group, language) => {
-    const { actions, accessToken } = this.props;
-    let url;
-    url =
-      urls.API_URL +
-      // eslint-disable-next-line
-      `/cms/getSkill.json?group=${group}&language=${language}&skill=${name}&private=1&access_token=` +
-      accessToken;
-    $.ajax({
-      url: url,
-      dataType: 'jsonp',
-      jsonp: 'callback',
-      crossDomain: true,
-      success: function(data) {
-        let text = data.text;
-        let buildCode = '::name' + text.split('::name')[1];
-        let designCode =
-          '::bodyBackground ' +
-          text.split('::bodyBackground ')[1].split('::name')[0];
-        let configCode =
-          '::allow_bot_only_on_own_sites' +
-          text
-            .split('::allow_bot_only_on_own_sites')[1]
-            .split('::bodyBackground')[0];
-        const imageNameMatch = buildCode.match(/^::image\s(.*)$/m);
-        let imagePreviewUrl;
-        let localImages = [
-          'images/<image_name>',
-          'images/<image_name_event>',
-          'images/<image_name_job>',
-          'images/<image_name_contact>',
-        ];
-        if (!localImages.includes(imageNameMatch[1])) {
-          imagePreviewUrl =
-            urls.API_URL +
-            '/cms/getImage.png?access_token=' +
-            accessToken +
-            '&language=' +
-            language +
-            '&group=' +
-            group +
-            '&image=' +
-            imageNameMatch[1];
-        } else if (imageNameMatch[1] === 'images/<image_name_event>') {
-          imagePreviewUrl = '/botTemplates/event-registration.jpg';
-        } else if (imageNameMatch[1] === 'images/<image_name_job>') {
-          imagePreviewUrl = '/botTemplates/job-application.jpg';
-        } else if (imageNameMatch[1] === 'images/<image_name_contact>') {
-          imagePreviewUrl = '/botTemplates/contact-us.png';
-        } else {
-          imagePreviewUrl = this.state.image;
-        }
+    const { actions, imageUrl } = this.props;
+    actions
+      .getBotDetails({ group, language, skill: name, model: 'general' })
+      .then(payload => {
         let savedSkillOld = {
           OldGroup: group,
           OldLanguage: language,
           OldSkill: name,
-          old_image_name: imageNameMatch[1].replace('images/', ''),
+          old_image_name: imageUrl.replace('images/', ''),
         };
-        this.setState(
-          {
-            buildCode: buildCode,
-            designCode: designCode,
-            configCode: configCode,
-            loaded: true,
-            image: imagePreviewUrl,
-            imageUrl: imageNameMatch[1],
-            updateSkillNow: true,
-            savedSkillOld,
-            groupValue: group,
-            languageValue: language,
-            expertValue: name,
-          },
-          () => this.generateDesignData(),
-        );
-      }.bind(this),
-      error: function(err) {
-        console.log(err);
+        this.setState({
+          loaded: true,
+          savedSkillOld,
+          updateSkillNow: true,
+        });
+      })
+      .catch(error => {
         this.setState({
           loaded: true,
         });
@@ -370,80 +232,16 @@ class BotWizard extends React.Component {
           snackBarMessage: "Error! Couldn't fetch skill",
           snackBarDuration: 2000,
         });
-      }.bind(this),
-    });
-  };
-
-  generateDesignData = () => {
-    let code = this.state.designCode;
-    const bodyBackgroundMatch = code.match(/^::bodyBackground\s(.*)$/m);
-    const bodyBackgroundImageMatch = code.match(
-      /^::bodyBackgroundImage\s(.*)$/m,
-    );
-    const userMessageBoxBackgroundMatch = code.match(
-      /^::userMessageBoxBackground\s(.*)$/m,
-    );
-    const userMessageTextColorMatch = code.match(
-      /^::userMessageTextColor\s(.*)$/m,
-    );
-    const botMessageBoxBackgroundMatch = code.match(
-      /^::botMessageBoxBackground\s(.*)$/m,
-    );
-    const botMessageTextColorMatch = code.match(
-      /^::botMessageTextColor\s(.*)$/m,
-    );
-    const botIconColorMatch = code.match(/^::botIconColor\s(.*)$/m);
-    const botIconImageMatch = code.match(/^::botIconImage\s(.*)$/m);
-    let designData = {};
-    if (bodyBackgroundMatch) {
-      designData.botbuilderBackgroundBody = bodyBackgroundMatch[1];
-    }
-    if (bodyBackgroundImageMatch) {
-      designData.botbuilderBodyBackgroundImg = bodyBackgroundImageMatch[1];
-    }
-    if (userMessageBoxBackgroundMatch) {
-      designData.botbuilderUserMessageBackground =
-        userMessageBoxBackgroundMatch[1];
-    }
-    if (userMessageTextColorMatch) {
-      designData.botbuilderUserMessageTextColor = userMessageTextColorMatch[1];
-    }
-    if (botMessageBoxBackgroundMatch) {
-      designData.botbuilderBotMessageBackground =
-        botMessageBoxBackgroundMatch[1];
-    }
-    if (botMessageTextColorMatch) {
-      designData.botbuilderBotMessageTextColor = botMessageTextColorMatch[1];
-    }
-    if (botIconColorMatch) {
-      designData.botbuilderIconColor = botIconColorMatch[1];
-    }
-    if (botIconImageMatch) {
-      designData.botbuilderIconImg = botIconImageMatch[1];
-    }
-    this.setState({ designData });
-  };
-
-  getQueryStringValue = key => {
-    return decodeURIComponent(
-      window.location.search.replace(
-        new RegExp(
-          '^(?:.*[&\\?]' +
-            encodeURIComponent(key).replace(/[.+*]/g, '\\$&') +
-            '(?:\\=([^&]*))?)?.*$',
-          'i',
-        ),
-        '$1',
-      ),
-    );
+      });
   };
 
   handleNext = () => {
     const { stepIndex } = this.state;
+    const { name } = this.props;
     this.setState({
       stepIndex: stepIndex + 1,
       finished: stepIndex >= 3,
-      commitMessage: 'Created Bot ' + this.state.expertValue,
+      commitMessage: 'Created Bot ' + name,
     });
   };
 
@@ -454,80 +252,28 @@ class BotWizard extends React.Component {
     }
   };
 
-  updateSettings = themeSettingsString => {
-    this.setState({
-      designCode: themeSettingsString.code,
-      designData: themeSettingsString,
-    });
-  };
-
-  sendInfoToProps = values => {
-    this.setState({ ...values, buildCode: values.code });
-  };
-
-  updateConfiguration = code => {
-    this.setState({ configCode: code });
-  };
-
-  onChangePreferUiView = prefer => {
-    if (prefer === 'ui') {
-      if (this.state.preferUiView === 'code') {
-        this.setState({ preferUiView: 'conversation' });
-      } else {
-        return null;
-      }
-    } else {
-      this.setState({ preferUiView: prefer });
-    }
-  };
-
   getStepContent(stepIndex) {
     switch (stepIndex) {
       case 0:
-        return (
-          <Build
-            sendInfoToProps={this.sendInfoToProps}
-            code={this.state.buildCode}
-            imageFile={this.state.file}
-            image={this.state.image}
-            imageUrl={this.state.imageUrl}
-            onImageChange={() => this.setState({ imageChanged: true })}
-          />
-        );
+        return <SkillCreator />;
       case 1:
-        return (
-          <Design
-            updateSettings={this.updateSettings}
-            code={this.state.designCode}
-            preferUiView={this.state.preferUiView}
-            onChangePreferUiView={this.onChangePreferUiView}
-          />
-        );
+        return <Design />;
       case 2:
-        return (
-          <Configure
-            updateConfiguration={this.updateConfiguration}
-            code={this.state.configCode}
-            preferUiView={this.state.preferUiView}
-            onChangePreferUiView={this.onChangePreferUiView}
-          />
-        );
+        return <Configure />;
       case 3:
-        return (
-          <Deploy
-            group={this.state.groupValue}
-            language={this.state.languageValue}
-            skill={this.state.expertValue}
-          />
-        );
+        return <Deploy />;
       default:
     }
   }
 
   setStep = stepIndex => {
+    const { actions, name } = this.props;
+    if (stepIndex === 0) {
+      actions.setView({ view: 'code' });
+    }
     this.setState({
       stepIndex,
-      commitMessage: 'Created Bot ' + this.state.expertValue,
+      commitMessage: 'Created Bot ' + name,
     });
   };
 
@@ -558,12 +304,27 @@ class BotWizard extends React.Component {
 
   saveClick = () => {
     // save the skill on the server
-    const { email, accessToken } = this.props;
-    let self = this;
-    let code = this.state.buildCode;
-    code = self.state.configCode + '\n' + self.state.designCode + '\n' + code;
-    code = '::author_email ' + email + '\n' + code;
-    code = '::protected Yes\n' + code;
+    const {
+      email,
+      accessToken,
+      configCode,
+      designCode,
+      imageUrl,
+      name,
+      file,
+      category,
+      language,
+    } = this.props;
+    let { buildCode } = this.props;
+    const {
+      updateSkillNow,
+      savedSkillOld,
+      commitMessage,
+      imageChanged,
+    } = this.state;
+    buildCode = configCode + '\n' + designCode + '\n' + buildCode;
+    buildCode = '::author_email ' + email + '\n' + buildCode;
+    buildCode = '::protected Yes\n' + buildCode;
     if (!accessToken) {
       notification.open({
         message: 'Not logged In',
@@ -572,8 +333,7 @@ class BotWizard extends React.Component {
       });
       return 0;
     }
-    let imageUrl = this.state.imageUrl;
-    let skillName = this.state.expertValue.trim().replace(/\s/g, '_');
+    let skillName = name.trim().replace(/\s/g, '_');
     if (
       !new RegExp(/.+\.\w+/g).test(imageUrl) &&
       imageUrl !== 'images/<image_name>' &&
@@ -602,73 +362,52 @@ class BotWizard extends React.Component {
     });
 
     let form = new FormData();
-    if (this.state.updateSkillNow) {
-      form.append('OldGroup', this.state.savedSkillOld.OldGroup);
-      form.append('OldLanguage', this.state.savedSkillOld.OldLanguage);
-      form.append('OldSkill', this.state.savedSkillOld.OldSkill);
-      form.append('old_image_name', this.state.savedSkillOld.old_image_name);
+    if (updateSkillNow) {
+      form.append('OldGroup', savedSkillOld.OldGroup);
+      form.append('OldLanguage', savedSkillOld.OldLanguage);
+      form.append('OldSkill', savedSkillOld.OldSkill);
+      form.append('old_image_name', savedSkillOld.old_image_name);
 
-      form.append('NewGroup', this.state.groupValue);
-      form.append('NewLanguage', this.state.languageValue);
-      form.append(
-        'NewSkill',
-        this.state.expertValue.trim().replace(/\s/g, '_'),
-      );
+      form.append('NewGroup', category);
+      form.append('NewLanguage', language);
+      form.append('NewSkill', name.trim().replace(/\s/g, '_'));
 
-      form.append('changelog', this.state.commitMessage);
-      form.append('imageChanged', this.state.imageChanged);
-      form.append('new_image_name', this.state.imageUrl.replace('images/', ''));
-      form.append('image_name_changed', this.state.imageChanged);
+      form.append('changelog', commitMessage);
+      form.append('imageChanged', imageChanged);
+      form.append('new_image_name', imageUrl.replace('images/', ''));
+      form.append('image_name_changed', imageChanged);
     } else {
-      form.append('group', this.state.groupValue);
-      form.append('language', this.state.languageValue);
-      form.append('skill', this.state.expertValue.trim().replace(/\s/g, '_'));
-      form.append('image_name', this.state.imageUrl.replace('images/', ''));
+      form.append('group', category);
+      form.append('language', language);
+      form.append('skill', name.trim().replace(/\s/g, '_'));
+      form.append('image_name', imageUrl.replace('images/', ''));
     }
-    if (this.state.file) {
-      form.append('image', this.state.file);
+    if (file) {
+      form.append('image', file);
     } else {
       form.append('image', '');
     }
-    form.append('content', code);
+    form.append('content', buildCode);
     form.append('access_token', accessToken);
     form.append('private', '1');
 
-    let settings = {
-      async: true,
-      crossDomain: true,
-      url:
-        urls.API_URL +
-        '/cms/' +
-        (this.state.updateSkillNow ? 'modifySkill.json' : 'createSkill.json'),
-      method: 'POST',
-      processData: false,
-      contentType: false,
-      mimeType: 'multipart/form-data',
-      data: form,
-    };
-
-    $.ajax(settings)
-      .done(function(response) {
-        let data = JSON.parse(response);
+    updateSkill(form, updateSkillNow ? 'modifySkill.json' : 'createSkill.json')
+      .then(data => {
         if (data.accepted === true) {
           let savedSkillOld = {
-            OldGroup: self.state.groupValue,
-            OldLanguage: self.state.languageValue,
-            OldSkill: self.state.expertValue.trim().replace(/\s/g, '_'),
-            old_image_name: self.state.imageUrl.replace('images/', ''),
+            OldGroup: category,
+            OldLanguage: language,
+            OldSkill: name.trim().replace(/\s/g, '_'),
+            old_image_name: imageUrl.replace('images/', ''),
           };
-          self.setState(
+          this.setState(
             {
               savingSkill: false,
               savedSkillOld,
               updateSkillNow: true,
               imageChanged: false,
-              skillName: savedSkillOld.OldSkill,
-              skillGroup: savedSkillOld.OldGroup,
-              skillLanguage: savedSkillOld.OldLanguage,
             },
-            () => self.handleNext(),
+            () => this.handleNext(),
           );
           notification.open({
             message: 'Accepted',
@@ -676,7 +415,7 @@ class BotWizard extends React.Component {
             icon: <Icon type="check-circle" style={{ color: '#00C853' }} />,
           });
         } else {
-          self.setState({
+          this.setState({
             savingSkill: false,
           });
           notification.open({
@@ -686,13 +425,13 @@ class BotWizard extends React.Component {
           });
         }
       })
-      .fail(function(jqXHR, textStatus) {
-        self.setState({
+      .catch(error => {
+        this.setState({
           savingSkill: false,
         });
         notification.open({
           message: 'Error Processing your Request',
-          description: String(textStatus),
+          description: String(error),
           icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
         });
       });
@@ -700,7 +439,8 @@ class BotWizard extends React.Component {
 
   check = () => {
     const { actions } = this.props;
-    if (this.state.updateSkillNow) {
+    const { updateSkillNow } = this.state;
+    if (updateSkillNow) {
       this.setStep(3);
     } else {
       actions.openSnackBar({
@@ -720,7 +460,18 @@ class BotWizard extends React.Component {
       loggedInError,
       chevron,
       chevronButton,
+      contentStyle,
     } = styles;
+    const {
+      colBuild,
+      loaded,
+      commitMessage,
+      stepIndex,
+      savingSkill,
+      updateSkillNow,
+      prevButton,
+      colPreview,
+    } = this.state;
     if (!accessToken) {
       return (
         <div>
@@ -731,8 +482,6 @@ class BotWizard extends React.Component {
         </div>
       );
     }
-    const { stepIndex } = this.state;
-    const contentStyle = { margin: '0 16px' };
     return (
       <div>
         <StaticAppBar {...this.props} />
@@ -741,20 +490,20 @@ class BotWizard extends React.Component {
             <Row>
               <Col
                 className="botbuilder-col"
-                md={this.state.colBuild}
+                md={colBuild}
                 style={{
-                  display: this.state.colBuild === 0 ? 'none' : 'block',
+                  display: colBuild === 0 ? 'none' : 'block',
                 }}
               >
                 <div style={mainPage}>
-                  {!this.state.loaded ? (
+                  {!loaded ? (
                     <div className="center">
-                      <CircularProgress size={62} color="#4285f5" />
+                      <CircularProgress size={62} color="primary" />
                       <h4>Loading</h4>
                     </div>
                   ) : (
                     <div>
-                      <Stepper activeStep={stepIndex} linear={false}>
+                      <Stepper activeStep={stepIndex} nonLinear>
                         <Step>
                           <StepButton onClick={() => this.setStep(0)}>
                             Build
@@ -791,92 +540,93 @@ class BotWizard extends React.Component {
                 >
                   {stepIndex === 2 ? (
                     <TextField
-                      floatingLabelText="Commit message"
-                      floatingLabelFixed={true}
-                      hintText="Enter Commit Message"
+                      label="Commit message"
+                      placeholder="Enter Commit Message"
+                      margin="normal"
                       style={{ width: '100%' }}
-                      value={this.state.commitMessage}
+                      value={commitMessage}
                       onChange={this.handleCommitMessageChange}
                     />
                   ) : null}
-                  {this.state.stepIndex === 2 ? (
+                  {stepIndex === 2 ? (
                     <div style={{ float: 'left', paddingTop: '20px' }}>
-                      <RaisedButton
-                        label="Save Draft"
-                        backgroundColor={colors.header}
-                        labelColor="#fff"
-                        onTouchTap={this.saveDraft}
-                      />
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={this.saveDraft}
+                      >
+                        Save Draft
+                      </Button>
                     </div>
                   ) : null}
                   <div
                     style={{
                       float: 'right',
                       paddingLeft: '20px',
-                      paddingTop: this.state.stepIndex === 2 ? '20px' : '0px',
+                      paddingTop: stepIndex === 2 ? '20px' : '0px',
                     }}
                   >
                     {stepIndex < 2 ? (
-                      <RaisedButton
-                        label={'Next'}
-                        backgroundColor={colors.header}
-                        labelColor="#fff"
-                        onTouchTap={this.handleNext}
-                      />
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={this.handleNext}
+                      >
+                        Next
+                      </Button>
                     ) : null}
                     {stepIndex === 2 ? (
-                      <RaisedButton
-                        label={
-                          // eslint-disable-next-line
-                          this.state.savingSkill ? (
-                            <CircularProgress color="#ffffff" size={32} />
-                          ) : this.state.updateSkillNow ? (
-                            'Update and Deploy'
-                          ) : (
-                            'Save and Deploy'
-                          )
-                        }
-                        backgroundColor={colors.header}
-                        labelColor="#fff"
-                        onTouchTap={this.saveClick}
-                      />
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={this.saveClick}
+                      >
+                        {// eslint-disable-next-line
+                        savingSkill ? (
+                          <CircularProgress color="#ffffff" size={32} />
+                        ) : updateSkillNow ? (
+                          'Update and Deploy'
+                        ) : (
+                          'Save and Deploy'
+                        )}
+                      </Button>
                     ) : null}
                   </div>
-                  {this.state.stepIndex < 2 ? (
-                    <RaisedButton
-                      label="Save Draft"
-                      backgroundColor={colors.header}
-                      labelColor="#fff"
-                      onTouchTap={this.saveDraft}
-                    />
+                  {stepIndex < 2 ? (
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={this.saveDraft}
+                    >
+                      Save Draft
+                    </Button>
                   ) : null}
                   <div
                     style={{
                       float: 'right',
-                      paddingTop: this.state.stepIndex === 2 ? '20px' : '0px',
+                      paddingTop: stepIndex === 2 ? '20px' : '0px',
                     }}
                   >
                     {stepIndex !== 0 && stepIndex !== 3 ? (
-                      <RaisedButton
-                        label="Back"
-                        backgroundColor={colors.header}
-                        labelColor="#fff"
-                        onTouchTap={this.handlePrev}
-                      />
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={this.handlePrev}
+                      >
+                        Back
+                      </Button>
                     ) : null}
                     {stepIndex === 0 ? (
                       <Link to="/botbuilder">
-                        <RaisedButton
-                          label="Cancel"
-                          backgroundColor={colors.header}
-                          labelColor="#fff"
-                        />
+                        <Button variant="contained" color="primary">
+                          Cancel
+                        </Button>
                       </Link>
                     ) : null}
                   </div>
                 </div>
               </Col>
-              {this.state.prevButton === 1 ? (
+              {prevButton === 1 ? (
                 <div className="preview-button">
                   <span title="See Preview">
                     <ChevronLeft
@@ -890,9 +640,9 @@ class BotWizard extends React.Component {
               <Col
                 className="botbuilder-col"
                 xs={12}
-                md={this.state.colPreview}
+                md={colPreview}
                 style={{
-                  display: this.state.colPreview === 0 ? 'none' : 'block',
+                  display: colPreview === 0 ? 'none' : 'block',
                   position: 'fixed',
                   marginLeft: '65%',
                   height: '88%',
@@ -928,12 +678,7 @@ class BotWizard extends React.Component {
                       marginTop: '20px',
                     }}
                   >
-                    <Preview
-                      designData={this.state.designData}
-                      skill={this.state.buildCode}
-                      configCode={this.state.configCode}
-                      botBuilder={true}
-                    />
+                    <Preview botBuilder={true} />
                   </div>
                 </Paper>
               </Col>
@@ -950,18 +695,36 @@ BotWizard.propTypes = {
   actions: PropTypes.object,
   accessToken: PropTypes.string,
   email: PropTypes.string,
+  code: PropTypes.string,
+  view: PropTypes.string,
+  imageUrl: PropTypes.string,
+  name: PropTypes.string,
+  language: PropTypes.string,
+  buildCode: PropTypes.string,
+  configCode: PropTypes.string,
+  designCode: PropTypes.string,
+  category: PropTypes.string,
+  file: PropTypes.object,
 };
 
 function mapStateToProps(store) {
   return {
     email: store.app.email,
     accessToken: store.app.accessToken,
+    buildCode: store.create.skill.code,
+    name: store.create.skill.name,
+    category: store.create.skill.category,
+    language: store.create.skill.language,
+    imageUrl: store.create.skill.imageUrl,
+    configCode: store.create.configCode,
+    designCode: store.create.design.code,
+    file: store.create.skill.file,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(uiActions, dispatch),
+    actions: bindActionCreators({ ...createActions, ...uiActions }, dispatch),
   };
 }
 

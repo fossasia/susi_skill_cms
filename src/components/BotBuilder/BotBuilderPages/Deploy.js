@@ -7,10 +7,10 @@ import uiActions from '../../../redux/actions/ui';
 const api = window.location.protocol + '//' + window.location.host;
 class Deploy extends Component {
   render() {
-    const { group, language, skill, actions, uuid } = this.props;
+    const { category, language, name, actions, uuid } = this.props;
     const part =
       'data-skill=&quot;' +
-      skill +
+      name +
       '&quot; src=&quot;' +
       api +
       '/susi-chatbot.js&quot;';
@@ -19,7 +19,7 @@ class Deploy extends Component {
       'id=&quot;susi-bot-script&quot; data-userid=&quot;' +
       uuid +
       '&quot; data-group=&quot;' +
-      group +
+      category +
       '&quot; data-language=&quot;' +
       language +
       '&quot;' +
@@ -49,11 +49,11 @@ class Deploy extends Component {
                         "<script type='text/javascript' id='susi-bot-script' data-userid='" +
                         uuid +
                         "' data-group='" +
-                        group +
+                        category +
                         "' data-language='" +
                         language +
                         "' data-skill='" +
-                        skill +
+                        name +
                         "' src='" +
                         api +
                         "/susi-chatbot.js'></script>"
@@ -84,11 +84,11 @@ class Deploy extends Component {
 }
 
 Deploy.propTypes = {
-  group: PropTypes.string,
+  category: PropTypes.string,
   language: PropTypes.string,
-  skill: PropTypes.string,
   actions: PropTypes.object,
   uuid: PropTypes.string,
+  name: PropTypes.string,
 };
 
 function mapDispatchToProps(dispatch) {
@@ -100,6 +100,9 @@ function mapDispatchToProps(dispatch) {
 function mapStateToProps(store) {
   return {
     uuid: store.app.uuid,
+    name: store.create.skill.name,
+    language: store.create.skill.language,
+    category: store.create.skill.category,
   };
 }
 

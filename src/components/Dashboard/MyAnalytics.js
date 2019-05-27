@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import uiActions from '../../redux/actions/ui';
-import CircularProgress from 'material-ui/CircularProgress';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { fetchSkillsByAuthor } from '../../api';
 import {
   Legend,
@@ -21,6 +21,7 @@ class MyAnalytics extends Component {
       skillUsage: [],
       loading: true,
       activePieIndex: 0,
+      skillUsageCount: 0,
     };
   }
   componentDidMount() {
@@ -48,13 +49,18 @@ class MyAnalytics extends Component {
   };
 
   saveUsageData = data => {
+    let skillUsageCount = 0;
     const skillUsage = data.map(skill => {
       let dataObject = {};
       dataObject.skill_name = skill.skillName;
       dataObject.usage_count = skill.usageCount || 0;
+      skillUsageCount += dataObject.usage_count;
       return dataObject;
     });
-    this.setState({ skillUsage });
+    this.setState({
+      skillUsage,
+      skillUsageCount,
+    });
   };
 
   onPieEnter = (data, index) => {
@@ -64,17 +70,17 @@ class MyAnalytics extends Component {
   };
 
   render() {
-    let { skillUsage, activePieIndex, loading } = this.state;
+    let { skillUsage, activePieIndex, loading, skillUsageCount } = this.state;
     return (
       <div>
         {loading ? (
           <div className="center">
-            <CircularProgress size={62} color="#4285f5" />
+            <CircularProgress size={62} color="primary" />
             <h4>Loading</h4>
           </div>
         ) : (
           <div>
-            {skillUsage.length !== 0 && (
+            {skillUsageCount !== 0 && (
               <div className="device-usage">
                 <div className="sub-title">Skill Usage Distribution</div>
                 <div className="pie-chart">
@@ -116,7 +122,7 @@ class MyAnalytics extends Component {
             )}
           </div>
         )}
-        {skillUsage.length === 0 &&
+        {skillUsageCount === 0 &&
           !loading && (
             <div>
               <div className="center">

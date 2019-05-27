@@ -1,55 +1,17 @@
 import React, { Component } from 'react';
-import 'brace/mode/markdown';
-import 'brace/theme/github';
-import 'brace/theme/monokai';
-import 'brace/theme/tomorrow';
-import 'brace/theme/kuroir';
-import 'brace/theme/twilight';
-import 'brace/theme/xcode';
-import 'brace/mode/java';
-import 'brace/theme/textmate';
-import 'brace/theme/solarized_dark';
-import 'brace/theme/solarized_light';
-import 'brace/theme/terminal';
-import 'brace/ext/searchbox';
-import IconButton from 'material-ui/IconButton';
-import Code from 'material-ui/svg-icons/action/code';
-import Table from 'material-ui/svg-icons/av/web';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import IconButton from '@material-ui/core/IconButton';
+import Code from '@material-ui/icons/Code';
+import Table from '@material-ui/icons/Web';
 import PropTypes from 'prop-types';
 import CodeView from './ConfigureViews/CodeView';
 import UIView from './ConfigureViews/UIView';
+import createActions from '../../../redux/actions/create';
 import './Animation.min.css';
 class Configure extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      lastActiveInfo: false,
-      code: this.props.code,
-      codeView: true,
-      uiView: false,
-    };
-  }
-
-  componentDidMount() {
-    if (this.props.preferUiView === 'code') {
-      this.setState({
-        codeView: true,
-        uiView: false,
-      });
-    } else {
-      this.setState({
-        codeView: false,
-        uiView: true,
-      });
-    }
-  }
-
-  sendInfoToProps = values => {
-    this.props.updateConfiguration(values.code);
-    this.setState({ ...values });
-  };
-
   render() {
+    const { actions, view } = this.props;
     return (
       <div className="menu-page">
         <div style={{ display: 'flex', flexDirection: 'row' }}>
@@ -57,61 +19,21 @@ class Configure extends Component {
           <div style={{ marginLeft: 'auto', marginRight: '0px' }}>
             <IconButton
               className="iconbutton"
-              tooltip="Code View"
-              onTouchTap={() => {
-                this.setState({
-                  codeView: true,
-                  uiView: false,
-                });
-                this.props.onChangePreferUiView('code');
-              }}
-              disableTouchRipple={true}
+              onClick={() => actions.setView({ view: 'code' })}
             >
-              <Code
-                color={
-                  this.state.codeView
-                    ? 'rgb(66, 133, 244)'
-                    : 'rgb(158, 158, 158)'
-                }
-              />
+              <Code color={view === 'code' ? 'primary' : 'default'} />
             </IconButton>
             <IconButton
               className="iconbutton"
-              tooltip="UI View"
-              onTouchTap={() => {
-                this.setState({
-                  codeView: false,
-                  uiView: true,
-                });
-                this.props.onChangePreferUiView('ui');
-              }}
-              disableTouchRipple={true}
+              onClick={() => actions.setView({ view: 'ui' })}
             >
-              <Table
-                color={
-                  this.state.uiView ? 'rgb(66, 133, 244)' : 'rgb(158, 158, 158)'
-                }
-              />
+              <Table color={view === 'ui' ? 'primary' : 'default'} />
             </IconButton>
           </div>
         </div>
         <div style={{ padding: '30px 10px 0 10px' }}>
-          {this.state.codeView ? (
-            <CodeView
-              configure={{
-                sendInfoToProps: this.sendInfoToProps,
-                code: this.state.code,
-              }}
-            />
-          ) : null}
-          {this.state.uiView ? (
-            <UIView
-              configure={{
-                sendInfoToProps: this.sendInfoToProps,
-                code: this.state.code,
-              }}
-            />
-          ) : null}
+          {view === 'code' ? <CodeView /> : null}
+          {view === 'ui' ? <UIView /> : null}
         </div>
       </div>
     );
@@ -119,9 +41,23 @@ class Configure extends Component {
 }
 
 Configure.propTypes = {
-  updateConfiguration: PropTypes.func,
-  code: PropTypes.string,
-  preferUiView: PropTypes.string,
-  onChangePreferUiView: PropTypes.func,
+  view: PropTypes.string,
+  actions: PropTypes.object,
 };
-export default Configure;
+
+function mapStateToProps(store) {
+  return {
+    view: store.create.view,
+  };
+}
+
+function mapDispatchToActions(dispatch) {
+  return {
+    actions: bindActionCreators(createActions, dispatch),
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToActions,
+)(Configure);

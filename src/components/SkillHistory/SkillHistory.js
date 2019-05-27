@@ -2,15 +2,14 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { fetchCommitHistory, fetchSkillByCommitId } from '../../api/index';
 import { Link } from 'react-router-dom';
-import notification from 'antd/lib/notification';
-import Icon from 'antd/lib/icon';
 import AceEditor from 'react-ace';
-import Diff from 'react-diff';
-import { RaisedButton } from 'material-ui';
-import CircularProgress from 'material-ui/CircularProgress';
-import { Paper } from 'material-ui';
+import Diff from 'react-diff-viewer';
+import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Paper from '@material-ui/core/Paper';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
-import { colors } from '../../utils';
+import { notification, Icon } from 'antd';
+import 'antd/dist/antd.css';
 
 import 'brace/mode/markdown';
 import 'brace/theme/github';
@@ -183,7 +182,7 @@ class SkillHistory extends Component {
         {commitData.length === 0 && (
           <h1 className="skill_loading_container">
             <div className="center">
-              <CircularProgress size={62} color="#4285f5" />
+              <CircularProgress size={62} color="primary" />
               <h4>Loading</h4>
             </div>
           </h1>
@@ -206,12 +205,13 @@ class SkillHistory extends Component {
                           skillMeta.languageValue,
                       }}
                     >
-                      <RaisedButton
-                        label="Back"
-                        backgroundColor={colors.header}
-                        labelColor="#fff"
+                      <Button
+                        variant="contained"
+                        color="primary"
                         style={compareBtnStyle}
-                      />
+                      >
+                        Back
+                      </Button>
                     </Link>
                   </div>
                   <h3 style={{ textTransform: 'capitalize' }}>
@@ -234,7 +234,7 @@ class SkillHistory extends Component {
                     readOnly={true}
                     theme="github"
                     width="100%"
-                    fontSize="14"
+                    fontSize={14}
                     height="400px"
                     value={commitData[0].code}
                     showPrintMargin={false}

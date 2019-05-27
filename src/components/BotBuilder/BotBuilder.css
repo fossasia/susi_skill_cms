@@ -105,12 +105,8 @@
 }
 .toggle-label-right{
 	margin-right: 10px;
-	vertical-align: bottom;
-	line-height: 24px;
+	font-size: 0.875rem;
 	color: rgba(0, 0, 0, 0.87);
-	font-size: 14px;
-	font-weight: 300;
-	cursor: pointer;
 }
 iframe{
 	border-radius: 12px;

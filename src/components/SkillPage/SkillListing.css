@@ -46,7 +46,6 @@ h1.name {
 }
 
 .skill_listing_container {
-    width: 100%;
     max-width: 1000px;
     font-size: 14px;
     margin-left: auto;
@@ -54,6 +53,8 @@ h1.name {
     margin-top: 100px;
     padding-left: 1%;
     padding-right: 1%;
+    width: 80%;
+    min-width: 640px;
 }
 
 .skill_loading_container {
@@ -63,8 +64,13 @@ h1.name {
 
 .linkButtons {
   display: flex;
-  float: right;
+  justify-content: flex-end;
   margin-top: 10px;
+}
+
+.skillHeaderContainer {
+  display: flex;
+  justify-content: space-between
 }
 
 .linkButtons > div {
@@ -85,6 +91,13 @@ h1.name {
   flex-direction: column;
 }
 
+@media only screen and (max-width: 1240px) {
+  .skill_listing_container {
+    padding: 8px 32px;
+    width: 100%
+  }
+}
+
 @media only screen and (min-width: 0px) and (max-width: 768px) {
 
   .avatar-img {
@@ -92,13 +105,9 @@ h1.name {
   }
   .avatar {
     float:none;
-    text-align:center;
   }
   .exampleTile {
     width: 90%;
-  }
-  .skill_listing_container {
-    padding: 32px;
   }
 
   .avatar-meta {

@@ -6,23 +6,20 @@ import { Link } from 'react-router-dom';
 
 // Material-UI
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
-import {
-  Table,
-  TableBody,
-  TableHeader,
-  TableHeaderColumn,
-  TableRow,
-  TableRowColumn,
-} from 'material-ui/Table';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import { RaisedButton } from 'material-ui';
-import CircularProgress from 'material-ui/CircularProgress';
-import { RadioButton } from 'material-ui/RadioButton';
+import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Checkbox from '@material-ui/core/Checkbox';
 
 // Other Utils
-import notification from 'antd/lib/notification';
-import Icon from 'antd/lib/icon';
-import { colors } from '../../utils';
+import { notification, Icon } from 'antd';
+import 'antd/dist/antd.css';
+import './SkillVersion.css';
 
 const styles = {
   home: {
@@ -54,10 +51,7 @@ class SkillVersion extends Component {
         languageValue: this.props.location.pathname.split('/')[4],
         skillName: this.props.location.pathname.split('/')[2],
       },
-      leftChecks: [],
-      rightChecks: [],
-      currLeftChecked: null,
-      currRightChecked: null,
+      checks: [],
     };
   }
 
@@ -90,153 +84,64 @@ class SkillVersion extends Component {
   setCommitHistory = commitsData => {
     if (commitsData.accepted) {
       let commits = commitsData.commits ? commitsData.commits : [];
-      let currLeftChecked = null;
-      let currRightChecked = null;
-      let leftChecks = [];
-      let rightChecks = [];
-      commits.forEach((commit, index) => {
-        if (index === 0) {
-          commit.latest = true;
-          rightChecks.push(true);
-          leftChecks.push(false);
-          currRightChecked = 0;
-        } else if (index === 1) {
-          rightChecks.push(false);
-          leftChecks.push(true);
-          currLeftChecked = 1;
-        } else {
-          rightChecks.push(false);
-          leftChecks.push(false);
-        }
-      });
       this.setState({
         commits: commits,
         dataReceived: true,
-        leftChecks,
-        rightChecks,
-        currLeftChecked,
-        currRightChecked,
       });
     }
   };
 
-  onCheck = event => {
-    const side = event.target.name.split('-')[1];
-    const index = parseInt(event.target.name.split('-')[0], 10);
-    let {
-      currLeftChecked,
-      currRightChecked,
-      leftChecks,
-      rightChecks,
-    } = this.state;
-    if (side === 'right') {
-      if (!(index >= currLeftChecked)) {
-        rightChecks.fill(false);
-        rightChecks[index] = true;
-        currRightChecked = index;
-      }
-    } else if (side === 'left') {
-      if (!(index <= currRightChecked)) {
-        leftChecks.fill(false);
-        leftChecks[index] = true;
-        currLeftChecked = index;
-      }
-    }
-    this.setState({
-      currLeftChecked,
-      currRightChecked,
-      leftChecks,
-      rightChecks,
-    });
+  getCheckedCommits = () => {
+    const { commits, checks } = this.state;
+    let checkedCommits = checks.map(check => commits[check]);
+    return checkedCommits;
   };
 
-  getCheckedCommits = () => {
-    const { commits, currLeftChecked, currRightChecked } = this.state;
-    const commitOld = commits[currLeftChecked];
-    const commitRecent = commits[currRightChecked];
-    return [commitOld, commitRecent];
+  onCheck = e => {
+    const { checks } = this.state;
+    const { id, checked } = e.currentTarget;
+    let currentChecks = [...checks];
+    if (checked && currentChecks.length === 2) {
+      notification.open({
+        message: 'Error Processing your Request',
+        description: 'Cannot compare more than 2 version at a time',
+        icon: <Icon type="close-circle" style={{ color: '#f44336' }} />,
+      });
+    } else {
+      let checks = checked
+        ? [...currentChecks, id]
+        : currentChecks.filter(check => check !== id);
+      this.setState({
+        checks: [...checks],
+      });
+    }
   };
 
   render() {
-    const {
-      currLeftChecked,
-      currRightChecked,
-      commits,
-      leftChecks,
-      rightChecks,
-      skillMeta,
-      dataReceived,
-    } = this.state;
-
-    let showCompareBtn = false;
-    if (currLeftChecked != null && currRightChecked != null) {
-      showCompareBtn = true;
-    }
+    const { commits, skillMeta, dataReceived, checks } = this.state;
 
     let commitHistoryTableHeader = (
       <TableRow>
-        <TableHeaderColumn style={{ width: '20px' }} />
-        <TableHeaderColumn style={{ width: '20px' }} />
-        <TableHeaderColumn>Commit Date</TableHeaderColumn>
-        <TableHeaderColumn>Commit ID</TableHeaderColumn>
-        <TableHeaderColumn>Commit Author</TableHeaderColumn>
-        <TableHeaderColumn>Commit Message</TableHeaderColumn>
+        <TableCell padding="checkbox" />
+        <TableCell padding="dense">Commit Date</TableCell>
+        <TableCell padding="dense">Commit ID</TableCell>
+        <TableCell padding="dense">Commit Author</TableCell>
+        <TableCell padding="dense">Commit Message</TableCell>
       </TableRow>
     );
 
     let commitHistoryTableRows = commits.map((commit, index) => {
       const { commitId, commitDate, author, commitMessage } = commit;
-      let leftRadioBtn = null;
-      let rightRadioBtn = null;
-      if (leftChecks && rightChecks) {
-        leftRadioBtn = (
-          <RadioButton
-            name={index.toString() + '-left'}
-            checked={leftChecks[index]}
-            onCheck={this.onCheck}
-          />
-        );
-        rightRadioBtn = (
-          <RadioButton
-            name={index.toString() + '-right'}
-            checked={rightChecks[index]}
-            onCheck={this.onCheck}
-          />
-        );
-      } else {
-        leftRadioBtn = (
-          <RadioButton
-            name={index.toString() + '-left'}
-            checked={index === 1}
-            onCheck={this.onCheck}
-          />
-        );
-        rightRadioBtn = (
-          <RadioButton
-            name={index.toString() + '-right'}
-            checked={index === 0}
-            onCheck={this.onCheck}
-          />
-        );
-      }
-      if (showCompareBtn) {
-        if (index <= currRightChecked) {
-          leftRadioBtn = null;
-        }
-        if (index >= currLeftChecked) {
-          rightRadioBtn = null;
-        }
-      }
-
       return (
         <TableRow key={index}>
-          <TableRowColumn style={{ width: '20px' }}>
-            {leftRadioBtn}
-          </TableRowColumn>
-          <TableRowColumn style={{ width: '20px' }}>
-            {rightRadioBtn}
-          </TableRowColumn>
-          <TableRowColumn>
+          <TableCell padding="checkbox">
+            <Checkbox
+              id={index}
+              checked={checks.indexOf(index.toString()) > -1}
+              onChange={this.onCheck}
+            />
+          </TableCell>
+          <TableCell padding="dense">
             <Link
               to={{
                 pathname: `/${skillMeta.groupValue}/${
@@ -246,16 +151,16 @@ class SkillVersion extends Component {
             >
               <abbr title={commitDate}>{commitDate}</abbr>
             </Link>
-          </TableRowColumn>
-          <TableRowColumn>
+          </TableCell>
+          <TableCell padding="dense">
             <abbr title={commitId}>{commitId}</abbr>
-          </TableRowColumn>
-          <TableRowColumn>
+          </TableCell>
+          <TableCell padding="dense">
             <abbr title={author}>{author}</abbr>
-          </TableRowColumn>
-          <TableRowColumn>
+          </TableCell>
+          <TableCell padding="dense">
             <abbr title={commitMessage}>{commitMessage}</abbr>
-          </TableRowColumn>
+          </TableCell>
         </TableRow>
       );
     });
@@ -263,9 +168,9 @@ class SkillVersion extends Component {
     const commitHistoryTable = (
       <MuiThemeProvider>
         <Table selectable={false}>
-          <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
+          <TableHead displaySelectAll={false} adjustForCheckbox={false}>
             {commitHistoryTableHeader}
-          </TableHeader>
+          </TableHead>
           <TableBody displayRowCheckbox={false}>
             {commitHistoryTableRows}
           </TableBody>
@@ -281,7 +186,7 @@ class SkillVersion extends Component {
         {!dataReceived ? (
           <h1 className="skill_loading_container">
             <div className="center">
-              <CircularProgress size={62} color="#4285f5" />
+              <CircularProgress size={62} color="primary" />
               <h4>Loading</h4>
             </div>
           </h1>
@@ -297,11 +202,12 @@ class SkillVersion extends Component {
               <p>
                 <span>
                   For any version listed below, click on its date to view it.
+                  You can compare only two versions at a time.
                 </span>
               </p>
               <div style={styles.compareBtnStyle}>{commitHistoryTable}</div>
               <div style={styles.actionButtons}>
-                {showCompareBtn && (
+                {checks.length === 2 && (
                   <Link
                     to={{
                       pathname: `/${skillMeta.groupValue}/${
@@ -311,12 +217,13 @@ class SkillVersion extends Component {
                       }/${checkedCommits[1].commitId}`,
                     }}
                   >
-                    <RaisedButton
-                      label="Compare Selected Versions"
-                      backgroundColor={colors.header}
-                      labelColor="#fff"
+                    <Button
+                      variant="contained"
+                      color="primary"
                       style={styles.compareBtnStyle}
-                    />
+                    >
+                      Compare Selected Versions
+                    </Button>
                   </Link>
                 )}
                 <Link
@@ -326,12 +233,13 @@ class SkillVersion extends Component {
                     }/${skillMeta.languageValue}`,
                   }}
                 >
-                  <RaisedButton
-                    label="Back"
-                    backgroundColor={colors.header}
-                    labelColor="#fff"
+                  <Button
+                    variant="contained"
+                    color="primary"
                     style={styles.compareBtnStyle}
-                  />
+                  >
+                    Back
+                  </Button>
                 </Link>
               </div>
             </div>
