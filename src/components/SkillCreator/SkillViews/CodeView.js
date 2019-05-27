@@ -2,9 +2,9 @@ import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Icon from 'antd/lib/icon';
-import MenuItem from 'material-ui/MenuItem';
+import MenuItem from '@material-ui/core/MenuItem';
 import PropTypes from 'prop-types';
-import SelectField from 'material-ui/SelectField';
+import Select from '@material-ui/core/Select';
 import AceEditor from 'react-ace';
 import 'brace/mode/markdown';
 import 'brace/theme/github';
@@ -19,8 +19,7 @@ import 'brace/theme/solarized_dark';
 import 'brace/theme/solarized_light';
 import 'brace/theme/terminal';
 import 'brace/ext/searchbox';
-import LinearProgress from 'material-ui/LinearProgress';
-import { colors } from '../../../utils';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import createActions from '../../../redux/actions/create';
 
 const fontsizes = [];
@@ -76,20 +75,16 @@ class CodeView extends React.Component {
     ];
     for (let i = 0; i < fonts.length; i++) {
       fontsizes.push(
-        <MenuItem
-          value={fonts[i]}
-          key={fonts[i]}
-          primaryText={`${fonts[i]}`}
-        />,
+        <MenuItem value={fonts[i]} key={fonts[i]}>
+          {`${fonts[i]}`}
+        </MenuItem>,
       );
     }
     for (let i = 0; i < themes.length; i++) {
       codeEditorThemes.push(
-        <MenuItem
-          value={themes[i]}
-          key={themes[i]}
-          primaryText={`${themes[i]}`}
-        />,
+        <MenuItem value={themes[i]} key={themes[i]}>
+          {`${themes[i]}`}
+        </MenuItem>,
       );
     }
   }
@@ -141,31 +136,29 @@ class CodeView extends React.Component {
           }}
         >
           <div style={codeEditor}>
-            {this.state.loading && (
-              <LinearProgress mode="indeterminate" color={colors.header} />
-            )}
+            {this.state.loading && <LinearProgress color="primary" />}
             <div style={toolbar}>
               <span style={button}>
                 <Icon type="cloud-download" style={icon} />Download as text
               </span>
               <span style={button}>
                 Size{' '}
-                <SelectField
+                <Select
                   style={{ width: '60px' }}
                   onChange={this.handleFontChange}
                 >
                   {fontsizes}
-                </SelectField>
+                </Select>
               </span>
 
               <span style={button}>
                 Theme{' '}
-                <SelectField
+                <Select
                   style={{ width: '150px' }}
                   onChange={this.handleThemeChange}
                 >
                   {codeEditorThemes}
-                </SelectField>
+                </Select>
               </span>
             </div>
             <AceEditor

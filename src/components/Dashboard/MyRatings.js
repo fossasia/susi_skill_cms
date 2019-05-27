@@ -12,12 +12,15 @@ import uiActions from '../../redux/actions/ui';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { fetchUserRatings } from '../../api';
 import { parseDate } from '../../utils';
+import styled from 'styled-components';
 
-const styles = {
-  tableCellStyle: {
-    padding: '10px 24px',
-  },
-};
+const StyledTableCell = styled(TableCell)`
+  padding: 0.625rem 1.5rem;
+`;
+
+const TableWrap = styled.div`
+  padding: 0rem 1.25rem;
+`;
 
 class MyRatings extends Component {
   constructor(props) {
@@ -69,7 +72,6 @@ class MyRatings extends Component {
 
   render() {
     let { ratingsData, loading } = this.state;
-    const { tableCellStyle } = styles;
     return (
       <div>
         {loading ? (
@@ -78,7 +80,7 @@ class MyRatings extends Component {
             <h4>Loading</h4>
           </div>
         ) : (
-          <div className="table-wrap" style={{ padding: '0px 20px' }}>
+          <TableWrap className="table-wrap">
             <Table className="table-root">
               <TableHead>
                 <TableRow>
@@ -91,9 +93,7 @@ class MyRatings extends Component {
                 {ratingsData.map((skill, index) => {
                   return (
                     <TableRow key={index}>
-                      <TableCell
-                        style={{ ...tableCellStyle, fontSize: '16px' }}
-                      >
+                      <StyledTableCell style={{ fontSize: '1rem' }}>
                         <Link
                           to={{
                             pathname:
@@ -110,21 +110,19 @@ class MyRatings extends Component {
                             skill.skillName.slice(1)
                           ).replace(/[_-]/g, ' ')}
                         </Link>
-                      </TableCell>
-                      <TableCell
-                        style={{ ...tableCellStyle, fontSize: '16px' }}
-                      >
+                      </StyledTableCell>
+                      <StyledTableCell style={{ fontSize: '1rem' }}>
                         {skill.skillStar}
-                      </TableCell>
-                      <TableCell style={tableCellStyle}>
+                      </StyledTableCell>
+                      <StyledTableCell>
                         {parseDate(skill.ratingTimestamp)}
-                      </TableCell>
+                      </StyledTableCell>
                     </TableRow>
                   );
                 })}
               </TableBody>
             </Table>
-          </div>
+          </TableWrap>
         )}
         {ratingsData.length === 0 &&
           !loading && (
