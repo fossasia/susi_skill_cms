@@ -6,25 +6,67 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 
 // Components
-import CircularProgress from 'material-ui/CircularProgress';
+import _CircularProgress from '@material-ui/core/CircularProgress';
 import PasswordField from 'material-ui-password-field';
-import Dialog from 'material-ui/Dialog';
-import RaisedButton from 'material-ui/RaisedButton';
-import TextField from 'material-ui/TextField';
+import _Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import Button from '@material-ui/core/Button';
+import FormControl from '@material-ui/core/FormControl';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import _OutlinedInput from '@material-ui/core/OutlinedInput';
 import Cookies from 'universal-cookie';
-import Close from 'material-ui/svg-icons/navigation/close';
+import Close from '@material-ui/icons/Close';
 import { isProduction } from '../../../utils';
 import { addUrlProps, UrlQueryParamTypes } from 'react-url-query';
 import isEmail from '../../../utils/isEmail';
 import appActions from '../../../redux/actions/app';
 import skillActions from '../../../redux/actions/skills';
 import uiActions from '../../../redux/actions/ui';
+import styled from 'styled-components';
 
 // Static assets
 import './Login.css';
 
-// Styled Components
-import authStyles from '../../../styledComponents/authStyles';
+const CloseIcon = styled(Close)`
+  position: absolute;
+  z-index: 1200;
+  fill: #444;
+  width: 1.625rem;
+  height: 1.625rem;
+  right: 0.625rem;
+  top: 0.625rem;
+  cursor: pointer;
+`;
+
+const OutlinedInput = styled(_OutlinedInput)`
+  width: 17rem;
+  height: 2.5rem;
+`;
+
+const Dialog = styled(_Dialog)`
+  text-align: center;
+`;
+
+const Div = styled.div`
+  max-height: 4.375rem;
+`;
+
+const CircularProgress = styled(_CircularProgress)`
+  color: #ffffff;
+`;
+
+const authStyles = {
+  passwordFieldStyle: {
+    height: '2.5rem',
+    borderRadius: 4,
+    border: '.0625rem solid #ced4da',
+    fontSize: 16,
+    padding: '0rem .625rem',
+    width: '15.625rem',
+    marginTop: '.625rem',
+  },
+};
 
 const cookies = new Cookies();
 const cookieDomain = isProduction() ? '.susi.ai' : '';
@@ -181,14 +223,7 @@ class Login extends Component {
   };
 
   render() {
-    const {
-      fieldStyle,
-      passwordFieldStyle,
-      inputStyle,
-      inputPasswordStyle,
-      bodyStyle,
-      closingStyle,
-    } = authStyles;
+    const { passwordFieldStyle } = authStyles;
     const {
       email,
       password,
@@ -203,79 +238,77 @@ class Login extends Component {
 
     return (
       <Dialog
-        modal={false}
+        maxWidth={'sm'}
+        fullWidth={true}
         open={modalProps && modalProps.modalType === 'login'}
-        onRequestClose={actions.closeModal}
-        autoScrollBodyContent={true}
-        bodyStyle={bodyStyle}
-        contentStyle={{ width: '35%', minWidth: '300px' }}
+        onClose={actions.closeModal}
       >
-        <div className="loginForm">
-          <div id="loginHeading">Log into SUSI</div>
-          <form onSubmit={this.handleSubmit}>
-            <div style={{ maxHeight: '70px' }}>
-              <TextField
-                name="email"
-                type="email"
-                value={email}
-                onChange={this.handleTextFieldChange}
-                style={fieldStyle}
-                inputStyle={inputStyle}
-                placeholder="Email"
-                underlineStyle={{ display: 'none' }}
-                errorText={emailErrorMessage}
-              />
-            </div>
+        <DialogTitle>Log into SUSI</DialogTitle>
+        <DialogContent>
+          <div className="loginForm">
+            <form onSubmit={this.handleSubmit}>
+              <Div>
+                <FormControl error={emailErrorMessage !== ''}>
+                  <OutlinedInput
+                    labelWidth={0}
+                    name="email"
+                    value={email}
+                    onChange={this.handleTextFieldChange}
+                    aria-describedby="email-error-text"
+                    placeholder="Email"
+                  />
+                  <FormHelperText error={emailErrorMessage !== ''}>
+                    {emailErrorMessage}
+                  </FormHelperText>
+                </FormControl>
+              </Div>
 
-            <div style={{ maxHeight: '70px' }}>
-              <PasswordField
-                name="password"
-                style={passwordFieldStyle}
-                inputStyle={inputPasswordStyle}
-                value={password}
-                placeholder="Password"
-                errorText={passwordErrorMessage}
-                underlineStyle={{ display: 'none' }}
-                onChange={this.handleTextFieldChange}
-                visibilityButtonStyle={{
-                  marginTop: '-3px',
-                }}
-                visibilityIconStyle={{
-                  marginTop: '-3px',
-                }}
-                textFieldStyle={{ padding: '0px' }}
-              />
-            </div>
+              <Div>
+                <FormControl error={passwordErrorMessage !== ''}>
+                  <PasswordField
+                    name="password"
+                    style={passwordFieldStyle}
+                    value={password}
+                    placeholder="Password"
+                    onChange={this.handleTextFieldChange}
+                  />
+                  <FormHelperText error={passwordErrorMessage !== ''}>
+                    {passwordErrorMessage}
+                  </FormHelperText>
+                </FormControl>
+              </Div>
 
-            <RaisedButton
-              label={!loading ? 'Log In' : undefined}
-              type="submit"
-              backgroundColor="#4285f4"
-              labelColor="#fff"
-              disabled={!isValid}
-              style={{ width: '275px', margin: '10px 0px' }}
-              icon={loading ? <CircularProgress size={24} /> : undefined}
-            />
-
-            <div className="loginLinksSection" id="loginLinks">
-              <span
-                className="forgotPassword"
-                onClick={() =>
-                  actions.openModal({ modalType: 'forgotPassword' })
-                }
+              <Button
+                variant="contained"
+                color="primary"
+                type="submit"
+                disabled={!isValid}
+                style={{ width: '17.1875rem', margin: '0.625rem 0rem' }}
               >
-                Forgot Password?
-              </span>
-              <span
-                className="signup"
-                onClick={() => actions.openModal({ modalType: 'signUp' })}
-              >
-                Sign up for SUSI
-              </span>
-            </div>
-          </form>
-        </div>
-        <Close style={closingStyle} onClick={this.closeDialog} />
+                {loading ? <CircularProgress size={24} /> : undefined}{' '}
+                {!loading ? 'Log In' : undefined}
+              </Button>
+
+              <div className="loginLinksSection" id="loginLinks">
+                <span
+                  className="forgotPassword"
+                  onClick={() =>
+                    actions.openModal({ modalType: 'forgotPassword' })
+                  }
+                >
+                  Forgot Password?
+                </span>
+                <span
+                  className="signup"
+                  onClick={() => actions.openModal({ modalType: 'signUp' })}
+                >
+                  Sign up for SUSI
+                </span>
+              </div>
+            </form>
+          </div>
+        </DialogContent>
+        <CloseIcon onClick={this.closeDialog} />
       </Dialog>
     );
   }

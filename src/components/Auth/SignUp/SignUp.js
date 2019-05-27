@@ -7,24 +7,67 @@ import { debounce } from 'lodash';
 
 /* Material-UI */
 import PasswordField from 'material-ui-password-field';
-import Dialog from 'material-ui/Dialog';
-import RaisedButton from 'material-ui/RaisedButton';
-import TextField from 'material-ui/TextField';
-import CircularProgress from 'material-ui/CircularProgress';
-import Close from 'material-ui/svg-icons/navigation/close';
+import _Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import Button from '@material-ui/core/Button';
+import FormControl from '@material-ui/core/FormControl';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import OutlinedInput from '@material-ui/core/OutlinedInput';
+import _CircularProgress from '@material-ui/core/CircularProgress';
+import Close from '@material-ui/icons/Close';
 
 /* Utils */
-import { colors, isEmail } from '../../../utils';
+import { isEmail } from '../../../utils';
 import Recaptcha from 'react-recaptcha';
 import appActions from '../../../redux/actions/app';
 import uiActions from '../../../redux/actions/ui';
 import { getEmailExists } from '../../../api';
-
-/* Styled Components */
-import authStyles from '../../../styledComponents/authStyles';
+import styled from 'styled-components';
 
 /* CSS */
 import './SignUp.css';
+
+const CloseIcon = styled(Close)`
+  position: absolute;
+  z-index: 1200;
+  fill: #444;
+  width: 1.625rem;
+  height: 1.625rem;
+  right: 0.625rem;
+  top: 0.625rem;
+  cursor: pointer;
+`;
+
+const Dialog = styled(_Dialog)`
+  text-align: center;
+`;
+
+const CircularProgress = styled(_CircularProgress)`
+  color: #ffffff;
+`;
+
+const Span = styled.span`
+  display: inline-block;
+  margintop: 0.625rem;
+`;
+
+const Div = styled.div`
+  width: 19rem;
+  margin: 0.625rem auto 0;
+`;
+
+const authStyles = {
+  fieldStyle: {
+    height: '2.5rem',
+    borderRadius: 4,
+    border: '.0625rem solid #ced4da',
+    fontSize: 16,
+    padding: '0rem .625rem',
+    width: '15.625rem',
+    marginTop: '.625rem',
+  },
+};
 
 class SignUp extends Component {
   static propTypes = {
@@ -263,14 +306,7 @@ class SignUp extends Component {
       passwordScore,
     } = this.state;
     const { modalProps, actions, captchaKey } = this.props;
-    const {
-      bodyStyle,
-      emailStyle,
-      inputStyle,
-      fieldStyle,
-      inputPasswordStyle,
-      closingStyle,
-    } = authStyles;
+    const { fieldStyle } = authStyles;
 
     const isValid =
       email &&
@@ -283,122 +319,113 @@ class SignUp extends Component {
 
     return (
       <Dialog
-        modal={false}
+        maxWidth={'sm'}
+        fullWidth={true}
         open={
           modalProps &&
           modalProps.isModalOpen &&
           modalProps.modalType === 'signUp'
         }
-        autoScrollBodyContent={true}
-        bodyStyle={bodyStyle}
-        contentStyle={{ width: '35%', minWidth: '300px' }}
-        onRequestClose={actions.closeModal}
+        onClose={actions.closeModal}
       >
-        <div className="signupForm">
-          <div>Sign Up with SUSI</div>
-          <form onSubmit={this.handleSubmit}>
-            <div>
-              <TextField
-                name="email"
-                type="email"
-                value={email}
-                onChange={this.handleTextFieldChange}
-                style={emailStyle}
-                inputStyle={inputStyle}
-                underlineStyle={{ display: 'none' }}
-                placeholder="Email"
-                errorText={emailErrorMessage}
-              />
-            </div>
-            <div className={`is-strength-${passwordScore}`}>
-              <PasswordField
-                name="password"
-                style={fieldStyle}
-                inputStyle={inputPasswordStyle}
-                value={password}
-                placeholder="Password"
-                underlineStyle={{ display: 'none' }}
-                onChange={this.handleTextFieldChange}
-                errorText={passwordErrorMessage}
-                visibilityButtonStyle={{
-                  marginTop: '-3px',
-                }}
-                visibilityIconStyle={{
-                  marginTop: '-3px',
-                }}
-                textFieldStyle={{ padding: '0px' }}
-              />
-              <div className="ReactPasswordStrength-strength-bar" />
+        <DialogTitle>Sign Up with SUSI</DialogTitle>
+        <DialogContent>
+          <div className="signupForm">
+            <form onSubmit={this.handleSubmit}>
               <div>
-                <p>{this.state.passwordStrength}</p>
+                <FormControl error={emailErrorMessage !== ''}>
+                  <OutlinedInput
+                    labelWidth={0}
+                    name="email"
+                    value={email}
+                    onChange={this.handleTextFieldChange}
+                    aria-describedby="email-error-text"
+                    style={{ width: '17rem', height: '2.5rem' }}
+                    placeholder="Email"
+                  />
+                  <FormHelperText error={emailErrorMessage !== ''}>
+                    {emailErrorMessage}
+                  </FormHelperText>
+                </FormControl>
               </div>
-            </div>
-            <div>
-              <PasswordField
-                name="confirmPassword"
-                style={fieldStyle}
-                inputStyle={inputPasswordStyle}
-                value={confirmPassword}
-                placeholder="Confirm Password"
-                underlineStyle={{ display: 'none' }}
-                onChange={this.handleTextFieldChange}
-                errorText={passwordConfirmErrorMessage}
-                visibilityButtonStyle={{
-                  marginTop: '-3px',
-                }}
-                visibilityIconStyle={{
-                  marginTop: '-3px',
-                }}
-                textFieldStyle={{ padding: '0px' }}
-              />
-            </div>
-            <div style={{ width: '304px', margin: '10px auto 0' }}>
-              {captchaKey && (
-                <Recaptcha
-                  sitekey={captchaKey}
-                  render="explicit"
-                  onloadCallback={this.onCaptchaLoad}
-                  verifyCallback={this.verifyCaptchaCallback}
-                  badge="inline"
-                  type="audio"
-                  size="normal"
-                />
-              )}
-              {!isCaptchaVerified &&
-                captchaVerifyErrorMessage && (
-                  <p className="error-message">{captchaVerifyErrorMessage}</p>
+              <div className={`is-strength-${passwordScore}`}>
+                <FormControl error={passwordErrorMessage !== ''}>
+                  <PasswordField
+                    name="password"
+                    style={fieldStyle}
+                    value={password}
+                    placeholder="Password"
+                    onChange={this.handleTextFieldChange}
+                  />
+                  <FormHelperText error={passwordErrorMessage !== ''}>
+                    {passwordErrorMessage}
+                  </FormHelperText>
+                </FormControl>
+                <div className="ReactPasswordStrength-strength-bar" />
+                <div>
+                  <p>{this.state.passwordStrength}</p>
+                </div>
+              </div>
+              <div>
+                <FormControl error={passwordConfirmErrorMessage !== ''}>
+                  <PasswordField
+                    name="confirmPassword"
+                    style={fieldStyle}
+                    value={confirmPassword}
+                    placeholder="Confirm Password"
+                    onChange={this.handleTextFieldChange}
+                  />
+                  <FormHelperText error={passwordConfirmErrorMessage !== ''}>
+                    {passwordConfirmErrorMessage}
+                  </FormHelperText>
+                </FormControl>
+              </div>
+              <Div>
+                {captchaKey && (
+                  <Recaptcha
+                    sitekey={captchaKey}
+                    render="explicit"
+                    onloadCallback={this.onCaptchaLoad}
+                    verifyCallback={this.verifyCaptchaCallback}
+                    badge="inline"
+                    type="audio"
+                    size="normal"
+                  />
                 )}
-            </div>
-            {signupErrorMessage && (
-              <div style={{ color: success ? '#388e3c' : '#f44336' }}>
-                {signupErrorMessage}
-              </div>
-            )}
-            <div>
-              <RaisedButton
-                label={!loading && 'Sign Up'}
+                {!isCaptchaVerified &&
+                  captchaVerifyErrorMessage && (
+                    <p className="error-message">{captchaVerifyErrorMessage}</p>
+                  )}
+              </Div>
+              {signupErrorMessage && (
+                <div style={{ color: success ? '#388e3c' : '#f44336' }}>
+                  {signupErrorMessage}
+                </div>
+              )}
+              <Button
+                variant="contained"
+                color="primary"
                 type="submit"
                 disabled={!isValid || loading}
-                backgroundColor={colors.header}
-                labelColor="#fff"
-                style={{ width: '275px', margin: '10px 0px' }}
-                icon={loading && <CircularProgress size={24} />}
-              />
-            </div>
+                style={{
+                  width: '17.1875rem',
+                  margin: '.625rem 0rem',
+                }}
+              >
+                {loading && <CircularProgress size={24} />}{' '}
+                {!loading && 'Sign Up'}
+              </Button>
 
-            <span
-              style={{
-                display: 'inline-block',
-                marginTop: '10px',
-              }}
-              className="loginLinks"
-              onClick={() => actions.openModal({ modalType: 'login' })}
-            >
-              Already have an account? Login here
-            </span>
-          </form>
-        </div>
-        <Close style={closingStyle} onClick={this.closeDialog} />
+              <Span
+                className="loginLinks"
+                onClick={() => actions.openModal({ modalType: 'login' })}
+              >
+                Already have an account? Login here
+              </Span>
+            </form>
+          </div>
+        </DialogContent>
+        <CloseIcon onClick={this.closeDialog} />
       </Dialog>
     );
   }

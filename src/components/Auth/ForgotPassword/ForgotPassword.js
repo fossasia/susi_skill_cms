@@ -6,21 +6,43 @@ import appActions from '../../../redux/actions/app';
 import uiActions from '../../../redux/actions/ui';
 
 /* Material-UI*/
-import Close from 'material-ui/svg-icons/navigation/close';
-import Dialog from 'material-ui/Dialog';
-import Paper from 'material-ui/Paper';
-import RaisedButton from 'material-ui/RaisedButton';
-import CircularProgress from 'material-ui/CircularProgress';
-import TextField from 'material-ui/TextField';
-
-/* Utils*/
-import { colors } from '../../../utils';
-
-/* Styled Component*/
-import authStyles from '../../../styledComponents/authStyles';
+import Close from '@material-ui/icons/Close';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import _Button from '@material-ui/core/Button';
+import _CircularProgress from '@material-ui/core/CircularProgress';
+import FormControl from '@material-ui/core/FormControl';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import _Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+import styled from 'styled-components';
 
 /* CSS*/
 import './ForgotPassword.css';
+
+const CloseIcon = styled(Close)`
+  position: absolute;
+  z-index: 1200;
+  fill: #444;
+  width: 1.625rem;
+  height: 1.625rem;
+  right: 0.625rem;
+  top: 0.625rem;
+  cursor: pointer;
+`;
+
+const Button = styled(_Button)`
+  margin: 1.5625rem 0 0 0;
+`;
+
+const Input = styled(_Input)`
+  width: 16rem;
+`;
+
+const CircularProgress = styled(_CircularProgress)`
+  color: #ffffff;
+`;
 
 class ForgotPassword extends Component {
   static propTypes = {
@@ -159,56 +181,55 @@ class ForgotPassword extends Component {
   render() {
     const { email, emailErrorMessage, validForm, loading } = this.state;
     const { modalProps, actions } = this.props;
-    const {
-      containerStyle,
-      underlineFocusStyle,
-      closingStyle,
-      bodyStyle,
-    } = authStyles;
 
     return (
       <Dialog
-        modal={false}
+        maxWidth={'sm'}
+        fullWidth={true}
         open={
           modalProps &&
           modalProps.isModalOpen &&
           modalProps.modalType === 'forgotPassword'
         }
-        onRequestClose={actions.closeModal}
-        autoScrollBodyContent={true}
-        bodyStyle={bodyStyle}
-        contentStyle={{ width: '35%', minWidth: '300px' }}
+        onClose={actions.closeModal}
+        style={{ textAlign: 'center' }}
       >
-        <div className="forgotPasswordForm">
-          <Paper zDepth={0} style={containerStyle}>
-            <h3>Forgot Password?</h3>
+        <DialogTitle>Forgot Password</DialogTitle>
+        <DialogContent>
+          <div className="forgotPasswordForm">
             <form onSubmit={this.handleSubmit}>
               <div>
-                <TextField
-                  name="email"
-                  floatingLabelText="Email"
-                  errorText={emailErrorMessage}
-                  value={email}
-                  underlineFocusStyle={underlineFocusStyle}
-                  floatingLabelFocusStyle={underlineFocusStyle}
-                  onChange={this.handleTextFieldChange}
-                />
+                <FormControl>
+                  <InputLabel>Email</InputLabel>
+                  <Input
+                    name="email"
+                    value={email}
+                    onChange={this.handleTextFieldChange}
+                    aria-describedby="component-error-text"
+                  />
+                  <FormHelperText
+                    id="component-error-text"
+                    error={emailErrorMessage !== ''}
+                  >
+                    {emailErrorMessage}
+                  </FormHelperText>
+                </FormControl>
               </div>
               <div>
-                <RaisedButton
+                <Button
+                  variant="contained"
+                  color="primary"
                   type="submit"
-                  label={!loading ? 'Reset' : ''}
-                  backgroundColor={colors.header}
-                  labelColor="#fff"
-                  style={{ margin: '25px 0 0 0 ' }}
                   disabled={!validForm}
-                  icon={loading ? <CircularProgress size={24} /> : undefined}
-                />
+                >
+                  {loading ? <CircularProgress size={24} /> : undefined}{' '}
+                  {!loading ? 'Reset' : ''}
+                </Button>
               </div>
             </form>
-          </Paper>
-        </div>
-        <Close style={closingStyle} onClick={this.closeDialog} />
+          </div>
+        </DialogContent>
+        <CloseIcon onClick={this.closeDialog} />
       </Dialog>
     );
   }
