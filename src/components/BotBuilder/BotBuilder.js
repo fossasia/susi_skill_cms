@@ -1,28 +1,37 @@
 import React from 'react';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
-import RaisedButton from 'material-ui/RaisedButton';
 import PropTypes from 'prop-types';
-import { Card, CardText } from 'material-ui/Card';
-import Add from 'material-ui/svg-icons/content/add';
-import Delete from 'material-ui/svg-icons/action/delete';
-import Dialog from 'material-ui/Dialog';
-import FlatButton from 'material-ui/FlatButton';
-import { FloatingActionButton, Paper } from 'material-ui';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import Add from '@material-ui/icons/Add';
+import Delete from '@material-ui/icons/Delete';
+import Dialog from '@material-ui/core/Dialog';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogActions from '@material-ui/core/DialogActions';
+import Button from '@material-ui/core/Button';
+import Fab from '@material-ui/core/Fab';
+import Paper from '@material-ui/core/Paper';
 import './BotBuilder.css';
-import { urls, colors } from '../../utils';
+import { urls } from '../../utils';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import uiActions from '../../redux/actions/ui';
 import Cookies from 'universal-cookie';
-import * as $ from 'jquery';
+import {
+  fetchChatBots,
+  fetchBotImages,
+  deleteChatBot,
+  readDraft,
+  deleteDraft,
+} from '../../api/index.js';
 
 const cookies = new Cookies();
 let BASE_URL = urls.API_URL;
 
 const styles = {
   home: {
-    width: '100%',
+    margin: '0px 10px',
   },
   paperStyle: {
     width: '100%',
@@ -45,7 +54,7 @@ const styles = {
   },
   heading: {
     color: 'rgba(0,0,0,.65)',
-    paddingLeft: '20px',
+    padding: '20px 0px 0px 20px',
   },
 };
 
@@ -62,24 +71,14 @@ class BotBuilder extends React.Component {
   }
 
   getChatbots = () => {
-    const { actions } = this.props;
-    if (cookies.get('loggedIn')) {
-      let url =
-        BASE_URL +
-        '/cms/getSkillList.json?' +
-        'private=1&access_token=' +
-        cookies.get('loggedIn');
-      $.ajax({
-        url: url,
-        jsonpCallback: 'p',
-        dataType: 'jsonp',
-        jsonp: 'callback',
-        crossDomain: true,
-        success: function(data) {
-          this.setState({ chatbots: data.chatbots });
+    const { actions, accessToken } = this.props;
+    if (accessToken) {
+      fetchChatBots()
+        .then(payload => {
+          this.setState({ chatbots: payload.chatbots });
           this.getBotImages();
-        }.bind(this),
-        error: function(error) {
+        })
+        .catch(error => {
           if (error.status !== 404) {
             actions.openSnackBar({
               snackBarMessage:
@@ -87,42 +86,28 @@ class BotBuilder extends React.Component {
               snackBarDuration: 2000,
             });
           }
-        },
-      });
+        });
     }
   };
 
   getBotImages = () => {
     const { actions } = this.props;
-    let bots = this.state.chatbots;
-    if (bots) {
-      bots.forEach((bot, index) => {
+    let { chatbots } = this.state;
+    if (chatbots) {
+      chatbots.forEach((bot, index) => {
         let name = bot.name;
         let language = bot.language;
         let group = bot.group;
-        let url =
-          BASE_URL +
-          '/cms/getSkill.json?group=' +
-          group +
-          '&language=' +
-          language +
-          '&skill=' +
-          name +
-          '&private=1&access_token=' +
-          cookies.get('loggedIn');
-        $.ajax({
-          url: url,
-          dataType: 'jsonp',
-          crossDomain: true,
-          success: function(data) {
-            let image_match = data.text.match(/^::image\s(.*)$/m);
+        fetchBotImages({ name, group, language })
+          .then(payload => {
+            let image_match = payload.text.match(/^::image\s(.*)$/m);
             if (image_match) {
               bot.image = image_match[1];
             }
-            bots[index] = bot;
-            this.setState({ chatbots: bots });
-          }.bind(this),
-          error: function(error) {
+            chatbots[index] = bot;
+            this.setState({ chatbots });
+          })
+          .catch(error => {
             if (error.status !== 404) {
               actions.openSnackBar({
                 snackBarMessage:
@@ -130,8 +115,7 @@ class BotBuilder extends React.Component {
                 snackBarDuration: 2000,
               });
             }
-          },
-        });
+          });
       });
     }
   };
@@ -168,6 +152,8 @@ class BotBuilder extends React.Component {
             style={{
               backgroundImage: 'url(' + imageUrl + ')',
               backgroundSize: 'cover',
+              backgroundColor: '#000',
+              opacity: '0.5',
             }}
           >
             <Link
@@ -180,13 +166,9 @@ class BotBuilder extends React.Component {
                 bot.group
               }
             >
-              <RaisedButton
-                label={bot.name}
-                labelPosition="before"
-                labelStyle={{ verticalAlign: 'middle' }}
-                backgroundColor={colors.header}
-                labelColor="#fff"
-              />
+              <Button variant="contained" color="primary">
+                {bot.name}
+              </Button>
             </Link>
             <div className="bot-delete">
               <Delete
@@ -209,34 +191,19 @@ class BotBuilder extends React.Component {
 
   deleteBot = (name, language, group) => {
     const { actions } = this.props;
-    let url =
-      BASE_URL +
-      '/cms/deleteSkill.json?access_token=' +
-      cookies.get('loggedIn') +
-      '&private=1&group=' +
-      group +
-      '&language=' +
-      language +
-      '&skill=' +
-      name;
-    $.ajax({
-      url: url,
-      jsonpCallback: 'p',
-      dataType: 'jsonp',
-      jsonp: 'callback',
-      crossDomain: true,
-      success: function(data) {
+    deleteChatBot({ group, language, skill: name })
+      .then(payload => {
         actions
           .openSnackBar({
-            snackBarMessage: 'Unable to delete your chatbot. Please try again.',
+            snackBarMessage: `Successfully ${payload.message}`,
             snackBarDuration: 2000,
           })
           .then(() => {
             this.closeDeleteAlert();
             this.getChatbots();
           });
-      }.bind(this),
-      error: function(error) {
+      })
+      .catch(error => {
         this.setState({
           deleteAlert: null,
         });
@@ -244,27 +211,22 @@ class BotBuilder extends React.Component {
           snackBarMessage: 'Unable to delete your chatbot. Please try again.',
           snackBarDuration: 2000,
         });
-      }.bind(this),
-    });
+      });
   };
 
   getDrafts = () => {
     const { actions } = this.props;
-    let url = BASE_URL + '/cms/readDraft.json';
-    $.ajax({
-      url: url,
-      dataType: 'jsonp',
-      crossDomain: true,
-      success: function(data) {
-        this.showDrafts(data.drafts);
-      }.bind(this),
-      error: function(error) {
+    readDraft()
+      .then(payload => {
+        const { drafts } = payload;
+        this.showDrafts(drafts);
+      })
+      .catch(error => {
         actions.openSnackBar({
           snackBarMessage: "Couldn't get your drafts. Please reload the page.",
           snackBarDuration: 2000,
         });
-      },
-    });
+      });
   };
 
   showDrafts = drafts => {
@@ -300,16 +262,14 @@ class BotBuilder extends React.Component {
             style={{
               backgroundImage: 'url(' + imageUrl + ')',
               backgroundSize: 'cover',
+              backgroundColor: '#000',
+              opacity: '0.9',
             }}
           >
             <Link to={'/botbuilder/botwizard?draftID=' + draft}>
-              <RaisedButton
-                label={drafts[draft].name === '' ? draft : drafts[draft].name}
-                labelPosition="before"
-                labelStyle={{ verticalAlign: 'middle' }}
-                backgroundColor={colors.header}
-                labelColor="#fff"
-              />
+              <Button variant="contained" color="primary">
+                {drafts[draft].name === '' ? draft : drafts[draft].name}
+              </Button>
             </Link>
             <div className="bot-delete">
               <Delete
@@ -326,12 +286,8 @@ class BotBuilder extends React.Component {
 
   deleteDrafts = id => {
     const { actions } = this.props;
-    let url = BASE_URL + '/cms/deleteDraft.json?id=' + id;
-    $.ajax({
-      url: url,
-      dataType: 'jsonp',
-      crossDomain: true,
-      success: function(data) {
+    deleteDraft({ id })
+      .then(payload => {
         actions
           .openSnackBar({
             snackBarMessage: 'Draft successfully deleted.',
@@ -341,8 +297,8 @@ class BotBuilder extends React.Component {
             this.closeDeleteAlert();
             this.getDrafts();
           });
-      }.bind(this),
-      error: function(error) {
+      })
+      .catch(error => {
         actions.openSnackBar({
           snackBarMessage: 'Unable to delete your draft. Please try again.',
           snackBarDuration: 2000,
@@ -350,8 +306,7 @@ class BotBuilder extends React.Component {
         this.setState({
           deleteAlert: null,
         });
-      }.bind(this),
-    });
+      });
   };
 
   openDeleteAlert = (type, params) => {
@@ -403,13 +358,13 @@ class BotBuilder extends React.Component {
                       style={{
                         backgroundImage: 'url(' + template.image + ')',
                         backgroundSize: 'cover',
+                        backgroundColor: '#000',
+                        opacity: '0.9',
                       }}
                     >
-                      <RaisedButton
-                        label={template.name}
-                        backgroundColor={colors.header}
-                        labelColor="#fff"
-                      />
+                      <Button variant="contained" color="primary">
+                        {template.name}
+                      </Button>
                     </Card>
                   </Link>
                 );
@@ -427,11 +382,13 @@ class BotBuilder extends React.Component {
                   style={{
                     backgroundImage: 'url(/botTemplates/chat-bot.jpg)',
                     backgroundSize: 'cover',
+                    backgroundColor: '#000',
+                    opacity: '0.9',
                   }}
                 >
-                  <FloatingActionButton
-                    backgroundColor={colors.fabButton}
-                    mini={true}
+                  <Fab
+                    color="primary"
+                    size="small"
                     style={{
                       boxShadow:
                         'rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px',
@@ -442,42 +399,55 @@ class BotBuilder extends React.Component {
                         height: '40px',
                       }}
                     />
-                  </FloatingActionButton>
-                  <CardText style={newBotBtn}>Create a new bot</CardText>
+                  </Fab>
+                  <CardContent style={newBotBtn}>Create a new bot</CardContent>
                 </Card>
               </Link>
               {this.showChatbots()}
             </div>
             <h2 style={heading}>Drafts</h2>
-            <div className="bot-template-wrap">{drafts}</div>
+            <div className="bot-template-wrap">
+              {drafts.length > 0 ? (
+                drafts
+              ) : (
+                <p style={{ fontSize: '18px', paddingLeft: '10px' }}>
+                  No drafts to display.
+                </p>
+              )}
+            </div>
           </Paper>
         </div>
         <Dialog
-          actions={[
-            <FlatButton
-              label="Cancel"
-              onClick={this.closeDeleteAlert}
-              key={'Cancel'}
-              primary={true}
-              style={{ marginRight: '10px' }}
-            />,
-            <FlatButton
-              label="Delete"
-              onClick={this.handleDelete}
-              key={'Delete'}
-              backgroundColor={'#ff0000'}
-              primary={true}
-              labelStyle={{ color: '#fff' }}
-              hoverColor={'rgba(255,0,0,0.7)'}
-            />,
-          ]}
-          modal={false}
           open={deleteAlert !== null}
-          onRequestClose={this.closeDeleteAlert}
+          onClick={this.closeDeleteAlert}
+          maxWidth={'sm'}
+          fullWidth={true}
         >
-          {`Are you sure you want to delete this ${
-            deleteAlert !== null ? deleteAlert.type : ''
-          }?`}
+          <DialogContent style={{ fontSize: '1rem' }}>
+            {`Are you sure you want to delete this ${
+              deleteAlert !== null ? deleteAlert.type : ''
+            }?`}
+          </DialogContent>
+          <DialogActions>
+            {[
+              <Button
+                key={1}
+                color="primary"
+                onClick={this.closeDeleteAlert}
+                style={{ marginRight: '10px' }}
+              >
+                Cancel
+              </Button>,
+              <Button
+                key={2}
+                variant="contained"
+                color="secondary"
+                onClick={this.handleDelete}
+              >
+                Delete
+              </Button>,
+            ]}
+          </DialogActions>
         </Dialog>
       </div>
     );
@@ -487,7 +457,14 @@ class BotBuilder extends React.Component {
 BotBuilder.propTypes = {
   templates: PropTypes.array,
   actions: PropTypes.object,
+  accessToken: PropTypes.string,
 };
+
+function mapStateToProps(store) {
+  return {
+    accessToken: store.app.accessToken,
+  };
+}
 
 function mapDispatchToProps(dispatch) {
   return {
@@ -496,6 +473,6 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps,
 )(BotBuilder);

@@ -1,20 +1,26 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {
-  Table,
-  TableBody,
-  TableHeader,
-  TableHeaderColumn,
-  TableRow,
-  TableRowColumn,
-} from 'material-ui/Table';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import uiActions from '../../redux/actions/ui';
-import CircularProgress from 'material-ui/CircularProgress';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { fetchUserRatings } from '../../api';
 import { parseDate } from '../../utils';
+import styled from 'styled-components';
+
+const StyledTableCell = styled(TableCell)`
+  padding: 0.625rem 1.5rem;
+`;
+
+const TableWrap = styled.div`
+  padding: 0rem 1.25rem;
+`;
 
 class MyRatings extends Component {
   constructor(props) {
@@ -70,24 +76,24 @@ class MyRatings extends Component {
       <div>
         {loading ? (
           <div className="center">
-            <CircularProgress size={62} color="#4285f5" />
+            <CircularProgress size={62} color="primary" />
             <h4>Loading</h4>
           </div>
         ) : (
-          <div className="table-wrap">
-            <Table className="table-root" selectable={false}>
-              <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
+          <TableWrap className="table-wrap">
+            <Table className="table-root">
+              <TableHead>
                 <TableRow>
-                  <TableHeaderColumn>Skill Name</TableHeaderColumn>
-                  <TableHeaderColumn>Rating</TableHeaderColumn>
-                  <TableHeaderColumn>Timestamp</TableHeaderColumn>
+                  <TableCell>Skill Name</TableCell>
+                  <TableCell>Rating</TableCell>
+                  <TableCell>Timestamp</TableCell>
                 </TableRow>
-              </TableHeader>
-              <TableBody displayRowCheckbox={false}>
+              </TableHead>
+              <TableBody>
                 {ratingsData.map((skill, index) => {
                   return (
                     <TableRow key={index}>
-                      <TableRowColumn style={{ fontSize: '16px' }}>
+                      <StyledTableCell style={{ fontSize: '1rem' }}>
                         <Link
                           to={{
                             pathname:
@@ -104,19 +110,19 @@ class MyRatings extends Component {
                             skill.skillName.slice(1)
                           ).replace(/[_-]/g, ' ')}
                         </Link>
-                      </TableRowColumn>
-                      <TableRowColumn style={{ fontSize: '16px' }}>
+                      </StyledTableCell>
+                      <StyledTableCell style={{ fontSize: '1rem' }}>
                         {skill.skillStar}
-                      </TableRowColumn>
-                      <TableRowColumn>
+                      </StyledTableCell>
+                      <StyledTableCell>
                         {parseDate(skill.ratingTimestamp)}
-                      </TableRowColumn>
+                      </StyledTableCell>
                     </TableRow>
                   );
                 })}
               </TableBody>
             </Table>
-          </div>
+          </TableWrap>
         )}
         {ratingsData.length === 0 &&
           !loading && (

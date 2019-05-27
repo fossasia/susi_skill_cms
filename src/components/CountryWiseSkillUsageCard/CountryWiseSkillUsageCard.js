@@ -2,10 +2,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { GeoChart } from 'react-chartkick';
-import Table from 'material-ui/Table/Table';
-import TableBody from 'material-ui/Table/TableBody';
-import TableRowColumn from 'material-ui/Table/TableRowColumn';
-import TableRow from 'material-ui/Table/TableRow';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableRow from '@material-ui/core/TableRow';
 import { isoCountries } from '../../utils';
 import './CountryWiseSkillUsageCard.css';
 
@@ -20,7 +20,7 @@ const CountryWiseSkillUsageCard = props => {
     const { countryWiseSkillUsage } = props;
     return (
       <Table>
-        <TableBody displayRowCheckbox={false}>
+        <TableBody>
           {countryWiseSkillUsage &&
             countryWiseSkillUsage.map((data, id) => {
               const countryCode = data[0];
@@ -28,14 +28,14 @@ const CountryWiseSkillUsageCard = props => {
               const countryName = getCountryName(countryCode);
               return (
                 <TableRow key={id}>
-                  <TableRowColumn style={{ width: '70%', padding: '0' }}>
+                  <TableCell style={{ width: '70%', padding: '0' }}>
                     {countryName}:
-                  </TableRowColumn>
-                  <TableRowColumn
+                  </TableCell>
+                  <TableCell
                     style={{ width: '30%', padding: '0', textAlign: 'right' }}
                   >
                     {usage}
-                  </TableRowColumn>
+                  </TableCell>
                 </TableRow>
               );
             })}

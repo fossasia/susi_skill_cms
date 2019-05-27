@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import Cookies from 'universal-cookie';
-import $ from 'jquery';
 import { connect } from 'react-redux';
 import List from 'material-ui/svg-icons/action/list';
 import AppBar from 'material-ui/AppBar';
@@ -22,12 +21,10 @@ import SkillIcon from 'material-ui/svg-icons/action/dashboard';
 import CircleImage from '../CircleImage/CircleImage';
 import susiWhite from '../../images/SUSIAI-white.png';
 // import Auth from '../Auth/';
-import { urls, colors, isProduction } from '../../utils';
+import { urls, colors } from '../../utils';
 import './StaticAppBar.css';
 import { bindActionCreators } from 'redux';
 import uiActions from '../../redux/actions/ui';
-
-const cookieDomain = isProduction() ? '.susi.ai' : '';
 
 const cookies = new Cookies();
 
@@ -80,7 +77,6 @@ class StaticAppBar extends Component {
     super(props);
     this.state = {
       showOptions: false,
-      showAdmin: false,
       anchorEl: null,
       timestamp: new Date().getTime(),
     };
@@ -95,70 +91,13 @@ class StaticAppBar extends Component {
     }
   };
 
-  initializeShowAdminService = () => {
-    const { accessToken } = this.props;
-    $.ajax({
-      url: `${
-        urls.API_URL
-      }/aaa/showAdminService.json?access_token=${accessToken}`,
-      dataType: 'jsonp',
-      jsonpCallback: 'pfns',
-      jsonp: 'callback',
-      crossDomain: true,
-      success: newResponse => {
-        const showAdmin = newResponse.showAdmin;
-        cookies.set('showAdmin', showAdmin, {
-          path: '/',
-          domain: cookieDomain,
-        });
-        this.setState({
-          showAdmin,
-        });
-      },
-      error: newErrorThrown => {
-        console.log(newErrorThrown);
-      },
-    });
-  };
-
-  initializeListUserSettings = () => {
-    const { accessToken } = this.props;
-    $.ajax({
-      url: `${
-        urls.API_URL
-      }/aaa/listUserSettings.json?access_token=${accessToken}`,
-      jsonpCallback: 'pc',
-      dataType: 'jsonp',
-      jsonp: 'callback',
-      crossDomain: true,
-      success: data => {
-        let userName = '';
-        if (data.settings && data.settings.userName) {
-          userName = data.settings.userName;
-        }
-        cookies.set('username', userName, {
-          path: '/',
-          domain: cookieDomain,
-        });
-      },
-      error: errorThrown => {
-        console.log(errorThrown);
-      },
-    });
-  };
-
   componentWillUnmount() {
     this.mounted = false;
   }
 
   componentDidMount() {
     this.mounted = true;
-    const { accessToken } = this.props;
     window.addEventListener('scroll', this.handleScroll);
-    if (accessToken) {
-      this.initializeShowAdminService();
-      this.initializeListUserSettings();
-    }
 
     let didScroll;
     let lastScrollTop = 0;
@@ -168,9 +107,6 @@ class StaticAppBar extends Component {
       document.documentElement.clientHeight ||
       document.body.clientHeight;
     let headerElement = document.getElementsByTagName('header')[0];
-    this.setState({
-      showAdmin: cookies.get('showAdmin'),
-    });
     const navbarHeight = headerElement.offsetHeight;
 
     window.addEventListener('scroll', () => {
@@ -255,7 +191,7 @@ class StaticAppBar extends Component {
             }
             targetOrigin={{ horizontal: 'right', vertical: 'top' }}
             anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
-            onTouchTap={this.showOptions}
+            onClick={this.showOptions}
           />
           <Popover
             animated={false}
@@ -329,9 +265,6 @@ class StaticAppBar extends Component {
                   this.props.actions.openModal({ modalType: 'login' })
                 }
                 rightIcon={<LoginIcon />}
-                onTouchTap={() =>
-                  this.props.actions.openModal({ modalType: 'login' })
-                }
               />
             )}
           </Popover>

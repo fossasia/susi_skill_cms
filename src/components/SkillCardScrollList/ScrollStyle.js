@@ -76,12 +76,14 @@ const styles = {
     position: 'absolute',
     left: 260,
     marginTop: 75,
+    zIndex: 1,
   },
   rightFab: {
     position: 'absolute',
     right: 0,
     marginTop: 75,
     marginRight: 10,
+    zIndex: 1,
   },
   staffPick: {
     margin: '4px 0 0 6px',

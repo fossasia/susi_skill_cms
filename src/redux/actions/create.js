@@ -16,11 +16,19 @@ const createActions = {
     actionTypes.CREATE_SET_DESIGN_DATA,
     returnArgumentsFn,
   ),
+  updateDesignData: createAction(actionTypes.CREATE_UPDATE_DESIGN_DATA),
+  resetDesignData: createAction(
+    actionTypes.CREATE_RESET_DESIGN_DATA,
+    returnArgumentsFn,
+  ),
+  setDesignComponentColor: createAction(
+    actionTypes.CREATE_SET_DESIGN_COMPONENT_COLOR,
+    returnArgumentsFn,
+  ),
   setConfigureData: createAction(
     actionTypes.CREATE_SET_CONFIGURE_DATA,
     returnArgumentsFn,
   ),
-  saveSkillData: createAction(actionTypes.CREATE_SAVE_SKILL, apis.saveSkill),
   getSkillByCommitId: createAction(
     actionTypes.CREATE_GET_SKILL_BY_COMMIT_ID,
     apis.fetchSkillByCommitId,
@@ -29,13 +37,17 @@ const createActions = {
     actionTypes.CREATE_GET_SKILL_CODE,
     apis.fetchSkillCode,
   ),
+  setSkillCode: createAction(
+    actionTypes.CREATE_SET_SKILL_CODE,
+    returnArgumentsFn,
+  ),
+  getBotBuilderCode: createAction(
+    actionTypes.CREATE_GET_BOTBUILDER_CODE,
+    apis.fetchSkillCode,
+  ),
   getAuthorUrl: createAction(
     actionTypes.CREATE_GET_AUTHOR_URL,
     apis.fetchAuthorUrl,
-  ),
-  getConversationResponse: createAction(
-    actionTypes.CREATE_GET_CONVERSATION_RESPONSE,
-    apis.fetchConverstionResponse,
   ),
   getDraftBotDetails: createAction(
     actionTypes.CREATE_GET_DRAFT_BOT_DETAILS,
@@ -53,6 +65,7 @@ const createActions = {
     actionTypes.CREATE_SET_BOT_BACKGROUND_IMAGE,
     apis.uploadBotImage,
   ),
+  resetCreateStore: createAction(actionTypes.CREATE_RESET_STORE),
 };
 
 export default createActions;

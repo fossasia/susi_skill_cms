@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import Table from 'antd/lib/table';
-import Button from 'antd/lib/button';
-import Form from 'antd/lib/form';
-import TextField from 'material-ui/TextField';
+import { Table, Button, Form } from 'antd';
+import TextField from '@material-ui/core/TextField';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import uiActions from '../../../../redux/actions/ui';
-import Checkbox from 'material-ui/Checkbox';
+import createActions from '../../../../redux/actions/create';
+import Checkbox from '@material-ui/core/Checkbox';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import PropTypes from 'prop-types';
 
 const EditableContext = React.createElement();
@@ -19,13 +19,16 @@ const EditableRow = ({ form, index, ...props }) => (
 
 const EditableFormRow = Form.create()(EditableRow);
 
+const styles = {
+  nameField: {
+    width: '272px',
+    marginBottom: '16px',
+  },
+};
+
 class UIView extends Component {
   constructor(props) {
     super(props);
-    let code = '';
-    if (this.props.configure) {
-      code = this.props.configure.code;
-    }
     this.columns = [
       {
         title: 'Website',
@@ -50,7 +53,6 @@ class UIView extends Component {
       dataSource: [],
       websiteName: '',
       count: 0,
-      code,
       myDevices: false, // use chatbot in your devices
       publicDevices: false, // allow chatbot to be used in other people's devices
       includeSusiSkills: true,
@@ -69,13 +71,12 @@ class UIView extends Component {
 
   handleAdd = () => {
     const { actions } = this.props;
-    const { count, dataSource } = this.state;
+    const { count, dataSource, websiteName } = this.state;
     let date = new Date();
-    let name = this.state.websiteName;
-    if (name !== '' && this.checkValidUrl(name)) {
+    if (websiteName !== '' && this.checkValidUrl(websiteName)) {
       const newData = {
         key: count,
-        name: name,
+        name: websiteName,
         date: date.toString(),
       };
       this.setState(
@@ -95,28 +96,23 @@ class UIView extends Component {
   };
 
   generateCode = () => {
-    let code = this.state.code;
-    let data = this.state.dataSource;
+    let { configCode, actions } = this.props;
+    const { dataSource } = this.state;
     let websites = '';
-    data.map(dataItem => {
+    dataSource.map(dataItem => {
       if (dataItem.name !== '') {
         websites += dataItem.name.trim();
-        if (dataItem.key < data.length - 1) {
+        if (dataItem.key < dataSource.length - 1) {
           websites += ', ';
         }
       }
       return null;
     });
-    code = code.replace(
+    configCode = configCode.replace(
       /^::allowed_sites\s(.*)$/m,
       `::allowed_sites ${websites}`,
     );
-    this.setState(
-      {
-        code,
-      },
-      () => this.sendInfoToProps(),
-    );
+    actions.setConfigureData({ configCode });
   };
 
   handleAddFromCode = (websiteName, websiteCount) => {
@@ -147,7 +143,8 @@ class UIView extends Component {
   };
 
   generateUIData = () => {
-    const enableOnOwnSitesOnly = this.state.code.match(
+    const { configCode } = this.props;
+    const enableOnOwnSitesOnly = configCode.match(
       /^::allow_bot_only_on_own_sites\s(.*)$/m,
     );
     if (enableOnOwnSitesOnly) {
@@ -161,15 +158,15 @@ class UIView extends Component {
     }
 
     if (enableOnOwnSitesOnly[1] === 'yes') {
-      const allowedSites = this.state.code.match(/^::allowed_sites\s(.*)$/m);
+      const allowedSites = configCode.match(/^::allowed_sites\s(.*)$/m);
       const sites = allowedSites[1].split(',');
       for (let i = 0; i < sites.length; i++) {
         if (this.checkValidUrl(sites[i])) {
           this.handleAddFromCode(sites[i], i);
         } else {
-          let code = this.state.code;
-          code = code.replace(sites[i], '');
-          this.setState({ code }, () => this.sendInfoToProps());
+          let { configCode, actions } = this.props;
+          configCode = configCode.replace(sites[i], '');
+          actions.setConfigureData({ configCode });
         }
       }
       let data = this.dataSource;
@@ -179,7 +176,7 @@ class UIView extends Component {
       });
     }
 
-    const enableDefaultSkillsMatch = this.state.code.match(
+    const enableDefaultSkillsMatch = configCode.match(
       /^::enable_default_skills\s(.*)$/m,
     );
     if (enableDefaultSkillsMatch) {
@@ -192,7 +189,7 @@ class UIView extends Component {
       });
     }
 
-    const enableOnDeviceMatch = this.state.code.match(
+    const enableOnDeviceMatch = configCode.match(
       /^::enable_bot_in_my_devices\s(.*)$/m,
     );
     if (enableOnDeviceMatch) {
@@ -205,7 +202,7 @@ class UIView extends Component {
       });
     }
 
-    const enableOtherUserDeviceMatch = this.state.code.match(
+    const enableOtherUserDeviceMatch = configCode.match(
       /^::enable_bot_for_other_users\s(.*)$/m,
     );
     if (enableOtherUserDeviceMatch) {
@@ -235,72 +232,46 @@ class UIView extends Component {
 
   handleChangeIncludeSusiSkills = () => {
     let value = !this.state.includeSusiSkills;
-    let code = this.state.code;
-    code = code.replace(
+    let { configCode, actions } = this.props;
+    configCode = configCode.replace(
       /^::enable_default_skills\s(.*)$/m,
       `::enable_default_skills ${value ? 'yes' : 'no'}`,
     );
-    this.setState(
-      {
-        includeSusiSkills: value,
-        code,
-      },
-      () => this.sendInfoToProps(),
-    );
+    actions.setConfigureData({ configCode });
+    this.setState({ includeSusiSkills: value });
   };
 
   handleChangeIncludeInMyDevices = () => {
     let value = !this.state.myDevices;
-    let code = this.state.code;
-    code = code.replace(
+    let { configCode, actions } = this.props;
+    configCode = configCode.replace(
       /^::enable_bot_in_my_devices\s(.*)$/m,
       `::enable_bot_in_my_devices ${value ? 'yes' : 'no'}`,
     );
-    this.setState(
-      {
-        myDevices: value,
-        code,
-      },
-      () => this.sendInfoToProps(),
-    );
+    actions.setConfigureData({ configCode });
+    this.setState({ myDevices: value });
   };
 
   handleChangeIncludeInPublicDevices = () => {
     let value = !this.state.publicDevices;
-    let code = this.state.code;
-    code = code.replace(
+    let { configCode, actions } = this.props;
+    configCode = configCode.replace(
       /^::enable_bot_for_other_users\s(.*)$/m,
       `::enable_bot_for_other_users ${value ? 'yes' : 'no'}`,
     );
-    this.setState(
-      {
-        publicDevices: value,
-        code,
-      },
-      () => this.sendInfoToProps(),
-    );
+    actions.setConfigureData({ configCode });
+    this.setState({ publicDevices: value });
   };
 
   handleChangeLimitSites = () => {
     let value = !this.state.limitSites;
-    let code = this.state.code;
-    code = code.replace(
+    let { configCode, actions } = this.props;
+    configCode = configCode.replace(
       /^::allow_bot_only_on_own_sites\s(.*)$/m,
       `::allow_bot_only_on_own_sites ${value ? 'yes' : 'no'}`,
     );
-    this.setState(
-      {
-        limitSites: value,
-        code,
-      },
-      () => this.sendInfoToProps(),
-    );
-  };
-
-  sendInfoToProps = () => {
-    this.props.configure.sendInfoToProps({
-      code: this.state.code,
-    });
+    actions.setConfigureData({ configCode });
+    this.setState({ limitSites: value });
   };
 
   checkValidUrl = url => {
@@ -316,7 +287,15 @@ class UIView extends Component {
   };
 
   render() {
-    const { dataSource } = this.state;
+    const { nameField } = styles;
+    const {
+      dataSource,
+      limitSites,
+      websiteName,
+      includeSusiSkills,
+      myDevices,
+      publicDevices,
+    } = this.state;
     const components = {
       body: {
         row: EditableFormRow,
@@ -340,32 +319,37 @@ class UIView extends Component {
     return (
       <div>
         <div className="table-wrap">
-          <Checkbox
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={limitSites}
+                onChange={this.handleChangeLimitSites}
+                color="primary"
+              />
+            }
             label="Allow bot only on own site"
-            labelPosition="right"
-            checked={this.state.limitSites}
-            labelStyle={{ fontSize: '16px' }}
-            iconStyle={{ fill: 'rgb(66, 133, 244)' }}
-            onCheck={this.handleChangeLimitSites}
           />
           <div style={{ fontSize: '14px', padding: '0px 0px 2px 40px' }}>
             Allow the chatbot to run only on specified websites.
           </div>
-          {this.state.limitSites ? (
+          {limitSites ? (
             <div style={{ padding: '20px 0px' }}>
               <TextField
                 name="Website Name"
-                value={this.state.websiteName}
+                value={websiteName}
                 onChange={this.handleChangeWebsiteName}
-                style={styles.nameField}
-                inputStyle={styles.inputStyle}
+                style={nameField}
                 placeholder="Domain Name"
-                underlineStyle={{ display: 'none' }}
+                variant="outlined"
               />
               <Button
                 onClick={this.handleAdd}
                 type="primary"
-                style={{ marginBottom: 16, marginLeft: '15px', height: '36px' }}
+                style={{
+                  marginTop: '10px',
+                  marginLeft: '15px',
+                  height: '36px',
+                }}
               >
                 Add a website
               </Button>
@@ -382,37 +366,43 @@ class UIView extends Component {
           ) : null}
         </div>
         <div style={{ padding: '0px 0px 20px 0px' }}>
-          <Checkbox
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={includeSusiSkills}
+                onChange={this.handleChangeIncludeSusiSkills}
+                color="primary"
+              />
+            }
             label="Include SUSI default skills"
-            labelPosition="right"
-            checked={this.state.includeSusiSkills}
-            labelStyle={{ fontSize: '16px' }}
-            iconStyle={{ fill: 'rgb(66, 133, 244)' }}
-            onCheck={this.handleChangeIncludeSusiSkills}
           />
           <div style={{ fontSize: '14px', padding: '0px 0px 2px 40px' }}>
             Allow the users to use all skills of SUSI.AI on your chatbot.
             Don&apos;t worry, your bot skill will always have a higher priority
             than SUSI skills.
           </div>
-          <Checkbox
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={myDevices}
+                onChange={this.handleChangeIncludeInMyDevices}
+                color="primary"
+              />
+            }
             label="(Coming Soon) Enable bot in my devices"
-            labelPosition="right"
-            checked={this.state.myDevices}
-            labelStyle={{ fontSize: '16px' }}
-            iconStyle={{ fill: 'rgb(66, 133, 244)' }}
-            onCheck={this.handleChangeIncludeInMyDevices}
           />
           <div style={{ fontSize: '14px', padding: '0px 0px 2px 40px' }}>
             Allow the chatbot to run on your devices.
           </div>
-          <Checkbox
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={publicDevices}
+                onChange={this.handleChangeIncludeInPublicDevices}
+                color="primary"
+              />
+            }
             label="(Coming Soon) Enable bot for other users"
-            labelPosition="right"
-            checked={this.state.publicDevices}
-            labelStyle={{ fontSize: '16px' }}
-            iconStyle={{ fill: 'rgb(66, 133, 244)' }}
-            onCheck={this.handleChangeIncludeInPublicDevices}
           />
           <div style={{ fontSize: '14px', padding: '0px 0px 2px 40px' }}>
             List the chatbot publicly. Users won&apos;t be able to see/edit the
@@ -424,42 +414,24 @@ class UIView extends Component {
   }
 }
 
-const styles = {
-  helpIcon: {
-    position: 'absolute',
-    top: '18px',
-    right: '10px',
-    height: '20px',
-    width: '20px',
-    cursor: 'pointer',
-    color: 'rgb(158, 158, 158)',
-  },
-  nameField: {
-    height: '38px',
-    borderRadius: 4,
-    border: '1px solid #ced4da',
-    fontSize: 15,
-    padding: '0px 10px',
-    width: '272px',
-  },
-  inputStyle: {
-    height: '35px',
-    marginBottom: '10px',
-  },
+UIView.propTypes = {
+  actions: PropTypes.object,
+  configCode: PropTypes.string,
 };
 
-UIView.propTypes = {
-  configure: PropTypes.object,
-  actions: PropTypes.object,
-};
+function mapStateToProps(store) {
+  return {
+    configCode: store.create.configCode,
+  };
+}
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(uiActions, dispatch),
+    actions: bindActionCreators({ ...createActions, ...uiActions }, dispatch),
   };
 }
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps,
 )(UIView);

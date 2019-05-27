@@ -215,22 +215,36 @@ export function deleteSkill(payload) {
   });
 }
 
-export function saveSkill(payload) {
+export function updateSkill(payload, urlParam) {
+  const url = `${API_URL}/${CMS_API_PREFIX}/${urlParam}`;
+  return ajax.post(url, payload, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+    isTokenRequired: false,
+  });
+}
+
+export function createSkill(payload) {
   const url = `${API_URL}/${CMS_API_PREFIX}/createSkill.json`;
-  return ajax.post(url, payload);
+  return ajax.post(url, payload, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+    isTokenRequired: false,
+  });
 }
 
 export function modifySkill(payload) {
   const url = `${API_URL}/${CMS_API_PREFIX}/modifySkill.json`;
-  return ajax.post(url, payload);
+  return ajax.post(url, payload, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+    isTokenRequired: false,
+  });
 }
 
-export function fetchAllLanguageOptions(payload) {
+export function fetchAllLanguageOptions() {
   const url = `${API_URL}/${CMS_API_PREFIX}/getAllLanguages.json`;
   return ajax.get(url, {});
 }
 
-export function fetchAllGroupOptions(payload) {
+export function fetchAllGroupOptions() {
   const url = `${API_URL}/${CMS_API_PREFIX}/getGroups.json`;
   return ajax.get(url, {});
 }
@@ -248,26 +262,24 @@ export function fetchSkillByCommitId(payload) {
 }
 
 export function fetchSkillCode(payload) {
-  const { model, group, language, skill } = payload;
   const url = `${API_URL}/${CMS_API_PREFIX}/getSkill.json`;
-  return ajax.get(url, {
-    model,
-    group,
-    language,
-    skill,
-  });
+  return ajax.get(url, payload);
 }
 
 export function fetchAuthorUrl(payload) {
-  const { emailId } = payload;
+  const { email } = payload;
   const url = `${GITHUB_API}/search/users`;
-  return ajax.get(url, {
-    q: emailId,
-  });
+  return ajax.get(
+    url,
+    {
+      q: email,
+    },
+    { isTokenRequired: false },
+  );
 }
 
-export function fetchConverstionResponse(payload) {
-  const { query: q, instant } = payload;
+export function fetchConversationResponse(payload) {
+  const { q, instant } = payload;
   const url = `${API_URL}/${SUSI_API_PREFIX}/chat.json`;
   return ajax.get(url, {
     q,
@@ -275,9 +287,14 @@ export function fetchConverstionResponse(payload) {
   });
 }
 
+export function listUserSettings() {
+  const url = `${API_URL}/${AUTH_API_PREFIX}/listUserSettings.json`;
+  return ajax.get(url, {});
+}
+
 // Botbuilder API
 
-export function fetchChatBots(payload) {
+export function fetchChatBots() {
   const url = `${API_URL}/${CMS_API_PREFIX}/getSkillList.json`;
   return ajax.get(url, {
     private: 1,
@@ -285,12 +302,13 @@ export function fetchChatBots(payload) {
 }
 
 export function fetchBotImages(payload) {
-  const { skill, group, language } = payload;
-  const url = `${API_URL}/${CMS_API_PREFIX}/getSkillList.json`;
+  const { name: skill, language, group } = payload;
+  const url = `${API_URL}/${CMS_API_PREFIX}/getSkill.json`;
   return ajax.get(url, {
-    skill,
     group,
     language,
+    skill,
+    private: 1,
   });
 }
 
@@ -303,6 +321,17 @@ export function fetchBotDetails(payload) {
     language,
     skill,
     private: 1,
+  });
+}
+
+export function deleteChatBot(payload) {
+  const { group, language, skill } = payload;
+  const url = `${API_URL}/${CMS_API_PREFIX}/deleteSkill.json`;
+  return ajax.get(url, {
+    private: 1,
+    group,
+    language,
+    skill,
   });
 }
 
@@ -325,7 +354,10 @@ export function storeDraft(payload) {
 
 export function uploadBotImage(payload) {
   const url = `${API_URL}/${CMS_API_PREFIX}/uploadImage.json`;
-  return ajax.post(url, payload);
+  return ajax.post(url, payload, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+    isTokenRequired: false,
+  });
 }
 export function fetchUserRatings(payload) {
   const url = `${API_URL}/${CMS_API_PREFIX}/getProfileDetails.json`;
@@ -358,6 +390,17 @@ export function getSusiPreviewReply(message) {
 export function fetchCommitHistory(payload) {
   const url = `${API_URL}/${CMS_API_PREFIX}/getSkillHistory.json`;
   return ajax.get(url, { ...payload });
+}
+
+export function deleteBot(payload) {
+  const { name: skill, language, group } = payload;
+  const url = `${API_URL}/${CMS_API_PREFIX}/deleteSkill.json`;
+  return ajax.get(url, {
+    private: 1,
+    group,
+    language,
+    skill,
+  });
 }
 
 // Admin components

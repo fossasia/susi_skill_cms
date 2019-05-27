@@ -7,29 +7,36 @@ import { Link } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import skillActions from '../../redux/actions/skills';
-import SelectField from 'material-ui/SelectField';
-import Checkbox from 'material-ui/Checkbox';
-import IconMenu from 'material-ui/IconMenu';
-import Menu from 'material-ui/Menu';
-import MenuItem from 'material-ui/MenuItem';
-import Subheader from 'material-ui/Subheader';
-import Divider from 'material-ui/Divider';
-import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
-import RaisedButton from 'material-ui/RaisedButton';
-import Add from 'material-ui/svg-icons/content/add';
-import Person from 'material-ui/svg-icons/social/person';
-import ActionViewModule from 'material-ui/svg-icons/action/view-module';
-import ActionViewStream from 'material-ui/svg-icons/action/view-stream';
-import ChevronRight from 'material-ui/svg-icons/navigation/chevron-right';
-import FloatingActionButton from 'material-ui/FloatingActionButton';
-import NavigationArrowBack from 'material-ui/svg-icons/navigation/arrow-back';
-import NavigationArrowForward from 'material-ui/svg-icons/navigation/arrow-forward';
-import NavigationArrowUpward from 'material-ui/svg-icons/navigation/arrow-upward';
-import NavigationArrowDownward from 'material-ui/svg-icons/navigation/arrow-downward';
-import IconButton from 'material-ui/IconButton';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import Select from '@material-ui/core/Select';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import Menu from '@material-ui/core/Menu';
+import Paper from '@material-ui/core/Paper';
+import MenuList from '@material-ui/core/MenuList';
+import MenuItem from '@material-ui/core/MenuItem';
+import ListSubheader from '@material-ui/core/ListSubheader';
+import Divider from '@material-ui/core/Divider';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import Button from '@material-ui/core/Button';
+import Add from '@material-ui/icons/Add';
+import Person from '@material-ui/icons/Person';
+import ActionViewModule from '@material-ui/icons/ViewModule';
+import ActionViewStream from '@material-ui/icons/ViewStream';
+import ChevronRight from '@material-ui/icons/ChevronRight';
+import Fab from '@material-ui/core/Fab';
+import NavigationArrowBack from '@material-ui/icons/ArrowBack';
+import NavigationArrowForward from '@material-ui/icons/ArrowForward';
+import NavigationArrowUpward from '@material-ui/icons/ArrowUpward';
+import NavigationArrowDownward from '@material-ui/icons/ArrowDownward';
+import IconButton from '@material-ui/core/IconButton';
 import SearchBar from 'material-ui-search-bar';
 import { scrollAnimation } from '../../utils';
-import CircularProgress from 'material-ui/CircularProgress';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import SkillCardList from '../SkillCardList/SkillCardList';
 import SkillCardGrid from '../SkillCardGrid/SkillCardGrid';
@@ -37,6 +44,7 @@ import SkillCardScrollList from '../SkillCardScrollList/SkillCardScrollList';
 import SkillRating from '../SkillRating/SkillRating.js';
 import { colors } from '../../utils';
 import Footer from '../Footer/Footer.react';
+import isMobileView from '../../utils/isMobileView';
 import './custom.css';
 
 class BrowseSkill extends React.Component {
@@ -68,6 +76,7 @@ class BrowseSkill extends React.Component {
     super(props);
     this.state = {
       innerWidth: window.innerWidth,
+      anchorEl: null,
     };
     this.groups = [];
   }
@@ -110,31 +119,34 @@ class BrowseSkill extends React.Component {
   // FilterChange
   handleFilterChange = (event, index, value) => {
     this.props.actions
-      .setFilterType({ filterType: value })
+      .setFilterType({ filterType: event.target.value })
       .then(() => this.loadCards());
+    console.log(this.props.filterType);
   };
 
   handleLanguageChange = (event, index, values) => {
-    localStorage.setItem('languages', values);
-    this.props.actions.setLanguageFilter({ languageValue: values }).then(() => {
-      if (
-        this.props.routeType ||
-        ['category', 'language'].includes(window.location.href.split('/')[3])
-      ) {
-        this.loadCards();
-      } else {
-        this.loadMetricsSkills();
-      }
-    });
+    localStorage.setItem('languages', event.target.value);
+    this.props.actions
+      .setLanguageFilter({ languageValue: event.target.value })
+      .then(() => {
+        if (
+          this.props.routeType ||
+          ['category', 'language'].includes(window.location.href.split('/')[3])
+        ) {
+          this.loadCards();
+        } else {
+          this.loadMetricsSkills();
+        }
+      });
   };
 
   handleEntriesPerPageChange = (event, index, values) => {
-    this.props.actions.setSkillsPerPage({ entriesPerPage: values });
+    this.props.actions.setSkillsPerPage({ entriesPerPage: event.target.value });
   };
 
   handlePageChange = (event, index, value) => {
-    if (value !== undefined) {
-      this.props.actions.setSkillsPageNumber({ listPage: value });
+    if (event.target.value !== undefined) {
+      this.props.actions.setSkillsPageNumber({ listPage: event.target.value });
     }
   };
 
@@ -190,7 +202,7 @@ class BrowseSkill extends React.Component {
     this.props.actions
       .getLanguageOptions({ groupValue: value })
       .catch(error => {
-        throw new Error('load languages action failed');
+        console.log(error);
       });
   };
 
@@ -257,15 +269,13 @@ class BrowseSkill extends React.Component {
     return this.props.languages.map(name => (
       <MenuItem
         key={name}
-        insetChildren={true}
         checked={values && values.indexOf(name) > -1}
         value={name}
-        primaryText={
-          ISO6391.getNativeName(name)
-            ? ISO6391.getNativeName(name)
-            : 'Universal'
-        }
-      />
+      >
+        {ISO6391.getNativeName(name)
+          ? ISO6391.getNativeName(name)
+          : 'Universal'}
+      </MenuItem>
     ));
   };
 
@@ -276,12 +286,9 @@ class BrowseSkill extends React.Component {
       menuItems.push(i);
     }
     return menuItems.map(menuItem => (
-      <MenuItem
-        key={menuItem}
-        value={menuItem}
-        primaryText={menuItem.toString()}
-        label={menuItem.toString()}
-      />
+      <MenuItem key={menuItem} value={menuItem}>
+        {menuItem.toString()}
+      </MenuItem>
     ));
   };
 
@@ -291,6 +298,18 @@ class BrowseSkill extends React.Component {
     this.props.actions
       .setOrderByFilter({ orderBy: value })
       .then(() => this.loadCards());
+  };
+
+  handleMenuClick = event => {
+    this.setState({
+      anchorEl: event.currentTarget,
+    });
+  };
+
+  handleMenuClose = () => {
+    this.setState({
+      anchorEl: null,
+    });
   };
 
   render() {
@@ -311,14 +330,20 @@ class BrowseSkill extends React.Component {
     } = this.props;
     const { routeType, routeValue } = this.props;
 
+    let isMobile = isMobileView();
+
     let sidebarStyle = styles.sidebar;
     let topBarStyle = styles.topBar;
+    sidebarStyle = isMobile
+      ? { ...sidebarStyle, display: 'none' }
+      : { ...sidebarStyle, display: 'block' };
+    topBarStyle = isMobile
+      ? { ...topBarStyle, flexDirection: 'column' }
+      : { ...topBarStyle, flexDirection: 'row' };
     let backToHome = null;
     let renderMenu = null;
     let renderMobileMenu = null;
-    if (window.innerWidth < 430) {
-      sidebarStyle.display = 'none';
-      topBarStyle.flexDirection = 'column';
+    if (isMobile) {
       backToHome = (
         <MenuItem
           value="Back to SUSI Skills"
@@ -331,30 +356,32 @@ class BrowseSkill extends React.Component {
       renderMobileMenu = this.props.groups.map(categoryName => {
         const linkValue = '/category/' + categoryName;
         return (
-          <MenuItem
-            value={categoryName}
-            key={categoryName}
-            primaryText={categoryName}
-            containerElement={<Link to={linkValue} />}
-            style={styles.mobileMenuItem}
-            rightIcon={<ChevronRight style={{ top: -8 }} />}
-          />
+          <Link to={linkValue} key={linkValue}>
+            <MenuItem
+              key={categoryName}
+              value={categoryName}
+              style={styles.mobileMenuItem}
+            >
+              <span style={{ width: '90%' }}>{categoryName}</span>
+              <ChevronRight style={{ top: -8 }} />
+            </MenuItem>
+          </Link>
         );
       });
     }
-    if (innerWidth >= 430) {
-      sidebarStyle.display = 'block';
-      topBarStyle.flexDirection = 'row';
+    if (!isMobile) {
       renderMenu = this.props.groups.map(categoryName => {
         const linkValue = '/category/' + categoryName;
         return (
-          <MenuItem
-            value={categoryName}
-            key={categoryName}
-            primaryText={categoryName}
-            containerElement={<Link to={linkValue} />}
-            style={styles.categorySidebarMenuItem}
-          />
+          <Link to={linkValue} key={linkValue}>
+            <MenuItem
+              key={categoryName}
+              value={categoryName}
+              style={styles.categorySidebarMenuItem}
+            >
+              {categoryName}
+            </MenuItem>
+          </Link>
         );
       });
     }
@@ -453,6 +480,9 @@ class BrowseSkill extends React.Component {
         <NavigationArrowDownward />
       );
 
+    const { anchorEl } = this.state;
+    const open = Boolean(anchorEl);
+
     return (
       <div style={styles.browseSkillRoot}>
         <StaticAppBar
@@ -461,210 +491,219 @@ class BrowseSkill extends React.Component {
           toggleDrawer={this.handleDrawerToggle}
         />
         <div style={styles.main}>
-          <div style={styles.sidebar}>
+          <div style={sidebarStyle}>
             <div style={styles.newSkillBtn}>
-              <IconMenu
-                style={{ width: '60%' }}
-                animated={false}
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'middle',
-                }}
-                iconButtonElement={
-                  <RaisedButton
-                    className="create-button"
-                    style={{ width: '100%', height: 48 }}
-                    buttonStyle={{
-                      height: '48px',
+              <Button
+                aria-owns={open ? 'render-props-menu' : undefined}
+                aria-haspopup="true"
+                onClick={this.handleMenuClick}
+                variant="contained"
+                color="primary"
+                style={styles.newSkillBtn}
+              >
+                <Add /> Create
+              </Button>
+              <Menu
+                anchorEl={anchorEl}
+                open={open}
+                onClose={this.handleMenuClose}
+                getContentAnchorEl={null}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+              >
+                <MenuList disableListWrap={true}>
+                  <Link to="/skillCreator">
+                    <MenuItem onClick={this.handleMenuClose}>
+                      <ListItemIcon>
+                        <Add />
+                      </ListItemIcon>
+                      <ListItemText inset primary="Create a Skill" />
+                    </MenuItem>
+                  </Link>
+                  <Link to="/botbuilder">
+                    <MenuItem onClick={this.handleMenuClose}>
+                      <ListItemIcon>
+                        <Person />
+                      </ListItemIcon>
+                      <ListItemText inset primary="Create Skill bot" />
+                    </MenuItem>
+                  </Link>
+                </MenuList>
+              </Menu>
+            </div>
+            <Paper style={{ boxShadow: 'none' }}>
+              <MenuList>
+                {timeFilter ? (
+                  <div className="category-sidebar-section">
+                    <div
+                      className="index-link-sidebar"
+                      onClick={() => this.handleArrivalTimeChange(null)}
+                    >
+                      {'< Any release'}
+                    </div>
+                    <div style={styles.selectedFilterStyle}>
+                      {`Last ${timeFilter} Days`}
+                    </div>
+                  </div>
+                ) : (
+                  <ListSubheader style={styles.sidebarSubheader}>
+                    New Arrivals
+                  </ListSubheader>
+                )}
+                {!timeFilter && (
+                  <MenuItem
+                    value="creation_date&duration=7"
+                    onClick={() => this.handleArrivalTimeChange(7)}
+                    style={styles.sidebarMenuItem}
+                  >
+                    Last 7 Days
+                  </MenuItem>
+                )}
+                {!timeFilter && (
+                  <MenuItem
+                    value="creation_date&duration=30"
+                    onClick={() => this.handleArrivalTimeChange(30)}
+                    style={styles.sidebarMenuItem}
+                  >
+                    Last 30 Days
+                  </MenuItem>
+                )}
+                {!timeFilter && (
+                  <MenuItem
+                    value="creation_date&duration=90"
+                    onClick={() => this.handleArrivalTimeChange(90)}
+                    style={styles.sidebarMenuItem}
+                  >
+                    Last 90 Days
+                  </MenuItem>
+                )}
+                <Divider style={{ marginLeft: '16px', marginRight: '16px' }} />
+
+                {routeType === 'category' ? (
+                  <div className="category-sidebar-section">
+                    <Link to="/">
+                      <div
+                        onClick={() =>
+                          this.props.actions.setCategoryFilter({
+                            groupValue: 'All',
+                          })
+                        }
+                        className="index-link-sidebar"
+                      >
+                        {'< SUSI Skills'}
+                      </div>
+                    </Link>
+                    <div style={styles.selectedFilterStyle}>{routeValue}</div>
+                  </div>
+                ) : (
+                  <div>
+                    <ListSubheader style={styles.sidebarSubheader}>
+                      SUSI Skills
+                    </ListSubheader>
+                    {renderMenu}
+                  </div>
+                )}
+
+                <Divider style={{ marginLeft: '16px', marginRight: '16px' }} />
+                {/* Refine by rating section*/}
+                <ListSubheader style={styles.sidebarSubheader}>
+                  Refine by
+                </ListSubheader>
+                {metricsHidden && (
+                  <div
+                    style={{
+                      marginBottom: '12px',
                       width: '100%',
                       display: 'flex',
                       justifyContent: 'center',
+                      flexDirection: 'column',
                     }}
-                    label="Create"
-                    icon={<Add />}
-                    backgroundColor="#4285f4"
-                    labelStyle={{ color: '#fff' }}
-                  />
-                }
-              >
-                <Link to="/skillCreator">
-                  <MenuItem leftIcon={<Add />} primaryText="Create a Skill" />
-                </Link>
-                <Link to="/botbuilder">
-                  <MenuItem
-                    leftIcon={<Person />}
-                    primaryText="Create Skill bot"
-                  />
-                </Link>
-              </IconMenu>
-            </div>
-            <Menu desktop={true} disableAutoFocus={true}>
-              {timeFilter ? (
-                <div className="category-sidebar-section">
-                  <div
-                    className="index-link-sidebar"
-                    onClick={() => this.handleArrivalTimeChange(null)}
                   >
-                    {'< Any release'}
-                  </div>
-                  <div style={styles.selectedFilterStyle}>
-                    {`Last ${timeFilter} Days`}
-                  </div>
-                </div>
-              ) : (
-                <Subheader style={styles.sidebarSubheader}>
-                  New Arrivals
-                </Subheader>
-              )}
-              {!timeFilter && (
-                <MenuItem
-                  value="creation_date&duration=7"
-                  key="Last 7 Days"
-                  primaryText="Last 7 Days"
-                  onClick={() => this.handleArrivalTimeChange(7)}
-                  style={styles.sidebarMenuItem}
-                />
-              )}
-              {!timeFilter && (
-                <MenuItem
-                  value="creation_date&duration=30"
-                  key="Last 30 Days"
-                  primaryText="Last 30 Days"
-                  onClick={() => this.handleArrivalTimeChange(30)}
-                  style={styles.sidebarMenuItem}
-                />
-              )}
-              {!timeFilter && (
-                <MenuItem
-                  value="creation_date&duration=90"
-                  key="Last 90 Days"
-                  primaryText="Last 90 Days"
-                  onClick={() => this.handleArrivalTimeChange(90)}
-                  style={styles.sidebarMenuItem}
-                />
-              )}
-              <Divider style={{ marginLeft: '16px', marginRight: '16px' }} />
-
-              {routeType === 'category' ? (
-                <div className="category-sidebar-section">
-                  <Link to="/">
-                    <div
-                      onClick={() =>
-                        this.props.actions.setCategoryFilter({
-                          groupValue: 'All',
-                        })
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          className="select"
+                          checked={staffPicks}
+                          onChange={event => {
+                            this.props.actions
+                              .setStaffpickFilter({
+                                staffPicks: event.target.checked,
+                              })
+                              .then(() => this.loadCards());
+                          }}
+                        />
                       }
-                      className="index-link-sidebar"
-                    >
-                      {'< SUSI Skills'}
-                    </div>
-                  </Link>
-                  <div style={styles.selectedFilterStyle}>{routeValue}</div>
-                </div>
-              ) : (
-                <div>
-                  <Subheader style={styles.sidebarSubheader}>
-                    SUSI Skills
-                  </Subheader>
-                  {renderMenu}
-                </div>
-              )}
+                      label="Staff Picks"
+                      labelPosition="end"
+                      style={styles.checkboxStyle}
+                    />
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          className="select"
+                          checked={reviewed}
+                          onChange={event => {
+                            this.props.actions
+                              .setReviewedFilter({
+                                reviewed: event.target.checked,
+                              })
+                              .then(() => this.loadCards());
+                          }}
+                        />
+                      }
+                      label="Show Only Reviewed Skills"
+                      labelPosition="end"
+                      style={styles.checkboxStyle}
+                    />
+                  </div>
+                )}
 
-              <Divider style={{ marginLeft: '16px', marginRight: '16px' }} />
-              {/* Refine by rating section*/}
-              <Subheader style={styles.sidebarSubheader}>Refine by</Subheader>
-
-              {metricsHidden && (
-                <div
+                <h4
                   style={{
-                    marginBottom: '12px',
-                    width: '100%',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    flexDirection: 'column',
+                    marginLeft: '24px',
+                    marginBottom: '4px',
+                    fontSize: 14,
                   }}
                 >
-                  <Checkbox
-                    label="Staff Picks"
-                    labelPosition="right"
-                    className="select"
-                    checked={staffPicks}
-                    labelStyle={{ fontSize: '14px' }}
-                    iconStyle={{ left: '4px' }}
-                    style={styles.checkboxStyle}
-                    name="showStaffPicks"
-                    onCheck={event => {
-                      this.props.actions
-                        .setStaffpickFilter({
-                          staffPicks: event.target.checked,
-                        })
-                        .then(() => this.loadCards());
-                    }}
+                  Avg. Customer Review
+                </h4>
+                {ratingRefine ? (
+                  <div
+                    className="clear-button"
+                    style={styles.clearButton}
+                    onClick={() => this.handleRatingRefine(null)}
+                  >
+                    {'< Clear'}
+                  </div>
+                ) : (
+                  ''
+                )}
+                <div style={styles.starRefine}>
+                  <SkillRating
+                    handleRatingRefine={this.handleRatingRefine}
+                    rating={4}
+                    ratingRefine={ratingRefine}
                   />
-                  <Checkbox
-                    label="Show Only Reviewed Skills"
-                    labelPosition="right"
-                    className="select"
-                    checked={reviewed}
-                    labelStyle={{ fontSize: '14px' }}
-                    iconStyle={{ left: '4px' }}
-                    style={styles.checkboxStyle}
-                    name="showReviewedSkills"
-                    onCheck={event => {
-                      this.props.actions
-                        .setReviewedFilter({ reviewed: event.target.checked })
-                        .then(() => this.loadCards());
-                    }}
+                  <SkillRating
+                    handleRatingRefine={this.handleRatingRefine}
+                    rating={3}
+                    ratingRefine={ratingRefine}
+                  />
+                  <SkillRating
+                    handleRatingRefine={this.handleRatingRefine}
+                    rating={2}
+                    ratingRefine={ratingRefine}
+                  />
+                  <SkillRating
+                    handleRatingRefine={this.handleRatingRefine}
+                    rating={1}
+                    ratingRefine={ratingRefine}
                   />
                 </div>
-              )}
-
-              <h4
-                style={{
-                  marginLeft: '24px',
-                  marginBottom: '4px',
-                  fontSize: 14,
-                }}
-              >
-                Avg. Customer Review
-              </h4>
-              {ratingRefine ? (
-                <div
-                  className="clear-button"
-                  style={styles.clearButton}
-                  onClick={() => this.handleRatingRefine(null)}
-                >
-                  {'< Clear'}
-                </div>
-              ) : (
-                ''
-              )}
-              <div style={styles.starRefine}>
-                <SkillRating
-                  handleRatingRefine={this.handleRatingRefine}
-                  rating={4}
-                  ratingRefine={ratingRefine}
-                />
-                <SkillRating
-                  handleRatingRefine={this.handleRatingRefine}
-                  rating={3}
-                  ratingRefine={ratingRefine}
-                />
-                <SkillRating
-                  handleRatingRefine={this.handleRatingRefine}
-                  rating={2}
-                  ratingRefine={ratingRefine}
-                />
-                <SkillRating
-                  handleRatingRefine={this.handleRatingRefine}
-                  rating={1}
-                  ratingRefine={ratingRefine}
-                />
-              </div>
-            </Menu>
+              </MenuList>
+            </Paper>
           </div>
           <div style={styles.home}>
-            <div style={styles.topBar} className="top-bar">
+            <div style={topBarStyle} className="top-bar">
               <div style={styles.searchBar} className="search-bar">
                 <SearchBar
                   onChange={_.debounce(this.handleSearch, 500)}
@@ -679,101 +718,54 @@ class BrowseSkill extends React.Component {
                 <div style={styles.sortBy}>
                   {this.props.filterType !== '' && (
                     <IconButton
-                      iconStyle={{ fill: '#4285F4' }}
+                      color="primary"
                       onClick={this.handleOrderByChange}
-                      tooltip={this.props.orderBy}
                     >
                       {renderOrderBy}
                     </IconButton>
                   )}
-                  <SelectField
-                    floatingLabelText="Sort by"
-                    value={this.props.filterType}
-                    floatingLabelFixed={false}
-                    onChange={this.handleFilterChange}
-                    style={styles.selection}
-                    className="select"
-                    // autoWidth
-                    listStyle={{
-                      top: '100px',
-                    }}
-                    selectedMenuItemStyle={{
-                      color: colors.header,
-                    }}
-                    underlineFocusStyle={{
-                      color: colors.header,
-                    }}
-                  >
-                    <MenuItem
-                      value={'lexicographical'}
-                      key={'lexicographical'}
-                      primaryText={'A-Z'}
-                      label={'Name (A-Z)'}
-                    />
-                    <MenuItem
-                      value={'rating'}
-                      key={'rating'}
-                      primaryText={'Top Rated'}
-                      label={'Top Rated'}
-                    />
-                    <MenuItem
-                      value={'creation_date'}
-                      key={'creation_date'}
-                      primaryText={'Newly created'}
-                      label={'Newly Created'}
-                    />
-                    <MenuItem
-                      value={'modified_date'}
-                      key={'modified_date'}
-                      primaryText={'Recently updated'}
-                      label={'Recently updated'}
-                    />
-                    <MenuItem
-                      value={'feedback'}
-                      key={'feedback'}
-                      primaryText={'Feedback Count'}
-                      label={'Feedback Count'}
-                    />
-                    <MenuItem
-                      value={'usage&duration=7'}
-                      key={'usage&duration=7'}
-                      primaryText={'This Week Usage'}
-                      label={'This Week Usage'}
-                    />
-                    <MenuItem
-                      value={'usage&duration=30'}
-                      key={'usage&duration=30'}
-                      primaryText={'This Month Usage'}
-                      label={'This Month Usage'}
-                    />
-                  </SelectField>
+                  <FormControl style={styles.selection} className="select">
+                    <InputLabel>Sort By</InputLabel>
+                    <Select
+                      value={this.props.filterType}
+                      onChange={this.handleFilterChange}
+                    >
+                      <MenuItem value={'lexicographical'}>Name (A-Z)</MenuItem>
+                      <MenuItem value={'rating'}>Top Rated</MenuItem>
+                      <MenuItem value={'creation_date'}>Newly Created</MenuItem>
+                      <MenuItem value={'modified_date'}>
+                        Recently updated
+                      </MenuItem>
+                      <MenuItem value={'feedback'}>Feedback Count</MenuItem>
+                      <MenuItem value={'usage&duration=7'}>
+                        This Week Usage
+                      </MenuItem>
+                      <MenuItem value={'usage&duration=30'}>
+                        This Month Usage
+                      </MenuItem>
+                    </Select>
+                  </FormControl>
                 </div>
               )}
-              <SelectField
-                autoWidth
-                floatingLabelText="Languages"
-                floatingLabelFixed={false}
-                style={styles.selection}
-                listStyle={{
-                  top: '100px',
-                }}
-                selectedMenuItemStyle={{
-                  color: colors.header,
-                }}
-                underlineFocusStyle={{
-                  color: colors.header,
-                }}
-                multiple={true}
-                hintText="Languages"
-                value={languageValue}
-                onChange={this.handleLanguageChange}
+              <FormControl
+                style={{ ...styles.selection, marginTop: '10px' }}
+                className="select"
               >
-                {this.languageMenuItems(languageValue)}
-              </SelectField>
+                <InputLabel>Languages</InputLabel>
+                <Select
+                  value={[...languageValue]}
+                  onChange={this.handleLanguageChange}
+                  multiple={true}
+                >
+                  {this.languageMenuItems(languageValue)}
+                </Select>
+              </FormControl>
               {metricsHidden && (
-                <RadioButtonGroup
-                  name="view_type"
-                  defaultSelected="list"
+                <RadioGroup
+                  name="gender1"
+                  defaultValue="list"
+                  value={viewType}
+                  onChange={this.handleViewChange}
                   style={
                     innerWidth < 430
                       ? {
@@ -782,43 +774,33 @@ class BrowseSkill extends React.Component {
                           top: 216,
                           display: 'flex',
                         }
-                      : { display: 'flex', marginTop: 34 }
+                      : { display: 'flex', marginTop: 34, flexDirection: 'row' }
                   }
-                  valueSelected={viewType}
-                  onChange={this.handleViewChange}
                 >
-                  <RadioButton
+                  <Radio
                     value="list"
-                    label="List view"
-                    labelStyle={{ display: 'none' }}
-                    style={{ width: 'fit-content' }}
+                    style={{ width: 'fit-content', padding: '0px' }}
                     checkedIcon={
                       <ActionViewStream style={{ fill: '#4285f4' }} />
                     }
-                    uncheckedIcon={
-                      <ActionViewStream style={{ fill: '#e0e0e0' }} />
-                    }
+                    icon={<ActionViewStream style={{ fill: '#e0e0e0' }} />}
                   />
-                  <RadioButton
+                  <Radio
                     value="grid"
-                    label="Grid view"
-                    labelStyle={{ display: 'none' }}
-                    style={{ width: 'fit-content' }}
+                    style={{ width: 'fit-content', padding: '0px' }}
                     checkedIcon={
                       <ActionViewModule style={{ fill: '#4285f4' }} />
                     }
-                    uncheckedIcon={
-                      <ActionViewModule style={{ fill: '#e0e0e0' }} />
-                    }
+                    icon={<ActionViewModule style={{ fill: '#e0e0e0' }} />}
                   />
-                </RadioButtonGroup>
+                </RadioGroup>
               )}
             </div>
             {this.props.loadingSkills && (
               <div>
                 <h1 style={styles.loader}>
                   <div className="center">
-                    <CircularProgress size={62} color="#4285f5" />
+                    <CircularProgress size={62} color="primary" />
                     <h4>Loading</h4>
                   </div>
                 </h1>
@@ -834,49 +816,31 @@ class BrowseSkill extends React.Component {
                       {renderSkillCount}
                       {skills.length > 10 && (
                         <div id={'pagination'}>
-                          <SelectField
-                            floatingLabelText="Skills per page"
-                            floatingLabelFixed={false}
-                            hintText="Entries per page"
-                            style={{ width: '150px' }}
-                            value={this.props.entriesPerPage}
-                            onChange={this.handleEntriesPerPageChange}
+                          <FormControl
+                            style={{ width: '150px', marginTop: '15px' }}
                           >
-                            <MenuItem
-                              value={10}
-                              key={10}
-                              primaryText={'10'}
-                              label={'10'}
-                            />
-                            <MenuItem
-                              value={20}
-                              key={20}
-                              primaryText={'20'}
-                              label={'20'}
-                            />
-                            <MenuItem
-                              value={50}
-                              key={50}
-                              primaryText={'50'}
-                              label={'50'}
-                            />
-                            <MenuItem
-                              value={100}
-                              key={100}
-                              primaryText={'100'}
-                              label={'100'}
-                            />
-                          </SelectField>
-                          <SelectField
-                            floatingLabelText="Page"
-                            floatingLabelFixed={false}
-                            hintText="Page"
-                            style={{ width: '150px' }}
-                            value={this.props.listPage}
-                            onChange={this.handlePageChange}
+                            <InputLabel>Skills per page</InputLabel>
+                            <Select
+                              value={this.props.entriesPerPage}
+                              onChange={this.handleEntriesPerPageChange}
+                            >
+                              <MenuItem value={10}>10</MenuItem>
+                              <MenuItem value={20}>20</MenuItem>
+                              <MenuItem value={50}>50</MenuItem>
+                              <MenuItem value={100}>100</MenuItem>
+                            </Select>
+                          </FormControl>
+                          <FormControl
+                            style={{ width: '150px', marginTop: '15px' }}
                           >
-                            {this.pageMenuItems()}
-                          </SelectField>
+                            <InputLabel>Page</InputLabel>
+                            <Select
+                              value={this.props.listPage}
+                              onChange={this.handlePageChange}
+                            >
+                              {this.pageMenuItems()}
+                            </Select>
+                          </FormControl>
                         </div>
                       )}
                     </div>
@@ -893,15 +857,15 @@ class BrowseSkill extends React.Component {
                           Page: {listPage} out of{' '}
                           {Math.ceil(skills.length / entriesPerPage)}
                         </div>
-                        <FloatingActionButton
+                        <Fab
                           disabled={listPage === 1}
                           style={{ marginRight: '15px' }}
                           backgroundColor={colors.header}
                           onClick={this.handleNavigationBackward}
                         >
                           <NavigationArrowBack />
-                        </FloatingActionButton>
-                        <FloatingActionButton
+                        </Fab>
+                        <Fab
                           disabled={
                             listPage ===
                             Math.ceil(skills.length / entriesPerPage)
@@ -910,7 +874,7 @@ class BrowseSkill extends React.Component {
                           onClick={this.handleNavigationForward}
                         >
                           <NavigationArrowForward />
-                        </FloatingActionButton>
+                        </Fab>
                       </div>
                     )}
                   </div>

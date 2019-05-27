@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { getSusiPreviewReply } from '../../../api';
-import Send from 'material-ui/svg-icons/content/send';
+import Send from '@material-ui/icons/Send';
 import loadingGIF from '../../../images/loading.gif';
 import './Chatbot.css';
 import './Preview.css';
-const host = window.location.protocol + '//' + window.location.host;
+const host = `${window.location.protocol}//${window.location.host}`;
+const botAvatar = `${host}/customAvatars/0.png`;
 class Preview extends Component {
   constructor() {
     super();
@@ -14,57 +16,7 @@ class Preview extends Component {
       messages: [{ message: 'Hi, I am SUSI', author: 'SUSI', loading: false }],
       message: '',
       previewChat: true,
-      botbuilderBackgroundBody: '#ffffff',
-      botbuilderBodyBackgroundImg: '',
-      botbuilderUserMessageBackground: '#0077e5',
-      botbuilderUserMessageTextColor: '#ffffff',
-      botbuilderBotMessageBackground: '#f8f8f8',
-      botbuilderBotMessageTextColor: '#455a64',
-      botbuilderIconColor: '#000000',
-      botbuilderIconImg: host + '/customAvatars/0.png',
     };
-  }
-
-  componentDidUpdate(prevProps) {
-    if (this.props.designData !== prevProps.designData) {
-      const {
-        botbuilderBackgroundBody,
-        botbuilderBodyBackgroundImg,
-        botbuilderUserMessageBackground,
-        botbuilderUserMessageTextColor,
-        botbuilderBotMessageBackground,
-        botbuilderBotMessageTextColor,
-        botbuilderIconColor,
-        botbuilderIconImg,
-      } = this.props.designData;
-      this.setState({
-        botbuilderBackgroundBody: botbuilderBackgroundBody
-          ? botbuilderBackgroundBody
-          : '#ffffff',
-        botbuilderBodyBackgroundImg: botbuilderBodyBackgroundImg
-          ? this.replaceAll(botbuilderBodyBackgroundImg, ' ', '%20')
-          : '',
-        botbuilderUserMessageBackground: botbuilderUserMessageBackground
-          ? botbuilderUserMessageBackground
-          : '#0077e5',
-        botbuilderUserMessageTextColor: botbuilderUserMessageTextColor
-          ? botbuilderUserMessageTextColor
-          : '#ffffff',
-        botbuilderBotMessageBackground: botbuilderBotMessageBackground
-          ? botbuilderBotMessageBackground
-          : '#f8f8f8',
-        botbuilderBotMessageTextColor: botbuilderBotMessageTextColor
-          ? botbuilderBotMessageTextColor
-          : '#455a64',
-        botbuilderIconColor: botbuilderIconColor
-          ? botbuilderIconColor
-          : '#000000',
-        botbuilderIconImg:
-          botbuilderIconImg.length > 0
-            ? this.replaceAll(botbuilderIconImg, ' ', '%20')
-            : host + '/customAvatars/0.png',
-      });
-    }
   }
 
   togglePreview = () => {
@@ -151,15 +103,24 @@ class Preview extends Component {
   };
 
   render() {
-    console.log(this.state.messages, 'MESSAGES');
+    const {
+      botbuilderBackgroundBody,
+      botbuilderBodyBackgroundImg,
+      botbuilderIconColor,
+      botbuilderUserMessageBackground,
+      botbuilderUserMessageTextColor,
+      botbuilderBotMessageTextColor,
+      botbuilderBotMessageBackground,
+    } = this.props.design;
+    const { botBuilder } = this.props;
     const styles = {
       body: {
-        backgroundColor: this.state.botbuilderBackgroundBody,
-        backgroundImage: `url(${this.state.botbuilderBodyBackgroundImg})`,
+        backgroundColor: botbuilderBackgroundBody,
+        backgroundImage: `url(${botbuilderBodyBackgroundImg})`,
       },
       botIcon: {
-        backgroundColor: this.state.botbuilderIconColor,
-        backgroundImage: `url(${this.state.botbuilderIconImg})`,
+        backgroundColor: botbuilderIconColor,
+        backgroundImage: `url(${botAvatar})`,
       },
     };
     let messages = null;
@@ -176,9 +137,8 @@ class Preview extends Component {
                   dangerouslySetInnerHTML={{
                     __html: [
                       '.susi-comment-body-container.susi-comment-body-container-user:after {',
-                      `border-color: transparent transparent ${
-                        this.state.botbuilderUserMessageBackground
-                      } ${this.state.botbuilderUserMessageBackground}`,
+                      'border-color: transparent transparent',
+                      `${botbuilderUserMessageBackground} ${botbuilderUserMessageBackground}`,
                       '}',
                     ].join('\n'),
                   }}
@@ -186,8 +146,8 @@ class Preview extends Component {
                 <div
                   className="susi-comment-body-container susi-comment-body-container-user"
                   style={{
-                    backgroundColor: this.state.botbuilderUserMessageBackground,
-                    color: this.state.botbuilderUserMessageTextColor,
+                    backgroundColor: botbuilderUserMessageBackground,
+                    color: botbuilderUserMessageTextColor,
                   }}
                 >
                   <div className="susi-comment-body ">
@@ -209,15 +169,15 @@ class Preview extends Component {
             <div
               className="susi-comment-avatar susi-theme-bg"
               style={{
-                backgroundImage: `url(${this.state.botbuilderIconImg})`,
+                backgroundImage: `url(${botAvatar})`,
               }}
             />
             <div className="susi-comment susi-comment-by-susi">
               <div
                 className="susi-comment-body-container susi-comment-body-container-susi"
                 style={{
-                  backgroundColor: this.state.botbuilderBotMessageBackground,
-                  color: this.state.botbuilderBotMessageTextColor,
+                  backgroundColor: botbuilderBotMessageBackground,
+                  color: botbuilderBotMessageTextColor,
                 }}
               >
                 <div className="susi-comment-body ">
@@ -311,7 +271,7 @@ class Preview extends Component {
                   </div>
                 </div>
               </div>
-              {this.props.botBuilder ? (
+              {botBuilder ? (
                 <div
                   id="susi-launcher-close"
                   title="Close"
@@ -321,7 +281,7 @@ class Preview extends Component {
             </div>
           )}
         </div>
-        {this.props.botBuilder ? (
+        {botBuilder ? (
           <div style={{ textAlign: 'right' }}>
             <div
               id="susi-launcher-container"
@@ -349,9 +309,24 @@ class Preview extends Component {
 }
 
 Preview.propTypes = {
-  designData: PropTypes.object,
-  skill: PropTypes.string,
-  configCode: PropTypes.string,
+  design: PropTypes.object,
   botBuilder: PropTypes.bool,
+  botbuilderBackgroundBody: PropTypes.string,
+  botbuilderBodyBackgroundImg: PropTypes.string,
+  botbuilderIconColor: PropTypes.string,
+  botbuilderUserMessageBackground: PropTypes.string,
+  botbuilderUserMessageTextColor: PropTypes.string,
+  botbuilderBotMessageTextColor: PropTypes.string,
+  botbuilderBotMessageBackground: PropTypes.string,
 };
-export default Preview;
+
+function mapStateToProps(store) {
+  return {
+    design: store.create.design,
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  null,
+)(Preview);
