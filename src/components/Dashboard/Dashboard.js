@@ -1,43 +1,40 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Paper } from 'material-ui';
+import _Paper from '@material-ui/core/Paper';
 import MySkills from './MySkills';
 import MyRatings from './MyRatings';
 import MyAnalytics from './MyAnalytics';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
+import styled from 'styled-components';
 import './Dashboard.css';
 
-const styles = {
-  paperStyle: {
-    width: '100%',
-    marginTop: '20px',
-    minWidth: '640px',
-  },
-  subHeadingStyle: {
-    color: 'rgba(0,0,0,.65)',
-    paddingLeft: '20px',
-  },
-  loggedInErrorStyle: {
-    textAlign: 'center',
-    textTransform: 'uppercase',
-    fontWeight: 'bold',
-    marginBottom: '100px',
-    fontSize: '50px',
-    marginTop: '300px',
-  },
-  headingStyle: {
-    color: 'black',
-    marginTop: '10px',
-  },
-};
+const Paper = styled(_Paper)`
+  width: 100%;
+  margin-top: 1.25rem;
+  min-width: 40rem;
+`;
 
-const {
-  paperStyle,
-  subHeadingStyle,
-  loggedInErrorStyle,
-  headingStyle,
-} = styles;
+const Heading = styled.h1`
+  color: black;
+  margin-top: 1.25rem;
+  width: 100%;
+  min-width: 40rem;
+`;
+
+const SubHeading = styled.h1`
+  color: rgba(0, 0, 0, 0.65);
+  padding-left: 1.25rem;
+`;
+
+const StyledErrorParagraph = styled.p`
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: bold;
+  margin-bottom: 6.25rem;
+  font-size: 3.125rem;
+  margin-top: 18.75rem;
+`;
 
 const Dashboard = props => {
   const { accessToken } = props;
@@ -47,7 +44,9 @@ const Dashboard = props => {
       <div>
         <StaticAppBar {...props} />
         <div>
-          <p style={loggedInErrorStyle}>Please login to view dashboard.</p>
+          <StyledErrorParagraph>
+            Please login to view dashboard.
+          </StyledErrorParagraph>
         </div>
       </div>
     );
@@ -58,20 +57,18 @@ const Dashboard = props => {
       <div className="botbuilder-page-wrapper">
         <br />
         <br />
-        <h1 className="center" style={{ ...headingStyle, ...paperStyle }}>
-          My Dashboard
-        </h1>
+        <Heading className="center">My Dashboard</Heading>
         <br />
-        <Paper style={paperStyle} className="botBuilder-page-card" zDepth={1}>
-          <h1 style={subHeadingStyle}>My Skills</h1>
+        <Paper className="botBuilder-page-card" zDepth={1}>
+          <SubHeading>My Skills</SubHeading>
           <MySkills />
         </Paper>
-        <Paper style={paperStyle} className="botBuilder-page-card" zDepth={1}>
-          <h1 style={subHeadingStyle}>My Ratings</h1>
+        <Paper className="botBuilder-page-card" zDepth={1}>
+          <SubHeading>My Ratings</SubHeading>
           <MyRatings />
         </Paper>
-        <Paper style={paperStyle} className="botBuilder-page-card" zDepth={1}>
-          <h1 style={subHeadingStyle}>My Analytics</h1>
+        <Paper className="botBuilder-page-card" zDepth={1}>
+          <SubHeading>My Analytics</SubHeading>
           <MyAnalytics />
         </Paper>
       </div>
