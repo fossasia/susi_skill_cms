@@ -7,12 +7,13 @@ import TreeView from './SkillViews/TreeView';
 import Preview from '../BotBuilder/Preview/Preview';
 import { urls, colors, searchURLPath, getQueryStringValue } from '../../utils';
 import createActions from '../../redux/actions/create';
-import CircularProgress from 'material-ui/CircularProgress';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { Link } from 'react-router-dom';
 import ISO6391 from 'iso-639-1';
 import ReactTooltip from 'react-tooltip';
 import { Grid, Col, Row } from 'react-flexbox-grid';
 import PropTypes from 'prop-types';
+import isMobileView from '../../utils/isMobileView';
 
 import {
   fetchAllGroupOptions,
@@ -27,25 +28,35 @@ import './SkillCreator.css';
 import './Animation.min.css';
 
 // Material-UI Components
-import { Dialog, Paper, RaisedButton, TextField } from 'material-ui';
-import DropDownMenu from 'material-ui/DropDownMenu';
-import IconButton from 'material-ui/IconButton';
-import MenuItem from 'material-ui/MenuItem';
+import Button from '@material-ui/core/Button';
+import Paper from '@material-ui/core/Paper';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import TextField from '@material-ui/core/TextField';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import IconButton from '@material-ui/core/IconButton';
+import FormControl from '@material-ui/core/FormControl';
+import Input from '@material-ui/core/Input';
 
 // Material-UI Icons
-import Info from 'material-ui/svg-icons/action/info';
-import Code from 'material-ui/svg-icons/action/code';
-import QA from 'material-ui/svg-icons/action/question-answer';
-import Timeline from 'material-ui/svg-icons/action/timeline';
-import Add from 'material-ui/svg-icons/content/add';
-import ChevronLeft from 'material-ui/svg-icons/navigation/chevron-left';
-import ChevronRight from 'material-ui/svg-icons/navigation/chevron-right';
+import Info from '@material-ui/icons/Info';
+import Code from '@material-ui/icons/Code';
+import QA from '@material-ui/icons/QuestionAnswer';
+import Timeline from '@material-ui/icons/Timeline';
+import Add from '@material-ui/icons/Add';
+import ChevronLeft from '@material-ui/icons/ChevronLeft';
+import ChevronRight from '@material-ui/icons/ChevronRight';
 
 // Ant Design Components
 import notification from 'antd/lib/notification';
 import Icon from 'antd/lib/icon';
 import { bindActionCreators } from 'redux';
 let languages = [];
+
+const mobileView = isMobileView(1190);
 
 const styles = {
   paperStyle: {
@@ -80,6 +91,7 @@ const styles = {
     width: '20px',
     cursor: 'pointer',
     color: 'rgb(158, 158, 158)',
+    display: mobileView ? 'block' : 'inline-bock',
   },
   uploadCircularButton: {
     borderRadius: '50%',
@@ -151,10 +163,11 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    width: '100%',
   },
-  anchorOrigin: {
-    horizontal: 'left',
-    vertical: 'bottom',
+  mobileViewStyle: {
+    display: 'block',
+    width: mobileView ? '100%' : 'auto',
   },
 };
 
@@ -244,19 +257,15 @@ class SkillCreator extends Component {
           languages = data.map(language => {
             if (ISO6391.getNativeName(language)) {
               return (
-                <MenuItem
-                  value={language}
-                  key={language}
-                  primaryText={ISO6391.getNativeName(language)}
-                />
+                <MenuItem value={language} key={language}>
+                  {ISO6391.getNativeName(language)}
+                </MenuItem>
               );
             }
             return (
-              <MenuItem
-                value={language}
-                key={language}
-                primaryText={'Universal'}
-              />
+              <MenuItem value={language} key={language}>
+                Universal
+              </MenuItem>
             );
           });
         })
@@ -436,11 +445,9 @@ class SkillCreator extends Component {
             let groups = [];
             for (let i = 0; i < data.length; i++) {
               groups.push(
-                <MenuItem
-                  value={data[i]}
-                  key={data[i]}
-                  primaryText={`${data[i]}`}
-                />,
+                <MenuItem value={data[i]} key={data[i]}>
+                  {`${data[i]}`}
+                </MenuItem>,
               );
             }
             this.setState({ groups });
@@ -467,12 +474,15 @@ class SkillCreator extends Component {
   handleGroupChange = (event, index, value) => {
     const { actions } = this.props;
     let { code } = this.props;
-    code = code.replace(/^::category\s(.*)$/m, `::category ${value}`);
+    code = code.replace(
+      /^::category\s(.*)$/m,
+      `::category ${event.target.value}`,
+    );
     this.setState({
       groupSelect: false,
       languageSelect: false,
     });
-    actions.setSkillData({ category: value, code });
+    actions.setSkillData({ category: event.target.value, code });
     if (languages.length === 0) {
       fetchAllLanguageOptions()
         .then(payload => {
@@ -481,19 +491,15 @@ class SkillCreator extends Component {
           for (let i = 0; i < data.length; i++) {
             if (ISO6391.getNativeName(data[i])) {
               languages.push(
-                <MenuItem
-                  value={data[i]}
-                  key={data[i]}
-                  primaryText={ISO6391.getNativeName(data[i])}
-                />,
+                <MenuItem value={data[i]} key={data[i]}>
+                  {ISO6391.getNativeName(data[i])}
+                </MenuItem>,
               );
             } else {
               languages.push(
-                <MenuItem
-                  value={data[i]}
-                  key={data[i]}
-                  primaryText={'Universal'}
-                />,
+                <MenuItem value={data[i]} key={data[i]}>
+                  Universal
+                </MenuItem>,
               );
             }
             if (data[i] === 'en') {
@@ -520,11 +526,14 @@ class SkillCreator extends Component {
   handleLanguageChange = (event, index, value) => {
     const { actions } = this.props;
     let { code } = this.props;
-    code = code.replace(/^::language\s(.*)$/m, `::language ${value}`);
+    code = code.replace(
+      /^::language\s(.*)$/m,
+      `::language ${event.target.value}`,
+    );
     this.setState({
       expertSelect: false,
     });
-    actions.setSkillData({ language: value, code });
+    actions.setSkillData({ language: event.target.value, code });
   };
 
   handleExpertChange = event => {
@@ -884,7 +893,7 @@ class SkillCreator extends Component {
       loggedInError,
       dropdownDiv,
       center,
-      anchorOrigin,
+      mobileViewStyle,
     } = styles;
     const { showImage, loadViews } = this.state;
     let showTopBar = true;
@@ -1005,45 +1014,21 @@ class SkillCreator extends Component {
                   >
                     <IconButton
                       className="iconbutton"
-                      tooltip="Code View"
                       onClick={() => actions.setView({ view: 'code' })}
-                      disableTouchRipple={true}
                     >
-                      <Code
-                        color={
-                          view === 'code'
-                            ? 'rgb(66, 133, 244)'
-                            : 'rgb(158, 158, 158)'
-                        }
-                      />
+                      <Code color={view === 'code' ? 'primary' : ''} />
                     </IconButton>
                     <IconButton
                       className="iconbutton"
-                      tooltip="Conversation View"
                       onClick={() => actions.setView({ view: 'conversation' })}
-                      disableTouchRipple={true}
                     >
-                      <QA
-                        color={
-                          view === 'conversation'
-                            ? 'rgb(66, 133, 244)'
-                            : 'rgb(158, 158, 158)'
-                        }
-                      />
+                      <QA color={view === 'conversation' ? 'primary' : ''} />
                     </IconButton>
                     <IconButton
                       className="iconbutton"
-                      tooltip="Tree View"
                       onClick={() => actions.setView({ view: 'tree' })}
-                      disableTouchRipple={true}
                     >
-                      <Timeline
-                        color={
-                          view === 'tree'
-                            ? 'rgb(66, 133, 244)'
-                            : 'rgb(158, 158, 158)'
-                        }
-                      />
+                      <Timeline color={view === 'tree' ? 'primary' : ''} />
                     </IconButton>
                   </div>
                 </div>
@@ -1064,7 +1049,7 @@ class SkillCreator extends Component {
                       />
                       <div style={center}>
                         <div style={dropdownDiv}>
-                          <div>
+                          <div style={mobileView ? mobileViewStyle : null}>
                             <span
                               style={{
                                 fontSize: 15,
@@ -1072,24 +1057,21 @@ class SkillCreator extends Component {
                                 paddingLeft: '10px',
                               }}
                             >
-                              Category:
+                              Category:&nbsp;
                             </span>
-                            <DropDownMenu
+                            <Select
                               value={category}
                               onChange={this.handleGroupChange}
-                              anchorOrigin={anchorOrigin}
                               autoWidth={true}
-                              maxHeight={300}
                               style={{
                                 position: 'relative',
-                                top: '15px',
-                                width: '250px',
+                                width: mobileView ? '100%' : '250px',
                               }}
                             >
                               {this.state.groups}
-                            </DropDownMenu>
+                            </Select>
                           </div>
-                          <div>
+                          <div style={mobileView ? mobileViewStyle : null}>
                             <span
                               style={{
                                 fontSize: 15,
@@ -1097,39 +1079,44 @@ class SkillCreator extends Component {
                                 marginLeft: '10px',
                               }}
                             >
-                              Language:
+                              Language:&nbsp;
                             </span>
-
-                            <DropDownMenu
+                            <Select
                               disabled={this.state.languageSelect}
                               value={language}
-                              anchorOrigin={anchorOrigin}
                               onChange={this.handleLanguageChange}
                               autoWidth={true}
-                              maxHeight={300}
                               style={{
                                 position: 'relative',
-                                top: '15px',
-                                width: '250px',
+                                width: mobileView ? '100%' : '250px',
                               }}
                             >
                               {languages}
-                            </DropDownMenu>
+                            </Select>
                           </div>
                           <TextField
                             disabled={this.state.expertSelect}
-                            floatingLabelText={
+                            label={
                               this.isBotBuilder ? 'Bot Name' : 'Skill Name'
                             }
-                            floatingLabelFixed={false}
+                            placeholder={
+                              this.isBotBuilder ? 'Bot Name' : 'Skill Name'
+                            }
+                            margin="normal"
                             value={name}
-                            hintText={
-                              this.isBotBuilder ? 'Bot Name' : 'Skill Name'
-                            }
-                            style={{ marginLeft: 10, marginRight: 10 }}
+                            style={{
+                              marginLeft: 10,
+                              marginRight: 10,
+                              width: mobileView ? '80%' : 'auto',
+                            }}
                             onChange={this.handleExpertChange}
                           />
-                          <div style={{ paddingTop: 20 }}>
+                          <div
+                            style={{
+                              width: mobileView ? '80%' : 'auto',
+                              paddingTop: 20,
+                            }}
+                          >
                             {showImage && (
                               <img
                                 alt="preview"
@@ -1203,7 +1190,7 @@ class SkillCreator extends Component {
                         style={{
                           width: '100%',
                           padding: 10,
-                          display: 'flex',
+                          display: mobileView ? 'block' : 'flex',
                           alignItems: 'center',
                           textAlign: 'center',
                           justifyContent: 'center',
@@ -1211,26 +1198,30 @@ class SkillCreator extends Component {
                         zDepth={1}
                       >
                         <TextField
-                          floatingLabelText="Commit message"
-                          floatingLabelFixed={true}
-                          hintText="Enter Commit Message"
-                          style={{ width: '80%' }}
+                          label="Commit message"
+                          placeholder="Enter Commit Message"
+                          margin="normal"
                           value={this.state.commitMessage}
+                          style={{ width: '100%' }}
+                          fullWidth={!!mobileView}
                           onChange={this.handleCommitMessageChange}
                         />
-                        <RaisedButton
-                          label={
-                            this.state.loading ? (
-                              <CircularProgress color="#ffffff" size={32} />
-                            ) : (
-                              this.handleLabel()
-                            )
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          style={
+                            mobileView
+                              ? { marginLeft: 10, float: 'left' }
+                              : { marginLeft: 10 }
                           }
-                          backgroundColor={colors.header}
-                          labelColor="#fff"
-                          style={{ marginLeft: 10 }}
                           onClick={this.saveClick}
-                        />
+                        >
+                          {this.state.loading ? (
+                            <CircularProgress color="#ffffff" size={32} />
+                          ) : (
+                            this.handleLabel()
+                          )}
+                        </Button>
                         <Link
                           to={
                             this.mode === 'create'
@@ -1246,12 +1237,17 @@ class SkillCreator extends Component {
                                 }
                           }
                         >
-                          <RaisedButton
-                            label="Cancel"
-                            backgroundColor={colors.header}
-                            labelColor="#fff"
-                            style={{ marginLeft: 10 }}
-                          />
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            style={
+                              mobileView
+                                ? { marginLeft: 10, float: 'left' }
+                                : { marginLeft: 10 }
+                            }
+                          >
+                            Cancel
+                          </Button>
                         </Link>
                       </Paper>
                       {this.state.prevButton === 1 ? (
@@ -1286,13 +1282,14 @@ class SkillCreator extends Component {
                         {'Once you delete a skill, only admins can' +
                           'undo this action before 30 days of deletion. Please be certain.'}
                       </div>
-                      <RaisedButton
-                        label="Delete"
-                        backgroundColor={colors.warningColor}
-                        labelColor="#fff"
+                      <Button
+                        variant="contained"
+                        color="secondary"
                         style={{ marginLeft: 10 }}
                         onClick={this.openDelete}
-                      />
+                      >
+                        Delete
+                      </Button>
                     </Paper>
                   )}
               </Col>
@@ -1344,27 +1341,31 @@ class SkillCreator extends Component {
             <Dialog
               modal={false}
               open={this.state.showDeleteBox}
-              autoScrollBodyContent={true}
-              contentStyle={{ width: '50%', minWidth: '300px' }}
-              onRequestClose={this.closeDelete}
+              onClose={this.closeDelete}
+              maxWidth={'sm'}
+              fullWidth={true}
             >
-              <div>
-                <TextField
-                  floatingLabelText="Enter Skill Name"
-                  floatingLabelFixed={true}
-                  hintText="Skill Name"
-                  style={{ width: '80%' }}
-                  onChange={this.handleDeleteText}
-                />
-                <RaisedButton
-                  label="Delete"
-                  disabled={this.state.deleteDisabled}
-                  backgroundColor={colors.warningColor}
-                  labelColor="#fff"
+              <DialogTitle>Edit Feedback</DialogTitle>
+              <DialogContent>
+                <FormControl fullWidth={true}>
+                  <Input
+                    placeholder="Enter Skill Name"
+                    fullWidth={true}
+                    onChange={this.handleDeleteText}
+                  />
+                </FormControl>
+              </DialogContent>
+              <DialogActions>
+                <Button
+                  variant="contained"
+                  color="primary"
                   style={{ marginLeft: 10 }}
                   onClick={this.deleteSkill}
-                />
-              </div>
+                  disabled={this.state.deleteDisabled}
+                >
+                  Delete
+                </Button>
+              </DialogActions>
             </Dialog>
           </div>
         </div>
