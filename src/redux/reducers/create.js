@@ -413,10 +413,9 @@ export default handleActions(
     },
 
     [actionTypes.CREATE_SET_BOT_BACKGROUND_IMAGE](state, { payload }) {
-      const response = payload;
-      const imagePath = { response };
+      const imagePath = payload.imagePath;
       const botbuilderBodyBackgroundImg = IMAGE_GET_URL + imagePath;
-      const botbuilderBodyBackgroundImgName = response.imagePath.substring(
+      const botbuilderBodyBackgroundImgName = imagePath.substring(
         imagePath.indexOf('_') + 1,
       );
       let code = String(state.skill.code);

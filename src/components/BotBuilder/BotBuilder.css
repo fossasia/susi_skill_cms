@@ -235,6 +235,8 @@ input[type=file]{
 	text-align: center;
 	float: left;
 	cursor: pointer;
+	position: relative;
+    top: 1.7rem;
 }
 
 .ace_editor {

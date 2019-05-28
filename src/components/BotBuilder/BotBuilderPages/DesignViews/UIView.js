@@ -125,8 +125,9 @@ class UIView extends Component {
     form.append('image', file);
     actions
       .setBotAvatar(form)
-      .then(payload => {
-        let imgUrl = IMAGE_GET_URL + payload.imagePath;
+      .then(({ payload }) => {
+        const { imagePath } = payload;
+        let imgUrl = IMAGE_GET_URL + imagePath;
         let avatarsObj = this.state.avatars;
         let imgObj = {
           id: avatarsObj.length,
@@ -281,6 +282,19 @@ class UIView extends Component {
   };
 
   render() {
+    const {
+      botbuilderBodyBackgroundImg,
+      botbuilderBodyBackgroundImgName,
+    } = this.props.design;
+    const {
+      showBackgroundImageChange,
+      uploadingBodyBackgroundImg,
+      uploadingBotbuilderIconImg,
+      avatars,
+      iconSelected,
+      loadedSettings,
+      resetting,
+    } = this.state;
     const customizeComponents = customiseOptionsList.map(component => {
       return (
         <div key={component.id} className="circleChoose">
@@ -319,7 +333,7 @@ class UIView extends Component {
                       <FormControlLabel
                         control={
                           <Switch
-                            checked={this.state.showBackgroundImageChange}
+                            checked={showBackgroundImageChange}
                             onChange={
                               this.handleShowBackgroundImageChangeToggle
                             }
@@ -335,10 +349,7 @@ class UIView extends Component {
             </Col>
             <Col xs={12} md={6} lg={6}>
               {component.id !== 7 &&
-              !(
-                component.id === 1 &&
-                this.state.showBackgroundImageChange === true
-              ) ? (
+              !(component.id === 1 && showBackgroundImageChange === true) ? (
                 <div style={{ display: 'flex', flexDirection: 'row' }}>
                   <div className="color-picker-wrap">
                     <span
@@ -362,7 +373,7 @@ class UIView extends Component {
                 </div>
               ) : null}
               {component.component === 'botbuilderBackgroundBody' &&
-                this.state.showBackgroundImageChange === true && (
+                showBackgroundImageChange === true && (
                   <div>
                     <br />
                     <form style={{ display: 'inline-block' }}>
@@ -371,19 +382,19 @@ class UIView extends Component {
                         title="Upload Background Image"
                       >
                         <input
-                          disabled={this.state.uploadingBodyBackgroundImg}
+                          disabled={uploadingBodyBackgroundImg}
                           type="file"
                           onChange={this.handleChangeBodyBackgroundImage}
                           accept="image/*"
                         />
-                        {this.state.uploadingBodyBackgroundImg ? (
+                        {uploadingBodyBackgroundImg ? (
                           <CircularProgress color="#ffffff" size={32} />
                         ) : (
                           'Upload Image'
                         )}
                       </label>
                     </form>
-                    {this.state.botbuilderBodyBackgroundImg && (
+                    {botbuilderBodyBackgroundImg && (
                       <div
                         style={{
                           display: 'flex',
@@ -391,7 +402,7 @@ class UIView extends Component {
                           marginTop: '10px',
                         }}
                       >
-                        <h3>{this.state.botbuilderBodyBackgroundImgName}</h3>
+                        <h3>{botbuilderBodyBackgroundImgName}</h3>
                         <span title="Remove image">
                           <Close
                             className="remove-icon"
@@ -406,16 +417,14 @@ class UIView extends Component {
           </Row>
           {component.component === 'botbuilderAvatar' && (
             <div style={{ padding: '10px  0 25px 0' }}>
-              {this.state.avatars.map(icon => {
+              {avatars.map(icon => {
                 return (
                   <span
                     id={icon.id}
                     key={icon.id}
                     className={
                       'icon-wrap ' +
-                      (this.state.iconSelected === icon.id
-                        ? 'icon-selected'
-                        : '')
+                      (iconSelected === icon.id ? 'icon-selected' : '')
                     }
                   >
                     <img
@@ -434,16 +443,16 @@ class UIView extends Component {
                   title="Upload your own bot icon"
                 >
                   <input
-                    disabled={this.state.uploadingBotbuilderIconImg}
+                    disabled={uploadingBotbuilderIconImg}
                     type="file"
                     onChange={
-                      this.state.uploadingBotbuilderIconImg
+                      uploadingBotbuilderIconImg
                         ? null
                         : this.handleChangeIconImage
                     }
                     accept="image/x-png,image/gif,image/jpeg"
                   />
-                  {this.state.uploadingBotbuilderIconImg ? (
+                  {uploadingBotbuilderIconImg ? (
                     <CircularProgress
                       color="rgb(66, 133, 245)"
                       style={{ marginTop: '15px' }}
@@ -467,20 +476,20 @@ class UIView extends Component {
     });
     return (
       <div>
-        {!this.state.loadedSettings ? (
+        {!loadedSettings ? (
           <div className="center">
             <CircularProgress size={62} color="#4285f5" />
             <h4>Loading</h4>
           </div>
         ) : (
           <div className="design-box">
-            {this.state.loadedSettings && <Grid>{customizeComponents}</Grid>}
+            {loadedSettings && <Grid>{customizeComponents}</Grid>}
             <Button
               variant="contained"
               color="primary"
               onClick={this.handleReset}
             >
-              {this.state.resetting ? (
+              {resetting ? (
                 <CircularProgress color={colors.header} size={32} />
               ) : (
                 'Reset Changes'
