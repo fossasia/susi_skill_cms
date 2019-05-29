@@ -32,18 +32,17 @@ import Delete from '@material-ui/icons/Delete';
 import EditBtn from '@material-ui/icons/BorderColor';
 import NavigationChevronRight from '@material-ui/icons/ChevronRight';
 import Emoji from 'react-emoji-render';
+import styled from 'styled-components';
 
 import '../SkillFeedbackCard/SkillFeedbackCard.css';
 import './SkillFeedbackPage.css';
 import { urls, parseDate, formatDate } from '../../utils';
 
-const styles = {
-  containerStyle: {
-    marginTop: '50px',
-    width: '100%',
-    fontSize: '14px',
-  },
-};
+const Div = styled.div`
+  margin-top: 3.125rem;
+  width: 100%;
+  font-size: 0.875rem;
+`;
 
 const LEFT_PAGE = 'LEFT';
 const RIGHT_PAGE = 'RIGHT';
@@ -308,7 +307,6 @@ class SkillFeedbackPage extends Component {
       accessToken,
     } = this.props;
 
-    const { containerStyle } = styles;
     const open = Boolean(anchorEl);
     const imgUrl = !image
       ? '/favicon-512x512.jpg'
@@ -332,7 +330,7 @@ class SkillFeedbackPage extends Component {
     const deleteActions = [
       <Button
         key={0}
-        style={{ marginRight: '10px' }}
+        style={{ marginRight: '0.625rem' }}
         color="primary"
         onClick={this.toggleDeleteModal}
       >
@@ -496,7 +494,7 @@ class SkillFeedbackPage extends Component {
       renderElement = (
         <div>
           <StaticAppBar {...this.props} />
-          <div className="skill_listing_container" style={containerStyle}>
+          <Div className="skill_listing_container">
             <Paper className="margin-b-md margin-t-md">
               <p style={{ marginLeft: 10 }}>
                 <Link
@@ -651,7 +649,7 @@ class SkillFeedbackPage extends Component {
                 </Link>
               </div>
             </Paper>
-          </div>
+          </Div>
           <Footer />
         </div>
       );

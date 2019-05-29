@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import AceEditor from 'react-ace';
-import Paper from '@material-ui/core/Paper';
+import _Paper from '@material-ui/core/Paper';
 import Diff from 'react-diff-viewer';
 import { notification, Icon } from 'antd';
 import 'antd/dist/antd.css';
@@ -16,6 +16,7 @@ import {
   fetchRevertingCommitInformation,
   modifySkill,
 } from '../../api';
+import styled from 'styled-components';
 
 import 'brace/mode/markdown';
 import 'brace/theme/github';
@@ -31,23 +32,24 @@ import 'brace/theme/solarized_light';
 import 'brace/theme/terminal';
 import 'brace/ext/searchbox';
 
-const styles = {
-  paperStyle: {
-    width: '100%',
-    padding: '10px',
-  },
-  boldStyle: {
-    fontSize: '14px',
-  },
-  homeStyle: {
-    width: '100%',
-    padding: '80px 30px 30px',
-  },
-  codeEditorStyle: {
-    width: '100%',
-    marginTop: '20px',
-  },
-};
+const Paper = styled(_Paper)`
+  width: 100%;
+  padding: 0.625rem;
+`;
+
+const B = styled.b`
+  font-size: 0.875rem;
+`;
+
+const HomeDiv = styled.div`
+  width: 100%;
+  padding: 5rem 1.875rem 1.875rem;
+`;
+
+const CodeEditorDiv = styled.div`
+  width: 100%;
+  margintop: 1.25rem;
+`;
 
 class SkillRollBack extends Component {
   static propTypes = {
@@ -241,7 +243,6 @@ class SkillRollBack extends Component {
 
   render() {
     const { commitData } = this.state;
-    const { homeStyle, paperStyle, boldStyle, codeEditorStyle } = styles;
     const rightEditorWidth = window.matchMedia(
       'only screen and (max-width: 768px)',
     ).matches
@@ -261,13 +262,13 @@ class SkillRollBack extends Component {
         )}
         {commitData.length === 2 && (
           <div style={{ display: 'block' }}>
-            <div style={homeStyle}>
-              <Paper style={paperStyle} zDepth={1}>
+            <HomeDiv>
+              <Paper zDepth={1}>
                 {'You are currently editing an older version of the skill: '}
-                <b style={boldStyle}>{this.skillMeta.skillName}</b>
+                <B>{this.skillMeta.skillName}</B>
                 <br />
                 <span>
-                  Author: <b style={boldStyle}>{commitData[1].author}</b>
+                  Author: <B>{commitData[1].author}</B>
                 </span>
                 <br />
                 <span>
@@ -284,16 +285,16 @@ class SkillRollBack extends Component {
                 </span>
                 <br />
                 <span>
-                  <b style={boldStyle}>Latest Revision</b>
+                  <B>Latest Revision</B>
                 </span>
-                <div style={codeEditorStyle}>
+                <CodeEditorDiv>
                   <AceEditor
                     mode="java"
                     readOnly={true}
                     theme={this.editorTheme}
                     width="100%"
                     fontSize={this.fontSizeCode}
-                    height="400px"
+                    height="25rem"
                     value={commitData[0].code}
                     showPrintMargin={false}
                     name="skill_code_editor"
@@ -303,10 +304,10 @@ class SkillRollBack extends Component {
                     style={{
                       resize: 'vertical',
                       overflowY: 'auto',
-                      minHeight: '200px',
+                      minHeight: '12.5rem',
                     }}
                   />
-                </div>
+                </CodeEditorDiv>
               </div>
               <div className="version-code-right">
                 <span>
@@ -314,16 +315,16 @@ class SkillRollBack extends Component {
                 </span>
                 <br />
                 <span>
-                  <b style={boldStyle}>Your Text</b>
+                  <B>Your Text</B>
                 </span>
-                <div style={codeEditorStyle}>
+                <CodeEditorDiv>
                   <AceEditor
                     mode="java"
                     readOnly={true}
                     theme={this.editorTheme}
                     width={rightEditorWidth}
                     fontSize={this.fontSizeCode}
-                    height="400px"
+                    height="25rem"
                     value={commitData[1].code}
                     showPrintMargin={false}
                     name="skill_code_editor"
@@ -333,13 +334,13 @@ class SkillRollBack extends Component {
                     style={{
                       resize: 'vertical',
                       overflowY: 'auto',
-                      minHeight: '200px',
+                      minHeight: '12.5rem',
                     }}
                   />
-                </div>
+                </CodeEditorDiv>
               </div>
               <div>
-                <h1 className="title" style={{ marginTop: '20px' }}>
+                <h1 className="title" style={{ marginTop: '1.25rem' }}>
                   Changes
                 </h1>
                 {/* latest code should be inputB */}
@@ -349,11 +350,11 @@ class SkillRollBack extends Component {
                   type="chars"
                 />
               </div>
-              <h1 className="title" style={{ marginTop: '20px' }}>
+              <h1 className="title" style={{ marginTop: '1.25rem' }}>
                 Edit
               </h1>
-            </div>
-            <div style={{ marginTop: '-100px', width: '100%' }}>
+            </HomeDiv>
+            <div style={{ marginTop: '-6.25rem', width: '100%' }}>
               <SkillCreator
                 showTopBar={false}
                 revertingCommit={this.revertingCommit}
