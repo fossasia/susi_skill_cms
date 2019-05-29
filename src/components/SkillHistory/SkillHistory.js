@@ -4,12 +4,13 @@ import { fetchCommitHistory, fetchSkillByCommitId } from '../../api/index';
 import { Link } from 'react-router-dom';
 import AceEditor from 'react-ace';
 import Diff from 'react-diff-viewer';
-import Button from '@material-ui/core/Button';
+import _Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import Paper from '@material-ui/core/Paper';
+import _Paper from '@material-ui/core/Paper';
 import StaticAppBar from '../StaticAppBar/StaticAppBar.react';
 import { notification, Icon } from 'antd';
 import 'antd/dist/antd.css';
+import styled from 'styled-components';
 
 import 'brace/mode/markdown';
 import 'brace/theme/github';
@@ -35,26 +36,27 @@ const ErrorNotification = () => {
   });
 };
 
-const styles = {
-  homeStyle: {
-    width: '100%',
-    padding: '80px 30px 30px',
-  },
-  codeEditorStyle: {
-    width: '100%',
-    marginTop: '20px',
-  },
-  compareBtnStyle: {
-    margin: '20px',
-    position: 'absolute',
-    right: '24',
-    top: '70',
-  },
-  paperStyle: {
-    width: '100%',
-    padding: '10px',
-  },
-};
+const HomeDiv = styled.div`
+  width: 100%;
+  padding: 5rem 1.875rem 1.875rem;
+`;
+
+const CodeEditorDiv = styled.div`
+  width: 100%;
+  margintop: 1.25rem;
+`;
+
+const Button = styled(_Button)`
+  margin: 1.25rem;
+  position: absolute;
+  right: 24;
+  top: 70;
+`;
+
+const Paper = styled(_Paper)`
+  width: 100%;
+  padding: 0.625rem;
+`;
 
 let rightEditorWidth = '50%';
 if (window.matchMedia('only screen and (max-width: 768px)').matches) {
@@ -175,7 +177,6 @@ class SkillHistory extends Component {
 
   render() {
     const { commitData, skillMeta, allCommitsData } = this.state;
-    const { homeStyle, codeEditorStyle, paperStyle, compareBtnStyle } = styles;
     return (
       <div>
         <StaticAppBar {...this.props} />
@@ -187,36 +188,37 @@ class SkillHistory extends Component {
             </div>
           </h1>
         )}
-        <div style={homeStyle}>
+        <HomeDiv>
           {commitData.length === 2 && (
             <div style={{ display: 'block' }}>
-              <Paper style={paperStyle} zDepth={1}>
+              <Paper zDepth={1}>
                 <div>
                   <div>
                     Currently Viewing :{' '}
-                    <Link
-                      to={{
-                        pathname:
-                          '/' +
-                          skillMeta.groupValue +
-                          '/' +
-                          skillMeta.skillName +
-                          '/' +
-                          skillMeta.languageValue,
+                    <h3
+                      style={{
+                        textTransform: 'capitalize',
+                        display: 'inline-block',
                       }}
                     >
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        style={compareBtnStyle}
-                      >
-                        Back
-                      </Button>
-                    </Link>
+                      {skillMeta.skillName.split('_').join(' ')}
+                    </h3>
                   </div>
-                  <h3 style={{ textTransform: 'capitalize' }}>
-                    {skillMeta.skillName.split('_').join(' ')}
-                  </h3>
+                  <Link
+                    to={{
+                      pathname:
+                        '/' +
+                        skillMeta.groupValue +
+                        '/' +
+                        skillMeta.skillName +
+                        '/' +
+                        skillMeta.languageValue,
+                    }}
+                  >
+                    <Button variant="contained" color="primary">
+                      Back
+                    </Button>
+                  </Link>
                 </div>
               </Paper>
               <div className="version-code-left">
@@ -228,14 +230,14 @@ class SkillHistory extends Component {
                   {commitData[0].commit.latest && 'Latest '}
                   Revision as of <b>{commitData[0].commit.commitDate}</b>
                 </span>
-                <div style={codeEditorStyle}>
+                <CodeEditorDiv>
                   <AceEditor
                     mode="java"
                     readOnly={true}
                     theme="github"
                     width="100%"
                     fontSize={14}
-                    height="400px"
+                    height="25rem"
                     value={commitData[0].code}
                     showPrintMargin={false}
                     name="skill_code_editor"
@@ -245,10 +247,10 @@ class SkillHistory extends Component {
                     style={{
                       resize: 'vertical',
                       overflowY: 'auto',
-                      minHeight: '200px',
+                      minHeight: '12.5rem',
                     }}
                   />
-                </div>
+                </CodeEditorDiv>
               </div>
               <div className="version-code-right">
                 <span>
@@ -258,7 +260,7 @@ class SkillHistory extends Component {
                 <span>
                   {commitData[1].commit.latest && 'Latest '}
                   Revision as of <b>{commitData[1].commit.commitDate}</b>
-                  <b style={{ marginLeft: '5px' }}>
+                  <b style={{ marginLeft: '.313rem' }}>
                     (<Link
                       to={{
                         pathname:
@@ -278,14 +280,14 @@ class SkillHistory extends Component {
                     </Link>)
                   </b>
                 </span>
-                <div style={codeEditorStyle}>
+                <CodeEditorDiv>
                   <AceEditor
                     mode="java"
                     readOnly={true}
                     theme="github"
                     width={rightEditorWidth}
-                    fontSize="14"
-                    height="400px"
+                    fontSize={14}
+                    height="25rem"
                     value={commitData[1].code}
                     showPrintMargin={false}
                     name="skill_code_editor"
@@ -295,13 +297,13 @@ class SkillHistory extends Component {
                     style={{
                       resize: 'vertical',
                       overflowY: 'auto',
-                      minHeight: '200px',
+                      minHeight: '12.5rem',
                     }}
                   />
-                </div>
+                </CodeEditorDiv>
               </div>
               <div>
-                <h1 className="title" style={{ marginTop: '20px' }}>
+                <h1 className="title" style={{ marginTop: '1.25rem' }}>
                   Changes
                 </h1>
                 {/* latest code should be inputB */}
@@ -313,7 +315,7 @@ class SkillHistory extends Component {
               </div>
             </div>
           )}
-        </div>
+        </HomeDiv>
       </div>
     );
   }

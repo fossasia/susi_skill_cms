@@ -37,29 +37,18 @@ import NavigateUp from '@material-ui/icons/ExpandLess';
 import ReactTooltip from 'react-tooltip';
 import { urls, colors, parseDate, testExample } from '../../utils';
 import { reportSkill } from '../../api';
+import styled from 'styled-components';
 
 import './SkillListing.css';
 
-const styles = {
-  home: {
-    fontSize: '14px',
-  },
-  right: {
-    display: 'flex',
-    alignItems: 'center',
-    flexDirection: 'row',
-    padding: '10px',
-  },
-  paper_full_width: {
-    width: '100%',
-    marginBottom: 10,
-    display: 'inline-block',
-  },
-  authorStyle: {
-    cursor: 'pointer',
-    textTransform: 'capitalize',
-  },
-};
+const HomeDiv = styled.div`
+  font-size: 0.875rem;
+`;
+
+const AuthorSpan = styled.span`
+  cursor: pointer;
+  texttransform: capitalize;
+`;
 
 class SkillListing extends Component {
   constructor(props) {
@@ -260,17 +249,17 @@ class SkillListing extends Component {
     if (examples.length > 4) {
       seeMoreSkillExamples = seeMoreSkillExamples ? (
         <div className="skill-read-more-container">
-          <p style={{ fontSize: '12px' }}>See more examples</p>
+          <p style={{ fontSize: '0.75rem' }}>See more examples</p>
           <NavigateDown
-            style={{ fill: '#555656', width: '12px' }}
+            style={{ fill: '#555656', width: '0.75rem' }}
             className="skill-example-more-icon"
           />
         </div>
       ) : (
         <div className="skill-read-more-container">
-          <p style={{ fontSize: '12px' }}>Less</p>
+          <p style={{ fontSize: '0.75rem' }}>Less</p>
           <NavigateUp
-            style={{ fill: '#555656', width: '12px' }}
+            style={{ fill: '#555656', width: '0.75rem' }}
             className="skill-example-more-icon"
           />
         </div>
@@ -292,7 +281,7 @@ class SkillListing extends Component {
       renderElement = (
         <div>
           <StaticAppBar {...this.props} />
-          <div className="skill_listing_container" style={styles.home}>
+          <HomeDiv className="skill_listing_container">
             <div className="avatar">
               {!image ? (
                 <CircleImage name={skillName.toUpperCase()} size="250" />
@@ -305,19 +294,16 @@ class SkillListing extends Component {
                 <h1 className="name">{this.skillName}</h1>
                 <h4>
                   by{' '}
-                  <span
-                    style={styles.authorStyle}
-                    onClick={this.openAuthorSkills}
-                  >
+                  <AuthorSpan onClick={this.openAuthorSkills}>
                     {author}
-                  </span>
+                  </AuthorSpan>
                 </h4>
                 <a className="singleRating" href="#rating">
                   <Ratings
                     rating={skillRatings.avgStar}
                     widgetRatedColors="#ffbb28"
-                    widgetDimensions="20px"
-                    widgetSpacings="0px"
+                    widgetDimensions="1.25rem"
+                    widgetSpacings="0rem"
                   >
                     <Ratings.Widget />
                     <Ratings.Widget />
@@ -544,29 +530,6 @@ class SkillListing extends Component {
                             </DialogContent>
                             <DialogActions>{reportDialogActions}</DialogActions>
                           </Dialog>
-                          {/* <Dialog
-                            title="Flag as inappropriate"
-                            actions={reportDialogActions}
-                            modal={false}
-                            open={showReportDialog}
-                            onRequestClose={this.handleReportToggle}
-                          >
-                            <TextField
-                              hintText="Leave a feedback message"
-                              floatingLabelText="Feedback message"
-                              multiLine
-                              floatingLabelFocusStyle={{
-                                color: 'rgb(66, 133, 244)',
-                              }}
-                              underlineFocusStyle={{
-                                borderColor: 'rgb(66, 133, 244)',
-                              }}
-                              fullWidth
-                              onChange={(event, val) =>
-                                this.saveReportFeedback(val)
-                              }
-                            />
-                          </Dialog> */}
                         </tr>
                       )}
                       <tr>
@@ -581,7 +544,7 @@ class SkillListing extends Component {
             <SkillRatingCard />
             <SkillFeedbackCard />
             <SkillUsageCard />
-          </div>
+          </HomeDiv>
         </div>
       );
     }
@@ -600,7 +563,7 @@ class SkillListing extends Component {
             requestClose={this.closeAuthorSkills}
           />
         </div>
-        <div style={{ minWidth: '640px' }}>
+        <div style={{ minWidth: '40rem' }}>
           <Footer />
         </div>
       </div>
