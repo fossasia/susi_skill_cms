@@ -12,7 +12,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import Button from '@material-ui/core/Button';
+import _Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Checkbox from '@material-ui/core/Checkbox';
 
@@ -20,20 +20,23 @@ import Checkbox from '@material-ui/core/Checkbox';
 import { notification, Icon } from 'antd';
 import 'antd/dist/antd.css';
 import './SkillVersion.css';
+import styled from 'styled-components';
 
-const styles = {
-  home: {
-    width: '100%',
-    fontSize: '14px',
-  },
-  actionButtons: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-  },
-  compareBtnStyle: {
-    margin: '10px',
-  },
-};
+const HomeDiv = styled.div`
+  width: 100%;
+  font-size: 0.85rem;
+`;
+
+const Button = styled(_Button)`
+  &&& {
+    margin: 0.625rem;
+  }
+`;
+
+const ActionButtonDiv = styled.div`
+  display: flex;
+  justify-content: flex-end;
+`;
 
 class SkillVersion extends Component {
   static propTypes = {
@@ -139,6 +142,7 @@ class SkillVersion extends Component {
               id={index}
               checked={checks.indexOf(index.toString()) > -1}
               onChange={this.onCheck}
+              color="primary"
             />
           </TableCell>
           <TableCell padding="dense">
@@ -191,7 +195,7 @@ class SkillVersion extends Component {
             </div>
           </h1>
         ) : (
-          <div className="skill_listing_container" style={styles.home}>
+          <HomeDiv className="skill_listing_container">
             <div className="margin-b-md margin-t-md skill">
               <h1 style={{ display: 'flex' }}>
                 <div style={{ textTransform: 'capitalize' }}>
@@ -205,8 +209,8 @@ class SkillVersion extends Component {
                   You can compare only two versions at a time.
                 </span>
               </p>
-              <div style={styles.compareBtnStyle}>{commitHistoryTable}</div>
-              <div style={styles.actionButtons}>
+              <div style={{ margin: '0.625rem' }}>{commitHistoryTable}</div>
+              <ActionButtonDiv>
                 {checks.length === 2 && (
                   <Link
                     to={{
@@ -217,11 +221,7 @@ class SkillVersion extends Component {
                       }/${checkedCommits[1].commitId}`,
                     }}
                   >
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      style={styles.compareBtnStyle}
-                    >
+                    <Button variant="contained" color="primary">
                       Compare Selected Versions
                     </Button>
                   </Link>
@@ -233,17 +233,13 @@ class SkillVersion extends Component {
                     }/${skillMeta.languageValue}`,
                   }}
                 >
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    style={styles.compareBtnStyle}
-                  >
+                  <Button variant="contained" color="primary">
                     Back
                   </Button>
                 </Link>
-              </div>
+              </ActionButtonDiv>
             </div>
-          </div>
+          </HomeDiv>
         )}
       </div>
     );
