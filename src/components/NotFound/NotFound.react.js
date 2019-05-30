@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import Button from '@material-ui/core/Button';
+import _Button from '@material-ui/core/Button';
 import './NotFound.css';
 import LogoImg from '../../images/susi-logo.svg';
 import Login from '../Auth/Login/Login';
@@ -9,33 +9,27 @@ import SignUp from '../Auth/SignUp/SignUp';
 import Dialog from '@material-ui/core/Dialog';
 import ForgotPassword from '../Auth/ForgotPassword/ForgotPassword';
 import Close from '@material-ui/icons/Close';
+import styled from 'styled-components';
 
-const styles = {
-  closingStyle: {
-    position: 'absolute',
-    zIndex: 1200,
-    fill: '#444',
-    width: '26px',
-    height: '26px',
-    right: '10px',
-    top: '10px',
-    cursor: 'pointer',
-  },
-  closingStyleLogin: {
-    position: 'absolute',
-    zIndex: 1200,
-    fill: '#444',
-    width: '26px',
-    height: '26px',
-    right: '10px',
-    top: '10px',
-    cursor: 'pointer',
-  },
-  buttonStyle: {
-    margin: '10px',
-    width: '300px',
-  },
-};
+const Button = styled(_Button)`
+  &&& {
+    margin: 0.625rem;
+    width: 18.75rem;
+  }
+`;
+
+const CloseIcon = styled(Close)`
+  && {
+    position: absolute;
+    z-index: 1200;
+    fill: #444;
+    width: 1.625rem;
+    height: 1.625rem;
+    right: 0.625rem;
+    top: 0.625rem;
+    cursor: pointer;
+  }
+`;
 
 class NotFound extends Component {
   constructor(props) {
@@ -85,7 +79,6 @@ class NotFound extends Component {
     });
   };
   render() {
-    const { closingStyle, closingStyleLogin, buttonStyle } = styles;
     return (
       <div>
         <div className="container-fluid not-found-banner">
@@ -98,14 +91,13 @@ class NotFound extends Component {
           <h2>Page not found</h2>
           <div className="button-wrapper">
             <a href="https://chat.susi.ai/" className="actionButton">
-              <Button style={buttonStyle} variant="contained" color="primary">
+              <Button variant="contained" color="primary">
                 Chat With SUSI
               </Button>
             </a>
             <br />
             <Button
               onClick={this.handleOpen}
-              style={buttonStyle}
               variant="contained"
               color="primary"
             >
@@ -114,7 +106,6 @@ class NotFound extends Component {
             <br />
             <Button
               onClick={this.handleLoginOpen}
-              style={buttonStyle}
               variant="contained"
               color="primary"
             >
@@ -134,7 +125,7 @@ class NotFound extends Component {
             {...this.props}
             handleForgotPassword={this.handleForgotPassword}
           />
-          <Close style={closingStyleLogin} onClick={this.handleClose} />
+          <CloseIcon onClick={this.handleClose} />
         </Dialog>
         {/* SignUp */}
         <Dialog
@@ -148,7 +139,7 @@ class NotFound extends Component {
             onRequestClose={this.handleClose}
             onLoginSignUp={this.handleLoginOpen}
           />
-          <Close style={closingStyle} onClick={this.handleClose} />
+          <CloseIcon onClick={this.handleClose} />
         </Dialog>
         <Dialog
           className="dialogStyle"
@@ -160,7 +151,7 @@ class NotFound extends Component {
             {...this.props}
             showForgotPassword={this.showForgotPassword}
           />
-          <Close style={closingStyle} onClick={this.handleClose} />
+          <CloseIcon onClick={this.handleClose} />
         </Dialog>
       </div>
     );

@@ -29,7 +29,7 @@ import './Animation.min.css';
 
 // Material-UI Components
 import Button from '@material-ui/core/Button';
-import Paper from '@material-ui/core/Paper';
+import _Paper from '@material-ui/core/Paper';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -40,6 +40,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import IconButton from '@material-ui/core/IconButton';
 import FormControl from '@material-ui/core/FormControl';
 import Input from '@material-ui/core/Input';
+import styled from 'styled-components';
 
 // Material-UI Icons
 import Info from '@material-ui/icons/Info';
@@ -59,117 +60,132 @@ let languages = [];
 const mobileView = isMobileView(1190);
 
 const styles = {
-  paperStyle: {
-    width: '100%',
-    marginTop: '20px',
-    padding: '20px 30px 30px',
-  },
-  dropdownDiv: {
-    display: 'flex',
-    alignItems: 'center',
-    flexWrap: 'wrap',
-  },
-  loggedInError: {
-    textAlign: 'center',
-    textTransform: 'uppercase',
-    fontWeight: 'bold',
-    marginBottom: '100px',
-    fontSize: '50px',
-    marginTop: '300px',
-  },
-  heading: {
-    color: 'rgba(0,0,0,.65)',
-    fontSize: '27px',
-    fontWeight: '500',
-    paddingLeft: '30px',
-    paddingTop: '10px',
-  },
-  helpIcon: {
-    position: 'relative',
-    float: 'right',
-    height: '20px',
-    width: '20px',
-    cursor: 'pointer',
-    color: 'rgb(158, 158, 158)',
-    display: mobileView ? 'block' : 'inline-bock',
-  },
-  uploadCircularButton: {
-    borderRadius: '50%',
-    height: '60px',
-    width: '60px',
-    backgroundColor: '#eee',
-    textAlign: 'center',
-    float: 'left',
-    cursor: 'pointer',
-  },
-  chevron: {
-    position: 'relative',
-    left: '-2px',
-    top: '-3px',
-    width: '35px',
-    height: '35px',
-    color: 'rgb(158, 158, 158)',
-    cursor: 'pointer',
-    display: window.innerWidth < 769 ? 'none' : 'inherit',
-  },
-  chevronButton: {
-    position: 'absolute',
-    left: '4px',
-    top: '4px',
-    width: '35px',
-    height: '35px',
-    color: 'white',
-    cursor: 'pointer',
-    display: window.innerWidth < 769 ? 'none' : 'inherit',
-  },
-  home: {
-    width: '100%',
-    padding: '40px 10px 0',
-  },
-  titleStyle: {
-    textAlign: 'center',
-    fontWeight: 'bold',
-    marginBottom: '20px',
-    fontSize: '20px',
-    marginTop: '15px',
-  },
-  subtitleStyle: {
-    textAlign: 'center',
-    fontWeight: 'bold',
-    marginBottom: '20px',
-    fontSize: '16px',
-    marginTop: '15px',
-  },
-  description: {
-    textAlign: 'center',
-    fontSize: '15px',
-    marginTop: '20px',
-  },
-  button: {
-    display: 'flex',
-    marginRight: '30px',
-    alignItems: 'center',
-    cursor: 'pointer',
-  },
-  editpaperStyle: {
-    width: '100%',
-    padding: '10px',
-    margin: '30px 0 0',
-  },
-  bold: {
-    fontSize: '14px',
-  },
-  center: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
-  },
   mobileViewStyle: {
     display: 'block',
     width: mobileView ? '100%' : 'auto',
   },
 };
+
+const Paper = styled(_Paper)`
+  width: 100%;
+  margin-top: 1.25rem;
+  padding: 1.25rem 1.875rem 1.875rem;
+`;
+
+const DropDownDiv = styled.div`
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+`;
+
+const LoggedInErrorPara = styled.p`
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: bold;
+  margin-bottom: 6.25rem;
+  font-size: 3.125rem;
+  margin-top: 18.75rem;
+`;
+
+const Heading = styled.div`
+  color: rgba(0, 0, 0, 0.65);
+  font-size: 1.688rem;
+  font-weight: 500;
+  padding-left: 1.875rem;
+  padding-top: 0.625rem;
+`;
+
+const UploadCircularButton = styled.label`
+  border-radius: 50%;
+  height: 3.75rem;
+  width: 3.75rem;
+  background-color: #eee;
+  text-align: center;
+  float: left;
+  cursor: pointer;
+`;
+
+const HomeDiv = styled.div`
+  width: 100%;
+  padding: 2.5rem 0.625rem 0;
+`;
+
+const TitlePara = styled.p`
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 1.25rem;
+  font-size: 1.25rem;
+  margin-top: 0.938rem;
+`;
+
+const SubTitlePara = styled.p`
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 1.25rem;
+  font-size: 1rem;
+  margin-top: 0.938rem;
+`;
+
+const DescriptionPara = styled.p`
+  text-align: center;
+  font-size: 0.938rem;
+  margin-top: 1.25rem;
+`;
+
+const EditPaper = styled(_Paper)`
+  width: 100%;
+  padding: 0.625rem;
+  margin: 1.875rem 0 0;
+`;
+
+const B = styled.b`
+  font-size: 0.875rem;
+`;
+
+const CenterDiv = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+`;
+
+const InfoIcon = styled(Info)`
+  & {
+    position: relative;
+    float: right;
+    height: 1.25rem;
+    width: 1.25rem;
+    cursor: pointer;
+    color: #9e9e9e;
+    display: ${mobileView ? 'block' : 'inline-bock'};
+  }
+`;
+
+const ChevronLeftIcon = styled(ChevronLeft)`
+  && {
+    position: absolute;
+    left: 0.25rem;
+    top: 0.25rem;
+    width: 2.188rem;
+    height: 2.188rem;
+    color: white;
+    cursor: pointer;
+    display: ${isMobileView(769) ? 'none' : 'inherit'};
+  }
+`;
+
+const ChevronRightIcon = styled(ChevronRight)`
+  && {
+    position: relative;
+    left: -1.875rem;
+    top: -1.25rem;
+    width: 2.188rem;
+    height: 2.188rem;
+    color: #9e9e9e;
+    cursor: pointer;
+    display: ${isMobileView(769) ? 'none' : 'inherit'};
+  }
+`;
 
 class SkillCreator extends Component {
   constructor(props) {
@@ -877,24 +893,7 @@ class SkillCreator extends Component {
       name,
       image,
     } = this.props;
-    const {
-      bold,
-      paperStyle,
-      editpaperStyle,
-      description,
-      subtitleStyle,
-      titleStyle,
-      home,
-      chevronButton,
-      chevron,
-      uploadCircularButton,
-      helpIcon,
-      heading,
-      loggedInError,
-      dropdownDiv,
-      center,
-      mobileViewStyle,
-    } = styles;
+    const { mobileViewStyle } = styles;
     const { showImage, loadViews } = this.state;
     let showTopBar = true;
     if (this.props.hasOwnProperty('showTopBar')) {
@@ -906,7 +905,9 @@ class SkillCreator extends Component {
           <div>
             <StaticAppBar {...this.props} />
             <div>
-              <p style={loggedInError}>Please login to create a skill.</p>
+              <LoggedInErrorPara>
+                Please login to create a skill.
+              </LoggedInErrorPara>
             </div>
           </div>
         );
@@ -917,7 +918,7 @@ class SkillCreator extends Component {
       <div>
         <div
           style={{
-            padding: this.isBotBuilder ? '0px' : '40px 30px 30px',
+            padding: this.isBotBuilder ? '0rem' : '2.5rem 1.875rem 1.875rem',
             width: '100%',
           }}
         >
@@ -935,15 +936,15 @@ class SkillCreator extends Component {
                   !this.props.revertingCommit &&
                   this.commitId &&
                   showTopBar && (
-                    <Paper style={editpaperStyle} zDepth={1}>
+                    <EditPaper zDepth={1}>
                       <div>
                         {
                           'You are currently editing an older version of the Skill: '
                         }
-                        <b style={bold}>{this.expertValue}</b>
+                        <B>{this.expertValue}</B>
                         <br />
                         <span>
-                          Author: <b style={bold}>{this.state.author}</b>
+                          Author: <B>{this.state.author}</B>
                         </span>
                         <br />
                         <span>
@@ -954,62 +955,62 @@ class SkillCreator extends Component {
                           Revision as of <b>{this.state.date}</b>
                         </span>
                       </div>
-                    </Paper>
+                    </EditPaper>
                   )}
                 {!accessToken && (
                   <div>
                     <StaticAppBar {...this.props} />
-                    <div style={home}>
-                      <p style={titleStyle}>
+                    <HomeDiv>
+                      <TitlePara>
                         YOU DO NOT HAVE PERMISSION TO EDIT THIS PAGE, SINCE YOU
                         ARE NOT LOGGED IN.
-                      </p>
-                      <p style={description}>
+                      </TitlePara>
+                      <DescriptionPara>
                         The code is shown below in a read only mode.
-                      </p>
-                    </div>
+                      </DescriptionPara>
+                    </HomeDiv>
                   </div>
                 )}
                 {accessToken &&
                   this.mode === 'edit' &&
                   !this.state.editable &&
                   !this.state.showAdmin && (
-                    <div style={home}>
-                      <p style={titleStyle}>
+                    <HomeDiv>
+                      <TitlePara>
                         THIS SKILL IS NOT EDITABLE. IT IS CURRENTLY LOCKED BY
                         ADMINS. YOU CAN STILL SEE THE CODE OF THE SKILL.
-                      </p>
-                      <p style={subtitleStyle}>
+                      </TitlePara>
+                      <SubTitlePara>
                         There can be various reasons for non-editable skills.{' '}
                         <br />For example if the skill is a standard skill, if
                         there was vandalism happening in the skill or if there
                         is a dispute about the skill.
-                      </p>
-                      <p style={description}>
+                      </SubTitlePara>
+                      <DescriptionPara>
                         The code is shown below in a read only mode.
-                      </p>
-                    </div>
+                      </DescriptionPara>
+                    </HomeDiv>
                   )}
                 <div
                   style={{
                     display: 'flex',
                     flexDirection: 'row',
-                    paddingTop: this.isBotBuilder ? '0px' : '28px',
+                    paddingTop: this.isBotBuilder ? '0rem' : '1.75rem',
                   }}
                 >
                   {this.isBotBuilder ? (
-                    <h1 style={{ lineHeight: '50px' }}>
+                    <h1 style={{ lineHeight: '3.125rem' }}>
                       1. Add a new skill to your bot
                     </h1>
                   ) : (
                     this.mode === 'create' && (
-                      <div style={heading}>Create a SUSI Skill</div>
+                      <Heading>Create a SUSI Skill</Heading>
                     )
                   )}
                   <div
                     style={{
                       marginLeft: 'auto',
-                      marginRight: this.isBotBuilder ? '0px' : '30px',
+                      marginRight: this.isBotBuilder ? '0rem' : '1.875rem',
                     }}
                   >
                     <IconButton
@@ -1041,20 +1042,19 @@ class SkillCreator extends Component {
                 />
                 {accessToken &&
                   this.state.editable && (
-                    <Paper style={paperStyle} zDepth={1}>
-                      <Info
-                        style={helpIcon}
+                    <Paper zDepth={1}>
+                      <InfoIcon
                         data-tip={`Learn more about <a href=${urls.CMS_GITHUB_URL +
                           '/blob/master/docs/Skill_Tutorial.md'} rel="noopener noreferrer" target="_blank" >SUSI Skill Language</a>`}
                       />
-                      <div style={center}>
-                        <div style={dropdownDiv}>
+                      <CenterDiv>
+                        <DropDownDiv>
                           <div style={mobileView ? mobileViewStyle : null}>
                             <span
                               style={{
                                 fontSize: 15,
-                                paddingTop: '43px',
-                                paddingLeft: '10px',
+                                paddingTop: '2.688rem',
+                                paddingLeft: '.625rem',
                               }}
                             >
                               Category:&nbsp;
@@ -1065,7 +1065,7 @@ class SkillCreator extends Component {
                               autoWidth={true}
                               style={{
                                 position: 'relative',
-                                width: mobileView ? '100%' : '250px',
+                                width: mobileView ? '100%' : '15.625rem',
                               }}
                             >
                               {this.state.groups}
@@ -1075,8 +1075,8 @@ class SkillCreator extends Component {
                             <span
                               style={{
                                 fontSize: 15,
-                                paddingTop: '8px',
-                                marginLeft: '10px',
+                                paddingTop: '.5rem',
+                                marginLeft: '.625rem',
                               }}
                             >
                               Language:&nbsp;
@@ -1088,7 +1088,7 @@ class SkillCreator extends Component {
                               autoWidth={true}
                               style={{
                                 position: 'relative',
-                                width: mobileView ? '100%' : '250px',
+                                width: mobileView ? '100%' : '15.625rem',
                               }}
                             >
                               {languages}
@@ -1132,10 +1132,7 @@ class SkillCreator extends Component {
                               />
                             )}
                             <form style={{ display: 'inline-block' }}>
-                              <label
-                                title="Upload bot image"
-                                style={uploadCircularButton}
-                              >
+                              <UploadCircularButton title="Upload bot image">
                                 <input
                                   accept="image/*"
                                   type="file"
@@ -1148,16 +1145,16 @@ class SkillCreator extends Component {
                                 />
                                 <Add
                                   style={{
-                                    height: '30px',
-                                    marginTop: '15px',
-                                    color: 'rgb(66, 133, 245)',
+                                    height: '1.875rem',
+                                    marginTop: '.938rem',
+                                    color: '#4285F5',
                                   }}
                                 />
-                              </label>
+                              </UploadCircularButton>
                             </form>
                           </div>
-                        </div>
-                      </div>
+                        </DropDownDiv>
+                      </CenterDiv>
                     </Paper>
                   )}
                 {!loadViews ? (
@@ -1251,11 +1248,13 @@ class SkillCreator extends Component {
                         </Link>
                       </Paper>
                       {this.state.prevButton === 1 ? (
-                        <div className="preview-button" style={{ top: '68px' }}>
+                        <div
+                          className="preview-button"
+                          style={{ top: '4.25rem' }}
+                        >
                           <span title="See Preview">
-                            <ChevronLeft
+                            <ChevronLeftIcon
                               onClick={this.handlePreviewToggle}
-                              style={chevronButton}
                             />
                           </span>
                         </div>
@@ -1267,15 +1266,15 @@ class SkillCreator extends Component {
                     <Paper
                       style={{
                         width: '100%',
-                        border: '1px solid red',
+                        border: '.063rem solid red',
                         marginTop: 20,
-                        padding: '20px',
+                        padding: '1.25rem',
                         display: 'flex',
                         justifyContent: 'space-between',
                       }}
                       zDepth={1}
                     >
-                      <div style={{ margineft: '0px' }}>
+                      <div style={{ margineft: '0rem' }}>
                         <strong>
                           <p>Delete this Skill</p>
                         </strong>
@@ -1304,22 +1303,16 @@ class SkillCreator extends Component {
                   }}
                 >
                   <Paper
-                    style={
-                      (paperStyle,
-                      {
-                        height: '99.9%',
-                        marginTop: '20px',
-                        position: 'relative',
-                      })
-                    }
+                    style={{
+                      height: '99.9%',
+                      marginTop: '1.25rem',
+                      position: 'relative',
+                    }}
                     zDepth={1}
                   >
                     <div style={{ display: 'flex', flexDirection: 'row' }}>
                       <span title="collapse preview">
-                        <ChevronRight
-                          onClick={this.handlePreviewToggle}
-                          style={chevron}
-                        />
+                        <ChevronRightIcon onClick={this.handlePreviewToggle} />
                       </span>
                       <h2 style={{ margin: 'auto' }}>Preview</h2>
                     </div>
@@ -1327,7 +1320,7 @@ class SkillCreator extends Component {
                       style={{
                         position: 'relative',
                         overflow: 'hidden',
-                        marginTop: '20px',
+                        marginTop: '1.25rem',
                       }}
                     >
                       <Preview botBuilder={false} />

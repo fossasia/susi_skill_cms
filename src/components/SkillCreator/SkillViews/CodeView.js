@@ -1,11 +1,11 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import Icon from 'antd/lib/icon';
+import _Icon from 'antd/lib/icon';
 import MenuItem from '@material-ui/core/MenuItem';
 import PropTypes from 'prop-types';
 import Select from '@material-ui/core/Select';
-import AceEditor from 'react-ace';
+import _AceEditor from 'react-ace';
 import 'brace/mode/markdown';
 import 'brace/theme/github';
 import 'brace/theme/monokai';
@@ -21,35 +21,48 @@ import 'brace/theme/terminal';
 import 'brace/ext/searchbox';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import createActions from '../../../redux/actions/create';
+import styled from 'styled-components';
 
 const fontsizes = [];
 const codeEditorThemes = [];
 
-const styles = {
-  codeEditor: {
-    width: '100%',
-    marginTop: '20px',
-  },
-  toolbar: {
-    width: '100%',
-    height: '50px',
-    background: '#fff',
-    borderBottom: '2px solid #eee',
-    display: 'none',
-    alignItems: 'stretch',
-    padding: '0 25px',
-    fontSize: '14px',
-  },
-  button: {
-    display: 'flex',
-    marginRight: '30px',
-    alignItems: 'center',
-    cursor: 'pointer',
-  },
-  icon: {
-    marginRight: '5px',
-  },
-};
+const Icon = styled(_Icon)`
+  margin-right: 0.313rem;
+`;
+
+const CodeEditorDiv = styled.div`
+  width: 100%;
+  margin-top: 1.25rem;
+`;
+
+const ToolBarDiv = styled.div`
+  width: 100%;
+  height: 3.125rem;
+  background: #fff;
+  border-bottom: 0.125rem solid #eee;
+  display: none;
+  align-items: stretch;
+  padding: 0 1.563rem;
+  font-size: 0.875rem;
+`;
+
+const ButtonSpan = styled.span`
+  display: flex;
+  margin-right: 1.875rem;
+  align-items: center;
+  cursor: pointer;
+`;
+
+const HomeDiv = styled.div`
+  width: 100%;
+  padding: 0rem;
+`;
+
+const AceEditor = styled(_AceEditor)`
+  resize: vertical;
+  min-height: 12.5rem;
+  max-height: 35rem;
+`;
 
 class CodeView extends React.Component {
   constructor(props) {
@@ -125,48 +138,42 @@ class CodeView extends React.Component {
   };
 
   render() {
-    const { codeEditor, toolbar, button, icon } = styles;
     const { code } = this.props;
     return (
       <div>
-        <div
-          style={{
-            width: '100%',
-            padding: '0px',
-          }}
-        >
-          <div style={codeEditor}>
+        <HomeDiv>
+          <CodeEditorDiv>
             {this.state.loading && <LinearProgress color="primary" />}
-            <div style={toolbar}>
-              <span style={button}>
-                <Icon type="cloud-download" style={icon} />Download as text
-              </span>
-              <span style={button}>
+            <ToolBarDiv>
+              <ButtonSpan>
+                <Icon type="cloud-download" />Download as text
+              </ButtonSpan>
+              <ButtonSpan>
                 Size{' '}
                 <Select
-                  style={{ width: '60px' }}
+                  style={{ width: '3.75rem' }}
                   onChange={this.handleFontChange}
                 >
                   {fontsizes}
                 </Select>
-              </span>
+              </ButtonSpan>
 
-              <span style={button}>
+              <ButtonSpan>
                 Theme{' '}
                 <Select
-                  style={{ width: '150px' }}
+                  style={{ width: '9.375rem' }}
                   onChange={this.handleThemeChange}
                 >
                   {codeEditorThemes}
                 </Select>
-              </span>
-            </div>
+              </ButtonSpan>
+            </ToolBarDiv>
             <AceEditor
               mode="java"
               theme={this.state.editorTheme}
               width="100%"
               fontSize={this.state.fontSizeCode}
-              height="400px"
+              height="25rem"
               value={code}
               showPrintMargin={false}
               name="skill_code_editor"
@@ -175,14 +182,9 @@ class CodeView extends React.Component {
               wrapEnabled={true}
               readOnly={!this.props.editable}
               editorProps={{ $blockScrolling: true }}
-              style={{
-                resize: 'vertical',
-                minHeight: '200px',
-                maxHeight: '560px',
-              }}
             />
-          </div>
-        </div>
+          </CodeEditorDiv>
+        </HomeDiv>
       </div>
     );
   }
