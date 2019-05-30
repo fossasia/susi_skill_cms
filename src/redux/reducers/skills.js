@@ -27,6 +27,7 @@ const defaultState = {
   ratingRefine: null,
   reviewed: false,
   staffPicks: false,
+  reviewedClicked: false,
   // Pagination
   entriesPerPage: 10,
   listPage: 1,
@@ -93,14 +94,28 @@ export default handleActions(
     },
     [actionTypes.SKILLS_GET_SKILL_LIST](state, { payload }) {
       const { filteredData } = payload;
+      let reviewedSkills = filteredData.filter(data => {
+        return data.reviewed ? data : null;
+      });
+      let reviewedSkillsLength = reviewedSkills.length;
+      const { reviewedClicked, reviewed } = state;
+      let reviewedCondition = reviewedClicked === true ? reviewed : false;
       return {
         ...state,
-        skills: filteredData,
+        skills:
+          reviewedClicked === false && reviewedSkillsLength > 0
+            ? reviewedSkills
+            : filteredData,
         loadingSkills: false,
         listOffset: 0,
         listPage: 1,
         entriesPerPage: 10,
+        reviewed:
+          reviewedClicked === false && reviewedSkillsLength > 0
+            ? true
+            : reviewedCondition,
         listSkills: filteredData.slice(0, 10),
+        reviewedClicked: false,
       };
     },
     [actionTypes.SKILLS_SET_VIEWTYPE](state, { payload }) {
@@ -195,6 +210,7 @@ export default handleActions(
       return {
         ...state,
         reviewed,
+        reviewedClicked: true,
         loadingSkills: true,
       };
     },

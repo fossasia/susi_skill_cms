@@ -98,7 +98,7 @@ class BrowseSkill extends React.Component {
       routeType ||
       ['category', 'language'].includes(window.location.href.split('/')[3])
     ) {
-      this.loadCards();
+      this.loadCards(true);
     } else {
       this.loadMetricsSkills();
     }
@@ -206,7 +206,7 @@ class BrowseSkill extends React.Component {
       });
   };
 
-  loadCards = () => {
+  loadCards = bool => {
     const { routeType, routeValue } = this.props;
     const {
       languageValue,
@@ -223,7 +223,7 @@ class BrowseSkill extends React.Component {
       applyFilter: true,
       filterName: orderBy,
       filterType: filterType,
-      showReviewedSkills: reviewed,
+      showReviewedSkills: bool ? false : reviewed,
       showStaffPicks: staffPicks,
       searchQuery: searchQuery,
     };
@@ -257,7 +257,9 @@ class BrowseSkill extends React.Component {
       this.props.actions.setSkillsLoading().then(() => this.loadCards());
     }
     if (ratingRefine) {
-      this.props.actions.setStarRatingFilter({ ratingRefine });
+      this.props.actions
+        .setStarRatingFilter({ ratingRefine })
+        .then(this.loadCards());
     } else {
       this.props.actions
         .setStarRatingFilter({ ratingRefine })
