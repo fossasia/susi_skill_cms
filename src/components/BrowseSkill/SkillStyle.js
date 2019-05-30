@@ -1,3 +1,7 @@
+import isMobileView from '../../utils/isMobileView';
+
+const mobileView = isMobileView();
+
 const styles = {
   main: {
     display: 'flex',
@@ -98,7 +102,7 @@ const styles = {
     margin: '0px 10px',
   },
   selection: {
-    margin: '0px 10px',
+    margin: '10px 10px 0px',
     width: '150px',
     overflowY: 'hidden',
     fontSize: '14px',
@@ -171,12 +175,11 @@ const styles = {
     fontSize: '14px',
   },
   searchBar: {
-    width: '64%',
+    width: mobileView ? '100%' : '64%',
     marginRight: '20px',
     flexShrink: '10',
   },
   sortBy: {
-    display: 'flex',
     alignItems: 'center',
   },
   home: {
